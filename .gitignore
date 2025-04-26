@@ -1,0 +1,43 @@
+# ========================
+# CMake
+# ========================
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+build/
+out/
+
+# ========================
+# Visual Studio (IDE only)
+# ========================
+.vs/
+*.vcxproj*
+*.sln
+*.user
+*.suo
+*.VC.db
+*.VC.opendb
+ipch/
+*.log
+
+# ========================
+# OS・エディタ共通
+# ========================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# ========================
+# バイナリや一時ファイル
+# ========================
+*.exe
+*.dll
+*.obj
+*.pdb
+*.cache
+*.ilk
+*.tmp
+*.bak
+*.old
