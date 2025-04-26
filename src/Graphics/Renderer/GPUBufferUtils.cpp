@@ -25,12 +25,14 @@ ModelGPU GPUBufferUtils::createMeshGPUBuffers(const ModelData& modelData)
 		// ebo
 		if (meshData.hasIndices && !meshData.indices.empty())
 		{
+			// インデックス数
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshGPU.ebo);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, meshData.indices.size() * sizeof(unsigned int), meshData.indices.data(), GL_STATIC_DRAW);
 			meshGPU.indexCount = static_cast<unsigned int>(meshData.indices.size());
 		}
 		else
 		{
+			// 頂点数
 			meshGPU.indexCount = static_cast<unsigned int>(meshData.vertices.size());
 		}
 
