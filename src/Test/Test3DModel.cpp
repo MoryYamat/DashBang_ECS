@@ -24,7 +24,7 @@ Test3DModel::Test3DModel(ECS& ecs,Shader* shader)
 
 	for (const auto& mesh : data.meshes)
 	{
-		std::cout << "Vertices: " << mesh.vertices.size()
+		std::cout << "[Test3DModel.cpp]: Vertices: " << mesh.vertices.size()
 			<< ", Indices: " << mesh.indices.size()
 			<< ", hasIndices: " << mesh.hasIndices << std::endl;
 	}

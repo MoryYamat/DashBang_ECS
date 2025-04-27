@@ -118,5 +118,4 @@ void Game::loadData()
 
 void Game::unloadData()
 {
-
 }
