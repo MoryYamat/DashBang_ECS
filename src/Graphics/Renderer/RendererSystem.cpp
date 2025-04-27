@@ -1,16 +1,40 @@
 #include "RendererSystem.h"
 
+
 #include <iostream>
 
 void RenderSystem::RenderSystem(ECS& ecs, Shader& shader, float aspect)
 {
-	for (auto entity : ecs.view<MeshComponent>())
+	//for (auto entity : ecs.view<MeshComponent>())// for Test
+	//{
+	//	//auto& transformComp = ecs.get<TransformComponent>(entity);
+	//	auto& meshComp = ecs.get<MeshComponent>(entity);
+	// 
+	//	drawMesh(meshComp);
+	//}
+	glm::mat4 view, projection;
+
+	if (!getCameraMatrices(ecs, view, projection))
 	{
-		//auto& transformComp = ecs.get<TransformComponent>(entity);
+		std::cout << "[RenderSystem.cpp]: No valid camera found in ECS." << std::endl;
+		return;
+	}
+
+	shader.Use();
+
+	shader.setMat4("view", view);
+	shader.setMat4("projection", projection);
+
+	for (auto entity : ecs.view<TransformComponent, MeshComponent>())
+	{
+		auto& transformComp = ecs.get<TransformComponent>(entity);
 		auto& meshComp = ecs.get<MeshComponent>(entity);
+
+		shader.setMat4("model",transformComp.toMatrix());
 
 		drawMesh(meshComp);
 	}
+
 }
 
 void RenderSystem::drawMesh(const MeshComponent& meshComp)
@@ -26,12 +50,12 @@ void RenderSystem::drawMesh(const MeshComponent& meshComp)
 		if (meshData.hasIndices)
 		{
 			glDrawElements(GL_TRIANGLES, meshGPU.indexCount, GL_UNSIGNED_INT, 0);
-			//std::cout << "[RenderSystem.cpp]: draw elements" << std::endl;
+			//std::cout << "[RenderSystem.cpp]: draw elements" << std::endl;// for debugging
 		}
 		else
 		{
 			glDrawArrays(GL_TRIANGLES, 0, meshGPU.indexCount);
-			//std::cout << "[RenderSystem.cpp]: draw Arrays" << std::endl;
+			//std::cout << "[RenderSystem.cpp]: draw Arrays" << std::endl;// for debugging
 		}
 	}
 
@@ -49,4 +73,39 @@ void RenderSystem::drawMesh(const MeshComponent& meshComp)
 	//	//std::cout << "[RenderSystem.cpp]: draw Arrays" << std::endl;
 	//}
 
+}
+
+bool RenderSystem::getCameraMatrices(ECS& ecs, glm::mat4& view, glm::mat4& projection)
+{
+	TransformComponent* camTransformComp = nullptr;
+	CameraComponent* camComp = nullptr;
+
+	for (auto entity : ecs.view<TransformComponent, CameraComponent>())
+	{
+		camTransformComp = &ecs.get<TransformComponent>(entity);
+		camComp = &ecs.get<CameraComponent>(entity);
+		break;
+	}
+
+	if (!camTransformComp || !camComp)
+	{
+		std::cout << "[RenderSystem.cpp(getCameraMatrices)]: No Camera found!" << std::endl;
+		return false;
+	}
+
+	view = computeViewMatrix(*camTransformComp, *camComp);
+	projection = computeProjectionMatrix(camComp->fov, camComp->aspect, camComp->nearClip, camComp->farClip);
+
+	return true;
+}
+
+glm::mat4 RenderSystem::computeViewMatrix(const TransformComponent& transformComp, const CameraComponent& cameraComp)
+{
+	glm::vec3 position = transformComp.position;
+	return glm::lookAt(position, position + cameraComp.front, cameraComp.up);
+}
+
+glm::mat4 RenderSystem::computeProjectionMatrix(float fov, float aspect, float nearClip, float farClip)
+{
+	return glm::perspective(glm::radians(fov), aspect, nearClip, farClip);
 }

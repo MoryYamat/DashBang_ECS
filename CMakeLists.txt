@@ -1,7 +1,7 @@
 ﻿cmake_minimum_required(VERSION 3.10)
 
 # プロジェクト名とC++標準の設定
-project(ClashBattle)
+project(DashBang_ECS)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -43,7 +43,7 @@ file(GLOB_RECURSE HEADER_FILES "${CMAKE_SOURCE_DIR}/include/*.h")
 file(GLOB_RECURSE SRC_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp")
 
 # 実行可能ファイルの作成
-add_executable(ClashBattle ${SRC_FILES} ${HEADER_FILES})
+add_executable(DashBang_ECS ${SRC_FILES} ${HEADER_FILES})
 # add_executable(ClashBattle
 #     src/main.cpp
 #     src/Shader.cpp
@@ -58,7 +58,7 @@ add_executable(ClashBattle ${SRC_FILES} ${HEADER_FILES})
 
 
 # インクルードディレクトリ
-target_include_directories(ClashBattle PRIVATE
+target_include_directories(DashBang_ECS PRIVATE
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/External/GLFW/include
     ${CMAKE_SOURCE_DIR}/External/GLAD/include
@@ -75,7 +75,7 @@ file(COPY "${CMAKE_SOURCE_DIR}/Assets" DESTINATION "${CMAKE_BINARY_DIR}")
 
 
 # リンクするライブラリ
-target_link_libraries(ClashBattle
+target_link_libraries(DashBang_ECS
     glfw
     glad
     assimp
@@ -83,8 +83,8 @@ target_link_libraries(ClashBattle
 )
 
 
-add_custom_command(TARGET ClashBattle POST_BUILD
+add_custom_command(TARGET DashBang_ECS POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${ASSIMP_DLL}"
-        "$<TARGET_FILE_DIR:ClashBattle>"
+        "$<TARGET_FILE_DIR:DashBang_ECS>"
 )

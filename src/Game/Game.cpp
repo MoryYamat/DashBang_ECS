@@ -13,9 +13,14 @@
 // Graphic
 #include "Graphics/Renderer/Shader.h"
 #include "Graphics/Renderer/RendererSystem.h"
+#include "Graphics/Model/AssimpImporter.h"
+
+//Game
+#include "Game/Actor/CameraActor.h"
 
 // Test
 #include "Test/TriangleActor.h"
+#include "Test/Test3DModel.h"
 
 Game::Game()
 	: mIsRunning(true)
@@ -90,6 +95,7 @@ void Game::RunLoop()
 		glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// An algorithm is needed to set the shader for each object.
 		RenderSystem::RenderSystem(mEcs, *mShader, mAspect);
 
 		glfwSwapBuffers(mWindow);
@@ -101,10 +107,11 @@ void Game::RunLoop()
 void Game::loadData()
 {
 
-	
-	
-	TriangleActor tri = TriangleActor(mEcs);
+	//TriangleActor tri = TriangleActor(mEcs);
 
+	Test3DModel test3d = Test3DModel(mEcs, mShader);
+
+	CameraActor camActor = CameraActor(mEcs);
 
 	std::cout << "[Game.cpp]: Data loading completed successfully." << std::endl;
 }

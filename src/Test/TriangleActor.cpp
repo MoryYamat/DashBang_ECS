@@ -41,5 +41,5 @@ TriangleActor::TriangleActor(ECS& ecs)
 			modelGPU
 		});
 
-	std::cout << "Triangle generated" << std::endl;
+	std::cout << "[TriangleActor.cpp]: Triangle generated" << std::endl;
 }
