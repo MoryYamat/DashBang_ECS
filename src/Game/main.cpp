@@ -1,9 +1,10 @@
-//
+// entry point
 
 #include <iostream>
 
 #include "Game/Game.h"
 
+// main
 int main()
 {
 	Game game;

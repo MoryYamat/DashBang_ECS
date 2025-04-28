@@ -6,6 +6,9 @@
 
 #include "Core/ECS/EntityManager.h"
 
+#include "Game/Input/InputState.h"
+#include "Game/Input/InputMapping.h"
+
 
 class Game
 {
@@ -32,6 +35,16 @@ private:
 	GLFWwindow* mWindow;
 
 	class Shader* mShader;
+
+	class InputState mInputState;
+	class InputMapping mInputMapping;
+
+	float mDeltaTime = 0.0f;
+	float mLastFrame = 0.0f;
+
+	void updateGameLogics();
+
+	void generateOutputs();
 
 	void loadData();
 

@@ -16,22 +16,22 @@ void RenderSystem::RenderSystem(ECS& ecs, Shader& shader, float aspect)
 
 	if (!getCameraMatrices(ecs, view, projection))
 	{
-		std::cout << "[RenderSystem.cpp]: No valid camera found in ECS." << std::endl;
+		std::cerr << "[RenderSystem.cpp]: No valid camera found in ECS." << std::endl;
 		return;
 	}
 
-	shader.Use();
 
-	shader.setMat4("view", view);
-	shader.setMat4("projection", projection);
 
 	for (auto entity : ecs.view<TransformComponent, MeshComponent>())
 	{
 		auto& transformComp = ecs.get<TransformComponent>(entity);
 		auto& meshComp = ecs.get<MeshComponent>(entity);
 
-		shader.setMat4("model",transformComp.toMatrix());
-
+		// state machine (シェーダーを切り替えると、viewもprojectionもセットする必要あり。)
+		shader.Use();
+		shader.setMat4("model", transformComp.toMatrix());
+		shader.setMat4("view", view);
+		shader.setMat4("projection", projection);
 		drawMesh(meshComp);
 	}
 
@@ -89,7 +89,7 @@ bool RenderSystem::getCameraMatrices(ECS& ecs, glm::mat4& view, glm::mat4& proje
 
 	if (!camTransformComp || !camComp)
 	{
-		std::cout << "[RenderSystem.cpp(getCameraMatrices)]: No Camera found!" << std::endl;
+		std::cerr << "[RenderSystem.cpp(getCameraMatrices)]: No Camera found!" << std::endl;
 		return false;
 	}
 

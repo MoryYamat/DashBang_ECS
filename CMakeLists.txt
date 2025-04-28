@@ -40,7 +40,10 @@ target_include_directories(glad PUBLIC
 # ============================================================
 
 file(GLOB_RECURSE HEADER_FILES "${CMAKE_SOURCE_DIR}/include/*.h")
-file(GLOB_RECURSE SRC_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp")
+file(GLOB_RECURSE SRC_FILES 
+        "${CMAKE_SOURCE_DIR}/src/*.cpp"
+        "${CMAKE_SOURCE_DIR}/src/*.h"
+        )
 
 # 実行可能ファイルの作成
 add_executable(DashBang_ECS ${SRC_FILES} ${HEADER_FILES})

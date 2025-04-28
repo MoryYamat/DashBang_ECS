@@ -6,8 +6,11 @@
 
 #include "Core/ECS/Component/TransformComponent.h"
 #include "Core/ECS/Component/CameraComponent.h"
+#include "Core/ECS/Component/PlayerControllerComponent.h"
 
 #include "Graphics/Renderer/Shader.h"
+
+#include "Debug/DebugUtils.h"
 
 CameraActor::CameraActor(ECS& ecs)
 {
@@ -23,10 +26,21 @@ CameraActor::CameraActor(ECS& ecs)
 	cameraComp.target = glm::vec3(0.0f, 0.0f, 0.0f);
 	cameraComp.up = glm::vec3(0.0f, 1.0f, 0.0f);
 
+	PlayerControllerComponent player;
+	ecs.addComponent(entity, player);
+
 	cameraComp.aspect = 1280.0f / 720.0f;
 	cameraComp.nearClip = 0.1f;
 	cameraComp.farClip = 100.0f;
 
 	ecs.addComponent(entity, transformComp);
 	ecs.addComponent(entity, cameraComp);
+
+
+	//// For Debugging
+	//DebugUtils::printEntityComponents<
+	//	TransformComponent,
+	//	CameraComponent,
+	//	PlayerControllerComponent
+	//>(ecs, entity);
 }

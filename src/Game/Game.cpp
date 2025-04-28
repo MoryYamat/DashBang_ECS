@@ -15,24 +15,29 @@
 #include "Graphics/Renderer/RendererSystem.h"
 #include "Graphics/Model/AssimpImporter.h"
 
-//Game
+//Game/Actor
 #include "Game/Actor/CameraActor.h"
+
+// Game/Input
+#include "Game/Input/CameraControlSystem.h"
 
 // Test
 #include "Test/TriangleActor.h"
 #include "Test/Test3DModel.h"
 
+// コンストラクタ
 Game::Game()
 	: mIsRunning(true)
 	, mWindow(nullptr)
 	, mShader(nullptr)
 	, mWindow_Width(1280)
 	, mWindow_Height(720)
+	, mAspect(0.0f)
 {
 
 }
 
-
+// 終了処理
 void Game::Shutdown()
 {
 	unloadData();
@@ -46,18 +51,19 @@ void Game::Shutdown()
 	std::cout << "[Game.cpp (Shutdown)]: The application shut down successfully." << std::endl;
 }
 
+// 初期化
 bool Game::Initialize()
 {
 	if (!glfwInit())
 	{
-		std::cout << "[Game.cpp (Initialize)]: Failed to initialize GLFW" << std::endl;
+		std::cerr << "[Game.cpp (Initialize)]: Failed to initialize GLFW" << std::endl;
 		return false;
 	}
 
 	mWindow = glfwCreateWindow(mWindow_Width, mWindow_Height,"GameWindow", nullptr, nullptr);
 	if (!mWindow)
 	{
-		std::cout << "[Game.cpp (Initialize)]: Failed to initialize GLFW window" << std::endl;
+		std::cerr << "[Game.cpp (Initialize)]: Failed to initialize GLFW window" << std::endl;
 		return false;
 	}
 
@@ -67,7 +73,7 @@ bool Game::Initialize()
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
-		std::cout << "[Game.cpp (Initialize)]: Failed to initialize GLAD" << std::endl;
+		std::cerr << "[Game.cpp (Initialize)]: Failed to initialize GLAD" << std::endl;
 		return false;
 	}
 
@@ -77,8 +83,6 @@ bool Game::Initialize()
 	mShader = new Shader("shaders/basic.vertex.glsl", "shaders/basic.fragment.glsl");
 
 	mAspect = mWindow_Width / mWindow_Height;
-
-	
 
 	std::cout << "[Game.cpp (Initialize)]: Application initialization completed successfully" << std::endl;
 
@@ -92,17 +96,38 @@ void Game::RunLoop()
 {
 	while (!glfwWindowShouldClose(mWindow))
 	{
-		glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// An algorithm is needed to set the shader for each object.
-		RenderSystem::RenderSystem(mEcs, *mShader, mAspect);
+		updateGameLogics();
 
-		glfwSwapBuffers(mWindow);
+		generateOutputs();
+
 		glfwPollEvents();
 	}
 }
 
+void Game::updateGameLogics()
+{
+	float currentFrame = static_cast<float>(glfwGetTime());
+	mDeltaTime = currentFrame - mLastFrame;
+	mLastFrame = currentFrame;
+
+	// 入力状態マップの更新
+	mInputMapping.update(mWindow, mInputState);
+
+	// カメラ
+	GameSystemInput::UpdateCamera(mEcs, mInputState, mDeltaTime);
+}
+
+void Game::generateOutputs()
+{
+	glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// An algorithm is needed to set the shader for each object.
+	RenderSystem::RenderSystem(mEcs, *mShader, mAspect);
+
+	glfwSwapBuffers(mWindow);
+}
 
 void Game::loadData()
 {

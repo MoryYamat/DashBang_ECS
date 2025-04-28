@@ -20,6 +20,7 @@ private:
 	// ※※Efficiency issues※※
 	// Entityごとにコンポーネントを紐づける
 	std::unordered_map<std::type_index, std::unordered_map<uint32_t, std::shared_ptr<void>>> mComponentPools;
+	// {type_index(Component), unordered_map{e.id, Components.data}}
 
 public:
 	// create
@@ -83,5 +84,24 @@ public:
 
 		return result;
 
+	}
+
+	template<typename T>
+	bool hasComponent(Entity e) const
+	{
+		// key
+		std::type_index type = std::type_index(typeid(T));
+
+		// キーで検索
+		auto poolIt = mComponentPools.find(type);
+		if (poolIt == mComponentPools.end())
+		{
+			return false;
+		}
+
+		// サブunordered_mapを取得
+		const auto& entityMap = poolIt->second;
+		// 検索
+		return entityMap.find(e.id) != entityMap.end();
 	}
 };

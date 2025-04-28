@@ -20,7 +20,7 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 
 	if (!checkLinkStatus(mProgramID))
 	{
-		std::cout << "[Shader.cpp(shader)]: Failed to link program" << std::endl;
+		std::cerr << "[Shader.cpp(shader)]: Failed to link program" << std::endl;
 	}
 
 	glDeleteShader(vertexShader);

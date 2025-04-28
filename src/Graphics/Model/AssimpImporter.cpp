@@ -15,7 +15,7 @@ ModelData AssimpImporter::Import(const std::string& path)
 		aiProcess_CalcTangentSpace);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		std::cout << "[AssimpImporter.cpp(Import)]: Error Assimp: " << importer.GetErrorString() << std::endl;
+		std::cerr << "[AssimpImporter.cpp(Import)]: Error Assimp: " << importer.GetErrorString() << std::endl;
 		return data;
 	}
 	else
