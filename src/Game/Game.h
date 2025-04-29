@@ -27,8 +27,7 @@ private:
 	// loop flag => ãè‚Ég‚¤•û–@
 	bool mIsRunning;
 
-	int mWindow_Width, mWindow_Height;
-	float mAspect;
+	int windowWidth, windowHeight;
 
 	class ECS mEcs;
 
@@ -49,4 +48,6 @@ private:
 	void loadData();
 
 	void unloadData();
+
 };
+

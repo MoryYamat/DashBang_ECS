@@ -11,7 +11,7 @@
 
 namespace GameSystemInput
 {
-	void UpdateCamera(class ECS& ecs, const InputState& input, float deltaTime);
+	void UpdateCamera(class ECS& ecs, InputState& input, float deltaTime);
 
 	void updateCameraVector(CameraComponent& cameraComp);
 }

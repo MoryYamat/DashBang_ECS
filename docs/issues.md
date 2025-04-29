@@ -1,5 +1,11 @@
 # **Identifying issues in the development process and consolidating solutions**
 
+### **Project**
+* Convert the local character code from `Shift-JIS` to `UTF-8` in bulk
+
+## **Architecture
+* Separation of game logic and system (engine) logic
+
 ## **ECS**
 * Defining hierarchical relationships between `Entity` and implementing semantics based on names
 * *** Consider a good way to manage the lifespan of `Entity` (even if you delete an `Entity`, the `Component` will remain. If there is a process that references the `Entity`, you need to manage the deletion carefully)**
@@ -25,9 +31,10 @@
 ## **System**
 * Implementing a Texture Importer
 * Implementing load log acquisition and display functions
-* 
+* WindowManager implementation
 
 
 ## **FUTURE**
 * Implementing game editing functionality via UI (engine)
 * Simplify prototyping with game templates
+* **Scene-oriented prototyping support engine**

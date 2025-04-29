@@ -10,6 +10,8 @@
 //Components
 #include "Core/ECS/Component/TransformComponent.h"
 
+#include "Core/Window/WindowManager.h"
+
 // Graphic
 #include "Graphics/Renderer/Shader.h"
 #include "Graphics/Renderer/RendererSystem.h"
@@ -28,11 +30,9 @@
 // コンストラクタ
 Game::Game()
 	: mIsRunning(true)
-	, mWindow(nullptr)
 	, mShader(nullptr)
-	, mWindow_Width(1280)
-	, mWindow_Height(720)
-	, mAspect(0.0f)
+	, windowWidth(1280)
+	, windowHeight(720)
 {
 
 }
@@ -45,8 +45,7 @@ void Game::Shutdown()
 	delete mShader;
 	mShader = nullptr;
 
-	glfwDestroyWindow(mWindow);
-	glfwTerminate();
+	WindowManager::Shutdown();
 
 	std::cout << "[Game.cpp (Shutdown)]: The application shut down successfully." << std::endl;
 }
@@ -54,36 +53,47 @@ void Game::Shutdown()
 // 初期化
 bool Game::Initialize()
 {
-	if (!glfwInit())
-	{
-		std::cerr << "[Game.cpp (Initialize)]: Failed to initialize GLFW" << std::endl;
-		return false;
-	}
+	//if (!glfwInit())
+	//{
+	//	std::cerr << "[Game.cpp (Initialize)]: Failed to initialize GLFW" << std::endl;
+	//	return false;
+	//}
 
-	mWindow = glfwCreateWindow(mWindow_Width, mWindow_Height,"GameWindow", nullptr, nullptr);
-	if (!mWindow)
-	{
-		std::cerr << "[Game.cpp (Initialize)]: Failed to initialize GLFW window" << std::endl;
-		return false;
-	}
+	//mWindow = glfwCreateWindow(mWindow_Width, mWindow_Height,"GameWindow", nullptr, nullptr);
+	//if (!mWindow)
+	//{
+	//	std::cerr << "[Game.cpp (Initialize)]: Failed to initialize GLFW window" << std::endl;
+	//	return false;
+	//}
 
-	glfwMakeContextCurrent(mWindow);
+	//glfwMakeContextCurrent(mWindow);
 
 	//glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	//if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	//{
+	//	std::cerr << "[Game.cpp (Initialize)]: Failed to initialize GLAD" << std::endl;
+	//	return false;
+	//}
+
+	//glViewport(0, 0, mWindow_Width, mWindow_Height);
+	
+	if (!WindowManager::Initialize(windowWidth, windowHeight, "Game"))
 	{
-		std::cerr << "[Game.cpp (Initialize)]: Failed to initialize GLAD" << std::endl;
+		std::cerr << "[Game.cpp]: Failed to Initialize WindowManager" << std::endl;
 		return false;
 	}
+	
+	WindowManager::CaptureMouse();
 
-	glViewport(0, 0, mWindow_Width, mWindow_Height);
 	glEnable(GL_DEPTH_TEST);
 
+
+	// ShaderInit
 	mShader = new Shader("shaders/basic.vertex.glsl", "shaders/basic.fragment.glsl");
 
-	mAspect = mWindow_Width / mWindow_Height;
 
+	// Log
 	std::cout << "[Game.cpp (Initialize)]: Application initialization completed successfully" << std::endl;
 
 
@@ -94,7 +104,7 @@ bool Game::Initialize()
 
 void Game::RunLoop()
 {
-	while (!glfwWindowShouldClose(mWindow))
+	while (!glfwWindowShouldClose(WindowManager::GetWindow()))
 	{
 
 		updateGameLogics();
@@ -112,7 +122,7 @@ void Game::updateGameLogics()
 	mLastFrame = currentFrame;
 
 	// 入力状態マップの更新
-	mInputMapping.update(mWindow, mInputState);
+	mInputMapping.update(WindowManager::GetWindow(), mInputState);
 
 	// カメラ
 	GameSystemInput::UpdateCamera(mEcs, mInputState, mDeltaTime);
@@ -124,9 +134,9 @@ void Game::generateOutputs()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// An algorithm is needed to set the shader for each object.
-	RenderSystem::RenderSystem(mEcs, *mShader, mAspect);
+	RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
 
-	glfwSwapBuffers(mWindow);
+	glfwSwapBuffers(WindowManager::GetWindow());
 }
 
 void Game::loadData()
@@ -144,3 +154,5 @@ void Game::loadData()
 void Game::unloadData()
 {
 }
+
+

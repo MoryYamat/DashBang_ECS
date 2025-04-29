@@ -21,6 +21,7 @@ public:
 		keyBindings[GLFW_KEY_S] = InputAction::MoveBackward;
 		keyBindings[GLFW_KEY_A] = InputAction::MoveLeft;
 		keyBindings[GLFW_KEY_D] = InputAction::MoveRight;
+		keyBindings[GLFW_KEY_LEFT_CONTROL] = InputAction::MouseCapture;
 		keyBindings[GLFW_KEY_ESCAPE] = InputAction::Quit;
 	}
 
@@ -28,5 +29,5 @@ public:
 
 private:
 	// mapping
-	std::unordered_map<int, InputAction> keyBindings;
+	std::unordered_map<int, InputAction> keyBindings;\
 };

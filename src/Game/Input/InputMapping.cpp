@@ -1,5 +1,7 @@
 #include "InputMapping.h"
 
+#include "Core/Window/WindowManager.h"
+
 #include <iostream>
 
 
@@ -8,10 +10,19 @@ void InputMapping::update(GLFWwindow* window, InputState& input)
 	input.actions.clear();
 	for (const auto& [key, action] : keyBindings)
 	{
-		if (glfwGetKey(window, key) == GLFW_PRESS)
+		bool isPressedNow = glfwGetKey(window, key) == GLFW_PRESS;
+
+		if (isPressedNow && !input.previousActions[action])
 		{
-			input.actions[action] = true;
+			if (action == InputAction::MouseCapture)
+			{
+				input.mouseCaptured = !input.mouseCaptured;
+				input.requestMouseCaptureToggle = true;
+				input.firstMouse = true;
+			}
 		}
+
+		input.actions[action] = isPressedNow;
 	}
 
 	double xpos, ypos;
@@ -30,4 +41,20 @@ void InputMapping::update(GLFWwindow* window, InputState& input)
 		input.mousePosition = currentMouse;
 	}
 
+	// êŠ‚ª‚¨‚©‚µ‚¢H
+	// êŠ‚ª‚¨‚©‚µ‚¢H
+	// êŠ‚ª‚¨‚©‚µ‚¢H
+	//Is the location wrong ?
+	//Is the location wrong ?
+	//Is the location wrong ?
+	//if (input.isPressed(InputAction::MouseCapture))
+	//{
+	//	input.mouseCaptured = !input.mouseCaptured;
+	//	if (input.mouseCaptured)
+	//		WindowManager::CaptureMouse();
+	//	else
+	//		WindowManager::ReleaseMouse();
+	//}
+
+	input.previousActions = input.actions;
 }

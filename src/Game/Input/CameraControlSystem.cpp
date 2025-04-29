@@ -1,7 +1,11 @@
 #include "CameraControlSystem.h"
 
+// Core/ECS
 #include "Core/ECS/Component/TransformComponent.h"
 #include "Core/ECS/Component/PlayerControllerComponent.h"
+
+// Core/Window
+#include "Core/Window/WindowManager.h"
 
 #include <iostream>
 #include <algorithm>
@@ -14,7 +18,12 @@
 // ‚Æ‚¢‚¤Œ`‚ª‚¢‚¢‚Æv‚¤
 //
 
-void GameSystemInput::UpdateCamera(ECS& ecs, const InputState& input, float deltaTime)
+
+// The internal state of eInputStatef is not rewritten here.
+// The internal state of eInputStatef is not rewritten here.
+// The internal state of eInputStatef is not rewritten here.
+// eInputStatee‚Ì“à•”ó‘Ô‚Í‚±‚±‚Å‚Í‘‚«Š·‚¦‚È‚¢
+void GameSystemInput::UpdateCamera(ECS& ecs, InputState& input, float deltaTime)
 {
 
 	for (auto entity : ecs.view<TransformComponent, CameraComponent, PlayerControllerComponent>())
@@ -37,11 +46,13 @@ void GameSystemInput::UpdateCamera(ECS& ecs, const InputState& input, float delt
 		if (input.isPressed(InputAction::MoveLeft))
 			transformComp.position -= cameraComp.right * velocity;
 
+
+
 		// It defines the movement
 		// It defines the movement
 		// It defines the movement
 		// It defines the movement
-		if (input.mouseDelta != glm::vec2(0.0f))
+		if (input.mouseCaptured && input.mouseDelta != glm::vec2(0.0f))
 		{
 			cameraComp.yaw += input.mouseDelta.x * cameraComp.mouseSensitivity;
 
@@ -53,6 +64,19 @@ void GameSystemInput::UpdateCamera(ECS& ecs, const InputState& input, float delt
 			GameSystemInput::updateCameraVector(cameraComp);
 		}
 
+		if (input.requestMouseCaptureToggle)
+		{
+			if (input.mouseCaptured)
+			{
+				WindowManager::CaptureMouse();
+			}
+			else
+			{
+				WindowManager::ReleaseMouse();
+			}
+
+			input.requestMouseCaptureToggle = false;
+		}
 
 		//// for debugging
 		//std::cout << "[CameraControlSystem.cpp]: camera Position: x::" << transformComp.position.x
