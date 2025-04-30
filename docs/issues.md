@@ -2,6 +2,7 @@
 
 ### **Project**
 * Convert the local character code from `Shift-JIS` to `UTF-8` in bulk
+* **Organizing the folder structure**
 
 ## **Architecture
 * Separation of game logic and system (engine) logic
@@ -27,6 +28,9 @@
     * Give `Entity` a name
     * Link `Entity` and `Actor` based on `name` (proposal)
 
+## **Physical Layer**
+* Physics layer (collision) implementation
+* Ground implementation
 
 ## **System**
 * Implementing a Texture Importer

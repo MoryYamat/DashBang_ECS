@@ -12,6 +12,8 @@ void InputMapping::update(GLFWwindow* window, InputState& input)
 	{
 		bool isPressedNow = glfwGetKey(window, key) == GLFW_PRESS;
 
+		// ’·‰Ÿ‚µ‚ğˆê‰ñ‚¾‚¯ˆ—‚·‚é
+		// Process a long press only once
 		if (isPressedNow && !input.previousActions[action])
 		{
 			if (action == InputAction::MouseCapture)

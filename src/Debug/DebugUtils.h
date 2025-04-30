@@ -30,4 +30,14 @@ namespace DebugUtils
 	{
 		(printEntityComponentIfExist<Components>(ecs, entity), ...);
 	}
+
+	// 呼び出し、マクロ定義から、`DEBUG_LOG(msg)`
+	// Call, from the macro definition, `DEBUG_LOG(msg)`
+	inline void debugLog(const std::string& message, const char* functionName)
+	{
+		std::cout << "[Debug] [" << functionName << "]: " << message << std::endl;
+	}
+
 }
+
+#define DEBUG_LOG(msg) DebugUtils::debugLog(msg,__FUNCTION__)

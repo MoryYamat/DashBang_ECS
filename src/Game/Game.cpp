@@ -10,7 +10,12 @@
 //Components
 #include "Core/ECS/Component/TransformComponent.h"
 
+// Window
 #include "Core/Window/WindowManager.h"
+
+// physics
+#include "Core/Physics/CollisionUtils.h"
+#include "DataTypes/ColliderType.h"
 
 // Graphic
 #include "Graphics/Renderer/Shader.h"
@@ -148,11 +153,20 @@ void Game::loadData()
 
 	CameraActor camActor = CameraActor(mEcs);
 
+	Box2D a{ glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f) };
+	Box2D b{ glm::vec2(1.5f, 0.0f) , glm::vec2(1.0f,1.0f) };
+
+	bool hit = CollisionUtils::intersectBox2D(a, b);
+
+	std::cout << "Result: " << std::boolalpha << hit << std::endl;
+
 	std::cout << "[Game.cpp]: Data loading completed successfully." << std::endl;
 }
 
 void Game::unloadData()
 {
+
+
 }
 
 

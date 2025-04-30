@@ -75,6 +75,7 @@ void GameSystemInput::UpdateCamera(ECS& ecs, InputState& input, float deltaTime)
 				WindowManager::ReleaseMouse();
 			}
 
+			// fix later
 			input.requestMouseCaptureToggle = false;
 		}
 
