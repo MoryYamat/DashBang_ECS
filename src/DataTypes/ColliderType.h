@@ -4,7 +4,7 @@
 
 #include <GLM/glm.hpp>
 
-
+// name of ColliderType
 enum class ColliderType
 {
 	None,
@@ -15,6 +15,7 @@ enum class ColliderType
 	Capsule3D,
 };
 
+// 
 struct Circle2D
 {
 	glm::vec2 center;
@@ -46,6 +47,8 @@ struct Capsule3D
 	float radius;
 };
 
+
+// Collider Data Structure
 struct Collider
 {
 	ColliderType type;

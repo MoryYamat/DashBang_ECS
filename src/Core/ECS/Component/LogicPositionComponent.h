@@ -2,6 +2,8 @@
 
 #pragma once 
 
+#include <glm/glm.hpp>
+
 struct Logic2DPositionComponent
 {
 	//

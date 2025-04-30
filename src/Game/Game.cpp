@@ -153,10 +153,13 @@ void Game::loadData()
 
 	CameraActor camActor = CameraActor(mEcs);
 
-	Box2D a{ glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f) };
-	Box2D b{ glm::vec2(1.5f, 0.0f) , glm::vec2(1.0f,1.0f) };
+	Collider a, c;
+	c.type = ColliderType::Box2D;
+	a.type = ColliderType::Box2D;
+	c.box2D = Box2D{ glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f) };
+	a.box2D = Box2D { glm::vec2(3.0f, 0.0f) , glm::vec2(1.0f,1.0f) };
 
-	bool hit = CollisionUtils::intersectBox2D(a, b);
+	bool hit = CollisionUtils::intersectBox2D(a.box2D, c.box2D);
 
 	std::cout << "Result: " << std::boolalpha << hit << std::endl;
 

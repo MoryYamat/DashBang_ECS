@@ -91,3 +91,9 @@ add_custom_command(TARGET DashBang_ECS POST_BUILD
         "${ASSIMP_DLL}"
         "$<TARGET_FILE_DIR:DashBang_ECS>"
 )
+
+# Debug構成のとき`DEBUG`を定義
+target_compile_definitions(DashBang_ECS
+    PRIVATE
+        $<$<CONFIG:Debug>:DEBUG>
+)

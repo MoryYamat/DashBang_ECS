@@ -40,4 +40,8 @@ namespace DebugUtils
 
 }
 
+#ifdef DEBUG
 #define DEBUG_LOG(msg) DebugUtils::debugLog(msg,__FUNCTION__)
+#else
+#define DEBUG_LOG(msg)
+#endif
