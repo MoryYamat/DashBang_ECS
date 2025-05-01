@@ -5,6 +5,8 @@
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 
+// ウィンドウに関するデータと処理をまとめたクラス
+// A class that collects window-related data and operations.
 class WindowManager
 {
 public:

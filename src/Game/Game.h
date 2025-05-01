@@ -31,8 +31,6 @@ private:
 
 	class ECS mEcs;
 
-	GLFWwindow* mWindow;
-
 	class Shader* mShader;
 
 	class InputState mInputState;

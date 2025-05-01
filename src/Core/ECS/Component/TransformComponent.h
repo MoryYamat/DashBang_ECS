@@ -1,4 +1,5 @@
-// transform dataset
+// Position, rotation and scale information in world space
+// ワールド空間での、位置・回転・スケールの情報
 #pragma once
 
 #include <GLM/glm.hpp>

@@ -16,6 +16,8 @@ void InputMapping::update(GLFWwindow* window, InputState& input)
 		// Process a long press only once
 		if (isPressedNow && !input.previousActions[action])
 		{
+			// マウスキャプチャモードの変更
+			// Change mouse capture mode
 			if (action == InputAction::MouseCapture)
 			{
 				input.mouseCaptured = !input.mouseCaptured;

@@ -24,13 +24,14 @@
 
 //Game/Actor
 #include "Game/Actor/CameraActor.h"
+#include "Game/Actor/PlayerCharacterActor.h"
 
 // Game/Input
 #include "Game/Input/CameraControlSystem.h"
 
 // Test
-#include "Test/TriangleActor.h"
-#include "Test/Test3DModel.h"
+//#include "Test/TriangleActor.h"
+//#include "Test/Test3DModel.h"
 
 // コンストラクタ
 Game::Game()
@@ -149,26 +150,28 @@ void Game::loadData()
 
 	//TriangleActor tri = TriangleActor(mEcs);
 
-	Test3DModel test3d = Test3DModel(mEcs, mShader);
+	//Test3DModel test3d = Test3DModel(mEcs, mShader);
+
+	PlayerCharacter player = PlayerCharacter(mEcs, mShader);
+
 
 	CameraActor camActor = CameraActor(mEcs);
 
-	Collider a, c;
-	c.type = ColliderType::Box2D;
-	a.type = ColliderType::Box2D;
-	c.box2D = Box2D{ glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f) };
-	a.box2D = Box2D { glm::vec2(3.0f, 0.0f) , glm::vec2(1.0f,1.0f) };
+	//Collider a, c;
+	//c.type = ColliderType::Box2D;
+	//a.type = ColliderType::Box2D;
+	//c.box2D = Box2D{ glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f) };
+	//a.box2D = Box2D { glm::vec2(3.0f, 0.0f) , glm::vec2(1.0f,1.0f) };
 
-	bool hit = CollisionUtils::intersectBox2D(a.box2D, c.box2D);
+	//bool hit = CollisionUtils::intersectBox2D(a.box2D, c.box2D);
 
-	std::cout << "Result: " << std::boolalpha << hit << std::endl;
+	//std::cout << "Result: " << std::boolalpha << hit << std::endl;
 
 	std::cout << "[Game.cpp]: Data loading completed successfully." << std::endl;
 }
 
 void Game::unloadData()
 {
-
 
 }
 
