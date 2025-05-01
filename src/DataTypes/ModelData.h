@@ -49,6 +49,13 @@ struct ModelData
 {
 	std::vector<MeshData> meshes;
 
+	// model's size datas
+	glm::vec3 min = glm::vec3(FLT_MAX);
+	glm::vec3 max = glm::vec3(-FLT_MAX);
+
+	glm::vec3 GetSize() const { return max - min; }
+	glm::vec3 GetCenter() const { return (min + max) * 0.5f; }
+
 };
 
 // GPU-side data

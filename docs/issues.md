@@ -18,6 +18,7 @@
 * Physics layer (collision) implementation
     * Ground implementation
 * Implement flexible and intuitive integration of drawing data and physics data
+    * Consider how to match the apparent size with meaningful collision detection/action range in logical space (logic) and visual space (visual).
 
 ## **Camera**
 * Separation of system camera and game camera

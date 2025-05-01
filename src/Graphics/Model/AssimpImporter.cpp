@@ -20,10 +20,18 @@ ModelData AssimpImporter::Import(const std::string& path)
 	}
 	else
 	{
-		std::cout << "[AssimpImporter.cpp(Import)]: Load Completed: [[\"" << path << "\"]]" << std::endl;
+		std::cout << "[AssimpImporter.cpp(Import)]: MODEL LOAD STARTING... " << std::endl;
 	}
 
 	processNode(scene->mRootNode, scene, data);
+
+	std::cout << "[AssimpImporter.cpp(Import)]: Load Completed: [[\"" << path << "\"]]" << std::endl;
+
+
+	std::cout << "[AssimpImporter.cpp(Import)]: Model center: " << data.GetCenter().x << ", " << data.GetCenter().y << ", " << data.GetCenter().z << std::endl;
+	std::cout << "[AssimpImporter.cpp(Import)]: Model size: " << data.GetSize().x << ", " << data.GetSize().y << ", " << data.GetSize().z << std::endl;
+
+
 
 	return data;
 }
@@ -64,6 +72,10 @@ MeshData AssimpImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelDa
 		vector.z = mesh->mVertices[i].z;
 		vertexData.position = vector;
 
+		// update bounding box' data
+		modelData.min = glm::min(modelData.min, vector);
+		modelData.max = glm::max(modelData.max, vector);
+
 		if (mesh->HasNormals())
 		{
 
@@ -94,6 +106,10 @@ MeshData AssimpImporter::processMesh(aiMesh* mesh, const aiScene* scene, ModelDa
 
 	// indices‚ª‚ ‚ê‚ÎTrue, ‚È‚¯‚ê‚ÎFalse;
 	meshData.hasIndices = !meshData.indices.empty();
+
+
+	//std::cout << "[assimpimporter.cpp(processMesh)]: Meshes max vertex is:" << modelData.max.x << ", " << modelData.max.y << ", " << modelData.max.z << std::endl;
+	//std::cout << "[assimpimporter.cpp(processMesh)]: Meshes min vertex is:" << modelData.min.x << ", " << modelData.min.y << ", " << modelData.min.z << std::endl;
 
 	return meshData;
 }

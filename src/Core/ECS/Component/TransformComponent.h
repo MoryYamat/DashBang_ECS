@@ -2,6 +2,8 @@
 // ワールド空間での、位置・回転・スケールの情報
 #pragma once
 
+#include "Core/ECS/Component/ModelSizeComponent.h"
+
 #include <GLM/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -20,6 +22,13 @@ struct TransformComponent
 		model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
 		model = glm::scale(model, scale);
 		return model;
+	}
+
+	// 実際に表示されている大きさの取得
+	// Get the actual size of the image
+	glm::vec3 GetWorldSize(const ModelSizeComponent& modelSize) const
+	{
+		return modelSize.GetSize() * scale;
 	}
 };
 

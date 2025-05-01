@@ -15,4 +15,5 @@ namespace AssimpImporter
 	void processNode(aiNode* node, const aiScene* scene, ModelData& modelData);
 
 	MeshData processMesh(aiMesh* mesh, const aiScene* scene, ModelData& modelData);
+
 }
