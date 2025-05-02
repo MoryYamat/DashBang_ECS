@@ -3,6 +3,7 @@
 #include "Core/ECS/Component/TransformComponent.h"
 #include "Core/ECS/Component/Logic2DTransformComponent.h"
 
+#include <iostream>
 // Logic -> Drawing
 // 2D -> 3D
 void SyncLogicToTransformSystem::Apply2DToTransform(ECS& ecs, float deltaTime)
@@ -29,7 +30,11 @@ void SyncLogicToTransformSystem::Apply2DToTransform(ECS& ecs, float deltaTime)
 		float rotation = logic.rotation;
 		transform.rotation = glm::vec3(0.0f, rotation, 0.0f);
 
+
+
+		//std::cout << "[SyncLogicToTransformSystem.cpp]: Setted x. " << transform.position.x << " y. " << transform.position.z << std::endl;
 	}
+
 }
 
 // 3D -> 3D

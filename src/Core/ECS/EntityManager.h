@@ -9,6 +9,7 @@
 #include <vector>
 #include <memory>
 
+
 class ECS
 {
 private:
@@ -104,4 +105,6 @@ public:
 		// ŒŸõ
 		return entityMap.find(e.id) != entityMap.end();
 	}
+
+	void Clear();
 };

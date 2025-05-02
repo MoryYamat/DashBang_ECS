@@ -88,6 +88,7 @@ void GameSystemInput::UpdateCamera(ECS& ecs, InputState& input, float deltaTime)
 	}
 }
 
+// 
 void GameSystemInput::updateCameraVector(CameraComponent& cameraComp)
 {
 	glm::vec3 front;

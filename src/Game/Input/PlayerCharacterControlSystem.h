@@ -4,9 +4,7 @@
 #include "Core/ECS/EntityManager.h"
 #include "Game/Input/InputState.h"
 
-class PlayerCharacterControlSystem
+namespace PlayerCharacterControlSystem
 {
-public:
-
 	void Update(ECS& ecs, InputState& input, float deltaTime);
 };

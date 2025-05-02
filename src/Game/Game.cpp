@@ -25,9 +25,14 @@
 //Game/Actor
 #include "Game/Actor/CameraActor.h"
 #include "Game/Actor/PlayerCharacterActor.h"
+#include "Game/Actor/FollowCameraActor.h"
 
 // Game/Input
 #include "Game/Input/CameraControlSystem.h"
+#include "Game/Input/PlayerCharacterControlSystem.h"
+
+// Game/Sync
+#include "Game/Sync/SyncLogicToTransformSystem.h"
 
 // Test
 //#include "Test/TriangleActor.h"
@@ -47,6 +52,8 @@ Game::Game()
 void Game::Shutdown()
 {
 	unloadData();
+
+	mEcs.Clear();
 
 	delete mShader;
 	mShader = nullptr;
@@ -130,14 +137,20 @@ void Game::updateGameLogics()
 	// 入力状態マップの更新
 	mInputMapping.update(WindowManager::GetWindow(), mInputState);
 
+	// characterの移動
+	PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime);
+
 	// カメラ
-	GameSystemInput::UpdateCamera(mEcs, mInputState, mDeltaTime);
+	//GameSystemInput::UpdateCamera(mEcs, mInputState, mDeltaTime);
+	
 }
 
 void Game::generateOutputs()
 {
 	glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	SyncLogicToTransformSystem::Apply2DToTransform(mEcs, mDeltaTime);
 
 	// An algorithm is needed to set the shader for each object.
 	RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
@@ -154,8 +167,9 @@ void Game::loadData()
 
 	PlayerCharacter player = PlayerCharacter(mEcs, mShader);
 
+	FollowCameraActor followCam = FollowCameraActor(mEcs);
 
-	CameraActor camActor = CameraActor(mEcs);
+	//CameraActor camActor = CameraActor(mEcs);
 
 	//Collider a, c;
 	//c.type = ColliderType::Box2D;

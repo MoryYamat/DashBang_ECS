@@ -10,5 +10,5 @@ struct FollowCameraComponent
 {
 	// target's entity id 
 	uint32_t targetEntity;
-	glm::vec3 offset = { 0.0f, 5.0f, -10.0f };
+	glm::vec3 offset = { 0.0f, 0.0f, -10.0f };
 };

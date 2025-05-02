@@ -4,10 +4,8 @@
 
 #include <iostream>
 
-uint32_t EntityUtils::getEntityByName(ECS& ecs, const std::string& name)
+Entity EntityUtils::getEntityByName(ECS& ecs, const std::string& name)
 {
-
-
 	// Efficiency Issues
 	// Efficiency Issues
 	// Efficiency Issues
@@ -18,11 +16,11 @@ uint32_t EntityUtils::getEntityByName(ECS& ecs, const std::string& name)
 		if (nameComp.name == name)
 		{
 			//std::cout << "[EntityUtils.cpp]Entity ID: " << e.id << " Entity Name: " << name << std::endl;
-			return e.id;
+			return e;
 		}
 	}
 
 	std::cout << "[EntityUtils.cpp]: There is no entity named: [[ "<< name << " ]] ." << std::endl;
 
-	return INVALID_ENTITY_ID;
+	return Entity::INVALID;
 }

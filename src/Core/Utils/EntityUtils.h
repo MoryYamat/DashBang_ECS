@@ -10,6 +10,8 @@
 
 namespace EntityUtils
 {
-	uint32_t getEntityByName(ECS& ecs, const std::string& name);
+	//uint32_t getEntityByName(ECS& ecs, const std::string& name);
+
+	Entity getEntityByName(ECS& ecs, const std::string& name);
 
 }

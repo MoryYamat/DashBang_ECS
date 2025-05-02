@@ -12,6 +12,18 @@ struct MeshComponent
 	ModelData modelData;
 	ModelGPU modelGPU;
 
+	void Destroy()
+	{
+		for (auto& mesh : modelGPU.meshesGPU)
+		{
+			if (mesh.ebo != 0) glDeleteBuffers(1, &mesh.ebo);
+			if (mesh.vbo != 0) glDeleteBuffers(1, &mesh.vbo);
+			if (mesh.vao != 0) glDeleteVertexArrays(1, &mesh.vao);
+
+
+			mesh.vao = mesh.vbo = mesh.ebo = 0;
+		}
+	}
 };
 
 // memo 

@@ -6,6 +6,12 @@
 #include "Core/ECS/Component/MeshComponent.h"
 #include "Core/ECS/Component/ShaderComponent.h"
 
+#include "Core/ECS/Component/FollowCameraComponent.h"
+
+#include "Core/ECS/Component/InputComponent.h"
+
+// Flags
+#include "Core/ECS/Component/PlayerControllerComponent.h"
 #include "Core/ECS/Component/NameComponent.h"
 
 #include "Core/ECS/Component/Logic2DTransformComponent.h"
@@ -45,7 +51,7 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	// set TransformComponent
 	TransformComponent transformComp;
 	transformComp.position = glm::vec3(0.0f, 0.0f, -10.0f);
-	transformComp.rotation = glm::vec3(0.0f, 90.0f, 0.0f);
+	transformComp.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	transformComp.scale = glm::vec3(0.01f);
 	ecs.addComponent(entity, transformComp);
 
@@ -61,9 +67,22 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	}
 	else
 	{
-
+		std::cout << "[PlayerCharacterActor.cpp]: Shader not found." << std::endl;
 	}
 	ecs.addComponent(entity, shaderComp);
+
+	// Input State Component
+	InputComponent input;
+	ecs.addComponent(entity, input);
+
+	// Logic2D
+	Logic2DTransformComponent logic;
+	logic = GameUtils::Init::InitLogic2DTransformFromModel(transformComp, modelData);
+	ecs.addComponent(entity, logic);
+
+	// Controller Flag
+	PlayerControllerComponent PCflag;
+	ecs.addComponent(entity, PCflag);
 
 	// Set NameComponent
 	NameComponent nameComp;
@@ -71,14 +90,9 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	ecs.addComponent(entity, nameComp);
 
 
-	// Logic2D
-	Logic2DTransformComponent logic;
-	logic = GameUtils::Init::InitLogic2DTransformFromModel(transformComp, modelData);
-	ecs.addComponent(entity, logic);
-
-	std::cout << "[PlayerCharacterActor.cpp]: Logic Position: x. " << logic.positionXZ.x << " z. " << logic.positionXZ.y << std::endl;
-	std::cout << "[PlayerCharacterActor.cpp]: Logic Rotation " << logic.rotation << std::endl;
-	std::cout << "[PlayerCharacterActor.cpp]: Logic Scale: x. " << logic.scale.x << " z. " << logic.scale.y << std::endl;
+	//std::cout << "[PlayerCharacterActor.cpp]: Logic Position: x. " << logic.positionXZ.x << " z. " << logic.positionXZ.y << std::endl;
+	//std::cout << "[PlayerCharacterActor.cpp]: Logic Rotation " << logic.rotation << std::endl;
+	//std::cout << "[PlayerCharacterActor.cpp]: Logic Scale: x. " << logic.scale.x << " z. " << logic.scale.y << std::endl;
 
 	std::cout << "[PlayerCharacterActor.cpp]: Test3Dmodel Settings Completed" << std::endl;
 
