@@ -16,9 +16,10 @@ struct Logic2DTransformComponent
 	glm::vec2 front = glm::vec2(0.0f, 1.0f);
 	glm::vec2 right = glm::vec2(1.0f, 0.0f);
 
-
 	// scale
 	glm::vec2 scale = glm::vec2(1.0f);
+
+
 
 	// 
 	void UpdateDirectionFromRotation()

@@ -8,11 +8,14 @@
 
 #include "Core/ECS/Component/NameComponent.h"
 
+#include "Core/ECS/Component/Logic2DTransformComponent.h"
+
 #include "DataTypes/ModelData.h"
 
 #include "Graphics/Model/AssimpImporter.h"
 #include "Graphics/Renderer/GPUBufferUtils.h"
 
+#include "Game/Init/InitLogicTransformFromModel.h"
 
 #include <iostream>
 
@@ -21,20 +24,20 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	Entity entity = ecs.createEntity();
 
 	// load Model Datas from file
-	ModelData data = AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
-	for (const auto& mesh : data.meshes)
+	ModelData modelData = AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
+	for (const auto& mesh : modelData.meshes)
 	{
-		std::cout << "[Test3DModel.cpp]: Vertices: " << mesh.vertices.size()
+		std::cout << "[PlayerCharacterActor.cpp]: Vertices: " << mesh.vertices.size()
 			<< ", Indices: " << mesh.indices.size()
 			<< ", hasIndices: " << mesh.hasIndices << std::endl;
 	}
 
 	// set Mesh data to GPUBuffers
-	ModelGPU modelGPU = GPUBufferUtils::createMeshGPUBuffers(data);
+	ModelGPU modelGPU = GPUBufferUtils::createMeshGPUBuffers(modelData);
 
 	// set MeshComponent
 	ecs.addComponent(entity, MeshComponent{
-			data,
+			modelData,
 			modelGPU
 		});
 
@@ -42,7 +45,7 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	// set TransformComponent
 	TransformComponent transformComp;
 	transformComp.position = glm::vec3(0.0f, 0.0f, -10.0f);
-	transformComp.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	transformComp.rotation = glm::vec3(0.0f, 90.0f, 0.0f);
 	transformComp.scale = glm::vec3(0.01f);
 	ecs.addComponent(entity, transformComp);
 
@@ -54,7 +57,7 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	{
 		shaderComp.shader->Use();
 		shaderComp.shader->setMat4("model", transformComp.toMatrix());
-		std::cout << "[Test3DModel.cpp]: The model matrix was set successfully." << std::endl;
+		std::cout << "[PlayerCharacterActor.cpp]: The model matrix was set successfully." << std::endl;
 	}
 	else
 	{
@@ -68,7 +71,16 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	ecs.addComponent(entity, nameComp);
 
 
-	std::cout << "[Test3Dmodel.cpp]: Test3Dmodel Settings Completed" << std::endl;
+	// Logic2D
+	Logic2DTransformComponent logic;
+	logic = GameUtils::Init::InitLogic2DTransformFromModel(transformComp, modelData);
+	ecs.addComponent(entity, logic);
+
+	std::cout << "[PlayerCharacterActor.cpp]: Logic Position: x. " << logic.positionXZ.x << " z. " << logic.positionXZ.y << std::endl;
+	std::cout << "[PlayerCharacterActor.cpp]: Logic Rotation " << logic.rotation << std::endl;
+	std::cout << "[PlayerCharacterActor.cpp]: Logic Scale: x. " << logic.scale.x << " z. " << logic.scale.y << std::endl;
+
+	std::cout << "[PlayerCharacterActor.cpp]: Test3Dmodel Settings Completed" << std::endl;
 
 
 }
