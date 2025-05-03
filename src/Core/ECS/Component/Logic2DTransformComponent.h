@@ -6,7 +6,7 @@
 
 struct Logic2DTransformComponent
 {
-	//position
+	//position (x, z)
 	glm::vec2 positionXZ;
 
 	// direction

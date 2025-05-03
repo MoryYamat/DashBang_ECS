@@ -95,5 +95,6 @@ add_custom_command(TARGET DashBang_ECS POST_BUILD
 # Debug構成のとき`DEBUG`を定義
 target_compile_definitions(DashBang_ECS
     PRIVATE
+        GLM_ENABLE_EXPERIMENTAL
         $<$<CONFIG:Debug>:DEBUG>
 )

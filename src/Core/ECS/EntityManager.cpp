@@ -15,6 +15,7 @@ void destroyIfExists(std::type_index currentType, std::shared_ptr<void>& compPtr
 	}
 }
 
+// Clear all components at once
 void ECS::Clear()
 {
 	for (auto& [typeIndex, componentMap] : mComponentPools)

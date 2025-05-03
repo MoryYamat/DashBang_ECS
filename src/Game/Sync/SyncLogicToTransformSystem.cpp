@@ -3,6 +3,8 @@
 #include "Core/ECS/Component/TransformComponent.h"
 #include "Core/ECS/Component/Logic2DTransformComponent.h"
 
+#include "Debug/DebugUtils.h"
+
 #include <iostream>
 // Logic -> Drawing
 // 2D -> 3D
@@ -32,7 +34,15 @@ void SyncLogicToTransformSystem::Apply2DToTransform(ECS& ecs, float deltaTime)
 
 
 
-		//std::cout << "[SyncLogicToTransformSystem.cpp]: Setted x. " << transform.position.x << " y. " << transform.position.z << std::endl;
+
+
+		//std::cout << "[SyncLogicToTransformSystem.cpp]: logical front vector " << logic.front.x << std::endl;
+		//std::cout << "[SyncLogicToTransformSystem.cpp]: logical right vector " << logic.right.x << std::endl;
+
+		//std::cout << "[SyncLogicToTransformSystem.cpp]: rotation " << logic.rotation <<"\n";
+
+		// position log for debugging
+		//DebugUtils::LogPosition("SyncLogicToTransformSystem.cpp", transform.position);
 	}
 
 }

@@ -1,4 +1,5 @@
 // test player character actor
+// Class that creates an entity
 
 #pragma once
 

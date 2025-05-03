@@ -5,6 +5,8 @@
 #include "Core/ECS/Entity.h"
 #include "Core/ECS/EntityManager.h"
 
+#include <glm/glm.hpp>
+
 #include <iostream>
 
 
@@ -38,6 +40,23 @@ namespace DebugUtils
 		std::cout << "[Debug] [" << functionName << "]: " << message << std::endl;
 	}
 
+
+	// position log 2D
+	inline void LogPosition(const std::string& tag, const glm::vec2& pos)
+	{
+		std::cout << "[" << tag << "] x: " << pos.x << " z: " << pos.y << "\n";
+	}
+	// position log 3d
+	inline void LogPosition(const std::string& tag, const glm::vec3& pos)
+	{
+		std::cout << "[" << tag << "] x: " << pos.x << " y: " << pos.y << " z: " << pos.z << "\n";
+	}
+
+	// General Logs
+	inline void GeneralLog(const std::string& tag, const std::string& contents)
+	{
+		std::cout << "[" << tag << "]: " << contents << "\n";
+	}
 }
 
 #ifdef DEBUG

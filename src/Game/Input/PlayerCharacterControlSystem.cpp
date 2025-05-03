@@ -3,6 +3,7 @@
 #include "Core/ECS/Component/Logic2DTransformComponent.h"
 #include "Core/ECS/Component/PlayerControllerComponent.h"
 
+#include "Debug/DebugUtils.h"
 
 #include <iostream>
 
@@ -31,6 +32,12 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 			moveDir = glm::normalize(moveDir);
 			logic.positionXZ += moveDir * deltaTime * 3.0f; // ˆÚ“®‘¬“x
 		}
+
+		logic.UpdateDirectionFromRotation();
+
+
+		// position log for debugging
+		//DebugUtils::LogPosition("PlayerCharacterControlSystem.cpp", logic.positionXZ);
 
 		break;
 	}

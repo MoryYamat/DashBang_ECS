@@ -12,6 +12,7 @@ namespace EntityUtils
 {
 	//uint32_t getEntityByName(ECS& ecs, const std::string& name);
 
+	// For name resolution
 	Entity getEntityByName(ECS& ecs, const std::string& name);
 
 }

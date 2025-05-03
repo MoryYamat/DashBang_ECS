@@ -17,7 +17,7 @@ CameraActor::CameraActor(ECS& ecs)
 	Entity entity = ecs.createEntity();
 
 	TransformComponent transformComp;
-	transformComp.position = glm::vec3(0.0f, 0.0f, -5.0f);
+	transformComp.position = glm::vec3(0.0f, 0.0f, 0.0f);
 	transformComp.rotation = glm::vec3(0.0f);
 	transformComp.scale = glm::vec3(1.0f);
 

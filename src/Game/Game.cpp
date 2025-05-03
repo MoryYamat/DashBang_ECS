@@ -27,6 +27,9 @@
 #include "Game/Actor/PlayerCharacterActor.h"
 #include "Game/Actor/FollowCameraActor.h"
 
+// Game/Camera
+#include "Game/Camera/CameraFollowSystem.h"
+
 // Game/Input
 #include "Game/Input/CameraControlSystem.h"
 #include "Game/Input/PlayerCharacterControlSystem.h"
@@ -53,6 +56,7 @@ void Game::Shutdown()
 {
 	unloadData();
 
+	// Destroy all components
 	mEcs.Clear();
 
 	delete mShader;
@@ -60,7 +64,7 @@ void Game::Shutdown()
 
 	WindowManager::Shutdown();
 
-	std::cout << "[Game.cpp (Shutdown)]: The application shut down successfully." << std::endl;
+	std::cout << "\n[Game.cpp (Shutdown)]: The application shut down successfully." << std::endl;
 }
 
 // èâä˙âª
@@ -125,6 +129,10 @@ void Game::RunLoop()
 		generateOutputs();
 
 		glfwPollEvents();
+
+
+		// Newline output for console debugging
+		// std::cout << std::endl;
 	}
 }
 
@@ -140,7 +148,11 @@ void Game::updateGameLogics()
 	// characterÇÃà⁄ìÆ
 	PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime);
 
+	// 2D (Logic)-> 3D (Drawing)
+	SyncLogicToTransformSystem::Apply2DToTransform(mEcs, mDeltaTime);
+
 	// ÉJÉÅÉâ
+	CameraFollowSystem::Update(mEcs, mDeltaTime);
 	//GameSystemInput::UpdateCamera(mEcs, mInputState, mDeltaTime);
 	
 }
@@ -150,11 +162,12 @@ void Game::generateOutputs()
 	glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	SyncLogicToTransformSystem::Apply2DToTransform(mEcs, mDeltaTime);
+
 
 	// An algorithm is needed to set the shader for each object.
 	RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
 
+	//
 	glfwSwapBuffers(WindowManager::GetWindow());
 }
 

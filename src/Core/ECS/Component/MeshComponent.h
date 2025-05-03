@@ -6,6 +6,8 @@
 
 #include "DataTypes/ModelData.h"
 
+#include <iostream>
+
 struct MeshComponent
 {
 	// Mesh Resources
@@ -23,6 +25,8 @@ struct MeshComponent
 
 			mesh.vao = mesh.vbo = mesh.ebo = 0;
 		}
+
+		std::cout << "\n[MeshComponent.h]: destroyer called." << std::endl;
 	}
 };
 

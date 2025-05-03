@@ -2,6 +2,8 @@
 // ワールド空間での、位置・回転・スケールの情報
 #pragma once
 
+#include "Game/Config/CanonicalDefaults.h"
+
 #include "Core/ECS/Component/ModelSizeComponent.h"
 
 #include <GLM/glm.hpp>

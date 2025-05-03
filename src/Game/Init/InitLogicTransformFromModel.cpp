@@ -1,5 +1,6 @@
 #include "InitLogicTransformFromModel.h"
 
+#include "Debug/DebugUtils.h"
 #include <iostream>
 
 // Initialize 2D logical data from the position, rotation, and scale of a 3D model
@@ -27,6 +28,8 @@ Logic2DTransformComponent GameUtils::Init::InitLogic2DTransformFromModel(const T
 	}
 
 	//std::cout << "[InitLogicTransformSystem.cpp]: Logic Position: x. " << logic.positionXZ.x << " z. " << logic.positionXZ.y << std::endl;
+	//std::cout << "[InitLogicTransformSystem.cpp]: logical front vector " << logic.front.x << std::endl;
+	//std::cout << "[InitLogicTransformSystem.cpp]: logical right vector " << logic.right.x << std::endl;
 	
 	return logic;
 }
