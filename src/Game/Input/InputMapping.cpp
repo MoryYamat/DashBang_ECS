@@ -29,10 +29,15 @@ void InputMapping::update(GLFWwindow* window, InputState& input)
 		input.actions[action] = isPressedNow;
 	}
 
+	// マウス情報取得
 	double xpos, ypos;
 	glfwGetCursorPos(window, &xpos, &ypos);
 	glm::vec2 currentMouse = glm::vec2(xpos, ypos);
+	input.screenMousePosition = currentMouse;
 
+	//std::cout << "[InputMapping.cpp]: mousepos x. " << xpos << " y. " << ypos << std::endl;
+
+	// マウスの画面上の変位を計算
 	if (input.firstMouse)
 	{
 		input.mousePosition = currentMouse;
@@ -44,6 +49,7 @@ void InputMapping::update(GLFWwindow* window, InputState& input)
 		input.mouseDelta = currentMouse - input.mousePosition;
 		input.mousePosition = currentMouse;
 	}
+
 
 	// 場所がおかしい？
 	// 場所がおかしい？

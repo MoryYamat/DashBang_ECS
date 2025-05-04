@@ -33,9 +33,6 @@ void SyncLogicToTransformSystem::Apply2DToTransform(ECS& ecs, float deltaTime)
 		transform.rotation = glm::vec3(0.0f, rotation, 0.0f);
 
 
-
-
-
 		//std::cout << "[SyncLogicToTransformSystem.cpp]: logical front vector " << logic.front.x << std::endl;
 		//std::cout << "[SyncLogicToTransformSystem.cpp]: logical right vector " << logic.right.x << std::endl;
 
@@ -43,6 +40,8 @@ void SyncLogicToTransformSystem::Apply2DToTransform(ECS& ecs, float deltaTime)
 
 		// position log for debugging
 		//DebugUtils::LogPosition("SyncLogicToTransformSystem.cpp", transform.position);
+
+		DebugUtils::LogPosition("SyncLogicToTransformSystem.cpp", logic.front);
 	}
 
 }

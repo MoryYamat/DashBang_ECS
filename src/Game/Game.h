@@ -6,6 +6,8 @@
 
 #include "Core/ECS/EntityManager.h"
 
+#include "Graphics/Renderer/RenderContext.h"
+
 #include "Game/Input/InputState.h"
 #include "Game/Input/InputMapping.h"
 
@@ -32,9 +34,11 @@ private:
 	class ECS mEcs;
 
 	class Shader* mShader;
+	RenderContext mRenderContext;
 
 	class InputState mInputState;
 	class InputMapping mInputMapping;
+
 
 	float mDeltaTime = 0.0f;
 	float mLastFrame = 0.0f;

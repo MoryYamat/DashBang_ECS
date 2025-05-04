@@ -1,5 +1,6 @@
-#include "RendererSystem.h"
+#include "RenderSystem.h"
 
+#include "Core/Window/WindowManager.h"
 
 #include <iostream>
 
@@ -35,6 +36,38 @@ void RenderSystem::RenderSystem(ECS& ecs, Shader& shader, float aspect)
 		drawMesh(meshComp);
 	}
 
+}
+
+// Changed to update RenderContext
+void RenderSystem::RenderSystem(ECS& ecs, Shader& shader, float aspect, RenderContext& context)
+{
+
+	glm::mat4 view, projection;
+
+	if (!getCameraMatrices(ecs, view, projection, context))
+	{
+		std::cerr << "[RenderSystem.cpp]: No valid camera found in ECS." << std::endl;
+		return;
+	}
+
+
+
+	for (auto entity : ecs.view<TransformComponent, MeshComponent>())
+	{
+		auto& transformComp = ecs.get<TransformComponent>(entity);
+		auto& meshComp = ecs.get<MeshComponent>(entity);
+
+		// state machine (シェーダーを切り替えると、viewもprojectionもセットする必要あり。)
+		shader.Use();
+		shader.setMat4("model", transformComp.toMatrix());
+		shader.setMat4("view", view);
+		shader.setMat4("projection", projection);
+		drawMesh(meshComp);
+	}
+
+	context.view = view;
+	context.projection = projection;
+	context.viewportSize = {WindowManager::GetWidth(), WindowManager::GetHeight()};
 }
 
 void RenderSystem::drawMesh(const MeshComponent& meshComp)
@@ -98,6 +131,34 @@ bool RenderSystem::getCameraMatrices(ECS& ecs, glm::mat4& view, glm::mat4& proje
 
 	return true;
 }
+
+bool RenderSystem::getCameraMatrices(ECS& ecs, glm::mat4& view, glm::mat4& projection, RenderContext& context)
+{
+	TransformComponent* camTransformComp = nullptr;
+	CameraComponent* camComp = nullptr;
+
+	for (auto entity : ecs.view<TransformComponent, CameraComponent>())
+	{
+		camTransformComp = &ecs.get<TransformComponent>(entity);
+		camComp = &ecs.get<CameraComponent>(entity);
+		break;
+	}
+
+	if (!camTransformComp || !camComp)
+	{
+		std::cerr << "[RenderSystem.cpp(getCameraMatrices)]: No Camera found!" << std::endl;
+		return false;
+	}
+
+	view = computeViewMatrix(*camTransformComp, *camComp);
+	projection = computeProjectionMatrix(camComp->fov, camComp->aspect, camComp->nearClip, camComp->farClip);
+
+	context.cameraPosition = camTransformComp->position;
+
+	return true;
+}
+
+
 
 glm::mat4 RenderSystem::computeViewMatrix(const TransformComponent& transformComp, const CameraComponent& cameraComp)
 {

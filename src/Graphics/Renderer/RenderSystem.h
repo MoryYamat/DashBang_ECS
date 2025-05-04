@@ -11,16 +11,18 @@
 #include "Core/ECS/Component/FollowCameraComponent.h"
 
 #include "Graphics/Renderer/Shader.h"
-
+#include "Graphics/Renderer/RenderContext.h"
 namespace RenderSystem
 {
 	void RenderSystem(ECS& ecs, Shader& shader, float aspect);
+	void RenderSystem(ECS& ecs, Shader& shader, float aspect, RenderContext& context);
 
 
 	void drawMesh(const MeshComponent& meshComp);
 
 
 	bool getCameraMatrices(ECS& ecs, glm::mat4& view, glm::mat4& projection);
+	bool getCameraMatrices(ECS& ecs, glm::mat4& view, glm::mat4& projection, RenderContext& context);
 
 	glm::mat4 computeViewMatrix(const TransformComponent& transformComp, const CameraComponent& cameraComp);
 	

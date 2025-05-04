@@ -21,7 +21,7 @@ struct Logic2DTransformComponent
 
 
 
-	// 
+	// 初期化時のみ　※ゲームループでは使わない
 	void UpdateDirectionFromRotation()
 	{
 		float rad = glm::radians(rotation);

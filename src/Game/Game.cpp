@@ -19,7 +19,7 @@
 
 // Graphic
 #include "Graphics/Renderer/Shader.h"
-#include "Graphics/Renderer/RendererSystem.h"
+#include "Graphics/Renderer/RenderSystem.h"
 #include "Graphics/Model/AssimpImporter.h"
 
 //Game/Actor
@@ -101,7 +101,7 @@ bool Game::Initialize()
 		return false;
 	}
 	
-	WindowManager::CaptureMouse();
+	//WindowManager::CaptureMouse();
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -146,7 +146,8 @@ void Game::updateGameLogics()
 	mInputMapping.update(WindowManager::GetWindow(), mInputState);
 
 	// character‚ÌˆÚ“®
-	PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime);
+	PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime, mRenderContext);
+	// PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime);
 
 	// 2D (Logic)-> 3D (Drawing)
 	SyncLogicToTransformSystem::Apply2DToTransform(mEcs, mDeltaTime);
@@ -165,7 +166,8 @@ void Game::generateOutputs()
 
 
 	// An algorithm is needed to set the shader for each object.
-	RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
+	//RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
+	RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect(), mRenderContext);
 
 	//
 	glfwSwapBuffers(WindowManager::GetWindow());

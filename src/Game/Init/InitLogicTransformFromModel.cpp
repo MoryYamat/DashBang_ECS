@@ -11,7 +11,7 @@ Logic2DTransformComponent GameUtils::Init::InitLogic2DTransformFromModel(const T
 	// 位置データの初期化
 	logic.positionXZ = glm::vec2(transform.position.x, transform.position.z);
 
-	// 回転データの初期化
+	// 回転データの初期化 (どうやってモデル正面を得るか)
 	logic.rotation = transform.rotation.y;
 	logic.UpdateDirectionFromRotation();
 

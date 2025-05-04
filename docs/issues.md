@@ -22,16 +22,18 @@
 
 ## **Camera**
 * Separation of system camera and game camera
+* Implementing a logical camera (taking pictures from directly above the XZ plane)
 
 ## **input**
 * Strict separation of key state management and side effects caused by state changes
 
-## **RendererSystem**
+## **RenderSystem**
 * ~~Accurately extracting OpenGL buffers such as VAO and VBO from `MeshComponent` and coordinating `ModelData`~~(2025/04/26)
     * The solution is to add a for loop and handle intermediate data.
 * Implementing Texture Shader and Rendering Pipeline
 * Lighting shader and drawing pipeline implementation
 * ~~Implementing camera movement and rotation~~(2025/04/28)
+    * Figure out what to do about the one-frame delay in `RenderContext`.
 
 ## **3D Model**
 * implementing Mixamo animation playback function

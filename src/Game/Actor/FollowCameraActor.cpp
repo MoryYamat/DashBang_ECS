@@ -4,7 +4,6 @@
 
 #include "Core/ECS/Entity.h"
 #include "Core/ECS/Component/PlayerControllerComponent.h"
-#include "Core/ECS/Component/FollowCameraComponent.h"
 
 #include "Core/Utils/EntityUtils.h"
 
@@ -39,19 +38,15 @@ FollowCameraActor::FollowCameraActor(ECS& ecs)
 		followCamComp.offset = { 0.0f, 10.0f, 10.0f };
 		
 		Logic2DTransformComponent& targetLogic2DTransform = ecs.get<Logic2DTransformComponent>(ePlayerActor);
+		
 
-		// Calculating camera position
-		float yawDegrees = targetLogic2DTransform.rotation;
-		float yawRadians = glm::radians(yawDegrees);
-
-		followCamComp.offset = glm::rotate(followCamComp.offset, yawRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-
+		initializeFollowCameraGetFront(followCamComp, targetLogic2DTransform);
 		// Initialize camera position
 		CamTransformComp.position = targetTransform.position + followCamComp.offset;
 
 		initializeCameraVectors(camComp, CamTransformComp, targetTransform);
+		
 		ecs.addComponent(entity, CamTransformComp);
-
 		ecs.addComponent(entity, camComp);
 
 		
@@ -61,8 +56,21 @@ FollowCameraActor::FollowCameraActor(ECS& ecs)
 		std::cerr << "[FollowCameraActor.cpp]: Failed to find Player entity by name!" << std::endl;
 	}
 
-	DebugUtils::LogPosition("FollowCameraActor.cpp", camComp.front);
+	//DebugUtils::LogPosition("FollowCameraActor.cpp", camComp.front);
+	//DebugUtils::LogPosition("FollowCameraActor.cpp", CamTransformComp.position);
 }
+
+void FollowCameraActor::initializeFollowCameraGetFront(FollowCameraComponent& followCamComp, Logic2DTransformComponent& targetLogic2DTransform)
+{
+	// Calculating camera position
+	// 論理データのfrontに対して、対角上に存在するように計算している
+	float yawDegrees = targetLogic2DTransform.rotation;
+	float yawRadians = glm::radians(yawDegrees);
+
+
+	followCamComp.offset = glm::rotate(followCamComp.offset, yawRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+}
+
 
 // Calculates the coordinate data for drawing the camera component from logical data
 void FollowCameraActor::initializeCameraVectors(CameraComponent& camComp, TransformComponent& camTransform, TransformComponent& targetTransformComp)
