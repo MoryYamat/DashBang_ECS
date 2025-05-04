@@ -28,9 +28,12 @@ void SyncLogicToTransformSystem::Apply2DToTransform(ECS& ecs, float deltaTime)
 		//transform.scale.y = 1.0f;
 		//transform.scale.z = logic.scale.y;
 
-		// rotation (2D ローテーション　-> Y軸回りの回転)
-		float rotation = logic.rotation;
-		transform.rotation = glm::vec3(0.0f, rotation, 0.0f);
+		// rotation (logic.front から計算) (情報源はfrontなので、`logic.rotation`は避けている)
+		transform.rotation.y = logic.GetRotationYFromFrontVector();
+
+		//// rotation (2D ローテーション　-> Y軸回りの回転)
+		//float rotation = logic.rotation;
+		//transform.rotation = glm::vec3(0.0f, rotation, 0.0f);
 
 
 		//std::cout << "[SyncLogicToTransformSystem.cpp]: logical front vector " << logic.front.x << std::endl;
@@ -39,9 +42,9 @@ void SyncLogicToTransformSystem::Apply2DToTransform(ECS& ecs, float deltaTime)
 		//std::cout << "[SyncLogicToTransformSystem.cpp]: rotation " << logic.rotation <<"\n";
 
 		// position log for debugging
-		//DebugUtils::LogPosition("SyncLogicToTransformSystem.cpp", transform.position);
+		//DebugUtils::LogVector("SyncLogicToTransformSystem.cpp", transform.position);
 
-		DebugUtils::LogPosition("SyncLogicToTransformSystem.cpp", logic.front);
+		// DebugUtils::LogVector("SyncLogicToTransformSystem.cpp", logic.front);
 	}
 
 }

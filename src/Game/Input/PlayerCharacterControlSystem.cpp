@@ -43,8 +43,8 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 		logic.UpdateDirectionFromRotation();
 
 		// position log for debugging
-		//DebugUtils::LogPosition("PlayerCharacterControlSystem.cpp", logic.positionXZ);
-		//DebugUtils::LogPosition("PlayerCharacterControlSystem.cpp", logic.front);
+		//DebugUtils::LogVector("PlayerCharacterControlSystem.cpp", logic.positionXZ);
+		//DebugUtils::LogVector("PlayerCharacterControlSystem.cpp", logic.front);
 
 		break;
 	}	
@@ -77,9 +77,9 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 		}
 
 
-	
-		
-		//DebugUtils::LogPosition("PlayerCharacterControlSystem.cpp", input.screenMousePosition);
+
+
+		//DebugUtils::LogVector("PlayerCharacterControlSystem.cpp", input.screenMousePosition);
 
 		glm::vec2 dir = GameUtils::SpatialTransform::MouseTo2DLogicConverter(input.screenMousePosition,
 			renderContext.view,
@@ -92,7 +92,7 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 		if (glm::length(dir) > 0.0001f && !glm::any(glm::isnan(dir)))
 		{
 			logic.front = glm::normalize(dir);
-			logic.rotation = glm::degrees(std::atan2(logic.front.x, logic.front.y));
+			logic.rotation = logic.GetRotationYFromFrontVector();
 		}
 		else
 		{
@@ -102,8 +102,9 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 
 
 		// position log for debugging
-		//DebugUtils::LogPosition("PlayerCharacterControlSystem.cpp", logic.positionXZ);
-		//DebugUtils::LogPosition("PlayerCharacterControlSystem.cpp", logic.front);
+		DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(position)", logic.positionXZ);
+		//DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(front)", logic.front);
+		//DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(rotation)", {logic.rotation, 0});
 
 		break;
 	}

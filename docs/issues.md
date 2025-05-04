@@ -38,6 +38,7 @@
 ## **3D Model**
 * implementing Mixamo animation playback function
 * Implementing a process to unify the `origin position` of 3D models
+* How to `get` or `define` the `front` of a 3D model
 
 ## **Game Objects(Actor)**
 * Considering the architecture for easily creating Actor object classes

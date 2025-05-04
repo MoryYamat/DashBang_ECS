@@ -35,7 +35,7 @@ glm::vec2 GameUtils::SpatialTransform::MouseTo2DLogicConverter(
 	// •ûŒü‚ğŒvZ
 	glm::vec2 direction = mouseWorldXZ - playerLogicPosXZ;
 
-	//DebugUtils::LogPosition("SpatialTransformUtils.cpp", direction);
+	//DebugUtils::LogVector("SpatialTransformUtils.cpp", direction);
 
 	// ³‹K‰»‚·‚é‚Æ‚æ‚¢
 	return direction;

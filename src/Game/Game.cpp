@@ -37,6 +37,9 @@
 // Game/Sync
 #include "Game/Sync/SyncLogicToTransformSystem.h"
 
+// Debug
+#include "Debug/DebugSystems/LogicDebugDrawSystem.h"
+
 // Test
 //#include "Test/TriangleActor.h"
 //#include "Test/Test3DModel.h"
@@ -168,6 +171,9 @@ void Game::generateOutputs()
 	// An algorithm is needed to set the shader for each object.
 	//RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
 	RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect(), mRenderContext);
+
+	// for debugging
+	LogicDebugDrawSystem::Draw(mEcs, mRenderContext);
 
 	//
 	glfwSwapBuffers(WindowManager::GetWindow());

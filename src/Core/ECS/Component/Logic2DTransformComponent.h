@@ -4,6 +4,7 @@
 
 #include <glm/glm.hpp>
 
+
 struct Logic2DTransformComponent
 {
 	//position (x, z)
@@ -19,7 +20,19 @@ struct Logic2DTransformComponent
 	// scale
 	glm::vec2 scale = glm::vec2(1.0f);
 
-
+	// Frontベクトルから回転を得る
+	float GetRotationYFromFrontVector() const
+	{
+		// 分岐コストは...
+		if (glm::length(front) > 0.0001f)
+		{
+			return glm::degrees(std::atan2(front.x, front.y));
+		}
+		else
+		{
+			return rotation;
+		}
+	}
 
 	// 初期化時のみ　※ゲームループでは使わない
 	void UpdateDirectionFromRotation()
