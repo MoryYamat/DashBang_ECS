@@ -62,7 +62,7 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 
 
 		// position log for debugging
-		//DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(position)", logic.positionXZ);
+		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(position)", logic.positionXZ);
 		//DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(front)", logic.front);
 		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(rotation)", {logic.rotation, 0});
 

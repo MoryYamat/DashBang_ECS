@@ -5,14 +5,14 @@
 
 
 // Fixed Function Pipeline
-void DebugUtils::DebugDraw::DrawCross(glm::vec3 pos, float size)
+void DebugUtils::DebugDraw::DrawCross(const glm::vec3& pos, float size, const glm::vec3& color)
 {
 	glUseProgram(0); // shader 無効化
 	glDisable(GL_DEPTH_TEST);// テスト深度
 	glLineWidth(2.0f);// 線の太さ
 
 	glBegin(GL_LINES);
-	glColor3f(1.0f, 0.0f, 0.0f);// 赤
+	glColor3f(color.r, color.g, color.b);// 赤
 
 	// x line
 	glVertex3f(pos.x - size, pos.y, pos.z);
@@ -22,6 +22,33 @@ void DebugUtils::DebugDraw::DrawCross(glm::vec3 pos, float size)
 	glColor3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(pos.x, pos.y, pos.z - size);
 	glVertex3f(pos.x, pos.y , pos.z + size);
+
+	glEnd();
+
+	glEnable(GL_DEPTH_TEST);
+}
+
+void DebugUtils::DebugDraw::DrawQuad(const glm::vec2& center, float size, const glm::vec3& color)
+{
+	float halfSize = size * 0.5f;
+
+	glm::vec3 v0(center.x - halfSize, 0.0f, center.y - halfSize);
+	glm::vec3 v1(center.x + halfSize, 0.0f, center.y - halfSize);
+	glm::vec3 v2(center.x + halfSize, 0.0f, center.y + halfSize);
+	glm::vec3 v3(center.x - halfSize, 0.0f, center.y + halfSize);
+
+	glUseProgram(0);
+	glDisable(GL_DEPTH_TEST);
+	glColor3f(color.r, color.g, color.b);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(v0.x, v0.y, v0.z);
+	glVertex3f(v1.x, v1.y, v1.z);
+	glVertex3f(v2.x, v2.y, v2.z);
+	glVertex3f(v3.x, v3.y, v3.z);
+
+	// for debugging
+	// DebugUtils::LogVector_string("DebugUtils.cpp(vertex)", v0);
 
 	glEnd();
 
@@ -47,3 +74,6 @@ void DebugUtils::DebugDraw::DrawFlatCircle(glm::vec3 pos, float radius, int segm
 
 	glEnable(GL_DEPTH_TEST);
 }
+
+
+

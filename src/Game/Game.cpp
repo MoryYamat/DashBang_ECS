@@ -27,6 +27,8 @@
 #include "Game/Actor/PlayerCharacterActor.h"
 #include "Game/Actor/FollowCameraActor.h"
 #include "Game/Actor/MouseCursorActor.h"
+// Game/Actor/Map
+#include "Game/Actor/Map/TileMapActor.h"
 
 // Game/Camera
 #include "Game/Camera/CameraFollowSystem.h"
@@ -51,6 +53,7 @@
 Game::Game()
 	: mIsRunning(true)
 	, mShader(nullptr)
+	, mRenderContext()
 	, windowWidth(1280)
 	, windowHeight(720)
 {
@@ -171,14 +174,14 @@ void Game::generateOutputs()
 	glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
+	// draw for debugging
+	LogicDebugDrawSystem::Draw(mEcs, mRenderContext);
 
 	// An algorithm is needed to set the shader for each object.
 	//RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
 	RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect(), mRenderContext);
 
-	// draw for debugging
-	LogicDebugDrawSystem::Draw(mEcs, mRenderContext);
+
 
 	//
 	glfwSwapBuffers(WindowManager::GetWindow());
@@ -197,6 +200,7 @@ void Game::loadData()
 
 	MouseCursorActor mouseCursor = MouseCursorActor(mEcs);
 
+	TileMapActor tilemap = TileMapActor(mEcs);
 	//CameraActor camActor = CameraActor(mEcs);
 
 	//Collider a, c;

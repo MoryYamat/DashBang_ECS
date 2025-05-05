@@ -68,8 +68,10 @@ namespace DebugUtils
 
 namespace DebugUtils::DebugDraw
 {
-	void DrawCross(glm::vec3 pos, float size);
+	void DrawCross(const glm::vec3& pos, float size, const glm::vec3& color);
 	void DrawFlatCircle(glm::vec3 pos, float radius, int segments = 32);
+
+	void DrawQuad(const glm::vec2& center, float size, const glm::vec3& color);
 }
 
 #ifdef DEBUG

@@ -26,6 +26,7 @@
 
 ## **input**
 * Strict separation of key state management and side effects caused by state changes
+* Improved operability (allowing players to choose what to base their character movement on and how to rotate their viewpoint)
 
 ## **RenderSystem**
 * ~~Accurately extracting OpenGL buffers such as VAO and VBO from `MeshComponent` and coordinating `ModelData`~~(2025/04/26)
