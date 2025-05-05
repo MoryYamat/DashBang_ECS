@@ -26,6 +26,7 @@
 #include "Game/Actor/CameraActor.h"
 #include "Game/Actor/PlayerCharacterActor.h"
 #include "Game/Actor/FollowCameraActor.h"
+#include "Game/Actor/MouseCursorActor.h"
 
 // Game/Camera
 #include "Game/Camera/CameraFollowSystem.h"
@@ -33,6 +34,8 @@
 // Game/Input
 #include "Game/Input/CameraControlSystem.h"
 #include "Game/Input/PlayerCharacterControlSystem.h"
+#include "Game/Input/MouseCursorUpdateSystem.h"
+
 
 // Game/Sync
 #include "Game/Sync/SyncLogicToTransformSystem.h"
@@ -104,7 +107,7 @@ bool Game::Initialize()
 		return false;
 	}
 	
-	//WindowManager::CaptureMouse();
+	// WindowManager::CaptureMouse();
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -159,6 +162,8 @@ void Game::updateGameLogics()
 	CameraFollowSystem::Update(mEcs, mDeltaTime);
 	//GameSystemInput::UpdateCamera(mEcs, mInputState, mDeltaTime);
 	
+	MouseCursorUpdateSystem::Update(mEcs, mInputState, mRenderContext);
+
 }
 
 void Game::generateOutputs()
@@ -172,7 +177,7 @@ void Game::generateOutputs()
 	//RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
 	RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect(), mRenderContext);
 
-	// for debugging
+	// draw for debugging
 	LogicDebugDrawSystem::Draw(mEcs, mRenderContext);
 
 	//
@@ -189,6 +194,8 @@ void Game::loadData()
 	PlayerCharacter player = PlayerCharacter(mEcs, mShader);
 
 	FollowCameraActor followCam = FollowCameraActor(mEcs);
+
+	MouseCursorActor mouseCursor = MouseCursorActor(mEcs);
 
 	//CameraActor camActor = CameraActor(mEcs);
 

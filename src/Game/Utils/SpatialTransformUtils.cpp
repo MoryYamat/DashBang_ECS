@@ -5,21 +5,37 @@
 
 #include "Debug/DebugUtils.h"
 
-glm::vec2 GameUtils::SpatialTransform::MouseTo2DLogicConverter(
-	const glm::vec2& screenMousePos,
-	const glm::mat4& viewMatrix,
-	const glm::mat4& projectionMatrix,
-	const glm::vec4& viewport,
-	const glm::vec2& playerLogicPosXZ)
+glm::vec2 GameUtils::SpatialTransform::GetLogicDirectionFromCursorToTarget(
+	const glm::vec2& screenMousePos, 
+	const RenderContext& renderContext,
+	const glm::vec2& playerLogicPosXZ // Character position in logical coordinates
+)
+{
+	glm::vec2 mouseWorldXZ = ProjectScreenToLogicXZPlane(screenMousePos, renderContext);
+
+	// キャラクターからの相対位置ベクトル(論理空間での)方向を計算
+	glm::vec2 direction = mouseWorldXZ - playerLogicPosXZ;
+
+	//DebugUtils::LogVector("SpatialTransformUtils.cpp(mouseToLogic)", direction);
+
+	// 正規化するとよい
+	return direction;
+}
+
+glm::vec2 GameUtils::SpatialTransform::ProjectScreenToLogicXZPlane(const glm::vec2& screenMousePos, const RenderContext& renderContext)
 {
 	// Screen coordinates → NDC → world ray (near/far)
 	// スクリーン座標 → NDC → ワールドレイ（near/far） (マウスポインタのRAY)
-	glm::vec3 nearPoint = glm::unProject(glm::vec3(screenMousePos.x, viewport.w - screenMousePos.y, 0.0f),
-		viewMatrix, projectionMatrix, viewport);
+	glm::vec3 nearPoint = glm::unProject(glm::vec3(screenMousePos.x, renderContext.viewport.w - screenMousePos.y, 0.0f),
+		renderContext.viewMatrix, renderContext.projectionMatrix, renderContext.viewport);
 
-	glm::vec3 farPoint = glm::unProject(glm::vec3(screenMousePos.x, viewport.w - screenMousePos.y, 1.0f),
-		viewMatrix, projectionMatrix, viewport);
+	glm::vec3 farPoint = glm::unProject(glm::vec3(screenMousePos.x, renderContext.viewport.w - screenMousePos.y, 1.0f),
+		renderContext.viewMatrix, renderContext.projectionMatrix, renderContext.viewport);
 
+	// 正規化の安全性を高める処理を実装する必要がある
+	// nan(not a Number)が入る可能性がある.
+	// nan(not a Number)が入る可能性がある.
+	// nan(not a Number)が入る可能性がある.
 	// マウスレイ （のベクトル)
 	glm::vec3 rayDir = glm::normalize(farPoint - nearPoint);
 
@@ -30,15 +46,11 @@ glm::vec2 GameUtils::SpatialTransform::MouseTo2DLogicConverter(
 	// 地面(Y=0)との交差点 
 	glm::vec3 intersection = nearPoint + t * rayDir;
 
-	// キャラクターからの相対位置ベクトル(論理空間での)
 	glm::vec2 mouseWorldXZ(intersection.x, intersection.z);
-	// 方向を計算
-	glm::vec2 direction = mouseWorldXZ - playerLogicPosXZ;
 
-	//DebugUtils::LogVector("SpatialTransformUtils.cpp", direction);
+	// DebugUtils::LogVector_string("SpatialTransformUtils.cpp(convert)", mouseWorldXZ);
 
-	// 正規化するとよい
-	return direction;
+	return mouseWorldXZ;
 }
 
 //

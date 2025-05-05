@@ -29,5 +29,5 @@ public:
 
 private:
 	// mapping
-	std::unordered_map<int, InputAction> keyBindings;\
+	std::unordered_map<int, InputAction> keyBindings;
 };

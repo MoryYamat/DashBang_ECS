@@ -56,6 +56,7 @@
 * ~~WindowManager implementation~~(2025/04/29)
 * Implementing the engine (development) camera and the game camera, and separating them
 * **Implementation of meaningful data lists and search logic (naming entities and efficiently searching by name)**/**Separation from mechanical processing**
+* Implemented a process to improve the safety of vector normalization (safely normalizing 0 vectors)
 
 ## **FUTURE**
 * Implementing game editing functionality via UI (engine)

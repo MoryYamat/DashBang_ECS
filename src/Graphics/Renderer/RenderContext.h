@@ -6,8 +6,8 @@
 
 struct RenderContext
 {
-	glm::mat4 view;
-	glm::mat4 projection;
-	glm::vec3 cameraPosition;
-	glm::vec2 viewportSize;
+	glm::mat4 viewMatrix;// view行列
+	glm::mat4 projectionMatrix;// 投影行列
+	glm::vec3 cameraPosition;// カメラ位置
+	glm::vec4 viewport;// viewport
 };

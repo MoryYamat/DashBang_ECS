@@ -65,9 +65,9 @@ void RenderSystem::RenderSystem(ECS& ecs, Shader& shader, float aspect, RenderCo
 		drawMesh(meshComp);
 	}
 
-	context.view = view;
-	context.projection = projection;
-	context.viewportSize = {WindowManager::GetWidth(), WindowManager::GetHeight()};
+	context.viewMatrix = view;
+	context.projectionMatrix = projection;
+	context.viewport = {0, 0, WindowManager::GetWidth(), WindowManager::GetHeight()};
 }
 
 void RenderSystem::drawMesh(const MeshComponent& meshComp)

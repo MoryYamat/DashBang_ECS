@@ -10,15 +10,17 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+
+// デバッグ用（論理座標）の点や矩形を描画する機能を提供
 void LogicDebugDrawSystem::Draw(ECS& ecs, const RenderContext& renderContext)
 {
 	// view/projection を事前にセット
 	// 固定機能パイプラインの古い機能
 	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(glm::value_ptr(renderContext.projection));
+	glLoadMatrixf(glm::value_ptr(renderContext.projectionMatrix));
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(glm::value_ptr(renderContext.view));
+	glLoadMatrixf(glm::value_ptr(renderContext.viewMatrix));
 
 	for (Entity e : ecs.view<Logic2DTransformComponent>())
 	{
