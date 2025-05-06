@@ -2,46 +2,14 @@
 
 #include "Core/Window/WindowManager.h"
 
+#include "Core/ECS/Component/MaterialComponent.h"
+
 #include <iostream>
-
-void RenderSystem::RenderSystem(ECS& ecs, Shader& shader, float aspect)
-{
-	//for (auto entity : ecs.view<MeshComponent>())// for Test
-	//{
-	//	//auto& transformComp = ecs.get<TransformComponent>(entity);
-	//	auto& meshComp = ecs.get<MeshComponent>(entity);
-	// 
-	//	drawMesh(meshComp);
-	//}
-	glm::mat4 view, projection;
-
-	if (!getCameraMatrices(ecs, view, projection))
-	{
-		std::cerr << "[RenderSystem.cpp]: No valid camera found in ECS." << std::endl;
-		return;
-	}
-
-
-
-	for (auto entity : ecs.view<TransformComponent, MeshComponent>())
-	{
-		auto& transformComp = ecs.get<TransformComponent>(entity);
-		auto& meshComp = ecs.get<MeshComponent>(entity);
-
-		// state machine (シェーダーを切り替えると、viewもprojectionもセットする必要あり。)
-		shader.Use();
-		shader.setMat4("model", transformComp.toMatrix());
-		shader.setMat4("view", view);
-		shader.setMat4("projection", projection);
-		drawMesh(meshComp);
-	}
-
-}
 
 // Changed to update RenderContext
 void RenderSystem::RenderSystem(ECS& ecs, Shader& shader, float aspect, RenderContext& context)
 {
-
+	// View行列、Projection行列
 	glm::mat4 view, projection;
 
 	if (!getCameraMatrices(ecs, view, projection, context))
@@ -52,16 +20,18 @@ void RenderSystem::RenderSystem(ECS& ecs, Shader& shader, float aspect, RenderCo
 
 
 
-	for (auto entity : ecs.view<TransformComponent, MeshComponent>())
+	for (auto entity : ecs.view<TransformComponent, MeshComponent, MaterialComponent>())
 	{
 		auto& transformComp = ecs.get<TransformComponent>(entity);
 		auto& meshComp = ecs.get<MeshComponent>(entity);
+		auto& materialComp = ecs.get<MaterialComponent>(entity);
 
 		// state machine (シェーダーを切り替えると、viewもprojectionもセットする必要あり。)
 		shader.Use();
 		shader.setMat4("model", transformComp.toMatrix());
 		shader.setMat4("view", view);
 		shader.setMat4("projection", projection);
+		shader.setVec3("uBaseColor", materialComp.baseColor);
 		drawMesh(meshComp);
 	}
 
@@ -169,4 +139,42 @@ glm::mat4 RenderSystem::computeViewMatrix(const TransformComponent& transformCom
 glm::mat4 RenderSystem::computeProjectionMatrix(float fov, float aspect, float nearClip, float farClip)
 {
 	return glm::perspective(glm::radians(fov), aspect, nearClip, farClip);
+}
+
+
+
+// For simple testing
+void RenderSystem::RenderSystem(ECS& ecs, Shader& shader, float aspect)
+{
+	//for (auto entity : ecs.view<MeshComponent>())// for Test
+	//{
+	//	//auto& transformComp = ecs.get<TransformComponent>(entity);
+	//	auto& meshComp = ecs.get<MeshComponent>(entity);
+	// 
+	//	drawMesh(meshComp);
+	//}
+	glm::mat4 view, projection;
+
+	if (!getCameraMatrices(ecs, view, projection))
+	{
+		std::cerr << "[RenderSystem.cpp]: No valid camera found in ECS." << std::endl;
+		return;
+	}
+
+
+
+	for (auto entity : ecs.view<TransformComponent, MeshComponent>())
+	{
+		auto& transformComp = ecs.get<TransformComponent>(entity);
+		auto& meshComp = ecs.get<MeshComponent>(entity);
+
+
+		// state machine (シェーダーを切り替えると、viewもprojectionもセットする必要あり。)
+		shader.Use();
+		shader.setMat4("model", transformComp.toMatrix());
+		shader.setMat4("view", view);
+		shader.setMat4("projection", projection);
+		drawMesh(meshComp);
+	}
+
 }

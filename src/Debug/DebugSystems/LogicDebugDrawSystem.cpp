@@ -3,6 +3,8 @@
 #include "Core/ECS/Component/Logic2DTransformComponent.h"
 #include "Core/ECS/Component/TileMapComponent.h"
 
+#include "Core/ECS/Component/PlayerControllerComponent.h"
+
 #include "Debug/DebugUtils.h"
 
 #include <glad/glad.h>
@@ -19,14 +21,14 @@ void LogicDebugDrawSystem::Draw(ECS& ecs, const RenderContext& renderContext)
 	SetOpenGLMatrixState(renderContext);
 
 	DebugDrawLogicTileMaps(ecs, renderContext);
-	DebugDrawLogicPositions(ecs, renderContext);
+	DebugDrawLogicPlayerPositions(ecs, renderContext);
 
 	//reset openGL matrix state
 	ResetOpenGLMatrixState();
 }
 
 // デバッグ用（論理座標）の点や矩形を描画する機能を提供
-void LogicDebugDrawSystem::DebugDrawLogicPositions(ECS& ecs, const RenderContext& renderContext)
+void LogicDebugDrawSystem::DebugDrawLogicPlayerPositions(ECS& ecs, const RenderContext& renderContext)
 {
 	//SetOpenGLMatrixState(renderContext);
 
@@ -34,7 +36,7 @@ void LogicDebugDrawSystem::DebugDrawLogicPositions(ECS& ecs, const RenderContext
 	glm::vec3 color = glm::vec3(1.0f, 0.0f, 0.0f);
 
 
-	for (Entity e : ecs.view<Logic2DTransformComponent>())
+	for (Entity e : ecs.view<Logic2DTransformComponent, PlayerControllerComponent>())
 	{
 		const auto& logic = ecs.get<Logic2DTransformComponent>(e);
 

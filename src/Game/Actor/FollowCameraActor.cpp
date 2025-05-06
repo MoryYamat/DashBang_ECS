@@ -56,7 +56,7 @@ FollowCameraActor::FollowCameraActor(ECS& ecs)
 		std::cerr << "[FollowCameraActor.cpp]: Failed to find Player entity by name!" << std::endl;
 	}
 
-	//DebugUtils::LogVector("FollowCameraActor.cpp", camComp.front);
+	DebugUtils::LogVector("FollowCameraActor.cpp", camComp.front);
 	//DebugUtils::LogVector("FollowCameraActor.cpp", CamTransformComp.position);
 }
 

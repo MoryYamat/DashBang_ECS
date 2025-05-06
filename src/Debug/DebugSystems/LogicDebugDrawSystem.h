@@ -8,7 +8,7 @@ namespace LogicDebugDrawSystem
 {
 	void Draw(ECS& ecs, const RenderContext& renderContext);
 
-	void DebugDrawLogicPositions(ECS& ecs, const RenderContext& renderContext);
+	void DebugDrawLogicPlayerPositions(ECS& ecs, const RenderContext& renderContext);
 
 	void DebugDrawLogicTileMaps(ECS& ecs, const RenderContext& renderContext);
 

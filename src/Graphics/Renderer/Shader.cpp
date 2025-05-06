@@ -51,11 +51,13 @@ void Shader::setInt(const std::string& name, int value) const
 
 void Shader::setFloat(const std::string& name, float value) const
 {
+	std::cerr << "[Shader]: Uniform not found or optimized out: " << name << std::endl;
 	glUniform1f(glGetUniformLocation(mProgramID, name.c_str()), value);
 }
 
 void Shader::setVec3(const std::string& name, const glm::vec3& vec) const
 {
+
 	glUniform3fv(glGetUniformLocation(mProgramID, name.c_str()), 1, &vec[0]);
 }
 

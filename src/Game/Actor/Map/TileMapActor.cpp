@@ -17,8 +17,8 @@ TileMapActor::TileMapActor(ECS& ecs)
 	tileMapComp.numRows = 10;
 
 	// ‚»‚Ì‘¼‚Ìî•ñ
-	tileMapComp.tileSize = 1.0f;
-	tileMapComp.origin = glm::vec2(-5.0f, -5.0f);
+	tileMapComp.tileSize = 0.5f;
+	tileMapComp.origin = glm::vec2(tileMapComp.numCols * tileMapComp.tileSize * -0.5f, tileMapComp.numRows * tileMapComp.tileSize * -0.5f);
 
 	// ”z—ñì¬
 	tileMapComp.tiles.resize(tileMapComp.numRows, std::vector<Tile>(tileMapComp.numCols));

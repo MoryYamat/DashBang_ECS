@@ -27,6 +27,7 @@
 #include "Game/Actor/PlayerCharacterActor.h"
 #include "Game/Actor/FollowCameraActor.h"
 #include "Game/Actor/MouseCursorActor.h"
+#include "Game/Actor/Map/TestBaseTerrainActor.h"
 // Game/Actor/Map
 #include "Game/Actor/Map/TileMapActor.h"
 
@@ -163,7 +164,7 @@ void Game::updateGameLogics()
 
 	// ÉJÉÅÉâ
 	CameraFollowSystem::Update(mEcs, mDeltaTime);
-	//GameSystemInput::UpdateCamera(mEcs, mInputState, mDeltaTime);
+	// GameSystemInput::UpdateCamera(mEcs, mInputState, mDeltaTime);
 	
 	MouseCursorUpdateSystem::Update(mEcs, mInputState, mRenderContext);
 
@@ -174,13 +175,15 @@ void Game::generateOutputs()
 	glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// draw for debugging
-	LogicDebugDrawSystem::Draw(mEcs, mRenderContext);
+
 
 	// An algorithm is needed to set the shader for each object.
 	//RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
 	RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect(), mRenderContext);
 
+
+	// draw for debugging
+	LogicDebugDrawSystem::Draw(mEcs, mRenderContext);
 
 
 	//
@@ -200,8 +203,13 @@ void Game::loadData()
 
 	MouseCursorActor mouseCursor = MouseCursorActor(mEcs);
 
-	TileMapActor tilemap = TileMapActor(mEcs);
-	//CameraActor camActor = CameraActor(mEcs);
+	// TileMapActor tilemap = TileMapActor(mEcs);
+
+	
+	TestBaseTerrainActor testTerrainMap = TestBaseTerrainActor(mEcs, mShader);
+	
+	
+	// CameraActor camActor = CameraActor(mEcs);
 
 	//Collider a, c;
 	//c.type = ColliderType::Box2D;

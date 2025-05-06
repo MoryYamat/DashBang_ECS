@@ -10,6 +10,9 @@
 
 #include "Core/ECS/Component/InputComponent.h"
 
+// test color
+#include "Core/ECS/Component/MaterialComponent.h"
+
 // Flags
 #include "Core/ECS/Component/PlayerControllerComponent.h"
 #include "Core/ECS/Component/NameComponent.h"
@@ -22,6 +25,8 @@
 #include "Graphics/Renderer/GPUBufferUtils.h"
 
 #include "Game/Init/InitLogicTransformFromModel.h"
+
+#include "Debug/DebugUtils.h"
 
 #include <iostream>
 
@@ -90,13 +95,18 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	ecs.addComponent(entity, nameComp);
 
 
+	// set Test Corlor
+	MaterialComponent materialComp;
+	materialComp.baseColor = glm::vec3(0.4f, 0.3f, 0.7f);
+	ecs.addComponent(entity, materialComp);
+
 	//std::cout << "[PlayerCharacterActor.cpp]: Logic Position: x. " << logic.positionXZ.x << " z. " << logic.positionXZ.y << std::endl;
 	//std::cout << "[PlayerCharacterActor.cpp]: Logic Rotation " << logic.rotation << std::endl;
 	//std::cout << "[PlayerCharacterActor.cpp]: Logic Scale: x. " << logic.scale.x << " z. " << logic.scale.y << std::endl;
 
 	std::cout << "[PlayerCharacterActor.cpp]: Test3Dmodel Settings Completed" << std::endl;
 
-
+	DebugUtils::LogVector("PlayerCharacterActor.cpp(Color)", materialComp.baseColor);
 }
 
 PlayerCharacter::~PlayerCharacter()
