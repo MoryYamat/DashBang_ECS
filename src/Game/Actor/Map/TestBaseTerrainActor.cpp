@@ -45,8 +45,8 @@ TestBaseTerrainActor::TestBaseTerrainActor(ECS& ecs, Shader* shader)
 
 	// 初期描画座標を設定
 	TransformComponent transformComp;
-	transformComp.position = glm::vec3(0.0f, 0.0f, 0.0f);
-	transformComp.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	transformComp.position = glm::vec3(0.0f, 0.0f, 00.0f);
+	transformComp.rotation = glm::vec3(0.0f, 45.0f, 0.0f);
 	transformComp.scale = glm::vec3(0.01f);
 	ecs.addComponent(entity, transformComp);
 
@@ -76,9 +76,11 @@ TestBaseTerrainActor::TestBaseTerrainActor(ECS& ecs, Shader* shader)
 	logic2DComp = GameUtils::Init::InitLogic2DTransformFromModel(transformComp, modelData);
 	ecs.addComponent(entity, logic2DComp);
 
+	std::cout << "TestBaseTerrainActor.cpp: Rotation " << logic2DComp.rotation << std::endl;
+
 	// 1.0f -> 1.0m (想定)
 	TileMapComponent tileMapComp;
-	tileMapComp.tileSize = 1.0f;
+	tileMapComp.tileSize = 0.5f;
 	tileMapComp = GameUtils::Init::InitTileMapFromBounds(transformComp, modelData, logic2DComp, tileMapComp.tileSize);
 	// TileMapComponent内のtilesベクトルを作成(初期化)
 	GameUtils::Init::InitTileMapTiles(tileMapComp);

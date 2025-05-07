@@ -19,6 +19,7 @@
     * Ground implementation
 * Implement flexible and intuitive integration of drawing data and physics data
     * Consider how to match the apparent size with meaningful collision detection/action range in logical space (logic) and visual space (visual).
+* When initializing logical data using drawing data, if you try to take rotation into account, there is a problem where misalignment occurs due to scale, center of rotation, and various other errors.
 
 ## **Camera**
 * Separation of system camera and game camera

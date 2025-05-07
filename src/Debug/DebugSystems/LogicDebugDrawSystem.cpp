@@ -57,7 +57,6 @@ void LogicDebugDrawSystem::DebugDrawLogicTileMaps(ECS& ecs, const RenderContext&
 
 	glm::vec3 color = glm::vec3(1.0f, 1.0f, 0.0f);
 
-
 	for (Entity e : ecs.view<TileMapComponent>())
 	{
 		const auto& tileMapComp = ecs.get<TileMapComponent>(e);

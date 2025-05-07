@@ -23,4 +23,18 @@ namespace GameUtils::Init
 
 	// 設定済みのTileMapComponentの内容からtiles行列(配列)を初期化する関数
 	void InitTileMapTiles(TileMapComponent& tileMapComp);
+
+
+	// Get logical XZ size from model size, taking into account scale
+	// // スケールを考慮してモデルサイズから論理XZサイズを取得します
+	glm::vec2 GetModelXZSizeWithScale(const TransformComponent& transformComp, const ModelData& modelData);
+
+	// モデルの回転を考慮したワールド座標における最大／最小の点の矩形座標を求める関数
+	glm::vec2 GetModelWorldSizeWithRotation(const TransformComponent& transformComp, const ModelData& modelData);
+
+	// 最大／最小座標の8点 を返す関数
+	glm::vec3 GetAABBCorner(glm::vec3 min,glm::vec3 max,int i);
+
+	// 論理タイルマップの原点のワールド座標における位置を求める
+	glm::vec2 ComputeTileMapOriginFromModel(const TransformComponent& transformComp, const ModelData& modelData);
 }
