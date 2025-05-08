@@ -22,8 +22,9 @@ void MouseCursorUpdateSystem::Update(ECS& ecs, InputState& input, RenderContext 
 
 		logic2DComp.positionXZ = GameUtils::SpatialTransform::ProjectScreenToLogicXZPlane(input.screenMousePosition, renderContext);
 
-
-		// DebugUtils::LogVector_string("MouseCursorUpdateSystem.cpp(mouseLogicPos)", mouseComp.logicPosition);
+		// position(0.0f, 0.0f)の時不具合が発生しないか、確認する
+		// position(0.0f, 0.0f)の時不具合が発生しないか、確認する
+		// position(0.0f, 0.0f)の時不具合が発生しないか、確認する
 		// DebugUtils::LogVector_string("MouseCursorUpdateSystem.cpp(logic2DPos)", logic2DComp.positionXZ);
 
 		break;

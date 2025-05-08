@@ -5,6 +5,8 @@
 
 #include "Core/ECS/Component/PlayerControllerComponent.h"
 
+#include "Core/ECS/Component/Collision/CollisionComponent.h"
+
 #include "Debug/DebugUtils.h"
 
 #include <glad/glad.h>
@@ -20,9 +22,14 @@ void LogicDebugDrawSystem::Draw(ECS& ecs, const RenderContext& renderContext)
 
 	SetOpenGLMatrixState(renderContext);
 
+	//
 	DebugDrawLogicTileMaps(ecs, renderContext);
+
 	DebugDrawLogicPlayerPositions(ecs, renderContext);
 
+	DebugDrawPlayerCollision(ecs, renderContext);
+
+	//
 	//reset openGL matrix state
 	ResetOpenGLMatrixState();
 }
@@ -76,6 +83,24 @@ void LogicDebugDrawSystem::DebugDrawLogicTileMaps(ECS& ecs, const RenderContext&
 
 	//ResetOpenGLMatrixState();
 
+}
+
+void LogicDebugDrawSystem::DebugDrawPlayerCollision(ECS& ecs, const RenderContext& renderContext)
+{
+	glm::vec3 color = glm::vec3(0.0f, 1.0f, 1.0f);
+
+	for (Entity e : ecs.view<CollisionComponent>())
+	{
+		const auto& collisionComp = ecs.get<CollisionComponent>(e);
+
+		if (collisionComp.collider.type == ColliderType::Circle2D)
+		{
+			glm::vec2 center = collisionComp.collider.circle2D.center;
+			float radius = collisionComp.collider.circle2D.radius;
+
+			DebugUtils::DebugDraw::DrawCircle2D(center, radius, color);
+		}
+	}
 }
 
 void LogicDebugDrawSystem::SetOpenGLMatrixState(const RenderContext& renderContext)

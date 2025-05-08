@@ -56,13 +56,16 @@ struct Collider
 	union
 	{
 		// sizeof (need to think about bottlenecks)
-		Circle2D ciecle2D;
+		Circle2D circle2D;
 		Box2D box2D;
 
 		AABB3D aabb3D;
 		Sphere3D sphere3D;
 		Capsule3D capsule3D;
 	};
+
+	// default Constructor
+	Collider() : type(ColliderType::None), box2D{} {}
 };
 
 

@@ -15,7 +15,7 @@
 
 // physics
 #include "Core/Physics/CollisionUtils.h"
-#include "DataTypes/ColliderType.h"
+#include "Core/ECS/Component/Collision/ColliderType.h"
 
 // Graphic
 #include "Graphics/Renderer/Shader.h"

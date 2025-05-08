@@ -3,6 +3,10 @@
 #include "Core/ECS/Component/Logic2DTransformComponent.h"
 #include "Core/ECS/Component/PlayerControllerComponent.h"
 
+// collision
+#include "Core/ECS/Component/Collision/CollisionComponent.h"
+#include "Core/ECS/Component/Collision/ColliderType.h"
+
 #include "Debug/DebugUtils.h"
 
 #include "Game/Utils/SpatialTransformUtils.h"
@@ -20,6 +24,7 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 	for (Entity e : ecs.view<PlayerControllerComponent, Logic2DTransformComponent>())
 	{
 		auto& logic = ecs.get<Logic2DTransformComponent>(e);
+		auto& collisionComp = ecs.get<CollisionComponent>(e);
 
 		glm::vec2 moveDir(0.0f);
 
@@ -38,6 +43,12 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 		{
 			moveDir = glm::normalize(moveDir);
 			logic.positionXZ += moveDir * deltaTime * 3.0f; // ˆÚ“®‘¬“x
+
+			// collision update
+			if (collisionComp.collider.type == ColliderType::Circle2D)
+			{
+				collisionComp.collider.circle2D.center = logic.positionXZ;
+			}
 		}
 
 
@@ -61,10 +72,12 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 
 
 
-		// position log for debugging
+		// log for debugging
 		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(position)", logic.positionXZ);
-		//DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(front)", logic.front);
+		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(front)", logic.front);
 		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(rotation)", {logic.rotation, 0});
+		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(collision)", collisionComp.collider.circle2D.center);
+
 
 		break;
 	}

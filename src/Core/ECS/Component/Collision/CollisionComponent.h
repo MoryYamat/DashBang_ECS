@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "DataTypes/ColliderType.h"
+#include "Core/ECS/Component/Collision/ColliderType.h"
 
 struct CollisionComponent
 {

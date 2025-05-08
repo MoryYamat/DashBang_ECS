@@ -19,6 +19,10 @@
 
 #include "Core/ECS/Component/Logic2DTransformComponent.h"
 
+// collision
+#include "Core/ECS/Component/Collision/CollisionComponent.h"
+//#include "Core/ECS/Component/Collision/ColliderType.h"
+
 #include "DataTypes/ModelData.h"
 
 #include "Graphics/Model/AssimpImporter.h"
@@ -99,6 +103,20 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	MaterialComponent materialComp;
 	materialComp.baseColor = glm::vec3(0.4f, 0.3f, 0.7f);
 	ecs.addComponent(entity, materialComp);
+
+	// Collsion Initialization
+	// ÉRÉäÉWÉáÉìèâä˙âª
+	CollisionComponent playerCollisionComp;
+	
+	playerCollisionComp.collider.type = ColliderType::Circle2D;
+	playerCollisionComp.collider.circle2D.center = logic.positionXZ;
+	playerCollisionComp.isStatic = false;
+	float radius = GameUtils::Init::EstimateRadiusFromModelXZ(transformComp, modelData, GameUtils::Init::RadiusEstimateStrategy::MinAxis);
+
+	playerCollisionComp.collider.circle2D.radius = radius;
+	ecs.addComponent(entity, playerCollisionComp);
+
+	std::cout << "[[PlayerCharacterActor.cpp(radius)] : radius. " << radius << std::endl;
 
 	//std::cout << "[PlayerCharacterActor.cpp]: Logic Position: x. " << logic.positionXZ.x << " z. " << logic.positionXZ.y << std::endl;
 	//std::cout << "[PlayerCharacterActor.cpp]: Logic Rotation " << logic.rotation << std::endl;

@@ -4,7 +4,7 @@
 
 #include <GLM/glm.hpp>
 
-#include "DataTypes/ColliderType.h"
+#include "Core/ECS/Component/Collision/ColliderType.h"
 
 namespace CollisionUtils
 {

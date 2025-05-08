@@ -45,8 +45,8 @@ TestBaseTerrainActor::TestBaseTerrainActor(ECS& ecs, Shader* shader)
 
 	// ‰Šú•`‰æÀ•W‚ğİ’è
 	TransformComponent transformComp;
-	transformComp.position = glm::vec3(0.0f, 0.0f, 00.0f);
-	transformComp.rotation = glm::vec3(0.0f, 45.0f, 0.0f);
+	transformComp.position = glm::vec3(0.0f, 0.0f, 0.0f);
+	transformComp.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	transformComp.scale = glm::vec3(0.01f);
 	ecs.addComponent(entity, transformComp);
 

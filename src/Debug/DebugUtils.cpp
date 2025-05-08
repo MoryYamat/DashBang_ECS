@@ -55,25 +55,32 @@ void DebugUtils::DebugDraw::DrawQuad(const glm::vec2& center, float size, const 
 	glEnable(GL_DEPTH_TEST);
 }
 
-void DebugUtils::DebugDraw::DrawFlatCircle(glm::vec3 pos, float radius, int segments)
+void DebugUtils::DebugDraw::DrawCircle2D(const glm::vec2& centerXZ, float radius, const glm::vec3& color, int segments)
 {
-	glUseProgram(0);
-	glDisable(GL_DEPTH_TEST);
-	glColor3f(1.0f, 0.0f, 0.0f);
-
-	glBegin(GL_LINE_LOOP);
+	std::vector<glm::vec3> points;
 	for (int i = 0; i < segments; ++i)
 	{
-		float theta = (float)i / segments * 2.0f * 3.1415926f;
-		float x = radius * cos(theta);
-		float z = radius * sin(theta);
-		glVertex3f(pos.x + x, pos.y, pos.z + z);
+		float angle = (float)i / segments * 2.0f * glm::pi<float>();
+		float x = std::cos(angle) * radius;
+		float z = std::sin(angle) * radius;
+		points.push_back(glm::vec3(centerXZ.x + x, 0.01f, centerXZ.y + z)); // Y=0.01‚Å•‚‚©‚¹‚é
 	}
 
+	glUseProgram(0);
+	glDisable(GL_DEPTH_TEST);
+	glColor3f(color.r, color.g, color.b);
+	
+	glBegin(GL_LINE_LOOP);
+	for (const auto& p : points)
+	{
+		glVertex3f(p.x, p.y, p.z);
+	}
 	glEnd();
 
 	glEnable(GL_DEPTH_TEST);
+
 }
+
 
 
 

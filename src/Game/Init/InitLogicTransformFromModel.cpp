@@ -54,6 +54,7 @@ TileMapComponent GameUtils::Init::InitTileMapFromBounds(
 	tileMapComp.numRows = static_cast<int>(std::ceil(logicalTileMapSize.y / tileSize)) + marginTiles * 2;
 
 	// Calculate the origin (in world coordinates)
+	// 論理タイルマップの原点のワールド座標における位置
 	glm::vec2 baseOrigin = GameUtils::Init::ComputeTileMapOriginFromModel(transformComp, modelData);
 	
 	// Apply Margin Offset
@@ -162,4 +163,34 @@ glm::vec2 GameUtils::Init::ComputeTileMapOriginFromModel(const TransformComponen
 	}
 
 	return glm::vec2(minX, minZ);
+}
+
+
+float GameUtils::Init::EstimateRadiusFromModelXZ(
+	const TransformComponent& transformComp,
+	const ModelData& modelData,
+	RadiusEstimateStrategy strategy
+)
+{
+	if (strategy == RadiusEstimateStrategy::MaxAxis)
+	{
+		glm::vec2 worldSize = GameUtils::Init::GetModelXZSizeWithScale(transformComp, modelData);
+		return std::max(worldSize.x, worldSize.y) * 0.5f;
+	}
+	else if (strategy == RadiusEstimateStrategy::MinAxis)
+	{
+		glm::vec2 worldSize = GameUtils::Init::GetModelXZSizeWithScale(transformComp, modelData);
+		return std::min(worldSize.x, worldSize.y) * 0.5f;
+	}
+	else if (strategy == RadiusEstimateStrategy::Diagonal)
+	{
+		glm::vec2 worldSize = GameUtils::Init::GetModelXZSizeWithScale(transformComp, modelData);
+		return glm::length(worldSize) * 0.5f;
+	}
+	else
+	{
+		DebugUtils::GeneralLog("InitLogicTransformFromModel.cpp(Radius)", "Maybe radius initialization failed");
+		return 0.5f;
+
+	}
 }

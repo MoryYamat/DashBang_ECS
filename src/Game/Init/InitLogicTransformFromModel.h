@@ -9,6 +9,8 @@
 
 #include "Core/ECS/Component/TileMapComponent.h"
 
+#include <string>
+
 namespace GameUtils::Init
 {
 	// 3D -> 2D
@@ -37,4 +39,27 @@ namespace GameUtils::Init
 
 	// 論理タイルマップの原点のワールド座標における位置を求める
 	glm::vec2 ComputeTileMapOriginFromModel(const TransformComponent& transformComp, const ModelData& modelData);
+
+
+}
+
+namespace GameUtils::Init
+{
+	enum class RadiusEstimateStrategy
+	{
+		MaxAxis,  // Use the larger of width or depth
+		MinAxis,  // Use the smaller of width or depth
+		Diagonal      // Use the average of width and depth
+
+	};
+
+	// For initializing collision shape 
+	// When the maximum axis of the model's size on the XZ plane is the radius
+	// モデルのXZ平面における大きさの最大軸を半径にする場合
+
+	float EstimateRadiusFromModelXZ(
+		const TransformComponent& transformComp,
+		const ModelData& modelData,
+		RadiusEstimateStrategy strategy = RadiusEstimateStrategy::MaxAxis
+	);
 }

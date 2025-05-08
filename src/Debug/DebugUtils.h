@@ -69,7 +69,8 @@ namespace DebugUtils
 namespace DebugUtils::DebugDraw
 {
 	void DrawCross(const glm::vec3& pos, float size, const glm::vec3& color);
-	void DrawFlatCircle(glm::vec3 pos, float radius, int segments = 32);
+
+	void DrawCircle2D(const glm::vec2& centerXZ, float radius, const glm::vec3& color, int segments = 32);
 
 	void DrawQuad(const glm::vec2& center, float size, const glm::vec3& color);
 }
