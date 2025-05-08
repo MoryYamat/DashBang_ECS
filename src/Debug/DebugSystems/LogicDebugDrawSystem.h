@@ -17,6 +17,9 @@ namespace LogicDebugDrawSystem
 	// 2D円を描画(デバッグ用)
 	void DebugDrawPlayerCollision(ECS& ecs, const RenderContext& renderContext);
 
+	// TileMapとPlayerCircle2Dのコリジョンを描画
+	void DebugDrawPlayerAndTileMap(ECS& ecs, const RenderContext& renderContext);
+
 	// レンダーコンテキストをセット関数
 	void SetOpenGLMatrixState(const RenderContext& renderContext);
 

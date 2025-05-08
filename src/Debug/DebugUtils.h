@@ -73,6 +73,8 @@ namespace DebugUtils::DebugDraw
 	void DrawCircle2D(const glm::vec2& centerXZ, float radius, const glm::vec3& color, int segments = 32);
 
 	void DrawQuad(const glm::vec2& center, float size, const glm::vec3& color);
+
+	void DrawTileOutline(const glm::vec2& minXZ, const glm::vec2& maxXZ,const glm::vec3& color);
 }
 
 #ifdef DEBUG

@@ -34,6 +34,12 @@ struct Logic2DTransformComponent
 		}
 	}
 
+	// FrontベクトルからRightベクトルを得る
+	void UpdateRightFromFront()
+	{
+		right = glm::vec2(front.y, -front.x);
+	}
+
 	// 初期化時のみ　※ゲームループでは使わない
 	void UpdateDirectionFromRotation()
 	{

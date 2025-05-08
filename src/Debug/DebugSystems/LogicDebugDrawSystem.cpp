@@ -9,6 +9,8 @@
 
 #include "Debug/DebugUtils.h"
 
+#include "Game/CollisionLogic/TestCircleTileMapCollisionHighlight.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -28,6 +30,9 @@ void LogicDebugDrawSystem::Draw(ECS& ecs, const RenderContext& renderContext)
 	DebugDrawLogicPlayerPositions(ecs, renderContext);
 
 	DebugDrawPlayerCollision(ecs, renderContext);
+	
+	// Debug用のコリジョン検知を表示
+	LogicDebugDrawSystem::DebugDrawPlayerAndTileMap(ecs, renderContext);
 
 	//
 	//reset openGL matrix state
@@ -93,6 +98,7 @@ void LogicDebugDrawSystem::DebugDrawPlayerCollision(ECS& ecs, const RenderContex
 	{
 		const auto& collisionComp = ecs.get<CollisionComponent>(e);
 
+
 		if (collisionComp.collider.type == ColliderType::Circle2D)
 		{
 			glm::vec2 center = collisionComp.collider.circle2D.center;
@@ -102,6 +108,23 @@ void LogicDebugDrawSystem::DebugDrawPlayerCollision(ECS& ecs, const RenderContex
 		}
 	}
 }
+
+void LogicDebugDrawSystem::DebugDrawPlayerAndTileMap(ECS& ecs, const RenderContext& renderContext)
+{
+	TileMapComponent tileMapComp;
+	for (Entity e : ecs.view<TileMapComponent>())
+	{
+		tileMapComp = ecs.get<TileMapComponent>(e);
+		break;
+	}
+
+	for (Entity e : ecs.view<CollisionComponent>())
+	{
+		const auto& collisionComp = ecs.get<CollisionComponent>(e);
+		CollisionUtils::TestCircleTileMapCollisionHighlight(collisionComp, tileMapComp);
+	}
+}
+
 
 void LogicDebugDrawSystem::SetOpenGLMatrixState(const RenderContext& renderContext)
 {

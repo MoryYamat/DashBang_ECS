@@ -64,6 +64,10 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 		{
 			logic.front = glm::normalize(dir);
 			logic.rotation = logic.GetRotationYFromFrontVector();
+
+
+			// rightベクトルもfrontから再計算
+			logic.UpdateRightFromFront();
 		}
 		else
 		{
