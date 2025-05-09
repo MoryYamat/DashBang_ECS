@@ -6,6 +6,7 @@
 
 namespace LogicDebugDrawSystem
 {
+	// デバッグ用描画のインターフェース
 	void Draw(ECS& ecs, const RenderContext& renderContext);
 
 	// Playerアクターの位置・マウスポインタの位置を描画(デバッグ用)

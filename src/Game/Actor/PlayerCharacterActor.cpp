@@ -111,7 +111,7 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	playerCollisionComp.collider.type = ColliderType::Circle2D;
 	playerCollisionComp.collider.circle2D.center = logic.positionXZ;
 	playerCollisionComp.isStatic = false;
-	float radius = GameUtils::Init::EstimateRadiusFromModelXZ(transformComp, modelData, GameUtils::Init::RadiusEstimateStrategy::MinAxis);
+	float radius = GameUtils::Init::EstimateRadiusFromModelXZ(transformComp, modelData, GameUtils::Init::RadiusEstimateStrategy::MaxAxis);
 
 	playerCollisionComp.collider.circle2D.radius = radius;
 	ecs.addComponent(entity, playerCollisionComp);
