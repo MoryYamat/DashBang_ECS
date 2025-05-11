@@ -1,12 +1,12 @@
-// Folder for writing collision processing
-// 
+// Purely mathematical collision detection (logic of "hit")
+// 純粋な数学的衝突判定（ロジックとしての「当たり」）
 
-#pragma once 
 
+#pragma once
 
 #include <GLM/glm.hpp>
 
-namespace CollisionUtils
+namespace GameUtils::CollisionLogic::GeometryUtils
 {
 	// A pure function that performs collision detection between a circle and an AABB.
 	// 円と AABBが交差しているかどうかを判定する

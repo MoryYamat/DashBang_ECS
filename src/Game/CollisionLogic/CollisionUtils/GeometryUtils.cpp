@@ -1,9 +1,9 @@
-#include "CollisionUtils.h"
+#include "GeometryUtils.h"
 
 
 #include <iostream>
 
-bool CollisionUtils::CheckCircleAABBIntersection(
+bool GameUtils::CollisionLogic::GeometryUtils::CheckCircleAABBIntersection(
 	const glm::vec2& circleCenter,
 	float radius,
 	const glm::vec2& boxMin,
@@ -22,7 +22,7 @@ bool CollisionUtils::CheckCircleAABBIntersection(
 	//float distance = glm::distance(circleCenter, glm::vec2(nearestX, nearestY));
 	//float distanceSquared = distance * distance;
 
-	float squareSum = dx * dx +dy * dy;
+	float squareSum = dx * dx + dy * dy;
 
 	//std::cout << "distance^2: " << distanceSquared << "\n";
 	//std::cout << "dx*dx + dy*dy: " << squareSum << "\n";
@@ -30,5 +30,5 @@ bool CollisionUtils::CheckCircleAABBIntersection(
 	// std::cout << "[CollisionUtils.cpp(CheckCircleAABBIntersection)]: result. " << i << std::endl;
 
 	// ”¼Œa‚Ì‚Qæ‚Æ”äŠr‚µ‚ÄŒð·”»’è
-	return squareSum<=(radius * radius);
+	return squareSum <= (radius * radius);
 }

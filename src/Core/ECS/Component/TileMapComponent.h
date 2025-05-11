@@ -25,4 +25,11 @@ struct TileMapComponent
 
 	std::vector<std::vector<Tile>> tiles;
 
+	inline std::pair<glm::vec2, glm::vec2> GetTileAABB(int row, int col) const
+	{
+		glm::vec2 tileMin = origin + glm::vec2(col, row) * tileSize;
+		glm::vec2 tileMax = tileMin + glm::vec2(tileSize);
+		return { tileMin, tileMax };
+	}
+
 };

@@ -87,10 +87,10 @@ void DebugUtils::DebugDraw::DrawCircle2D(const glm::vec2& centerXZ, float radius
 void DebugUtils::DebugDraw::DrawTileOutline(const glm::vec2& minXZ, const glm::vec2& maxXZ, const glm::vec3& color)
 {
 	std::vector<glm::vec3> corners = {
-	{minXZ.x, 0.01f, minXZ.y},
-	{maxXZ.x, 0.01f, minXZ.y},
-	{maxXZ.x, 0.01f, maxXZ.y},
-	{minXZ.x, 0.01f, maxXZ.y}
+	{minXZ.x, 0.05f, minXZ.y},
+	{maxXZ.x, 0.05f, minXZ.y},
+	{maxXZ.x, 0.05f, maxXZ.y},
+	{minXZ.x, 0.05f, maxXZ.y}
 	};
 
 	glUseProgram(0);

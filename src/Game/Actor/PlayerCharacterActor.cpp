@@ -1,7 +1,7 @@
 #include "PlayerCharacterActor.h"
 
 #include "Core/ECS/Entity.h"
-#include "Core/Utils/EntityUtils.h"
+#include "Core/EntityUtils/EntityUtils.h"
 #include "Core/ECS/Component/TransformComponent.h"
 #include "Core/ECS/Component/MeshComponent.h"
 #include "Core/ECS/Component/ShaderComponent.h"

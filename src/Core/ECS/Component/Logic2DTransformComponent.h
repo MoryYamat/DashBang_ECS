@@ -8,7 +8,7 @@
 struct Logic2DTransformComponent
 {
 	//position (x, z)
-	glm::vec2 positionXZ;
+	glm::vec2 positionXZ = {0.0f, 0.0f};
 
 	// direction
 	float rotation = 0.0f;

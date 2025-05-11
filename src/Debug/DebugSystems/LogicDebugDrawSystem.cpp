@@ -11,6 +11,7 @@
 
 #include "Game/CollisionLogic/TestCircleTileMapCollisionHighlight.h"
 
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -19,7 +20,10 @@
 
 
 // デバッグ用（論理系）の描画する機能まとめてを提供
-void LogicDebugDrawSystem::Draw(ECS& ecs, const RenderContext& renderContext)
+void LogicDebugDrawSystem::Draw(ECS& ecs, 
+	const RenderContext& renderContext, 
+	const CollisionResultStorage collisionResult
+)
 {
 
 	SetOpenGLMatrixState(renderContext);
@@ -32,7 +36,7 @@ void LogicDebugDrawSystem::Draw(ECS& ecs, const RenderContext& renderContext)
 	DebugDrawPlayerCollision(ecs, renderContext);
 	
 	// Debug用のコリジョン検知を表示
-	LogicDebugDrawSystem::DebugDrawPlayerAndTileMap(ecs, renderContext);
+	LogicDebugDrawSystem::DebugDrawPlayerAndTileMap(ecs, renderContext, collisionResult);
 
 	//
 	//reset openGL matrix state
@@ -109,8 +113,10 @@ void LogicDebugDrawSystem::DebugDrawPlayerCollision(ECS& ecs, const RenderContex
 	}
 }
 
-void LogicDebugDrawSystem::DebugDrawPlayerAndTileMap(ECS& ecs, const RenderContext& renderContext)
+void LogicDebugDrawSystem::DebugDrawPlayerAndTileMap(ECS& ecs, const RenderContext& renderContext, const CollisionResultStorage collisionResult)
 {
+	glm::vec3 color = glm::vec3(1.0f, 0.0f, 0.0f);
+
 	TileMapComponent tileMapComp;
 	for (Entity e : ecs.view<TileMapComponent>())
 	{
@@ -118,11 +124,28 @@ void LogicDebugDrawSystem::DebugDrawPlayerAndTileMap(ECS& ecs, const RenderConte
 		break;
 	}
 
-	for (Entity e : ecs.view<CollisionComponent>())
+	//for (Entity e : ecs.view<CollisionComponent>())
+	//{
+	//	const auto& collisionComp = ecs.get<CollisionComponent>(e);
+
+	//	// ここでこれを呼び出すのがおかしいのでそれを修正する
+	//	//CollisionUtils::TestCircleTileMapCollisionHighlight(collisionComp, tileMapComp);
+	//}
+
+	const auto& hitTileIndices = collisionResult.GetTileCollisions();
+
+
+	for (const auto& idx : collisionResult.GetTileCollisions())
 	{
-		const auto& collisionComp = ecs.get<CollisionComponent>(e);
-		CollisionUtils::TestCircleTileMapCollisionHighlight(collisionComp, tileMapComp);
+		auto [tileMin, tileMax] = tileMapComp.GetTileAABB(idx.y, idx.x);
+
+		// DebugUtils::LogVector_string("tilemin", tileMin);
+		// DebugUtils::LogVector_string("tileMax", tileMax);
+
+		DebugUtils::DebugDraw::DrawTileOutline(tileMin, tileMax, color);
 	}
+
+	// DebugUtils::DebugDraw::DrawTileOutline(collisionResult, tileMapComp, color);
 }
 
 

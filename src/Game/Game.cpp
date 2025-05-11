@@ -39,6 +39,8 @@
 #include "Game/Input/PlayerCharacterControlSystem.h"
 #include "Game/Input/MouseCursorUpdateSystem.h"
 
+// collision systems
+#include "Game/CollisionLogic/CollisionSystem/CollisionDetectionSystem.h"
 
 // Game/Sync
 #include "Game/Sync/SyncLogicToTransformSystem.h"
@@ -55,6 +57,7 @@ Game::Game()
 	: mIsRunning(true)
 	, mShader(nullptr)
 	, mRenderContext()
+	, mCollisionResults()
 	, windowWidth(1280)
 	, windowHeight(720)
 {
@@ -152,6 +155,9 @@ void Game::updateGameLogics()
 	mDeltaTime = currentFrame - mLastFrame;
 	mLastFrame = currentFrame;
 
+	// 1フレームごとに初期化
+	mCollisionResults.Clear();
+
 	// 入力状態マップの更新
 	mInputMapping.update(WindowManager::GetWindow(), mInputState);
 
@@ -168,6 +174,8 @@ void Game::updateGameLogics()
 	
 	MouseCursorUpdateSystem::Update(mEcs, mInputState, mRenderContext);
 
+	// 
+	GameUtils::CollisionLogic::DetectionSystem::UpdateCollisionResultStorage(mEcs, mCollisionResults);
 }
 
 void Game::generateOutputs()
@@ -183,7 +191,7 @@ void Game::generateOutputs()
 
 
 	// draw for debugging
-	LogicDebugDrawSystem::Draw(mEcs, mRenderContext);
+	LogicDebugDrawSystem::Draw(mEcs, mRenderContext, mCollisionResults);
 
 
 	//

@@ -24,6 +24,7 @@ struct Entity
 
 	static const Entity INVALID;
 
+	// –³Œø‚ÈEntityID‚Ì’è‹`
 	static constexpr uint32_t INVALID_ENTITY_ID = static_cast<uint32_t>(-1);
 
 };

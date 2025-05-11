@@ -1,6 +1,6 @@
 #include "TestCircleTileMapCollisionHighlight.h"
 
-#include "Game/CollisionLogic/CollisionUtils.h"
+#include "Game/CollisionLogic/CollisionUtils/GeometryUtils.h"
 
 #include "Debug/DebugUtils.h"
 
@@ -38,7 +38,7 @@ void CollisionUtils::TestCircleTileMapCollisionHighlight(
 			glm::vec2 tileMin = tileMapComp.origin + glm::vec2(col, row) * tileMapComp.tileSize;
 			glm::vec2 tileMax = tileMin + glm::vec2(tileMapComp.tileSize);
 
-			if (CollisionUtils::CheckCircleAABBIntersection(center, radius, tileMin, tileMax))
+			if (GameUtils::CollisionLogic::GeometryUtils::CheckCircleAABBIntersection(center, radius, tileMin, tileMax))
 			{
 				// 交差しているタイルを赤で描画（Yを少し浮かせると視認性UP）
 				DebugUtils::DebugDraw::DrawTileOutline(tileMin, tileMax, glm::vec3(1.0f, 0.0f, 0.0f));

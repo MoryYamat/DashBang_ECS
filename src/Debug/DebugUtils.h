@@ -5,6 +5,10 @@
 #include "Core/ECS/Entity.h"
 #include "Core/ECS/EntityManager.h"
 
+#include "Core/ECS/Component/TileMapComponent.h"
+
+#include "Game/CollisionLogic/Data/CollisionResultStorage.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
 
@@ -75,6 +79,7 @@ namespace DebugUtils::DebugDraw
 	void DrawQuad(const glm::vec2& center, float size, const glm::vec3& color);
 
 	void DrawTileOutline(const glm::vec2& minXZ, const glm::vec2& maxXZ,const glm::vec3& color);
+
 }
 
 #ifdef DEBUG

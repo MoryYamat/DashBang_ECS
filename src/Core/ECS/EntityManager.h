@@ -53,7 +53,8 @@ public:
 		return *std::static_pointer_cast<T>(mComponentPools[type][e.id]);
 	}
 
-	// search
+	// search and safety valve
+	// ŒŸõ‚ÆˆÀ‘S•Ù
 	template<typename... Components>
 	std::vector<Entity> view()
 	{
