@@ -1,5 +1,6 @@
 // 特定のComponent型に対して初期化タイミングを特殊化
 // Specialize the initialization timing for a particular Component type.
+#pragma once
 
 #include "Core/ECS/Meta/InitPhase.h"
 

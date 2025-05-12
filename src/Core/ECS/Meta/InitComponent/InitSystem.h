@@ -8,7 +8,7 @@
 template<typename Component>
 struct InitSystem
 {
-	static void Init(Component& comp, ECS& ecs, Entity& owner)
+	static void Init(Component& comp, ECS& ecs, Entity owner)
 	{
 		// The default is to do nothing.
 	}

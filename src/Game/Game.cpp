@@ -13,6 +13,11 @@
 #include "Core/ECS/Component/TransformComponent.h"
 #include "Core/ECS/Component/TileMapComponent.h"
 
+// Init Components (Must be included for specialization)
+#include "Core/ECS/Meta/InitComponent/InitDispatcher.h"
+#include "Core/ECS/Meta/InitComponent/TileMapInit.h"
+#include "Core/ECS/Meta/InitComponent/FollowCameraInit.h"
+
 // Window
 #include "Core/Window/WindowManager.h"
 
@@ -256,15 +261,20 @@ void Game::spawnAllActors()
 
 void Game::RunInitializationPhase()
 {
-	for (Entity e : mEcs.view<TileMapComponent>())
-	{
-		auto& tileMapComp = mEcs.get<TileMapComponent>(e);
-		GameInit::TileMapFromMesh::ApplyObstacleCollidersToTileMap(mEcs, tileMapComp);
-	}
+	//for (Entity e : mEcs.view<TileMapComponent>())
+	//{
+	//	auto& tileMapComp = mEcs.get<TileMapComponent>(e);
+	//	GameInit::TileMapFromMesh::ApplyObstacleCollidersToTileMap(mEcs, tileMapComp);
+	//}
 
-	for (Entity e : mEcs.view<FollowCameraComponent, CameraComponent, TransformComponent>())
-	{
-		auto& followCamComp = mEcs.get<FollowCameraComponent>(e);
-		InitSystem<FollowCameraComponent>::Init(followCamComp, mEcs, e);
-	}
+	//for (Entity e : mEcs.view<FollowCameraComponent, CameraComponent, TransformComponent>())
+	//{
+	//	auto& followCamComp = mEcs.get<FollowCameraComponent>(e);
+	//	InitSystem<FollowCameraComponent>::Init(followCamComp, mEcs, e);
+	//}
+
+	ApplyAllDeferredInitializations<
+		TileMapComponent,
+		FollowCameraComponent
+	>(mEcs);
 }

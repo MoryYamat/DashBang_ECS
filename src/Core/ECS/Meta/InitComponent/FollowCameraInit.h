@@ -52,7 +52,8 @@ struct InitSystem<FollowCameraComponent>
 
 
 
-		DebugUtils::LogVector("FollowCameraActor.cpp", camComp.front);
+		DebugUtils::LogVector("FollowCameraInit.h", camComp.front);
 
+		DebugUtils::GeneralLog("FollowCameraInit.h", "FollowCamera");
 	}
 };
