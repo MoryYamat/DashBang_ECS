@@ -58,5 +58,8 @@ private:
 
 	void unloadData();
 
+	void spawnAllActors();
+
+	void RunInitializationPhase();
 };
 

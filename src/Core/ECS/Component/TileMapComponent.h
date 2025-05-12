@@ -14,7 +14,6 @@ struct Tile
 
 
 // Data for the entire TileMap
-
 struct TileMapComponent
 {
 	int numCols;// ‰¡‚Ì–‡”
@@ -32,4 +31,8 @@ struct TileMapComponent
 		return { tileMin, tileMax };
 	}
 
+	glm::vec2 GetTileCenter(int row, int col)
+	{
+		return origin + glm::vec2(col + 0.5f, row + 0.5f) * tileSize;
+	}
 };

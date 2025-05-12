@@ -11,7 +11,7 @@
 
 #include <string>
 
-namespace GameUtils::Init
+namespace GameInit::LogicTransform
 {
 	// 3D -> 2D
 	Logic2DTransformComponent InitLogic2DTransformFromModel(const TransformComponent& transformComp, const ModelData& modelData);
@@ -19,31 +19,17 @@ namespace GameUtils::Init
 	// 3D -> 3D
 
 	// 2D -> 2D
-
-	// BaseMeshデータ、論理データ、設定タイルサイズからTileMapComponentを初期化する関数
-	TileMapComponent InitTileMapFromBounds(const TransformComponent& transformComp, const ModelData& modelData, const Logic2DTransformComponent& logic2DComp, float tileSize = 1.0f);
-
-	// 設定済みのTileMapComponentの内容からtiles行列(配列)を初期化する関数
-	void InitTileMapTiles(TileMapComponent& tileMapComp);
-
-
+	//===============================
+	
 	// Get logical XZ size from model size, taking into account scale
 	// // スケールを考慮してモデルサイズから論理XZサイズを取得します
 	glm::vec2 GetModelXZSizeWithScale(const TransformComponent& transformComp, const ModelData& modelData);
 
-	// モデルの回転を考慮したワールド座標における最大／最小の点の矩形座標を求める関数
-	glm::vec2 GetModelWorldSizeWithRotation(const TransformComponent& transformComp, const ModelData& modelData);
-
-	// 最大／最小座標の8点 を返す関数
-	glm::vec3 GetAABBCorner(glm::vec3 min,glm::vec3 max,int i);
-
-	// 論理タイルマップの原点のワールド座標における位置を求める
-	glm::vec2 ComputeTileMapOriginFromModel(const TransformComponent& transformComp, const ModelData& modelData);
-
 
 }
 
-namespace GameUtils::Init
+// For Player's 2DCircle Collision form
+namespace GameInit::LogicTransform
 {
 	enum class RadiusEstimateStrategy
 	{
@@ -62,4 +48,10 @@ namespace GameUtils::Init
 		const ModelData& modelData,
 		RadiusEstimateStrategy strategy = RadiusEstimateStrategy::MaxAxis
 	);
+}
+
+// for Rectangle collision shape initialization with scale/rotation
+namespace GameInit::LogicTransform
+{
+
 }

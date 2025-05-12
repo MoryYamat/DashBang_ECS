@@ -5,7 +5,7 @@
 #include "Core/ECS/Component/Logic2DTransformComponent.h"
 #include "Core/ECS/Component/MouseCursorComponent.h"
 
-#include "Core/ECS/Component/PlayerControllerComponent.h"
+#include "Core/ECS/Component/Tags/PlayerControllerComponent.h"
 
 MouseCursorActor::MouseCursorActor(ECS& ecs)
 {

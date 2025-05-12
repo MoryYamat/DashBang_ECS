@@ -14,7 +14,7 @@
 #include "Core/ECS/Component/MaterialComponent.h"
 
 // Flags
-#include "Core/ECS/Component/PlayerControllerComponent.h"
+#include "Core/ECS/Component/Tags/PlayerControllerComponent.h"
 #include "Core/ECS/Component/NameComponent.h"
 
 #include "Core/ECS/Component/Logic2DTransformComponent.h"
@@ -28,7 +28,8 @@
 #include "Graphics/Model/AssimpImporter.h"
 #include "Graphics/Renderer/GPUBufferUtils.h"
 
-#include "Game/Init/InitLogicTransformFromModel.h"
+#include "Game/Init/InitModel/InitLogicTransformFromModel.h"
+#include "Game/Init/InitTileMap/InitTileMap.h"
 
 #include "Debug/DebugUtils.h"
 
@@ -86,7 +87,7 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 
 	// Logic2D
 	Logic2DTransformComponent logic;
-	logic = GameUtils::Init::InitLogic2DTransformFromModel(transformComp, modelData);
+	logic = GameInit::LogicTransform::InitLogic2DTransformFromModel(transformComp, modelData);
 	ecs.addComponent(entity, logic);
 
 	// Controller Flag
@@ -111,7 +112,7 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	playerCollisionComp.collider.type = ColliderType::Circle2D;
 	playerCollisionComp.collider.circle2D.center = logic.positionXZ;
 	playerCollisionComp.isStatic = false;
-	float radius = GameUtils::Init::EstimateRadiusFromModelXZ(transformComp, modelData, GameUtils::Init::RadiusEstimateStrategy::MaxAxis);
+	float radius = GameInit::LogicTransform::EstimateRadiusFromModelXZ(transformComp, modelData, GameInit::LogicTransform::RadiusEstimateStrategy::MaxAxis);
 
 	playerCollisionComp.collider.circle2D.radius = radius;
 	ecs.addComponent(entity, playerCollisionComp);
@@ -131,3 +132,4 @@ PlayerCharacter::~PlayerCharacter()
 {
 
 }
+

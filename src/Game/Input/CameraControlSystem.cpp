@@ -2,7 +2,7 @@
 
 // Core/ECS
 #include "Core/ECS/Component/TransformComponent.h"
-#include "Core/ECS/Component/PlayerControllerComponent.h"
+#include "Core/ECS/Component/Tags/PlayerControllerComponent.h"
 
 // Core/Window
 #include "Core/Window/WindowManager.h"

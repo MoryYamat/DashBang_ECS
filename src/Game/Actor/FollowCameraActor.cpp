@@ -3,7 +3,7 @@
 #include "Core/Window/WindowManager.h"
 
 #include "Core/ECS/Entity.h"
-#include "Core/ECS/Component/PlayerControllerComponent.h"
+#include "Core/ECS/Component/Tags/PlayerControllerComponent.h"
 
 #include "Core/EntityUtils/EntityUtils.h"
 

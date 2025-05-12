@@ -12,7 +12,8 @@
 
 #include "Core/ECS/Component/TileMapComponent.h"
 
-#include "Game/Init/InitLogicTransformFromModel.h"
+#include "Game/Init/InitModel/InitLogicTransformFromModel.h"
+#include "Game/Init/InitTileMap/InitTileMap.h"
 
 #include "DataTypes/ModelData.h"
 
@@ -74,7 +75,7 @@ TestBaseTerrainActor::TestBaseTerrainActor(ECS& ecs, Shader* shader)
 
 	// 描画情報から論理情報を初期化
 	Logic2DTransformComponent logic2DComp;
-	logic2DComp = GameUtils::Init::InitLogic2DTransformFromModel(transformComp, modelData);
+	logic2DComp = GameInit::LogicTransform::InitLogic2DTransformFromModel(transformComp, modelData);
 	ecs.addComponent(entity, logic2DComp);
 
 	std::cout << "TestBaseTerrainActor.cpp: Rotation " << logic2DComp.rotation << std::endl;
@@ -82,11 +83,16 @@ TestBaseTerrainActor::TestBaseTerrainActor(ECS& ecs, Shader* shader)
 	// 1.0f -> 1.0m (想定)
 	TileMapComponent tileMapComp;
 	tileMapComp.tileSize = 0.5f;
-	tileMapComp = GameUtils::Init::InitTileMapFromBounds(transformComp, modelData, logic2DComp, tileMapComp.tileSize);
+	tileMapComp = GameInit::TileMapFromMesh::InitTileMapFromBounds(transformComp, modelData, logic2DComp, tileMapComp.tileSize);
 	// TileMapComponent内のtilesベクトルを作成(初期化)
-	GameUtils::Init::InitTileMapTiles(tileMapComp);
+	GameInit::TileMapFromMesh::InitTileMapTiles(tileMapComp);
+//	GameInit::TileMapFromMesh::InitWalKableByTerrain(tileMapComp, modelData);
+	
+	GameInit::TileMapFromMesh::ApplyObstacleCollidersToTileMap(ecs, tileMapComp);
+
 	ecs.addComponent(entity, tileMapComp);
 
 	// 最終ログ
 	DebugUtils::GeneralLog("TestBaseTerrainActor.cpp", "TestBaseTerrainActor creation completed successfully");
 }
+

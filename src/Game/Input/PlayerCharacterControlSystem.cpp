@@ -1,7 +1,7 @@
 #include "PlayerCharacterControlSystem.h"
 
 #include "Core/ECS/Component/Logic2DTransformComponent.h"
-#include "Core/ECS/Component/PlayerControllerComponent.h"
+#include "Core/ECS/Component/Tags/PlayerControllerComponent.h"
 
 // collision
 #include "Core/ECS/Component/Collision/CollisionComponent.h"
@@ -77,7 +77,7 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 
 
 		// log for debugging
-		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(position)", logic.positionXZ);
+		DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(position)", logic.positionXZ);
 		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(front)", logic.front);
 		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(rotation)", {logic.rotation, 0});
 		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(circleCenter)", collisionComp.collider.circle2D.center);

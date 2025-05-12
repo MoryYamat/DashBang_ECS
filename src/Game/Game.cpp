@@ -28,8 +28,10 @@
 #include "Game/Actor/FollowCameraActor.h"
 #include "Game/Actor/MouseCursorActor.h"
 #include "Game/Actor/Map/TestBaseTerrainActor.h"
+
 // Game/Actor/Map
 #include "Game/Actor/Map/TileMapActor.h"
+#include "Game/Actor/Map/Obstacle/TestRockActor.h"
 
 // Game/Camera
 #include "Game/Camera/CameraFollowSystem.h"
@@ -180,7 +182,7 @@ void Game::updateGameLogics()
 
 void Game::generateOutputs()
 {
-	glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
+	glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -212,11 +214,13 @@ void Game::loadData()
 	MouseCursorActor mouseCursor = MouseCursorActor(mEcs);
 
 	// TileMapActor tilemap = TileMapActor(mEcs);
+	TestRockActor testRock = TestRockActor(mEcs, mShader);
 
 	
 	TestBaseTerrainActor testTerrainMap = TestBaseTerrainActor(mEcs, mShader);
 	
-	
+	//TestRockActor testRock = TestRockActor(mEcs, mShader);
+
 	// CameraActor camActor = CameraActor(mEcs);
 
 	//Collider a, c;

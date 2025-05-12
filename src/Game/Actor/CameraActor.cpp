@@ -6,7 +6,7 @@
 
 #include "Core/ECS/Component/TransformComponent.h"
 #include "Core/ECS/Component/CameraComponent.h"
-#include "Core/ECS/Component/PlayerControllerComponent.h"
+#include "Core/ECS/Component/Tags/PlayerControllerComponent.h"
 
 #include "Graphics/Renderer/Shader.h"
 

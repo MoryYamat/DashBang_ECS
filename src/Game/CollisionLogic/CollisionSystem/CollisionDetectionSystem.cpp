@@ -1,7 +1,7 @@
 #include "CollisionDetectionSystem.h"
 
 #include "Core/ECS/Component/Collision/CollisionComponent.h"
-#include "Core/ECS/Component/PlayerControllerComponent.h"
+#include "Core/ECS/Component/Tags/PlayerControllerComponent.h"
 #include "Core/ECS/Component/Logic2DTransformComponent.h"
 
 #include "Core/ECS/Component/TileMapComponent.h"
