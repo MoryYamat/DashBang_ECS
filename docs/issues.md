@@ -24,6 +24,7 @@
 ## **Camera**
 * Separation of system camera and game camera
 * Implementing a logical camera (taking pictures from directly above the XZ plane)
+* The camera offset Z axis value caused the drawing to not work properly (e.g. 0).
 
 ## **input**
 * Strict separation of key state management and side effects caused by state changes

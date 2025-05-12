@@ -55,6 +55,36 @@ void DebugUtils::DebugDraw::DrawQuad(const glm::vec2& center, float size, const 
 	glEnable(GL_DEPTH_TEST);
 }
 
+void DebugUtils::DebugDraw::DrawFilledQuad(const glm::vec2& center, float size, glm::vec3& color)
+{
+	float halfSize = size * 0.5f;
+
+	glm::vec3 v0(center.x - halfSize, 0.0f, center.y - halfSize);
+	glm::vec3 v1(center.x + halfSize, 0.0f, center.y - halfSize);
+	glm::vec3 v2(center.x + halfSize, 0.0f, center.y + halfSize);
+	glm::vec3 v3(center.x - halfSize, 0.0f, center.y + halfSize);
+
+	glUseProgram(0);
+	glDisable(GL_DEPTH_TEST);
+	glColor3f(color.r, color.g, color.b);
+
+	glBegin(GL_TRIANGLES);
+	glVertex3f(v0.x, v0.y, v0.z);
+	glVertex3f(v1.x, v1.y, v1.z);
+	glVertex3f(v2.x, v2.y, v2.z);
+
+	glVertex3f(v0.x, v0.y, v0.z);
+	glVertex3f(v2.x, v2.y, v2.z);
+	glVertex3f(v3.x, v3.y, v3.z);
+
+	// for debugging
+	// DebugUtils::LogVector_string("DebugUtils.cpp(vertex)", v0);
+
+	glEnd();
+
+	glEnable(GL_DEPTH_TEST);
+}
+
 void DebugUtils::DebugDraw::DrawCircle2D(const glm::vec2& centerXZ, float radius, const glm::vec3& color, int segments)
 {
 	std::vector<glm::vec3> points;

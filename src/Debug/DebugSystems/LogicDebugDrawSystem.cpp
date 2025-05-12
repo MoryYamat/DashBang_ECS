@@ -71,8 +71,6 @@ void LogicDebugDrawSystem::DebugDrawLogicTileMaps(ECS& ecs, const RenderContext&
 	//SetOpenGLMatrixState(renderContext);
 
 
-	glm::vec3 color = glm::vec3(1.0f, 1.0f, 0.0f);
-
 	for (Entity e : ecs.view<TileMapComponent>())
 	{
 		const auto& tileMapComp = ecs.get<TileMapComponent>(e);
@@ -81,11 +79,24 @@ void LogicDebugDrawSystem::DebugDrawLogicTileMaps(ECS& ecs, const RenderContext&
 		{
 			for (int col = 0; col < tileMapComp.numCols; ++col)
 			{
-				// どこで何の情報を生成し、どういう形で渡すかを要検討
-				// どこで何の情報を生成し、どういう形で渡すかを要検討
-				glm::vec2 center = tileMapComp.origin + glm::vec2(col + 0.5f, row + 0.5f) * tileMapComp.tileSize;
+				const Tile& tile = tileMapComp.tiles[row][col];
 
-				DebugUtils::DebugDraw::DrawQuad(center, tileMapComp.tileSize, color);
+				glm::vec3 color;
+				if (!tile.isWalkable)
+				{
+					color = glm::vec3(0.0f, 0.0f, 1.0f);
+					glm::vec2 center = tileMapComp.origin + glm::vec2(col + 0.5f, row + 0.5f) * tileMapComp.tileSize;
+					DebugUtils::DebugDraw::DrawFilledQuad(center, tileMapComp.tileSize, color);
+				}
+				else
+				{
+					color = glm::vec3(1.0f, 1.0f, 0.0f);
+					// どこで何の情報を生成し、どういう形で渡すかを要検討
+					// どこで何の情報を生成し、どういう形で渡すかを要検討
+					glm::vec2 center = tileMapComp.origin + glm::vec2(col + 0.5f, row + 0.5f) * tileMapComp.tileSize;
+					DebugUtils::DebugDraw::DrawQuad(center, tileMapComp.tileSize, color);
+				}
+
 			}
 		}
 	}

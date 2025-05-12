@@ -78,8 +78,11 @@ namespace DebugUtils::DebugDraw
 
 	void DrawQuad(const glm::vec2& center, float size, const glm::vec3& color);
 
+	void DrawFilledQuad(const glm::vec2& center, float size, glm::vec3& color);
+
 	void DrawTileOutline(const glm::vec2& minXZ, const glm::vec2& maxXZ,const glm::vec3& color);
 
+	
 }
 
 #ifdef DEBUG

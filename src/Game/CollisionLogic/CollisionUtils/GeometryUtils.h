@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/ECS/Component/Collision/CollisionComponent.h"
+
 #include <GLM/glm.hpp>
 
 namespace GameUtils::CollisionLogic::GeometryUtils
@@ -16,4 +18,6 @@ namespace GameUtils::CollisionLogic::GeometryUtils
 		const glm::vec2& boxMin,
 		const glm::vec2& boxMax
 	);
+
+	bool intersectOBB2D_AABB2D(const Obb2D& obb, const glm::vec2& aabbMin, const glm::vec2& aabbMax);
 }

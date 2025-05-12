@@ -32,3 +32,63 @@ bool GameUtils::CollisionLogic::GeometryUtils::CheckCircleAABBIntersection(
 	// 半径の２乗と比較して交差判定
 	return squareSum <= (radius * radius);
 }
+
+// Separating Axis Theorem (SAT)
+bool GameUtils::CollisionLogic::GeometryUtils::intersectOBB2D_AABB2D(const Obb2D& obb, const glm::vec2& aabbMin, const glm::vec2& aabbMax)
+{
+	// AABBの中心とハーフサイズ
+	glm::vec2 aabbCenter = 0.5f * (aabbMin + aabbMax);
+	glm::vec2 aabbHalfExtents = 0.5f * (aabbMax - aabbMin);
+
+	// AABBの軸(固定)
+	glm::vec2 aabbAxes[2] = {
+		glm::vec2(1.0f, 0.0f),// X軸
+		glm::vec2(0.0f, 1.0f)// Z軸
+	};
+
+	glm::vec2 obbAxes[2] = {
+		obb.axisX,
+		obb.axisZ
+	};
+
+	for (int i = 0; i < 2; ++i)
+	{
+		glm::vec2 axis = aabbAxes[i];
+
+		// AABBの投影半径
+		float aabbProjection = glm::dot(aabbHalfExtents, glm::abs(axis));
+
+		// OBBの投影半径
+		float obbProjection =
+			obb.halfExtents.x * std::abs(glm::dot(obb.axisX, axis)) +
+			obb.halfExtents.y * std::abs(glm::dot(obb.axisZ, axis));
+
+		// 中心間のベクトル
+		glm::vec2 centerDiff = obb.center - aabbCenter;
+		float centerDist = std::abs(glm::dot(centerDiff, axis));
+
+		if (centerDist > aabbProjection + obbProjection)
+			return false;
+	}
+
+	for (int i = 0; i < 2; ++i)
+	{
+		glm::vec2 axis = obbAxes[i];
+
+		float aabbProj = aabbHalfExtents.x * std::abs(glm::dot(glm::vec2(1, 0), axis)) +
+			aabbHalfExtents.y * std::abs(glm::dot(glm::vec2(0, 1), axis));
+
+		float obbProj =
+			obb.halfExtents.x * std::abs(glm::dot(obb.axisX, axis)) +
+			obb.halfExtents.y * std::abs(glm::dot(obb.axisZ, axis));
+
+		glm::vec2 centerDiff = obb.center - aabbCenter;
+		float centerDist = std::abs(glm::dot(centerDiff, axis));
+
+		if (centerDist > aabbProj + obbProj)
+			return false;
+	}
+	
+
+	return true;// 全軸で分離なし= 衝突
+}

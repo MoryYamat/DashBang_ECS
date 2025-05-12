@@ -48,7 +48,7 @@ TestRockActor::TestRockActor(ECS& ecs, Shader* shader)
 	// set TransformComponent
 	TransformComponent transformComp;
 	transformComp.position = glm::vec3(10.0f, 0.0f, -2.0f);
-	transformComp.rotation = glm::vec3(0.0f, 30.0f, 0.0f);
+	transformComp.rotation = glm::vec3(0.0f, -30.0f, 0.0f);
 	transformComp.scale = glm::vec3(0.01f);
 	ecs.addComponent(entity, transformComp);
 
@@ -93,7 +93,7 @@ TestRockActor::TestRockActor(ECS& ecs, Shader* shader)
 	testRockCollisionComp.collider.obb2D.center = worldCenterXZ;
 
 	// calc local vector axisX and axisZ
-	float rotRad = glm::radians(logic.rotation);
+	float rotRad = glm::radians(-logic.rotation);// OpenGL‚Í‰EèŒn‚¾‚ªClogic.rotation‚Í‰E‰ñ‚è‚Æ‚µ‚ÄŠi”[‚³‚ê‚Ä‚¢‚é‚Ì‚ÅC•„†‚ğ”½“]
 	glm::vec2 axisX = glm::normalize(glm::vec2(std::cos(rotRad), std::sin(rotRad)));
 	glm::vec2 axisZ = glm::vec2(-axisX.y, axisX.x);
 	testRockCollisionComp.collider.obb2D.axisX = axisX;

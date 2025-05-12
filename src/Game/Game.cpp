@@ -194,7 +194,7 @@ void Game::generateOutputs()
 
 
 	// An algorithm is needed to set the shader for each object.
-	//RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
+	// RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
 	RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect(), mRenderContext);
 
 

@@ -14,7 +14,7 @@ Logic2DTransformComponent GameInit::LogicTransform::InitLogic2DTransformFromMode
 
 	// 回転データの初期化 (どうやってモデル正面を得るか)
 	//logic.rotation = glm::radians(transformComp.rotation.y);
-	logic.rotation = transformComp.rotation.y;
+	logic.rotation = transformComp.rotation.y;// 
 	logic.UpdateDirectionFromRotation();
 
 	// Get logical XZ size from model size and drawing scale
