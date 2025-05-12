@@ -28,21 +28,27 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 
 		glm::vec2 moveDir(0.0f);
 
+		glm::vec3 camFront3D = renderContext.cameraFront;
+		glm::vec2 camForwrdXZ = glm::normalize(glm::vec2(camFront3D.x, camFront3D.z));
+
+		glm::vec3 camRight3D = renderContext.cameraRight;
+		glm::vec2 camRightXZ = glm::normalize(glm::vec2(camRight3D.x, camRight3D.z));
+
 		// Movement based on relative coordinates
 		// 相対座標を基準に移動
 		if (input.isPressed(InputAction::MoveForward))
-			moveDir += logic.front;
+			moveDir += camForwrdXZ;
 		if (input.isPressed(InputAction::MoveBackward))
-			moveDir -= logic.front;
+			moveDir -= camForwrdXZ;
 		if (input.isPressed(InputAction::MoveRight))
-			moveDir += logic.right;
+			moveDir += camRightXZ;
 		if (input.isPressed(InputAction::MoveLeft))
-			moveDir -= logic.right;
+			moveDir -= camRightXZ;
 
 		if (glm::length(moveDir) > 0.0f)
 		{
 			moveDir = glm::normalize(moveDir);
-			logic.positionXZ += moveDir * deltaTime * 3.0f; // 移動速度
+			logic.positionXZ += moveDir * deltaTime * 5.0f; // 移動速度
 
 			// collision update
 			if (collisionComp.collider.type == ColliderType::Circle2D)
@@ -68,6 +74,7 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 
 			// rightベクトルもfrontから再計算
 			logic.UpdateRightFromFront();
+
 		}
 		else
 		{
@@ -77,7 +84,7 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 
 
 		// log for debugging
-		DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(position)", logic.positionXZ);
+		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(position)", logic.positionXZ);
 		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(front)", logic.front);
 		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(rotation)", {logic.rotation, 0});
 		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(circleCenter)", collisionComp.collider.circle2D.center);

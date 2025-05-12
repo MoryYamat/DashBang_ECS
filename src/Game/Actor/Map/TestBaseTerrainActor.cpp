@@ -88,7 +88,7 @@ TestBaseTerrainActor::TestBaseTerrainActor(ECS& ecs, Shader* shader)
 	GameInit::TileMapFromMesh::InitTileMapTiles(tileMapComp);
 //	GameInit::TileMapFromMesh::InitWalKableByTerrain(tileMapComp, modelData);
 	
-	GameInit::TileMapFromMesh::ApplyObstacleCollidersToTileMap(ecs, tileMapComp);
+	// GameInit::TileMapFromMesh::ApplyObstacleCollidersToTileMap(ecs, tileMapComp);
 
 	ecs.addComponent(entity, tileMapComp);
 

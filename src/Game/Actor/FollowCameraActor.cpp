@@ -19,44 +19,48 @@ FollowCameraActor::FollowCameraActor(ECS& ecs)
 {
 	Entity entity = ecs.createEntity();
 
-	CameraComponent camComp;
-	FollowCameraComponent followCamComp;
-	TransformComponent CamTransformComp;
+	//CameraComponent camComp;
+	//FollowCameraComponent followCamComp;
+	//TransformComponent CamTransformComp;
 
-	camComp.aspect = WindowManager::GetAspect();
+	ecs.addComponent(entity, CameraComponent{});
+	ecs.addComponent(entity, FollowCameraComponent{}); 
+	ecs.addComponent(entity, TransformComponent{});
+
+	//camComp.aspect = WindowManager::GetAspect();
 	// initialize camera vectors
 
 	// Get the ID of the target entity to follow and set it to target
-	Entity ePlayerActor = EntityUtils::getEntityByName(ecs, "Player");
-	if (ePlayerActor != Entity::INVALID)
-	{
-		followCamComp.targetEntity = ePlayerActor;
-		ecs.addComponent(entity, followCamComp);
-		TransformComponent& targetTransform = ecs.get<TransformComponent>(ePlayerActor);
+	//Entity ePlayerActor = EntityUtils::getEntityByName(ecs, "Player");
+	//if (ePlayerActor != Entity::INVALID)
+	//{
+	//	followCamComp.targetEntity = ePlayerActor;
+	//	ecs.addComponent(entity, followCamComp);
+	//	TransformComponent& targetTransform = ecs.get<TransformComponent>(ePlayerActor);
 
-		// Relative coordinates
-		followCamComp.offset = { 0.0f, 10.0f, 10.0f };
-		
-		Logic2DTransformComponent& targetLogic2DTransform = ecs.get<Logic2DTransformComponent>(ePlayerActor);
-		
+	//	// Relative coordinates
+	//	followCamComp.offset = { 0.0f, 10.0f, 10.0f };
+	//	
+	//	Logic2DTransformComponent& targetLogic2DTransform = ecs.get<Logic2DTransformComponent>(ePlayerActor);
+	//	
 
-		initializeFollowCameraGetFront(followCamComp, targetLogic2DTransform);
-		// Initialize camera position
-		CamTransformComp.position = targetTransform.position + followCamComp.offset;
+	//	initializeFollowCameraGetFront(followCamComp, targetLogic2DTransform);
+	//	// Initialize camera position
+	//	CamTransformComp.position = targetTransform.position + followCamComp.offset;
 
-		initializeCameraVectors(camComp, CamTransformComp, targetTransform);
-		
-		ecs.addComponent(entity, CamTransformComp);
-		ecs.addComponent(entity, camComp);
+	//	initializeCameraVectors(camComp, CamTransformComp, targetTransform);
+	//	
+	//	ecs.addComponent(entity, CamTransformComp);
+	//	ecs.addComponent(entity, camComp);
 
-		
-	}
-	else
-	{
-		std::cerr << "[FollowCameraActor.cpp]: Failed to find Player entity by name!" << std::endl;
-	}
+	//	
+	//}
+	//else
+	//{
+	//	std::cerr << "[FollowCameraActor.cpp]: Failed to find Player entity by name!" << std::endl;
+	//}
 
-	DebugUtils::LogVector("FollowCameraActor.cpp", camComp.front);
+	//DebugUtils::LogVector("FollowCameraActor.cpp", camComp.front);
 	//DebugUtils::LogVector("FollowCameraActor.cpp", CamTransformComp.position);
 }
 

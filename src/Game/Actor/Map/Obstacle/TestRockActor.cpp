@@ -47,7 +47,7 @@ TestRockActor::TestRockActor(ECS& ecs, Shader* shader)
 
 	// set TransformComponent
 	TransformComponent transformComp;
-	transformComp.position = glm::vec3(-10.0f, 0.0f, 2.0f);
+	transformComp.position = glm::vec3(10.0f, 0.0f, -2.0f);
 	transformComp.rotation = glm::vec3(0.0f, 30.0f, 0.0f);
 	transformComp.scale = glm::vec3(0.01f);
 	ecs.addComponent(entity, transformComp);

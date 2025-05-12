@@ -7,8 +7,11 @@
 #include "Core/ECS/Entity.h"
 #include "Core/ECS/EntityManager.h"
 
+#include "Core/ECS/Meta/InitComponent/FollowCameraInit.h"
+
 //Components
 #include "Core/ECS/Component/TransformComponent.h"
+#include "Core/ECS/Component/TileMapComponent.h"
 
 // Window
 #include "Core/Window/WindowManager.h"
@@ -40,6 +43,9 @@
 #include "Game/Input/CameraControlSystem.h"
 #include "Game/Input/PlayerCharacterControlSystem.h"
 #include "Game/Input/MouseCursorUpdateSystem.h"
+
+// Game Init
+#include "Game/Init/InitTileMap/InitTileMap.h"
 
 // collision systems
 #include "Game/CollisionLogic/CollisionSystem/CollisionDetectionSystem.h"
@@ -202,10 +208,24 @@ void Game::generateOutputs()
 
 void Game::loadData()
 {
+	Game::spawnAllActors();
 
+	Game::RunInitializationPhase();
+
+	std::cout << "[Game.cpp]: Data loading completed successfully." << std::endl;
+}
+
+void Game::unloadData()
+{
+
+}
+
+
+void Game::spawnAllActors()
+{
 	//TriangleActor tri = TriangleActor(mEcs);
 
-	//Test3DModel test3d = Test3DModel(mEcs, mShader);
+//Test3DModel test3d = Test3DModel(mEcs, mShader);
 
 	PlayerCharacter player = PlayerCharacter(mEcs, mShader);
 
@@ -214,12 +234,12 @@ void Game::loadData()
 	MouseCursorActor mouseCursor = MouseCursorActor(mEcs);
 
 	// TileMapActor tilemap = TileMapActor(mEcs);
-	TestRockActor testRock = TestRockActor(mEcs, mShader);
+	// TestRockActor testRock = TestRockActor(mEcs, mShader);
 
-	
+
 	TestBaseTerrainActor testTerrainMap = TestBaseTerrainActor(mEcs, mShader);
-	
-	//TestRockActor testRock = TestRockActor(mEcs, mShader);
+
+	TestRockActor testRock = TestRockActor(mEcs, mShader);
 
 	// CameraActor camActor = CameraActor(mEcs);
 
@@ -232,13 +252,19 @@ void Game::loadData()
 	//bool hit = CollisionUtils::intersectBox2D(a.box2D, c.box2D);
 
 	//std::cout << "Result: " << std::boolalpha << hit << std::endl;
-
-	std::cout << "[Game.cpp]: Data loading completed successfully." << std::endl;
 }
 
-void Game::unloadData()
+void Game::RunInitializationPhase()
 {
+	for (Entity e : mEcs.view<TileMapComponent>())
+	{
+		auto& tileMapComp = mEcs.get<TileMapComponent>(e);
+		GameInit::TileMapFromMesh::ApplyObstacleCollidersToTileMap(mEcs, tileMapComp);
+	}
 
+	for (Entity e : mEcs.view<FollowCameraComponent, CameraComponent, TransformComponent>())
+	{
+		auto& followCamComp = mEcs.get<FollowCameraComponent>(e);
+		InitSystem<FollowCameraComponent>::Init(followCamComp, mEcs, e);
+	}
 }
-
-
