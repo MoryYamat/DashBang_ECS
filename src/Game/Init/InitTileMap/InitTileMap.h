@@ -39,10 +39,11 @@ namespace GameInit::TileMapFromMesh
 	//void InitWalKableByTerrain(TileMapComponent& tileMapComp, const ModelData& modelData);
 }
 
-// For Obstacles
+// For set tile attributes
 namespace GameInit::TileMapFromMesh
 {
 
 	void ApplyObstacleCollidersToTileMap(ECS& ecs, TileMapComponent& tileMapComp);
 
+	void MaskUncoveredTilesByTerrainOBB(ECS& ecs, TileMapComponent& tileMapComp);
 }

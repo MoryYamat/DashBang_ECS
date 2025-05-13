@@ -17,6 +17,7 @@ struct InitSystem<TileMapComponent>
 	static void Init(TileMapComponent& tileMapComp, ECS& ecs, Entity tileMapEntity)
 	{
 		GameInit::TileMapFromMesh::ApplyObstacleCollidersToTileMap(ecs, tileMapComp);
+		GameInit::TileMapFromMesh::MaskUncoveredTilesByTerrainOBB(ecs, tileMapComp);
 	}
 
 };

@@ -84,7 +84,7 @@ void LogicDebugDrawSystem::DebugDrawLogicTileMaps(ECS& ecs, const RenderContext&
 				glm::vec3 color;
 				if (!tile.isWalkable)
 				{
-					color = glm::vec3(0.0f, 0.0f, 1.0f);
+					color = glm::vec3(0.0f, 0.0f, 0.5f);
 					glm::vec2 center = tileMapComp.origin + glm::vec2(col + 0.5f, row + 0.5f) * tileMapComp.tileSize;
 					DebugUtils::DebugDraw::DrawFilledQuad(center, tileMapComp.tileSize, color);
 				}

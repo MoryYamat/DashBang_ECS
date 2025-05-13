@@ -7,6 +7,8 @@
 #include "Core/ECS/Component/MeshComponent.h"
 #include "Core/ECS/Component/ShaderComponent.h"
 
+#include "Core/ECS/Component/Collision/CollisionComponent.h"
+
 // test color
 #include "Core/ECS/Component/MaterialComponent.h"
 
@@ -48,7 +50,7 @@ TestBaseTerrainActor::TestBaseTerrainActor(ECS& ecs, Shader* shader)
 	// ‰Šú•`‰æÀ•W‚ğİ’è
 	TransformComponent transformComp;
 	transformComp.position = glm::vec3(0.0f, 0.0f, 0.0f);
-	transformComp.rotation = glm::vec3(0.0f, 45.0f, 0.0f);
+	transformComp.rotation = glm::vec3(0.0f, 30.0f, 0.0f);
 	transformComp.scale = glm::vec3(0.01f);
 	ecs.addComponent(entity, transformComp);
 
@@ -91,6 +93,28 @@ TestBaseTerrainActor::TestBaseTerrainActor(ECS& ecs, Shader* shader)
 	// GameInit::TileMapFromMesh::ApplyObstacleCollidersToTileMap(ecs, tileMapComp);
 
 	ecs.addComponent(entity, tileMapComp);
+
+	CollisionComponent collisionComp;
+	// calc world size on the xz plane
+	collisionComp.collider.type = ColliderType::Obb2D;
+	collisionComp.collider.obb2D.center = logic2DComp.positionXZ;
+	glm::vec2 worldSize = GameInit::LogicTransform::GetModelXZSizeWithScale(transformComp, modelData);
+	collisionComp.collider.obb2D.halfExtents = worldSize * 0.5f;
+
+	// calc world center on the xz plane
+	glm::vec3 localCenter = modelData.GetCenter();
+	glm::vec3 worldCenter3D = transformComp.toMatrix() * glm::vec4(localCenter, 1.0f);
+	glm::vec2 worldCenterXZ = glm::vec2(worldCenter3D.x, worldCenter3D.z);
+	collisionComp.collider.obb2D.center = worldCenterXZ;
+
+	// calc local vector axisX and axisZ
+	float rotRad = glm::radians(-logic2DComp.rotation);// OpenGL‚Í‰EèŒn‚¾‚ªClogic.rotation‚Í‰E‰ñ‚è‚Æ‚µ‚ÄŠi”[‚³‚ê‚Ä‚¢‚é‚Ì‚ÅC•„†‚ğ”½“]
+	glm::vec2 axisX = glm::normalize(glm::vec2(std::cos(rotRad), std::sin(rotRad)));
+	glm::vec2 axisZ = glm::vec2(-axisX.y, axisX.x);
+	collisionComp.collider.obb2D.axisX = axisX;
+	collisionComp.collider.obb2D.axisZ = axisZ;
+	ecs.addComponent(entity, collisionComp);
+
 
 	// ÅIƒƒO
 	DebugUtils::GeneralLog("TestBaseTerrainActor.cpp", "TestBaseTerrainActor creation completed successfully");

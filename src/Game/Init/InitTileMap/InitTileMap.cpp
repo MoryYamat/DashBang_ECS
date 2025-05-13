@@ -128,7 +128,7 @@ glm::vec2 GameInit::TileMapFromMesh::ComputeTileMapOriginFromModel(const Transfo
 
 void GameInit::TileMapFromMesh::ApplyObstacleCollidersToTileMap(ECS& ecs, TileMapComponent& tileMapComp)
 {
-	std::cout << "this function is called " << std::endl;
+	// std::cout << "this function is called " << std::endl;
 	for (Entity e : ecs.view<CollisionComponent, ObstacleTagComponent>())
 	{
 		const auto& collisionComp = ecs.get<CollisionComponent>(e);
@@ -167,7 +167,52 @@ void GameInit::TileMapFromMesh::ApplyObstacleCollidersToTileMap(ECS& ecs, TileMa
 	}
 }
 
+void GameInit::TileMapFromMesh::MaskUncoveredTilesByTerrainOBB(ECS& ecs, TileMapComponent& tileMapComp)
+{
+	for (Entity e : ecs.view<CollisionComponent, TileMapComponent>())
+	{
+		const auto& collisionComp = ecs.get<CollisionComponent>(e);
 
+		if (collisionComp.collider.type != ColliderType::Obb2D)
+			continue;
+
+		const Obb2D& obb = collisionComp.collider.obb2D;
+
+		for (int row = 0; row < tileMapComp.numRows; ++row)
+		{
+			for (int col = 0; col < tileMapComp.numCols; ++col)
+			{
+				glm::vec2 tileCenter = tileMapComp.GetTileCenter(row, col);
+
+				auto [tileMin, tileMax] = tileMapComp.GetTileAABB(row, col);
+				//if (obb.contains(tileCenter))
+				//{
+				//	tileMapComp.tiles[row][col].isWalkable = false;
+
+				//	//std::cout << "[InitTileMap.cpp(This Tile is Un Walkable)] row: " << row
+				//	//	<< "col: " << col << std::endl;
+				//	DebugUtils::LogVector_string("[InitTileMap.cpp(This Tile is Un Walkable)] :", tileCenter);
+				//}
+
+				// TerrainMeshと被らない空中部分のタイルの`unWalkable`設定
+				if (!GameUtils::CollisionLogic::GeometryUtils::intersectOBB2D_AABB2D(obb, tileMin, tileMax))
+				{
+					tileMapComp.tiles[row][col].isWalkable = false;
+				}
+
+				// 外周一タイル分は`UnWalkable`
+				if (row == 0 || row == tileMapComp.numRows - 1 || col == 0 || col == tileMapComp.numCols - 1)
+				{
+					tileMapComp.tiles[row][col].isWalkable = false;
+				}
+				//std::cout << "[InitTileMap.cpp(WalkableByTerrain)] row:" << row
+				//	<< " col:" << col
+				//	<< " Result :" << tileMapComp.tiles[row][col].isWalkable << std::endl;
+
+			}
+		}
+	}
+}
 
 //bool GameInit::TileMapFromMesh::isInsideTerrainDrawBounds(glm::vec2 pointXZ, )
 //{
