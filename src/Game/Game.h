@@ -14,12 +14,18 @@
 #include "Game/Input/InputMapping.h"
 
 
+#include "Core/Window/Window.h"
+
+// Input
+#include "Core/InputManager/InputManager.h"
+#include "Core/InputManager/RawInputState.h"
+
 class Game
 {
 public:
 
 	Game();
-	
+
 	bool Initialize();
 
 	void Shutdown();
@@ -39,6 +45,10 @@ private:
 	// shader
 	class Shader* mShader;
 	RenderContext mRenderContext;
+
+	class Window mWindow;
+
+	class InputManager* mInputManager;
 
 	// input states
 	class InputState mInputState;

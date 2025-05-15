@@ -70,8 +70,9 @@ void DebugUtils::DebugDraw::DrawFilledQuad(const glm::vec2& center, float size, 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // ÉøÉuÉåÉìÉhê›íË
 
-	glColor4f(color.r, color.g, color.b, 0.5f);
+	glColor4f(color.r, color.g, color.b, 0.3f);
 
+	// í∏ì_ê›íË
 	glBegin(GL_TRIANGLES);
 	glVertex3f(v0.x, v0.y, v0.z);
 	glVertex3f(v1.x, v1.y, v1.z);
@@ -85,7 +86,7 @@ void DebugUtils::DebugDraw::DrawFilledQuad(const glm::vec2& center, float size, 
 	// DebugUtils::LogVector_string("DebugUtils.cpp(vertex)", v0);
 
 	glEnd();
-
+	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 }
 

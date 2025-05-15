@@ -102,7 +102,7 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 
 	// set Test Corlor
 	MaterialComponent materialComp;
-	materialComp.baseColor = glm::vec3(0.4f, 0.3f, 0.7f);
+	materialComp.baseColor = glm::vec3(0.8f, 0.4f, 0.2f);
 	ecs.addComponent(entity, materialComp);
 
 	// Collsion Initialization

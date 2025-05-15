@@ -19,7 +19,6 @@
 #include "Core/ECS/Meta/InitComponent/FollowCameraInit.h"
 
 // Window
-#include "Core/Window/WindowManager.h"
 
 // physics
 #include "Core/Physics/CollisionUtils.h"
@@ -70,6 +69,7 @@ Game::Game()
 	: mIsRunning(true)
 	, mShader(nullptr)
 	, mRenderContext()
+	, mInputManager(nullptr)
 	, mCollisionResults()
 	, windowWidth(1280)
 	, windowHeight(720)
@@ -88,7 +88,11 @@ void Game::Shutdown()
 	delete mShader;
 	mShader = nullptr;
 
-	WindowManager::Shutdown();
+	delete mInputManager;
+	mInputManager = nullptr;
+
+
+	mWindow.Shutdown();
 
 	std::cout << "\n[Game.cpp (Shutdown)]: The application shut down successfully." << std::endl;
 }
@@ -121,12 +125,17 @@ bool Game::Initialize()
 
 	//glViewport(0, 0, mWindow_Width, mWindow_Height);
 	
-	if (!WindowManager::Initialize(windowWidth, windowHeight, "Game"))
+	if (!mWindow.Initialize(windowWidth, windowHeight, "Game"))
 	{
 		std::cerr << "[Game.cpp]: Failed to Initialize WindowManager" << std::endl;
 		return false;
 	}
 	
+	// initialize input system
+	//InputManager::Initialize(WindowManager::GetWindow());
+
+	mInputManager = new InputManager(mWindow.GetGLFWWindow());
+
 	// WindowManager::CaptureMouse();
 
 	glEnable(GL_DEPTH_TEST);
@@ -147,7 +156,7 @@ bool Game::Initialize()
 
 void Game::RunLoop()
 {
-	while (!glfwWindowShouldClose(WindowManager::GetWindow()))
+	while (!glfwWindowShouldClose(mWindow.GetGLFWWindow()) && mIsRunning)
 	{
 
 		updateGameLogics();
@@ -164,15 +173,24 @@ void Game::RunLoop()
 
 void Game::updateGameLogics()
 {
+	// Delta Time
 	float currentFrame = static_cast<float>(glfwGetTime());
 	mDeltaTime = currentFrame - mLastFrame;
 	mLastFrame = currentFrame;
 
-	// 1フレームごとに初期化
+	// コリジョンコンテキスト: 1フレームごとに初期化
 	mCollisionResults.Clear();
 
+	mInputManager->Update();
+
+	// 
+	const RawInputState& input = mInputManager->GetRawInput();;
+	if (input.keyState.count(GLFW_KEY_ESCAPE) && input.keyState.at(GLFW_KEY_ESCAPE)) {
+		mIsRunning = false;
+	}
+
 	// 入力状態マップの更新
-	mInputMapping.update(WindowManager::GetWindow(), mInputState);
+	mInputMapping.update(mWindow.GetGLFWWindow(), mInputState);
 
 	// characterの移動
 	PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime, mRenderContext);
@@ -200,7 +218,7 @@ void Game::generateOutputs()
 
 	// An algorithm is needed to set the shader for each object.
 	// RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
-	RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect(), mRenderContext);
+	RenderSystem::RenderSystem(mEcs, *mShader, mWindow.GetAspect(), mRenderContext);
 
 
 	// draw for debugging
@@ -208,7 +226,7 @@ void Game::generateOutputs()
 
 
 	//
-	glfwSwapBuffers(WindowManager::GetWindow());
+	glfwSwapBuffers(mWindow.GetGLFWWindow());
 }
 
 void Game::loadData()

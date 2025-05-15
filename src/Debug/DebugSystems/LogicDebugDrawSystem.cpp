@@ -81,11 +81,14 @@ void LogicDebugDrawSystem::DebugDrawLogicTileMaps(ECS& ecs, const RenderContext&
 			{
 				const Tile& tile = tileMapComp.tiles[row][col];
 
+
+				glm::vec2 center = tileMapComp.origin + glm::vec2(col + 0.5f, row + 0.5f) * tileMapComp.tileSize;
+
 				glm::vec3 color;
+				// walkable属性によって描画方法を変更
 				if (!tile.isWalkable)
 				{
 					color = glm::vec3(0.0f, 0.0f, 0.5f);
-					glm::vec2 center = tileMapComp.origin + glm::vec2(col + 0.5f, row + 0.5f) * tileMapComp.tileSize;
 					DebugUtils::DebugDraw::DrawFilledQuad(center, tileMapComp.tileSize, color);
 				}
 				else
@@ -93,7 +96,6 @@ void LogicDebugDrawSystem::DebugDrawLogicTileMaps(ECS& ecs, const RenderContext&
 					color = glm::vec3(1.0f, 1.0f, 0.0f);
 					// どこで何の情報を生成し、どういう形で渡すかを要検討
 					// どこで何の情報を生成し、どういう形で渡すかを要検討
-					glm::vec2 center = tileMapComp.origin + glm::vec2(col + 0.5f, row + 0.5f) * tileMapComp.tileSize;
 					DebugUtils::DebugDraw::DrawQuad(center, tileMapComp.tileSize, color);
 				}
 
