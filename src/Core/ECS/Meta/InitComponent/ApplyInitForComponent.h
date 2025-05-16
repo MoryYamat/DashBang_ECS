@@ -11,7 +11,7 @@
 
 
 template<typename Component>
-void ApplyDeferredInitialization(ECS& ecs)
+void ApplyDeferredInitialization(ECS& ecs, Window& window)
 {
 	constexpr InitPhase phase = GetInitPhase<Component>();
 
@@ -25,7 +25,7 @@ void ApplyDeferredInitialization(ECS& ecs)
 		for (Entity e : ecs.view<Component>())
 		{
 			auto& comp = ecs.get<Component>(e);
-			InitSystem<Component>::Init(comp, ecs, e);
+			InitSystem<Component>::Init(comp, ecs, e, window);
 		}
 	}
 }

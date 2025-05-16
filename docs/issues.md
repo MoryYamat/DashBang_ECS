@@ -1,11 +1,15 @@
 # **Identifying issues in the development process and consolidating solutions**
 
+* Challenge/Problem (Solution)
+> Next issues/problems etc.
+
 ## **Project**
 * Convert the local character code from `Shift-JIS` to `UTF-8` in bulk
 * **Organizing the folder structure**
 
 ## **Architecture
-* Separation of game logic and system (engine) logic
+* ~~Separation of game logic and system (engine) logic~~ (Initialization of `logical data (2D)` based on `drawing data (3D)`) (Update of `drawing data (3D)` by (updating) `logical data (2D)` based on input)
+> Enhancing game editor-like functions (more intuitive and flexible)
 
 ## **ECS**
 * Defining hierarchical relationships between `Entity` and implementing semantics based on names
@@ -16,7 +20,9 @@
 
 ## **Physical Layer**
 * Physics layer (collision) implementation
-    * Ground implementation
+    * ~~Ground implementation~~ (automatic initialization of logical tilemap by TerrainMesh)
+    * ~~Obstacle implementation~~ (automatic initialization of logical tilemap Walkable attribute by static obstacle object by ObstacleActor/Component)
+> Room for processing optimization and improvement
 * Implement flexible and intuitive integration of drawing data and physics data
     * Consider how to match the apparent size with meaningful collision detection/action range in logical space (logic) and visual space (visual).
 * When initializing logical data using drawing data, if you try to take rotation into account, there is a problem where misalignment occurs due to scale, center of rotation, and various other errors.
@@ -27,6 +33,8 @@
 * The camera offset Z axis value caused the drawing to not work properly (e.g. 0).
 
 ## **input**
+* Improved `Input` data/processing structure
+    * Separation of `System Input` and `Game Input`
 * Strict separation of key state management and side effects caused by state changes
 * Improved operability (allowing players to choose what to base their character movement on and how to rotate their viewpoint)
 

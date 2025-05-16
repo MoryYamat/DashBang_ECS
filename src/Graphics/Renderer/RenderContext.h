@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "Core/Window/Window.h"
+
 #include <GLM/glm.hpp>
 
 struct RenderContext
@@ -14,3 +16,4 @@ struct RenderContext
 	glm::mat4 projectionMatrix = glm::mat4(1.0f);// ìäâeçsóÒ
 	glm::vec4 viewport = glm::vec4(1.0f);// viewport
 };
+

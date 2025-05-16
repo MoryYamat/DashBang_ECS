@@ -44,9 +44,10 @@
 #include "Game/Camera/CameraFollowSystem.h"
 
 // Game/Input
-#include "Game/Input/CameraControlSystem.h"
+#include "Game/Camera/CameraControlSystem.h"
 #include "Game/Input/PlayerCharacterControlSystem.h"
 #include "Game/Input/MouseCursorUpdateSystem.h"
+#include "Game/Input/InputRouterSystem.h"
 
 // Game Init
 #include "Game/Init/InitTileMap/InitTileMap.h"
@@ -149,6 +150,9 @@ bool Game::Initialize()
 	std::cout << "[Game.cpp (Initialize)]: Application initialization completed successfully" << std::endl;
 
 
+	// initialize input mapping
+	InitializeInputMapping();
+
 	loadData();
 
 	return true;
@@ -181,19 +185,22 @@ void Game::updateGameLogics()
 	// コリジョンコンテキスト: 1フレームごとに初期化
 	mCollisionResults.Clear();
 
+	// Input
 	mInputManager->Update();
-
-	// 
+ 
 	const RawInputState& input = mInputManager->GetRawInput();;
 	if (input.keyState.count(GLFW_KEY_ESCAPE) && input.keyState.at(GLFW_KEY_ESCAPE)) {
 		mIsRunning = false;
 	}
 
+	InputRouterSystem(mEcs, mInputManager->GetRawInput(), mInputMapping);
+
 	// 入力状態マップの更新
-	mInputMapping.update(mWindow.GetGLFWWindow(), mInputState);
+	//mInputMapping.update(mWindow.GetGLFWWindow(), mInputState);
 
 	// characterの移動
-	PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime, mRenderContext);
+	PlayerCharacterControlSystem::Update(mEcs, mInputManager->GetRawInput(), mRenderContext, mDeltaTime);
+	//PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime, mRenderContext);
 	// PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime);
 
 	// 2D (Logic)-> 3D (Drawing)
@@ -202,8 +209,13 @@ void Game::updateGameLogics()
 	// カメラ
 	CameraFollowSystem::Update(mEcs, mDeltaTime);
 	// GameSystemInput::UpdateCamera(mEcs, mInputState, mDeltaTime);
-	
-	MouseCursorUpdateSystem::Update(mEcs, mInputState, mRenderContext);
+
+
+	Game::updateContext();
+
+	// Update Mouse Cursor Logic data 
+	MouseCursorUpdateSystem::Update(mEcs, mInputManager->GetRawInput(), mRenderContext);
+	//MouseCursorUpdateSystem::Update(mEcs, mInputState, mRenderContext);
 
 	// 
 	GameUtils::CollisionLogic::DetectionSystem::UpdateCollisionResultStorage(mEcs, mCollisionResults);
@@ -294,5 +306,20 @@ void Game::RunInitializationPhase()
 	ApplyAllDeferredInitializations<
 		TileMapComponent,
 		FollowCameraComponent
-	>(mEcs);
+	// コンテキスト情報を渡す．
+	>(mEcs, mWindow);
+}
+
+void Game::updateContext()
+{
+	// update RenderContext:: viewport 
+	mRenderContext.viewport = glm::vec4(0, 0, mWindow.GetWidth(), mWindow.GetHeight());
+}
+
+void Game::InitializeInputMapping()
+{
+	mInputMapping.bindKey(GLFW_KEY_W, InputAction::MoveForward);
+	mInputMapping.bindKey(GLFW_KEY_S, InputAction::MoveBackward);
+	mInputMapping.bindKey(GLFW_KEY_D, InputAction::MoveRight);
+	mInputMapping.bindKey(GLFW_KEY_A, InputAction::MoveLeft);
 }

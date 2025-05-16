@@ -2,7 +2,6 @@
 
 #include "Core/ECS/Entity.h"
 
-#include "Core/Window/WindowManager.h"
 
 #include "Core/ECS/Component/MaterialComponent.h"
 
@@ -39,7 +38,7 @@ void RenderSystem::RenderSystem(ECS& ecs, Shader& shader, float aspect, RenderCo
 
 	context.viewMatrix = view;
 	context.projectionMatrix = projection;
-	context.viewport = {0, 0, WindowManager::GetWidth(), WindowManager::GetHeight()};
+	//context.viewport = {0, 0, WindowManager::GetWidth(), WindowManager::GetHeight()};
 }
 
 void RenderSystem::drawMesh(const MeshComponent& meshComp)

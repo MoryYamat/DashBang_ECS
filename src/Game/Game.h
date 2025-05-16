@@ -71,5 +71,9 @@ private:
 	void spawnAllActors();
 
 	void RunInitializationPhase();
+
+	void updateContext();
+
+	void InitializeInputMapping();
 };
 

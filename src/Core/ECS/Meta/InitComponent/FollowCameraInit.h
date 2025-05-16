@@ -6,7 +6,7 @@
 #include "Core/ECS/Meta/InitComponent/InitSystem.h"
 #include "Core/EntityUtils/EntityUtils.h"
 
-#include "Core/Window/WindowManager.h"
+// #include "Core/Window/WindowManager.h"
 
 #include "Core/ECS/Component/TransformComponent.h"
 #include "Core/ECS/Component/Logic2DTransformComponent.h"
@@ -22,7 +22,7 @@
 template<>
 struct InitSystem<FollowCameraComponent>
 {
-	static void Init(FollowCameraComponent& followCamComp, ECS& ecs, Entity cameraEntity)
+	static void Init(FollowCameraComponent& followCamComp, ECS& ecs, Entity cameraEntity, Window& window)
 	{
 		Entity ePlayerActor = EntityUtils::getEntityByName(ecs, "Player");
 		if (ePlayerActor == Entity::INVALID)
@@ -46,7 +46,7 @@ struct InitSystem<FollowCameraComponent>
 		
 		// Initialize camera Front vector
 		auto& camComp = ecs.get<CameraComponent>(cameraEntity);
-		camComp.aspect = WindowManager::GetAspect();
+		camComp.aspect = window.GetAspect();
 		camComp.front = glm::normalize(targetTransform.position - camTransform.position);
 		camComp.right = glm::normalize(glm::cross(camComp.front, camComp.up));
 

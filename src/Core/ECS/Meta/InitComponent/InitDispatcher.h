@@ -6,7 +6,7 @@
 #include "Core/ECS/EntityManager.h"
 
 template<typename... Components>
-void ApplyAllDeferredInitializations(ECS& ecs)
+void ApplyAllDeferredInitializations(ECS& ecs, Window& window)
 {
-	(ApplyDeferredInitialization<Components>(ecs), ...);
+	(ApplyDeferredInitialization<Components>(ecs, window), ...);
 }

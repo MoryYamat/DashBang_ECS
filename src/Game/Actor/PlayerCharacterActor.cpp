@@ -8,7 +8,9 @@
 
 #include "Core/ECS/Component/FollowCameraComponent.h"
 
+// input
 #include "Core/ECS/Component/InputComponent.h"
+#include "Core/ECS/Component/InputActionComponent.h"
 
 // test color
 #include "Core/ECS/Component/MaterialComponent.h"
@@ -84,6 +86,8 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	// Input State Component
 	InputComponent input;
 	ecs.addComponent(entity, input);
+	InputActionComponent inputActionComp;
+	ecs.addComponent(entity, inputActionComp);
 
 	// Logic2D
 	Logic2DTransformComponent logic;

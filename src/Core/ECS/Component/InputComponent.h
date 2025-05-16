@@ -6,17 +6,19 @@
 
 //#include "Game/Input/InputState.h"
 
-enum class InputAction
-{
-	MoveForward,
-	MoveBackward,
-	MoveLeft,
-	MoveRight,
-	Jump,
-	LookAround,
-	MouseCapture,
-	Quit,
-};
+#include "Core/ECS/Component/InputActionComponent.h"
+
+//enum class InputAction
+//{
+//	MoveForward,
+//	MoveBackward,
+//	MoveLeft,
+//	MoveRight,
+//	Jump,
+//	LookAround,
+//	MouseCapture,
+//	Quit,
+//};
 
 struct InputComponent
 {

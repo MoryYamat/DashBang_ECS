@@ -4,18 +4,19 @@
 
 #include <glm/glm.hpp>
 
+#include "Game/Input/InputAction.h"
 
-enum class InputAction
-{
-	MoveForward,
-	MoveBackward,
-	MoveLeft,
-	MoveRight,
-	Jump,
-	LookAround,
-	MouseCapture,
-	Quit,
-};
+//enum class InputAction
+//{
+//	MoveForward,
+//	MoveBackward,
+//	MoveLeft,
+//	MoveRight,
+//	Jump,
+//	LookAround,
+//	MouseCapture,
+//	Quit,
+//};
 
 struct InputState
 {

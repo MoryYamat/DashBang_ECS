@@ -4,30 +4,32 @@
 
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
-#include <map>
+#include <unordered_map>
 
-#include "Game/Input/InputState.h"
+#include <optional>
+
+#include "Game/Input/InputAction.h"
+
+#include <iostream>
 
 class InputMapping
 {
 public:
-	InputMapping()
+
+	void bindKey(int keyCode, InputAction action)
 	{
-		// This structure cannot withstand adding the ability to change key bindings.
-		// This structure cannot withstand adding the ability to change key bindings.
-		// This structure cannot withstand adding the ability to change key bindings.
-		// This structure cannot withstand adding the ability to change key bindings.
-		keyBindings[GLFW_KEY_W] = InputAction::MoveForward;
-		keyBindings[GLFW_KEY_S] = InputAction::MoveBackward;
-		keyBindings[GLFW_KEY_A] = InputAction::MoveLeft;
-		keyBindings[GLFW_KEY_D] = InputAction::MoveRight;
-		keyBindings[GLFW_KEY_LEFT_CONTROL] = InputAction::MouseCapture;
-		keyBindings[GLFW_KEY_ESCAPE] = InputAction::Quit;
+		keyToAction[keyCode] = action;
+		// std::cout << "[InputMapping.h(bindKey)]: key binded " << keyCode << "\n";
 	}
 
-	void update(GLFWwindow* window, InputState& input);
+	std::optional<InputAction> getAction(int keyCode) const
+	{
+		auto it = keyToAction.find(keyCode);
+		if (it != keyToAction.end()) return it->second;
+		return std::nullopt;
+	}
 
 private:
 	// mapping
-	std::unordered_map<int, InputAction> keyBindings;
+	std::unordered_map<int, InputAction> keyToAction;
 };
