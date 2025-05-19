@@ -75,6 +75,7 @@ namespace DebugUtils::DebugDraw
 	void DrawCross(const glm::vec3& pos, float size, const glm::vec3& color);
 
 	void DrawCircle2D(const glm::vec2& centerXZ, float radius, const glm::vec3& color, int segments = 32);
+	void DrawFilledCircle2D(const glm::vec2& centerXZ, float radius, const glm::vec4& color, int segments = 32);
 
 	void DrawQuad(const glm::vec2& center, float size, const glm::vec3& color);
 
@@ -82,7 +83,10 @@ namespace DebugUtils::DebugDraw
 
 	void DrawTileOutline(const glm::vec2& minXZ, const glm::vec2& maxXZ,const glm::vec3& color);
 
+	void DrawLine2D(const glm::vec2& a, const glm::vec2 b, const glm::vec3& color);
 	
+	void DrawSector2D(const glm::vec2 centerXZ, const glm::vec2 direction, const float radius, const float angle, const glm::vec3& color);
+	void DrawFilledSector2D(const glm::vec2 centerXZ, const glm::vec2 direction, const float radius, const float angle, const glm::vec4& color);
 }
 
 #ifdef DEBUG

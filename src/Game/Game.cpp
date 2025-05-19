@@ -350,15 +350,15 @@ void Game::InitializeSkills()
 	SkillDefinition slash;
 	slash.id = 1;
 	slash.name = "Basic Slash";
-	slash.shape = Attack2DShape{ Circle2DAttack{glm::vec2(0.0f), 1.0f} };
-	slash.duration = 1.0f;
+	slash.shape = Attack2DShape{ Circle2DAttack{glm::vec2(0.0f), 5.0f} };
+	slash.duration = 2.0f;
 	mSkillDatabase.AddSkill(slash);
 
 	SkillDefinition slash2;
 	slash2.id = 2;
 	slash2.name = "Power Slash";
-	slash2.shape = Attack2DShape{ Sector2DAttack{glm::vec2(0.0f), glm::vec2(1.0f), 1.0f, 60.0f} };
-	slash2.duration = 1.5f;
+	slash2.shape = Attack2DShape{ Sector2DAttack{glm::vec2(0.0f), glm::vec2(1.0f), 1.0f, 10.0f} };
+	slash2.duration = 2.0f;
 	mSkillDatabase.AddSkill(slash2);
 }
 

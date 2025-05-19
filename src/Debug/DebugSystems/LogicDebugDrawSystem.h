@@ -32,4 +32,13 @@ namespace LogicDebugDrawSystem
 
 	// レンダーコンテキストを解除する関数
 	void ResetOpenGLMatrixState();
+
+}
+
+// ファイルを「システム用デバッグ描画」と「ゲーム用デバッグ描画」に分ける
+// ファイルを「システム用デバッグ描画」と「ゲーム用デバッグ描画」に分ける
+namespace LogicDebugDrawSystem::SkillDaraw
+{
+	// Skillの論理的効果範囲形状を描画する
+	void RenderAttack2DAreas(ECS& ecs, const RenderContext& renderContext);
 }

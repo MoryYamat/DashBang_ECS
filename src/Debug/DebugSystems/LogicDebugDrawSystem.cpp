@@ -9,8 +9,9 @@
 
 #include "Debug/DebugUtils.h"
 
+// Game
 #include "Game/CollisionLogic/TestCircleTileMapCollisionHighlight.h"
-
+#include "Game/SkillSystem/Component/Attack2DAreaComponent.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -18,6 +19,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <variant>
 
 // デバッグ用（論理系）の描画する機能まとめてを提供
 void LogicDebugDrawSystem::Draw(ECS& ecs, 
@@ -38,6 +40,7 @@ void LogicDebugDrawSystem::Draw(ECS& ecs,
 	// Debug用のコリジョン検知を表示
 	LogicDebugDrawSystem::DebugDrawPlayerAndTileMap(ecs, renderContext, collisionResult);
 
+	LogicDebugDrawSystem::SkillDaraw::RenderAttack2DAreas(ecs, renderContext);
 	//
 	//reset openGL matrix state
 	ResetOpenGLMatrixState();
@@ -180,4 +183,30 @@ void LogicDebugDrawSystem::ResetOpenGLMatrixState()
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+
+
+void  LogicDebugDrawSystem::SkillDaraw::RenderAttack2DAreas(ECS& ecs, const RenderContext& renderContext)
+{
+	for (Entity e : ecs.view<Attack2DAreaComponent>())
+	{
+		const auto& area = ecs.get<Attack2DAreaComponent>(e);
+
+		std::visit([&](const auto& shape)
+			{
+				using T = std::decay_t<decltype(shape)>;
+				if constexpr (std::is_same_v<T, Circle2DAttack>)
+				{
+					glm::vec4 color = glm::vec4(1.0f, 0.5f, 0.5f, 0.3f);
+					DebugUtils::DebugDraw::DrawFilledCircle2D(shape.center, shape.radius, color);
+				}
+				else if constexpr (std::is_same_v<T, Sector2DAttack>)
+				{
+					glm::vec4 color = glm::vec4(1.0f, 0.5f, 0.5f, 0.3f);
+					DebugUtils::DebugDraw::DrawFilledSector2D(shape.center, shape.direction, shape.radius, shape.angle, color);
+				}
+
+			}, area.shape.shape);
+	}
 }
