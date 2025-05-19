@@ -126,6 +126,7 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	ecs.addComponent(entity, playerCollisionComp);
 
 
+	// à»ëOÇÃê›åv
 	//SkillInstanceComponent activeSkill1;
 	//activeSkill1.caster = entity;
 	//activeSkill1.timeSinceCast = 0.0f;

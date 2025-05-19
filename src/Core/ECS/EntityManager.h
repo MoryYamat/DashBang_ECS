@@ -9,6 +9,8 @@
 #include <vector>
 #include <memory>
 
+#include <cstddef>
+#include <iostream>
 
 class ECS
 {
@@ -19,9 +21,16 @@ private:
 	// ※※Efficiency issues※※	
 	// ※※Efficiency issues※※
 	// ※※Efficiency issues※※
-	// Entityごとにコンポーネントを紐づける
+	// コンポーネントごとにエンティティを紐づける
 	std::unordered_map<std::type_index, std::unordered_map<uint32_t, std::shared_ptr<void>>> mComponentPools;
 	// {type_index(Component), unordered_map{e.id, Components.data}}
+
+/// <summary>
+/// mComponentPools = {
+/// 	{ typeid(TransformComponent), { 1: data1, 3: data3 } },
+/// 	{ typeid(LogicComponent) , { 1: data1 } },
+/// 	{ typeid(AIComponent) , { 2: data2, 5: data5 } }
+/// </summary>
 
 public:
 	// create
@@ -107,5 +116,19 @@ public:
 		return entityMap.find(e.id) != entityMap.end();
 	}
 
+	// すべてのComponentに付随する情報の削除
 	void Clear();
+
+	// 任意のEntityに付随するComponentの削除(Componentを探索し，該当Entityがあれば削除する)
+	void destroyEntity(Entity e)
+	{
+		for (auto& [type, entityMap] : mComponentPools)
+		{
+			std::size_t erased = entityMap.erase(e.id);
+			if (erased > 0)
+			{
+				std::cout << "[EntityManager(destroy)] Deletion of Component """ << type.name() << " for " << e.id << " completed successfully\n";
+			}
+		}
+	}
 };

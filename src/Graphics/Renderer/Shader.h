@@ -25,7 +25,7 @@ public:
 
 	GLuint GetProgram() const { return mProgramID; }
 
-	void Shader::Use() const;
+	void Use() const;
 
 private:
 	std::string loadFile(const std::string& path);

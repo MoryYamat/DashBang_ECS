@@ -12,8 +12,8 @@
 
 ### **処理フロー**
 ```text
-[InputAction] -> [SkillSlot] <- [SkillID] <- [SkillDefinition]
-                    ↓ (SkillTriggerSystem)
+[InputAction] -> [SkillSlot] <- [SkillID] 
+                    ↓ <- [SkillDefinition] (SkillTriggerSystem)
             [SkillInstanceComponent] (<=create)
                     ↓ 
             [SkillCastingSystem] (=>attack generation)

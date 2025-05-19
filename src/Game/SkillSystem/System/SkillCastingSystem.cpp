@@ -9,13 +9,16 @@
 
 void SkillSystem::Casting::SpawnSkillHitArea(ECS& ecs, SkillDatabase& skillDB)
 {
-	for (Entity e : ecs.view<SkillInstanceComponent, Logic2DTransformComponent>())
+	for (Entity e : ecs.view<SkillInstanceComponent>())
 	{
 		auto& skillInstance = ecs.get<SkillInstanceComponent>(e);
+
 
 		// ‰‰ñ”­“®Žž‚Ì‚Ý
 		if (skillInstance.timeSinceCast > 0.0f)
 			continue;
+
+		// skillInstance.timeSinceCast += 0.0001f;
 
 		std::cout << "[SkillCastingSystem] skillId: " << skillInstance.skillId << std::endl;
 
@@ -47,7 +50,7 @@ void SkillSystem::Casting::SpawnSkillHitArea(ECS& ecs, SkillDatabase& skillDB)
 		area.lifetime = def.duration;
 		area.owner = skillInstance.caster;
 		area.skillEntity = e;
-
+		std::cout << "[SkillCastingSystem.cpp(SpawnSkillHitArea)] create: " << def.name << " is created. \n";
 		ecs.addComponent(attack, area);
 	}
 }

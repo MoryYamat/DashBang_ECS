@@ -59,6 +59,7 @@
 #include "Game/SkillSystem/Trigger/PlayerSkillTriggerSystem.h"
 #include "Game/SkillSystem/System/SkillCastingSystem.h"
 #include "Game/SkillSystem/MasterData/SkillSlot.h"
+#include "Game/SkillSystem/System/UpdateSkillLifetimes.h"
 
 // Game/Sync
 #include "Game/Sync/SyncLogicToTransformSystem.h"
@@ -217,6 +218,7 @@ void Game::updateGameLogics()
 	// skill system
 	SkillSystem::Trigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(mEcs, mSkillInputMap);
 	SkillSystem::Casting::SpawnSkillHitArea(mEcs, mSkillDatabase);
+	SkillSystem::Lifetime::UpdateSkillLifetimes(mEcs, mDeltaTime, mSkillDatabase);
 	// SkillSystem::Trigger::PlayerSkillTriggerSystem::Update(mEcs, mSkillInputMap);
 	// SkillSystem::SkillCastingSystem(mEcs, mSkillDatabase, mRenderContext, mDeltaTime);
 
