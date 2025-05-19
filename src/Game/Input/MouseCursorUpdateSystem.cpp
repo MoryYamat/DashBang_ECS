@@ -10,6 +10,8 @@
 
 #include <glm/glm.hpp>
 
+
+// rawInput‚ÆGameInput‚Ì•ª—£ŒãiÅV”Åj
 void MouseCursorUpdateSystem::Update(ECS& ecs, const RawInputState& rawInput, RenderContext& renderContext)
 {
 	for (Entity e : ecs.view<MouseCursorComponent, Logic2DTransformComponent>())
@@ -31,6 +33,7 @@ void MouseCursorUpdateSystem::Update(ECS& ecs, const RawInputState& rawInput, Re
 	}
 }
 
+// Ì‚Ì‚â‚Â
 void MouseCursorUpdateSystem::Update(ECS& ecs, InputState& input, RenderContext renderContext)
 {
 	for (Entity e : ecs.view<MouseCursorComponent, Logic2DTransformComponent>())

@@ -16,6 +16,11 @@
 
 #include "Core/Window/Window.h"
 
+// skill
+#include "Game/SkillSystem/MasterData/SkillDatabase.h"
+
+#include "Game/SkillSystem/Trigger/SkillInputMap.h"
+
 // Input
 #include "Core/InputManager/InputManager.h"
 #include "Core/InputManager/RawInputState.h"
@@ -57,6 +62,10 @@ private:
 	// collision detection results
 	CollisionResultStorage mCollisionResults;
 
+	// skill 
+	SkillDatabase mSkillDatabase;
+	SkillInputMap mSkillInputMap;
+
 	float mDeltaTime = 0.0f;
 	float mLastFrame = 0.0f;
 
@@ -75,5 +84,9 @@ private:
 	void updateContext();
 
 	void InitializeInputMapping();
+
+	void InitializeSkills();
+
+	void InitializeSkillMappings();
 };
 

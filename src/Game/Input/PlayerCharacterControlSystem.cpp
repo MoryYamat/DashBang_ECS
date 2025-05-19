@@ -20,7 +20,7 @@
 #include <cmath>
 #include <iostream>
 
-
+// raw Input ‚Æ Game Input ‚Ì•ª—£Œã
 void PlayerCharacterControlSystem::Update(ECS& ecs, const RawInputState& rawInput, RenderContext& renderContext, float deltaTime)
 {
 	InputActionComponent input;

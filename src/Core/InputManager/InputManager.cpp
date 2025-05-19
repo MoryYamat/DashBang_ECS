@@ -1,5 +1,7 @@
 #include "InputManager.h"
 
+#include <iostream>
+
 #include "Debug/DebugUtils.h"
 
 InputManager::InputManager(GLFWwindow* window)
@@ -11,7 +13,7 @@ InputManager::InputManager(GLFWwindow* window)
 	double x, y;
 	glfwGetCursorPos(window, &x, &y);
 	mLastMousePosition = glm::vec2(x, y);
-	mFirstMouse = false;
+	// mFirstMouse = false;
 
 	DebugUtils::GeneralLog("InputManager.cpp(Initialize)", "InputManager initialization completed successfully");
 }
@@ -34,7 +36,20 @@ void InputManager::updateKeyStates()
 	{
 		// state = GLFW_PRESS or GLFW_RELEASE
 		int state = glfwGetKey(mWindow, key);
+
+		// create and add 
 		mRawInput.keyState[key] = (state == GLFW_PRESS || state == GLFW_REPEAT);
+		// std::cout << "[InputManager(updateKeyStates)]: updates key states" << key << std::endl;
+	}
+
+	for (int button = GLFW_MOUSE_BUTTON_1; button < GLFW_MOUSE_BUTTON_LAST; ++button)
+	{
+		int state = glfwGetMouseButton(mWindow, button);
+		mRawInput.keyState[button] = (state == GLFW_PRESS);
+		//if (state == GLFW_PRESS)
+		//{
+		//	std::cout << "[InputManager(updateKeyStates]: mouse clicked " << button << ", " << state << std::endl;
+		//}
 	}
 }
 

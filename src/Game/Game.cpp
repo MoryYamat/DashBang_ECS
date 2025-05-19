@@ -55,6 +55,11 @@
 // collision systems
 #include "Game/CollisionLogic/CollisionSystem/CollisionDetectionSystem.h"
 
+// skill
+#include "Game/SkillSystem/Trigger/PlayerSkillTriggerSystem.h"
+#include "Game/SkillSystem/System/SkillCastingSystem.h"
+#include "Game/SkillSystem/MasterData/SkillSlot.h"
+
 // Game/Sync
 #include "Game/Sync/SyncLogicToTransformSystem.h"
 
@@ -153,6 +158,11 @@ bool Game::Initialize()
 	// initialize input mapping
 	InitializeInputMapping();
 
+	// Initialize Skill database
+	InitializeSkills();
+
+	InitializeSkillMappings();
+
 	loadData();
 
 	return true;
@@ -181,6 +191,7 @@ void Game::updateGameLogics()
 	float currentFrame = static_cast<float>(glfwGetTime());
 	mDeltaTime = currentFrame - mLastFrame;
 	mLastFrame = currentFrame;
+	// std::cout << "[Game.cpp(DeltaTime)]: deltaTime: " << mDeltaTime << "\n";
 
 	// コリジョンコンテキスト: 1フレームごとに初期化
 	mCollisionResults.Clear();
@@ -202,6 +213,12 @@ void Game::updateGameLogics()
 	PlayerCharacterControlSystem::Update(mEcs, mInputManager->GetRawInput(), mRenderContext, mDeltaTime);
 	//PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime, mRenderContext);
 	// PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime);
+
+	// skill system
+	SkillSystem::Trigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(mEcs, mSkillInputMap);
+	SkillSystem::Casting::SpawnSkillHitArea(mEcs, mSkillDatabase);
+	// SkillSystem::Trigger::PlayerSkillTriggerSystem::Update(mEcs, mSkillInputMap);
+	// SkillSystem::SkillCastingSystem(mEcs, mSkillDatabase, mRenderContext, mDeltaTime);
 
 	// 2D (Logic)-> 3D (Drawing)
 	SyncLogicToTransformSystem::Apply2DToTransform(mEcs, mDeltaTime);
@@ -322,4 +339,29 @@ void Game::InitializeInputMapping()
 	mInputMapping.bindKey(GLFW_KEY_S, InputAction::MoveBackward);
 	mInputMapping.bindKey(GLFW_KEY_D, InputAction::MoveRight);
 	mInputMapping.bindKey(GLFW_KEY_A, InputAction::MoveLeft);
+	mInputMapping.bindKey(GLFW_MOUSE_BUTTON_1, InputAction::CastSkill1);
+	mInputMapping.bindKey(GLFW_MOUSE_BUTTON_2, InputAction::CastSkill2);
+}
+
+void Game::InitializeSkills()
+{
+	SkillDefinition slash;
+	slash.id = 1;
+	slash.name = "Basic Slash";
+	slash.shape = Attack2DShape{ Circle2DAttack{glm::vec2(0.0f), 1.0f} };
+	slash.duration = 1.0f;
+	mSkillDatabase.AddSkill(slash);
+
+	SkillDefinition slash2;
+	slash2.id = 2;
+	slash2.name = "Power Slash";
+	slash2.shape = Attack2DShape{ Sector2DAttack{glm::vec2(0.0f), glm::vec2(1.0f), 1.0f, 60.0f} };
+	slash2.duration = 1.5f;
+	mSkillDatabase.AddSkill(slash2);
+}
+
+void  Game::InitializeSkillMappings()
+{
+	mSkillInputMap.bind(InputAction::CastSkill1, SkillSystem::SkillSlot::Primary);// スキルID 1
+	mSkillInputMap.bind(InputAction::CastSkill2, SkillSystem::SkillSlot::Secondary);// スキルID 2
 }

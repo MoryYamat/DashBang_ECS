@@ -9,7 +9,7 @@
 #include "Core/ECS/Component/FollowCameraComponent.h"
 
 // input
-#include "Core/ECS/Component/InputComponent.h"
+// #include "Core/ECS/Component/InputComponent.h"
 #include "Core/ECS/Component/InputActionComponent.h"
 
 // test color
@@ -25,8 +25,12 @@
 #include "Core/ECS/Component/Collision/CollisionComponent.h"
 //#include "Core/ECS/Component/Collision/ColliderType.h"
 
-#include "DataTypes/ModelData.h"
+// Skill
+#include "Game/SkillSystem/Component/SkillInstanceComponent.h"
+#include "Game/SkillSystem/Component/ActiveSkillCasterComponent.h"
+#include "Game/SkillSystem/Component/SkillSlotAssignmentComponent.h"
 
+#include "DataTypes/ModelData.h"
 #include "Graphics/Model/AssimpImporter.h"
 #include "Graphics/Renderer/GPUBufferUtils.h"
 
@@ -84,8 +88,8 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	ecs.addComponent(entity, shaderComp);
 
 	// Input State Component
-	InputComponent input;
-	ecs.addComponent(entity, input);
+	//InputComponent input;
+	//ecs.addComponent(entity, input);
 	InputActionComponent inputActionComp;
 	ecs.addComponent(entity, inputActionComp);
 
@@ -120,6 +124,28 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 
 	playerCollisionComp.collider.circle2D.radius = radius;
 	ecs.addComponent(entity, playerCollisionComp);
+
+
+	//SkillInstanceComponent activeSkill1;
+	//activeSkill1.caster = entity;
+	//activeSkill1.timeSinceCast = 0.0f;
+	//activeSkill1.skillId = 1;
+	//ecs.addComponent(entity, activeSkill1);
+
+	//SkillInstanceComponent activeSkill2;
+	//activeSkill2.caster = entity;
+	//activeSkill2.timeSinceCast = 0.0f;
+	//activeSkill2.skillId = 2;
+	//ecs.addComponent(entity, activeSkill2);
+
+	// スキル（ID） を SkillSLotに割り当て
+	SkillSlotAssignmentComponent assign;
+	assign.slotToSkillId[SkillSystem::SkillSlot::Primary] = 1;
+	assign.slotToSkillId[SkillSystem::SkillSlot::Secondary] = 2;
+	ecs.addComponent(entity, assign);
+
+	ActiveSkillCasterComponent ascc;
+	ecs.addComponent(entity, ascc);
 
 	std::cout << "[[PlayerCharacterActor.cpp(radius)] : radius. " << radius << std::endl;
 

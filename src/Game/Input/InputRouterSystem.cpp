@@ -18,7 +18,7 @@ void InputRouterSystem(ECS& ecs, const RawInputState& rawInput, const InputMappi
 			if (auto actionOpt = mapping.getAction(key))
 			{
 				inputComp.current[*actionOpt] = true;
-				// std::cout << "[InputRouterSystem.cpp]: " << key << std::endl;
+				//std::cout << "[InputRouterSystem.cpp]: " << key << std::endl;
 			}
 		}
 	}
