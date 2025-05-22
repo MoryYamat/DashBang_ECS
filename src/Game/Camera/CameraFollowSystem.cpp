@@ -45,7 +45,7 @@ void CameraFollowSystem::Update(ECS& ecs, float deltaTime)
 
 		// position log for debbugging
 		//DebugUtils::LogVector("CameraFollowSystem.cpp", camTransform.position);
-		//DebugUtils::LogVector("CameraFollowSystem", camComp.front);
+		// DebugUtils::LogVector("CameraFollowSystem", camComp.front);
 
 		break;
 	}

@@ -87,6 +87,10 @@ namespace DebugUtils::DebugDraw
 	
 	void DrawSector2D(const glm::vec2 centerXZ, const glm::vec2 direction, const float radius, const float angle, const glm::vec3& color);
 	void DrawFilledSector2D(const glm::vec2 centerXZ, const glm::vec2 direction, const float radius, const float angle, const glm::vec4& color);
+	void DrawFilledSector2D(const glm::vec2 centerXZ, const float rotation, const float radius, const float angle, const glm::vec4& color);
+
+	void DrawFilledRect2D(const glm::vec2 centerXZ, const glm::vec2 direction,const float width, const float height, const glm::vec4& color);
+	void DrawFilledRect2DOffeset(const glm::vec2 centerXZ, const glm::vec2 direction,const float width, const float height, const glm::vec4& color);
 }
 
 #ifdef DEBUG

@@ -13,6 +13,7 @@ struct TransformComponent
 {
 	glm::vec3 position = glm::vec3(0.0f);
 	// need to convert to a quaternion
+	// degrees‚Å•Û‚µC“à•”‚Ìs—ñ¶¬‚Íglm::radians()‚Å•ÏŠ·‚·‚é
 	glm::vec3 rotation = glm::vec3(0.0f);
 	glm::vec3 scale = glm::vec3(1.0f);
 

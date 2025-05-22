@@ -79,10 +79,8 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, const RawInputState& rawInpu
 			logic.front = glm::normalize(dir);
 			logic.rotation = logic.GetRotationYFromFrontVector();
 
-
 			// rightベクトルもfrontから再計算
 			logic.UpdateRightFromFront();
-
 		}
 		else
 		{
@@ -93,7 +91,7 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, const RawInputState& rawInpu
 
 		// log for debugging
 		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(position)", logic.positionXZ);
-		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(front)", logic.front);
+		DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(front)", logic.front);
 		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(rotation)", {logic.rotation, 0});
 		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(circleCenter)", collisionComp.collider.circle2D.center);
 		// std::cout << "RADIUS" << collisionComp.collider.circle2D.radius << std::endl;

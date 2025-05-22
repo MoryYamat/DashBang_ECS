@@ -29,11 +29,17 @@ void SyncLogicToTransformSystem::Apply2DToTransform(ECS& ecs, float deltaTime)
 		//transform.scale.z = logic.scale.y;
 
 		// rotation (logic.front から計算) (情報源はfrontなので、`logic.rotation`は避けている)
-		transform.rotation.y = logic.GetRotationYFromFrontVector();
+		transform.rotation.y = glm::degrees(logic.GetRotationYFromFrontVector());
 
 		//// rotation (2D ローテーション　-> Y軸回りの回転)
 		//float rotation = logic.rotation;
 		//transform.rotation = glm::vec3(0.0f, rotation, 0.0f);
+
+		// [Rotation Unit Policy]
+		// - TransformComponent.rotation → degrees
+		// - Logic2DTransformComponent.rotation → radians
+		// - To sync from Transform to Logic: use glm::radians()
+		// - To sync from Logic to Transform: use glm::degrees()
 
 
 		//std::cout << "[SyncLogicToTransformSystem.cpp]: logical front vector " << logic.front.x << std::endl;

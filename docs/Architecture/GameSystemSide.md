@@ -1,4 +1,5 @@
 ## **Skill System**
+* 本SkillSystemは、入力からスキルの発動・消滅に至るまでの一連の処理を、ECSベースで柔軟かつ拡張可能に設計したスキル管理基盤である。
 
 ### **システムの概要**
 > 入力（InputAction）→ スロット（SkillSlot）→ スキル（SkillId）→ 発動（Entity）

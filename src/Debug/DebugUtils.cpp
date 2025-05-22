@@ -229,3 +229,116 @@ void DebugUtils::DebugDraw::DrawFilledSector2D(const glm::vec2 centerXZ, const g
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 }
+
+void DebugUtils::DebugDraw::DrawFilledSector2D(const glm::vec2 centerXZ, const float rotation, const float radius, const float angle, const glm::vec4& color)
+{
+	const int segments = 32;
+	const float halfAngle = angle / 2.0f;
+	const float baseAngle = rotation;
+	const float y = 0.05f; // 地面から少し浮かせる
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_DEPTH_TEST);
+	glBegin(GL_TRIANGLE_FAN);
+	glColor4f(color.r, color.g, color.b, color.a);
+	glVertex3f(centerXZ.x, y, centerXZ.y); // 扇の中心
+
+	for (int i = 0; i <= segments; ++i)
+	{
+		float theta = baseAngle - halfAngle + i * (angle / segments);
+		glm::vec2 point = centerXZ + radius * glm::vec2(std::cos(theta), std::sin(theta));
+		glVertex3f(point.x, y, point.y);
+	}
+	glEnd();
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+}
+
+void DebugUtils::DebugDraw::DrawFilledRect2D(const glm::vec2 centerXZ, const glm::vec2 direction, const float width, const float height, const glm::vec4& color)
+{
+	glm::vec2 front = glm::normalize(direction);
+	glm::vec2 right = glm::vec2(front.y, -front.x);
+
+	glm::vec2 halfExtentsRight = right * (width * 0.5f);
+	glm::vec2 halfExtentsFront = front * (height * 0.5f);
+
+	glm::vec2 p0 = centerXZ - halfExtentsRight - halfExtentsFront;
+	glm::vec2 p1 = centerXZ + halfExtentsRight - halfExtentsFront;
+	glm::vec2 p2 = centerXZ + halfExtentsRight + halfExtentsFront;
+	glm::vec2 p3 = centerXZ - halfExtentsRight + halfExtentsFront;
+
+	glm::vec3 v0(p0.x, 0.0f, p0.y);
+	glm::vec3 v1(p1.x, 0.0f, p1.y);
+	glm::vec3 v2(p2.x, 0.0f, p2.y);
+	glm::vec3 v3(p3.x, 0.0f, p3.y);
+
+	glUseProgram(0);
+	glDisable(GL_DEPTH_TEST);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // αブレンド設定
+
+	glColor4f(color.r, color.g, color.b, color.a);
+
+	// 頂点設定
+	glBegin(GL_TRIANGLES);
+	glVertex3f(v0.x, v0.y, v0.z);
+	glVertex3f(v1.x, v1.y, v1.z);
+	glVertex3f(v2.x, v2.y, v2.z);
+
+	glVertex3f(v0.x, v0.y, v0.z);
+	glVertex3f(v2.x, v2.y, v2.z);
+	glVertex3f(v3.x, v3.y, v3.z);
+
+	// for debugging
+	// DebugUtils::LogVector_string("DebugUtils.cpp(vertex)", v0);
+
+	glEnd();
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+}
+
+void DebugUtils::DebugDraw::DrawFilledRect2DOffeset(const glm::vec2 centerXZ, const glm::vec2 direction, const float width, const float height, const glm::vec4& color)
+{
+	glm::vec2 front = glm::normalize(direction);
+	glm::vec2 right = glm::vec2(front.y, -front.x);
+
+	glm::vec2 halfExtentsRight = right * (width * 0.5f);
+	glm::vec2 halfExtentsFront = front * (height * 0.5f);
+
+	glm::vec2 p0 = centerXZ - halfExtentsRight - halfExtentsFront;
+	glm::vec2 p1 = centerXZ + halfExtentsRight - halfExtentsFront;
+	glm::vec2 p2 = centerXZ + halfExtentsRight + halfExtentsFront;
+	glm::vec2 p3 = centerXZ - halfExtentsRight + halfExtentsFront;
+
+	glm::vec3 v0(p0.x, 0.0f, p0.y);
+	glm::vec3 v1(p1.x, 0.0f, p1.y);
+	glm::vec3 v2(p2.x, 0.0f, p2.y);
+	glm::vec3 v3(p3.x, 0.0f, p3.y);
+
+	glUseProgram(0);
+	glDisable(GL_DEPTH_TEST);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // αブレンド設定
+
+	glColor4f(color.r, color.g, color.b, color.a);
+
+	// 頂点設定
+	glBegin(GL_TRIANGLES);
+	glVertex3f(v0.x, v0.y, v0.z);
+	glVertex3f(v1.x, v1.y, v1.z);
+	glVertex3f(v2.x, v2.y, v2.z);
+
+	glVertex3f(v0.x, v0.y, v0.z);
+	glVertex3f(v2.x, v2.y, v2.z);
+	glVertex3f(v3.x, v3.y, v3.z);
+
+	// for debugging
+	// DebugUtils::LogVector_string("DebugUtils.cpp(vertex)", v0);
+
+	glEnd();
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+}

@@ -343,6 +343,8 @@ void Game::InitializeInputMapping()
 	mInputMapping.bindKey(GLFW_KEY_A, InputAction::MoveLeft);
 	mInputMapping.bindKey(GLFW_MOUSE_BUTTON_1, InputAction::CastSkill1);
 	mInputMapping.bindKey(GLFW_MOUSE_BUTTON_2, InputAction::CastSkill2);
+	mInputMapping.bindKey(GLFW_KEY_1, InputAction::CastSkill3);
+
 }
 
 void Game::InitializeSkills()
@@ -351,19 +353,27 @@ void Game::InitializeSkills()
 	slash.id = 1;
 	slash.name = "Basic Slash";
 	slash.shape = Attack2DShape{ Circle2DAttack{glm::vec2(0.0f), 5.0f} };
-	slash.duration = 2.0f;
+	slash.duration = 1.0f;
 	mSkillDatabase.AddSkill(slash);
 
 	SkillDefinition slash2;
 	slash2.id = 2;
 	slash2.name = "Power Slash";
-	slash2.shape = Attack2DShape{ Sector2DAttack{glm::vec2(0.0f), glm::vec2(1.0f), 1.0f, 10.0f} };
-	slash2.duration = 2.0f;
+	slash2.shape = Attack2DShape{ Sector2DAttack{glm::vec2(0.0f), glm::vec2(0.0f,-1.0f), 1.0f, 10.0f} };
+	slash2.duration = 1.0f;
 	mSkillDatabase.AddSkill(slash2);
+
+	SkillDefinition blade;
+	blade.id = 3;
+	blade.name = "Blade";
+	blade.shape = Attack2DShape{ Rectangle2DAttack{glm::vec2(0.0f), glm::vec2(0.0f,-1.0f), 1.0f, 10.0f}};
+	blade.duration = 1.0f;
+	mSkillDatabase.AddSkill(blade);
 }
 
 void  Game::InitializeSkillMappings()
 {
 	mSkillInputMap.bind(InputAction::CastSkill1, SkillSystem::SkillSlot::Primary);// スキルID 1
 	mSkillInputMap.bind(InputAction::CastSkill2, SkillSystem::SkillSlot::Secondary);// スキルID 2
+	mSkillInputMap.bind(InputAction::CastSkill3, SkillSystem::SkillSlot::Utility1);// スキルID 3
 }

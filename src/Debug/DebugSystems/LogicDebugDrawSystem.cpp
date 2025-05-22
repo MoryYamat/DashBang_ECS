@@ -5,6 +5,8 @@
 
 #include "Core/ECS/Component/Tags/PlayerControllerComponent.h"
 
+#include "Core/ECS/Component/Transform2DComponent.h"
+
 #include "Core/ECS/Component/Collision/CollisionComponent.h"
 
 #include "Debug/DebugUtils.h"
@@ -12,6 +14,8 @@
 // Game
 #include "Game/CollisionLogic/TestCircleTileMapCollisionHighlight.h"
 #include "Game/SkillSystem/Component/Attack2DAreaComponent.h"
+
+#include "Game/SkillSystem/Utils/ShapeUtils.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -189,24 +193,34 @@ void LogicDebugDrawSystem::ResetOpenGLMatrixState()
 
 void  LogicDebugDrawSystem::SkillDaraw::RenderAttack2DAreas(ECS& ecs, const RenderContext& renderContext)
 {
-	for (Entity e : ecs.view<Attack2DAreaComponent>())
+	for (Entity e : ecs.view<Attack2DAreaComponent, Transform2DComponent>())
 	{
 		const auto& area = ecs.get<Attack2DAreaComponent>(e);
+		const auto& transfrom = ecs.get<Transform2DComponent>(e);
+		
+		Attack2DShape worldShape = ShapeUtils::ComputeWorldShape(area.shape, transfrom);
+
 
 		std::visit([&](const auto& shape)
 			{
 				using T = std::decay_t<decltype(shape)>;
+				glm::vec4 color = glm::vec4(1.0f, 0.5f, 0.5f, 0.3f);
+
+
 				if constexpr (std::is_same_v<T, Circle2DAttack>)
 				{
-					glm::vec4 color = glm::vec4(1.0f, 0.5f, 0.5f, 0.3f);
 					DebugUtils::DebugDraw::DrawFilledCircle2D(shape.center, shape.radius, color);
 				}
 				else if constexpr (std::is_same_v<T, Sector2DAttack>)
 				{
-					glm::vec4 color = glm::vec4(1.0f, 0.5f, 0.5f, 0.3f);
+					// DebugUtils::DebugDraw::DrawFilledSector2D(transfrom.positionXZ, transfrom.GetFrontXZ(), shape.radius, shape.angle, color);
 					DebugUtils::DebugDraw::DrawFilledSector2D(shape.center, shape.direction, shape.radius, shape.angle, color);
 				}
+				else if constexpr (std::is_same_v<T, Rectangle2DAttack>)
+				{
+					DebugUtils::DebugDraw::DrawFilledRect2D(shape.center, shape.direction, shape.width, shape.height, color);
+				}
 
-			}, area.shape.shape);
+			}, worldShape.shape);
 	}
 }

@@ -17,6 +17,5 @@ namespace SkillSystem::Casting
 	// スキルの論理的形状（HitArea）を定義に従って生成する
 	void SpawnSkillHitArea(ECS& ecs, SkillDatabase& skillDB);
 
-	// 一時的に存在するスキル効果（攻撃範囲、エフェクトなど）の lifetime をカウントし、一定時間後に削除
-	void SkillLifetimeSystem();
+	void RotateVec2(const glm::vec2& v, float radians);
 }

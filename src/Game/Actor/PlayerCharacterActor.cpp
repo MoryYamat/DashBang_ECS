@@ -143,6 +143,7 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	SkillSlotAssignmentComponent assign;
 	assign.slotToSkillId[SkillSystem::SkillSlot::Primary] = 1;
 	assign.slotToSkillId[SkillSystem::SkillSlot::Secondary] = 2;
+	assign.slotToSkillId[SkillSystem::SkillSlot::Utility1] = 3;
 	ecs.addComponent(entity, assign);
 
 	ActiveSkillCasterComponent ascc;

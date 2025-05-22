@@ -1,6 +1,8 @@
 #include "PlayerSkillTriggerSystem.h"
 
 #include "Core/ECS/Component/Tags/PlayerControllerComponent.h"
+#include "Core/ECS/Component/Logic2DTransformComponent.h"
+#include "Core/ECS/Component/Transform2DComponent.h"
 
 #include "Game/SkillSystem/Component/SkillInstanceComponent.h"
 
@@ -44,6 +46,7 @@ void SkillSystem::Trigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(ECS&
 			// Ç‹ÇæÅCalreadyCasting = falseÇÃèÍçá(Ç‹ÇæSkillInstanceÇ™ë∂ç›ÇµÇ»Ç¢èÍçá)çÏê¨Ç∑ÇÈ
 			if (!alreadyCasting)
 			{
+				// TransformÇ‡ê∂ê¨
 				Entity skillEntity = ecs.createEntity();
 				SkillInstanceComponent skillInstance;
 				skillInstance.caster = ePlayer;
@@ -55,6 +58,15 @@ void SkillSystem::Trigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(ECS&
 					<< " triggered skill " << skillId
 					<< " via slot " << static_cast<int>(slot)
 					<< std::endl;
+
+				const auto& logic = ecs.get<Logic2DTransformComponent>(ePlayer);
+				Transform2DComponent transform2DComp;
+				transform2DComp.positionXZ = logic.positionXZ;
+				transform2DComp.rotationY = logic.GetRotationYFromFrontVector();// radians
+				transform2DComp.scale = 1.0f;
+				ecs.addComponent(skillEntity, transform2DComp);
+
+				std::cout << "[PlayerSkillTriggerSystem.cpp(rotation)] rotation Y " << transform2DComp.rotationY << std::endl;
 			}
 		}	
 	}
