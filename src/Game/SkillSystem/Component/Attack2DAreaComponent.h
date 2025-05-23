@@ -7,6 +7,8 @@
 
 #include "Core/ECS/Entity.h"
 
+#include "Game/Config/CanonicalDefaults.h"
+
 #include <variant>
 
 // 攻撃判定形状
@@ -23,15 +25,15 @@ enum class Attack2DShapeType
 // 2D円
 struct Circle2DAttack
 {
-	glm::vec2 center = { 0.0f, 0.0f };
+	glm::vec2 center = CanonicalDefaults::kLocalCenterXZ;
 	float radius;
 };
 
 // 2D扇形
 struct Sector2DAttack
 {
-	glm::vec2 center = {0.0f, 0.0f};
-	glm::vec2 direction = { 0.0f, -1.0f };// ローカル単位向きベクトル(カメラの向きと合わせたほうがいい)
+	glm::vec2 center = CanonicalDefaults::kLocalCenterXZ;
+	glm::vec2 direction = CanonicalDefaults::kLocalForwardXZ;// ローカル単位向きベクトル(OpenGLは-Z方向が正面)
 	float angle;// ラジアン
 	float radius;
 };
@@ -39,8 +41,8 @@ struct Sector2DAttack
 // {center, width, height}
 struct Rectangle2DAttack
 {
-	glm::vec2 center = {0.0f, 0.0f};// local center
-	glm::vec2 direction = {0.0f, -1.0f}; // ローカル単位向きベクトル(カメラの向きと合わせたほうがいい)
+	glm::vec2 center = CanonicalDefaults::kLocalCenterXZ;// local center
+	glm::vec2 direction = CanonicalDefaults::kLocalForwardXZ; // ローカル単位向きベクトル(OpenGLは-Z方向が正面)
 	float width;// right direction
 	float height;// front direction
 };

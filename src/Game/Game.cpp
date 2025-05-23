@@ -67,6 +67,8 @@
 // Debug
 #include "Debug/DebugSystems/LogicDebugDrawSystem.h"
 
+#include "Game/Config/CanonicalDefaults.h"
+
 // Test
 //#include "Test/TriangleActor.h"
 //#include "Test/Test3DModel.h"
@@ -352,21 +354,21 @@ void Game::InitializeSkills()
 	SkillDefinition slash;
 	slash.id = 1;
 	slash.name = "Basic Slash";
-	slash.shape = Attack2DShape{ Circle2DAttack{glm::vec2(0.0f), 5.0f} };
+	slash.shape = Attack2DShape{ Circle2DAttack{CanonicalDefaults::kLocalCenterXZ, 5.0f} };
 	slash.duration = 1.0f;
 	mSkillDatabase.AddSkill(slash);
 
 	SkillDefinition slash2;
 	slash2.id = 2;
 	slash2.name = "Power Slash";
-	slash2.shape = Attack2DShape{ Sector2DAttack{glm::vec2(0.0f), glm::vec2(0.0f,-1.0f), 1.0f, 10.0f} };
+	slash2.shape = Attack2DShape{ Sector2DAttack{CanonicalDefaults::kLocalCenterXZ, CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f} };// -Z•ûŒü‚ª‘O•û
 	slash2.duration = 1.0f;
 	mSkillDatabase.AddSkill(slash2);
 
 	SkillDefinition blade;
 	blade.id = 3;
 	blade.name = "Blade";
-	blade.shape = Attack2DShape{ Rectangle2DAttack{glm::vec2(0.0f), glm::vec2(0.0f,-1.0f), 1.0f, 10.0f}};
+	blade.shape = Attack2DShape{ Rectangle2DAttack{glm::vec2(0.0f, -5.0f), CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f}};
 	blade.duration = 1.0f;
 	mSkillDatabase.AddSkill(blade);
 }
