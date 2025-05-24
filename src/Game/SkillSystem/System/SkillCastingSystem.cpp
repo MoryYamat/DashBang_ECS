@@ -31,47 +31,47 @@ void SkillSystem::Casting::SpawnSkillHitArea(ECS& ecs, SkillDatabase& skillDB)
 
 		// world 変換
 		glm::vec2 worldCenter = logic.positionXZ;
-		Attack2DShape shape;
+		Attack2DShape shape = def.shape;
 
-		// separate local informations from world Transformations
-		// separate local informations from world Transformations
-		// separate local informations from world Transformations
-		// separate local informations from world Transformations
-		if (def.shape.IsCircle())
-		{
-			// Local shape information
-			Circle2DAttack circle = def.shape.AsCircle();
-			shape = Attack2DShape{ circle };
+	
+		// ローカル形状情報とワールド変換情報を分離したためこの部分の分岐は不要
+		// Since the local shape information and the world transformation information have been separated, 
+		// this branch is no longer necessary.
+		//if (def.shape.IsCircle())
+		//{
+		//	// Local shape information
+		//	Circle2DAttack circle = def.shape.AsCircle();
+		//	shape = Attack2DShape{ circle };
 
-			// Update the World Coordinate Information
-			// glm::vec2 offset = MathUtils::RotateVec2(circle.localcenter, transform.rotationY) * transform.scale;
-			// transform.positionXZ = transform.positionXZ + offset;
-		}
-		else if (def.shape.IsSector())
-		{
-			// Local shape information
-			Sector2DAttack sector = def.shape.AsSector();
-			//glm::vec2 direct = transform.GetFrontXZ();
-			//sector.localdirection = direct;
-			shape = Attack2DShape{ sector };
+		//	// Update the World Coordinate Information
+		//	// glm::vec2 offset = MathUtils::RotateVec2(circle.localcenter, transform.rotationY) * transform.scale;
+		//	// transform.positionXZ = transform.positionXZ + offset;
+		//}
+		//else if (def.shape.IsSector())
+		//{
+		//	// Local shape information
+		//	Sector2DAttack sector = def.shape.AsSector();
+		//	//glm::vec2 direct = transform.GetFrontXZ();
+		//	//sector.localdirection = direct;
+		//	shape = Attack2DShape{ sector };
 
-			// Update the World Coordinate Information
-			// glm::vec2 offset = MathUtils::RotateVec2(sector.localcenter, transform.rotationY) * transform.scale;
-			//transform.positionXZ = transform.positionXZ + offset;
+		//	// Update the World Coordinate Information
+		//	// glm::vec2 offset = MathUtils::RotateVec2(sector.localcenter, transform.rotationY) * transform.scale;
+		//	//transform.positionXZ = transform.positionXZ + offset;
 
-			// DebugUtils::LogVector_string("SkillCastingSystem.cpp(direction)", sector.localdirection);
-		}
-		else if (def.shape.IsRectangle())
-		{
-			// Local shape information
-			Rectangle2DAttack rect = def.shape.AsRectangle();
-			// rect.localdirection = glm::normalize(MathUtils::RotateVec2(rect.localdirection, transform.rotationY));
-			shape = Attack2DShape{ rect };
+		//	// DebugUtils::LogVector_string("SkillCastingSystem.cpp(direction)", sector.localdirection);
+		//}
+		//else if (def.shape.IsRectangle())
+		//{
+		//	// Local shape information
+		//	Rectangle2DAttack rect = def.shape.AsRectangle();
+		//	// rect.localdirection = glm::normalize(MathUtils::RotateVec2(rect.localdirection, transform.rotationY));
+		//	shape = Attack2DShape{ rect };
 
-			// Update the World Coordinate Information
-			// glm::vec2 offset = MathUtils::RotateVec2(rect.localcenter, transform.rotationY) * transform.scale;
-			//transform.positionXZ = transform.positionXZ + offset;
-		}
+		//	// Update the World Coordinate Information
+		//	// glm::vec2 offset = MathUtils::RotateVec2(rect.localcenter, transform.rotationY) * transform.scale;
+		//	//transform.positionXZ = transform.positionXZ + offset;
+		//}
 
 		// 攻撃範囲エンティティ生成
 		Entity attack = ecs.createEntity();

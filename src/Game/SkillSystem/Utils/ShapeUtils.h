@@ -12,6 +12,8 @@
 
 namespace ShapeUtils
 {
+	// A function that calculates the world shape using local 2D shape information and world transformation information.
+	// ローカル2D形状情報とワールド変換情報を用いて，ワールド形状を計算する関数
 	Attack2DShape ComputeWorldShape(const Attack2DShape& localShape, const Transform2DComponent& transform);
 
 	Circle2DAttack ComputeWorldCircle(const Circle2DAttack& local, const Transform2DComponent& transform);

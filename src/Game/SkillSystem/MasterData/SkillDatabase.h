@@ -18,12 +18,13 @@ public:
 			std::cerr << "[SkillDatabase] Duplicate SkillID: " << def.id << std::endl;
 			return;
 		}
-		mDefinitions[def.id] = def;
+		mDefinitions[def.id] = def;// add key(def.id) and value(def)
 		std::cout << "[SkillDatabase.h(AddSkill): Skill id ]" << def.id << "is added as \"" << def.name << "\"" << std::endl;
 	}
 
 	const SkillDefinition& Get(int id) const
 	{
+		// .conatins(id)‚É•ÏX—\’è(C++20)
 		auto it = mDefinitions.find(id);
 		if (it == mDefinitions.end())
 		{
@@ -34,5 +35,6 @@ public:
 
 private:
 
+	// ( id, skillDefinition(class) )
 	std::unordered_map<int, SkillDefinition> mDefinitions;
 };
