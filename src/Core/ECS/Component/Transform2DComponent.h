@@ -3,6 +3,12 @@
 
 #pragma once 
 
+#include "Game/Config/CanonicalDefaults.h"
+
+#include "Math/MathUtils.h"
+
+#include <glm/gtx/rotate_vector.hpp>
+
 #include <GLM/glm.hpp>
 
 struct Transform2DComponent
@@ -14,13 +20,12 @@ struct Transform2DComponent
 	// front (radiansëOíÒ)
 	glm::vec2 GetFrontXZ() const
 	{
-		return glm::vec2(std::cos(rotationY), std::sin(rotationY)); // Å© x = cos, z = sin
+		return MathUtils::ForwardFromRotationY(rotationY);
 	}
 
 	// right (radiansëOíÒ)
 	glm::vec2 GetRightXZ() const
 	{
-		glm::vec2 front = GetFrontXZ();
-		return glm::vec2(front.y, -front.x);
+		return MathUtils::RightFromRotationY(rotationY);
 	}
 };

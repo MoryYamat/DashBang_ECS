@@ -1,4 +1,4 @@
-// skill trajectory data
+// ‰Šúó‘Ô‚ğŠî€‚Æ‚µ‚½·•ª‚â•â³’l
 #pragma once
 
 #include <GLM/glm.hpp>
@@ -18,12 +18,14 @@ namespace SkillTrajectory
 {
 	struct RotateTrajectoryParams
 	{
-		float startAngle;
-		float endAngle;
+		// degrees
+		float startAngle = 0.0f;
+		float endAngle = 0.0f;
 	};
 
 	struct LinearTrajectoryParams
 	{
+		// units per sec
 		float speed;
 	};
 

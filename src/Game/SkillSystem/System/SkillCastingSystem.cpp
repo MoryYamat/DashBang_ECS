@@ -8,6 +8,9 @@
 
 #include "Game/SkillSystem/MasterData/SkillDefinition.h"
 
+#include "Game/SkillSystem/Component/SkillTrajectoryComponent.h"
+#include "Game/SkillSystem/Factory/SkillTrajectoryFactory.h"
+
 #include "Math/MathUtils.h"
 
 #include "Debug/DebugUtils.h"
@@ -85,5 +88,12 @@ void SkillSystem::Casting::SpawnSkillHitArea(ECS& ecs, SkillDatabase& skillDB)
 
 		// transformを複製
 		ecs.addComponent(attack, transform);
+
+		// 攻撃判定 Entityに軌跡コンポーネントを追加
+		SkillTrajectoryComponent traj;
+		traj.type = def.trajectoryType;
+		traj.elapsedTime = 0.0f;
+		traj.trajectoryFunc = SkillTrajectoryFactory::Create(def, transform);
+		ecs.addComponent(attack, traj);
 	}
 }

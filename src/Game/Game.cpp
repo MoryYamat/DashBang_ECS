@@ -61,6 +61,11 @@
 #include "Game/SkillSystem/MasterData/SkillSlot.h"
 #include "Game/SkillSystem/System/UpdateSkillLifetimes.h"
 
+// skill trajectory
+#include "Game/SkillSystem/Component/SkillTrajectoryComponent.h"
+#include "Game/SkillSystem/MasterData/SkillTrajectoryData.h"
+#include "Game/SkillSystem/System/SkillTrajectorySystem.h"
+
 // Game/Sync
 #include "Game/Sync/SyncLogicToTransformSystem.h"
 
@@ -220,6 +225,7 @@ void Game::updateGameLogics()
 	// skill system
 	SkillSystem::Trigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(mEcs, mSkillInputMap);
 	SkillSystem::Casting::SpawnSkillHitArea(mEcs, mSkillDatabase);
+	SkillTrajectorySystem::Update(mEcs, mDeltaTime);
 	SkillSystem::Lifetime::UpdateSkillLifetimes(mEcs, mDeltaTime, mSkillDatabase);
 	// SkillSystem::Trigger::PlayerSkillTriggerSystem::Update(mEcs, mSkillInputMap);
 	// SkillSystem::SkillCastingSystem(mEcs, mSkillDatabase, mRenderContext, mDeltaTime);
@@ -356,6 +362,11 @@ void Game::InitializeSkills()
 	slash.name = "Basic Slash";
 	slash.shape = Attack2DShape{ Circle2DAttack{CanonicalDefaults::kLocalCenterXZ, 5.0f} };
 	slash.duration = 1.0f;
+	slash.trajectoryType = TrajectoryType::LinearForward;
+	slash.trajectoryParams = SkillTrajectory::LinearTrajectoryParams
+	{
+		.speed = 20.0f
+	};
 	mSkillDatabase.AddSkill(slash);
 
 	SkillDefinition slash2;
@@ -370,6 +381,13 @@ void Game::InitializeSkills()
 	blade.name = "Blade";
 	blade.shape = Attack2DShape{ Rectangle2DAttack{glm::vec2(0.0f, -5.0f), CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f}};
 	blade.duration = 1.0f;
+
+	blade.trajectoryType = TrajectoryType::RotateAroundSelf;
+	blade.trajectoryParams = SkillTrajectory::RotateTrajectoryParams
+	{
+		.startAngle = 60.0f,
+		.endAngle = -60.0f
+	};
 	mSkillDatabase.AddSkill(blade);
 }
 

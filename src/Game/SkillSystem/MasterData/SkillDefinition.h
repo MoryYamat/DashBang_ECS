@@ -20,6 +20,6 @@ struct SkillDefinition
 	float duration = 1.0f;// 
 	Attack2DShape shape;// Œ`ó’è‹`
 
-	TrajectoryType trajetoryType;
+	TrajectoryType trajectoryType;
 	SkillTrajectory::TrajectoryParamsVariant trajectoryParams;
 };
