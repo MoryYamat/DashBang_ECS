@@ -22,6 +22,8 @@
 #include "Graphics/Model/AssimpImporter.h"
 #include "Graphics/Renderer/GPUBufferUtils.h"
 
+#include "Math/Logic/LogicMathUtils.h"
+
 #include "Debug/DebugUtils.h"
 
 #include <iostream>
@@ -108,10 +110,10 @@ TestBaseTerrainActor::TestBaseTerrainActor(ECS& ecs, Shader* shader)
 	collisionComp.collider.obb2D.center = worldCenterXZ;
 
 	// calc local vector axisX and axisZ
-	// float rotRad = glm::radians(-logic2DComp.rotation);// OpenGL‚Í‰EèŒn‚¾‚ªClogic.rotation‚Í‰E‰ñ‚è‚Æ‚µ‚ÄŠi”[‚³‚ê‚Ä‚¢‚é‚Ì‚ÅC•„†‚ğ”½“]
-	float rotRad = -logic2DComp.rotation;// OpenGL‚Í‰EèŒn‚¾‚ªClogic.rotation‚Í‰E‰ñ‚è‚Æ‚µ‚ÄŠi”[‚³‚ê‚Ä‚¢‚é‚Ì‚ÅC•„†‚ğ”½“]
-	glm::vec2 axisX = glm::normalize(glm::vec2(std::cos(rotRad), std::sin(rotRad)));
-	glm::vec2 axisZ = glm::vec2(-axisX.y, axisX.x);
+	float rotRad = logic2DComp.rotation;// •`‰æŠî€‚Æ˜_—Šî€‚Ì®‡«‚ğl‚¦‚é
+	// Front = Z axis basis
+	glm::vec2 axisZ = glm::normalize(LogicMathUtils::GetForwardXZFromRotationY((rotRad)));
+	glm::vec2 axisX = LogicMathUtils::GetRightXZFromRotationY(rotRad);
 	collisionComp.collider.obb2D.axisX = axisX;
 	collisionComp.collider.obb2D.axisZ = axisZ;
 	ecs.addComponent(entity, collisionComp);

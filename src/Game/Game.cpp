@@ -35,6 +35,7 @@
 #include "Game/Actor/FollowCameraActor.h"
 #include "Game/Actor/MouseCursorActor.h"
 #include "Game/Actor/Map/TestBaseTerrainActor.h"
+#include "Game/Actor/TestObject.h"
 
 // Game/Actor/Map
 #include "Game/Actor/Map/TileMapActor.h"
@@ -72,7 +73,7 @@
 // Debug
 #include "Debug/DebugSystems/LogicDebugDrawSystem.h"
 
-#include "Game/Config/CanonicalDefaults.h"
+#include "Config/CanonicalDefaults.h"
 
 // Test
 //#include "Test/TriangleActor.h"
@@ -303,6 +304,8 @@ void Game::spawnAllActors()
 
 	TestRockActor testRock = TestRockActor(mEcs, mShader);
 
+	TestObject testObj = TestObject(mEcs, mShader);
+
 	// CameraActor camActor = CameraActor(mEcs);
 
 	//Collider a, c;
@@ -379,6 +382,7 @@ void Game::InitializeSkills()
 	SkillDefinition blade;
 	blade.id = 3;
 	blade.name = "Blade";
+	// blade.shape = Attack2DShape{ Rectangle2DAttack{glm::vec2(0.0f, -5.0f), CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f}};
 	blade.shape = Attack2DShape{ Rectangle2DAttack{glm::vec2(0.0f, -5.0f), CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f}};
 	blade.duration = 1.0f;
 

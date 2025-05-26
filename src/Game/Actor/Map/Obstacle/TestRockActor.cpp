@@ -20,6 +20,8 @@
 #include "Graphics/Model/AssimpImporter.h"
 #include "Graphics/Renderer/GPUBufferUtils.h"
 
+#include "Math/Logic/LogicMathUtils.h"
+
 #include "Debug/DebugUtils.h"
 
 #include <iostream>
@@ -48,7 +50,7 @@ TestRockActor::TestRockActor(ECS& ecs, Shader* shader)
 	// set TransformComponent
 	TransformComponent transformComp;
 	transformComp.position = glm::vec3(10.0f, 0.0f, -2.0f);
-	transformComp.rotation = glm::vec3(0.0f, -30.0f, 0.0f);
+	transformComp.rotation = glm::vec3(0.0f, -60.0f, 0.0f);
 	transformComp.scale = glm::vec3(0.01f);
 	ecs.addComponent(entity, transformComp);
 
@@ -93,10 +95,9 @@ TestRockActor::TestRockActor(ECS& ecs, Shader* shader)
 	testRockCollisionComp.collider.obb2D.center = worldCenterXZ;
 
 	// calc local vector axisX and axisZ
-	//float rotRad = glm::radians(-logic.rotation);// OpenGL‚Í‰EèŒn‚¾‚ªClogic.rotation‚Í‰E‰ñ‚è‚Æ‚µ‚ÄŠi”[‚³‚ê‚Ä‚¢‚é‚Ì‚ÅC•„†‚ğ”½“]
-	float rotRad = -logic.rotation;// OpenGL‚Í‰EèŒn‚¾‚ªClogic.rotation‚Í‰E‰ñ‚è‚Æ‚µ‚ÄŠi”[‚³‚ê‚Ä‚¢‚é‚Ì‚ÅC•„†‚ğ”½“]
-	glm::vec2 axisX = glm::normalize(glm::vec2(std::cos(rotRad), std::sin(rotRad)));
-	glm::vec2 axisZ = glm::vec2(-axisX.y, axisX.x);
+	float rotRad = logic.rotation;// •`‰æŠî€(+Z)‚Æ˜_—Šî€(-Z)‚Ì®‡«‚ğl‚¦‚é
+	glm::vec2 axisZ = normalize(LogicMathUtils::GetForwardXZFromRotationY(rotRad));
+	glm::vec2 axisX = LogicMathUtils::GetRightXZFromRotationY(rotRad);
 	testRockCollisionComp.collider.obb2D.axisX = axisX;
 	testRockCollisionComp.collider.obb2D.axisZ = axisZ;
 	ecs.addComponent(entity, testRockCollisionComp);

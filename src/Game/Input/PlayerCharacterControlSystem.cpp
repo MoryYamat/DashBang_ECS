@@ -17,6 +17,8 @@
 
 #include <glm/ext/matrix_projection.hpp>
 
+#include "Config/CanonicalDefaults.h"
+
 #include <cmath>
 #include <iostream>
 
@@ -77,14 +79,14 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, const RawInputState& rawInpu
 		if (glm::length(dir) > 0.0001f && !glm::any(glm::isnan(dir)))
 		{
 			logic.front = glm::normalize(dir);
-			logic.rotation = logic.GetRotationYFromFrontVector();
+			logic.rotation = logic.GetRotationYFromFrontVector();//radians / -Zが正面(右手系:反時計回りが正)
 
 			// rightベクトルもfrontから再計算
 			logic.UpdateRightFromFront();
 		}
 		else
 		{
-			logic.front = glm::vec2(0.0f, 1.0f);
+			logic.front = CanonicalDefaults::kCanonicalFrowardXZ;
 		}
 
 
@@ -92,7 +94,8 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, const RawInputState& rawInpu
 		// log for debugging
 		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(position)", logic.positionXZ);
 		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(front)", logic.front);
-		std::cout << "[PlayerCharacterControlSystem.cpp] rotation " << logic.rotation << std::endl;
+		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(right)", logic.right);
+		// std::cout << "[PlayerCharacterControlSystem.cpp] rotation " << logic.rotation << std::endl;
 		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(rotation)", {logic.rotation, 0});
 		// DebugUtils::LogVector("PlayerCharacterControlSystem.cpp(circleCenter)", collisionComp.collider.circle2D.center);
 		// std::cout << "RADIUS" << collisionComp.collider.circle2D.radius << std::endl;

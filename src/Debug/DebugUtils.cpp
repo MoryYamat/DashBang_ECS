@@ -55,6 +55,7 @@ void DebugUtils::DebugDraw::DrawQuad(const glm::vec2& center, float size, const 
 	glEnable(GL_DEPTH_TEST);
 }
 
+
 void DebugUtils::DebugDraw::DrawFilledQuad(const glm::vec2& center, float size, glm::vec3& color)
 {
 	float halfSize = size * 0.5f;
@@ -230,6 +231,7 @@ void DebugUtils::DebugDraw::DrawFilledSector2D(const glm::vec2 centerXZ, const g
 	glEnable(GL_DEPTH_TEST);
 }
 
+// åªç›ñ¢égóp
 void DebugUtils::DebugDraw::DrawFilledSector2D(const glm::vec2 centerXZ, const float rotation, const float radius, const float angle, const glm::vec4& color)
 {
 	const int segments = 32;

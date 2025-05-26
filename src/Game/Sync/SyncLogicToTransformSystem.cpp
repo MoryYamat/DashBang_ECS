@@ -17,7 +17,7 @@ void SyncLogicToTransformSystem::Apply2DToTransform(ECS& ecs, float deltaTime)
 
 		// 2D論理座標(x, y=0, z ) -> 3D描画座標 (x, y, z) (OpenGL)
 		transform.position.x = logic.positionXZ.x;
-		transform.position.y = 0.0f;// Fixed height (高さは固定)
+		transform.position.y = 0.0f;// Fixed height (高さは固定)(今後HeightMapによって配置)
 		transform.position.z = logic.positionXZ.y;
 
 		// scale ( xz -> xyz)
@@ -45,7 +45,8 @@ void SyncLogicToTransformSystem::Apply2DToTransform(ECS& ecs, float deltaTime)
 		//std::cout << "[SyncLogicToTransformSystem.cpp]: logical front vector " << logic.front.x << std::endl;
 		//std::cout << "[SyncLogicToTransformSystem.cpp]: logical right vector " << logic.right.x << std::endl;
 
-		//std::cout << "[SyncLogicToTransformSystem.cpp]: rotation " << logic.rotation <<"\n";
+		// std::cout << "[SyncLogicToTransformSystem.cpp]: rotation " << logic.rotation <<"\n";
+		// std::cout << "[SyncLogicToTransformSystem.cpp]: Transform rotation " << transform.rotation.y <<"\n";
 
 		// position log for debugging
 		//DebugUtils::LogVector("SyncLogicToTransformSystem.cpp", transform.position);

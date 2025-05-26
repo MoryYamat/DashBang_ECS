@@ -7,7 +7,7 @@
 
 #include "Core/ECS/Entity.h"
 
-#include "Game/Config/CanonicalDefaults.h"
+#include "Config/CanonicalDefaults.h"
 
 #include <variant>
 

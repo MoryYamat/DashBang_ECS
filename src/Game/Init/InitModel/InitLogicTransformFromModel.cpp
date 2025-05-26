@@ -21,7 +21,8 @@ Logic2DTransformComponent GameInit::LogicTransform::InitLogic2DTransformFromMode
 	logic.scale = GameInit::LogicTransform::GetModelXZSizeWithScale(transformComp, modelData);
 
 	//std::cout << "[InitLogicTransformSystem.cpp]: Logic Position: x. " << logic.positionXZ.x << " z. " << logic.positionXZ.y << std::endl;
-	//std::cout << "[InitLogicTransformSystem.cpp]: logical front vector " << logic.front.x << std::endl;
+	std::cout << "[InitLogicTransformSystem.cpp]: logical front vector x: " << logic.front.x << ", z: "<< logic.front.y << std::endl;
+	std::cout << "[InitLogicTransformSystem.cpp]: logical rotationY: " << logic.rotation << std::endl;
 	//std::cout << "[InitLogicTransformSystem.cpp]: logical right vector " << logic.right.x << std::endl;
 	
 	DebugUtils::GeneralLog("InitLogicTransformFromModel.cpp", 

@@ -103,6 +103,7 @@ glm::vec3 GameInit::TileMapFromMesh::GetAABBCorner(glm::vec3 min, glm::vec3 max,
 	);
 }
 
+// モデルの最大／最小座標からタイルマップ原点を計算する
 glm::vec2 GameInit::TileMapFromMesh::ComputeTileMapOriginFromModel(const TransformComponent& transformComp, const ModelData& modelData)
 {
 	glm::vec3 min = modelData.min;

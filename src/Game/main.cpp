@@ -1,5 +1,9 @@
 // entry point
 
+// 描画(3D) 右手系.X/Y/Z
+// 論理(2D) 右手系.X/-Z
+// 描画と論理はY軸周りに180°ズレている（処理中に補正が必要）
+
 #include <iostream>
 
 #include "Game/Game.h"

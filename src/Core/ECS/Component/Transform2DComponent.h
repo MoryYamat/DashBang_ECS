@@ -3,9 +3,9 @@
 
 #pragma once 
 
-#include "Game/Config/CanonicalDefaults.h"
+#include "Config/CanonicalDefaults.h"
 
-#include "Math/MathUtils.h"
+#include "Math/Logic/LogicMathUtils.h"
 
 #include <glm/gtx/rotate_vector.hpp>
 
@@ -17,15 +17,18 @@ struct Transform2DComponent
 	float rotationY = 0.0f; // radians
 	float scale = 1.0f; // uniform
 
+	glm::vec2 front = CanonicalDefaults::kLocalForwardXZ;
+	glm::vec2 right = glm::vec2(-front.y, front.x);
+
 	// front (radiansëOíÒ)
 	glm::vec2 GetFrontXZ() const
 	{
-		return MathUtils::ForwardFromRotationY(rotationY);
+		return LogicMathUtils::GetForwardXZFromRotationY(rotationY);// -ZäÓèÄ
 	}
 
 	// right (radiansëOíÒ)
 	glm::vec2 GetRightXZ() const
 	{
-		return MathUtils::RightFromRotationY(rotationY);
+		return LogicMathUtils::GetRightXZFromRotationY(rotationY);// -ZäÓèÄ
 	}
 };

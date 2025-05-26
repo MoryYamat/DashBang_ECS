@@ -2,6 +2,10 @@
 
 #pragma once 
 
+#include "Config/CanonicalDefaults.h"
+
+#include "Math/Logic/LogicMathUtils.h"
+
 #include <glm/glm.hpp>
 
 
@@ -11,11 +15,11 @@ struct Logic2DTransformComponent
 	glm::vec2 positionXZ = {0.0f, 0.0f};
 
 	// direction (radians)
-	float rotation = 0.0f;// radians!
+	float rotation = CanonicalDefaults::kCanonicalRotationY;// radians!
 
 	// Front and right vectors
-	glm::vec2 front = glm::vec2(0.0f, 1.0f);
-	glm::vec2 right = glm::vec2(1.0f, 0.0f);
+	glm::vec2 front = CanonicalDefaults::kCanonicalFrowardXZ;
+	glm::vec2 right = CanonicalDefaults::kCanonicalRightXZ;
 
 	// scale
 	glm::vec2 scale = glm::vec2(1.0f);
@@ -37,21 +41,13 @@ struct Logic2DTransformComponent
 	// Frontベクトルから回転を得る (radians)
 	float GetRotationYFromFrontVector() const
 	{
-		// 分岐コストは...
-		if (glm::length(front) > 0.0001f)
-		{
-			return std::atan2(front.x, front.y);
-		}
-		else
-		{
-			return rotation;
-		}
+		return LogicMathUtils::GetRotationYFromFrontXZ(front);
 	}
 
 	// FrontベクトルからRightベクトルを得る
 	void UpdateRightFromFront()
 	{
-		right = glm::vec2(front.y, -front.x);
+		right = LogicMathUtils::GetRightXZFromFrontXZ(front);
 	}
 
 	// 初期化時のみ　※ゲームループでは使わない
@@ -66,7 +62,7 @@ struct Logic2DTransformComponent
 	// 初期化時のみ　※ゲームループでは使わない
 	void UpdateDirectionFromRotation()
 	{
-		front = glm::normalize(glm::vec2(glm::sin(rotation), glm::cos(rotation)));
-		right = glm::vec2(front.y, -front.x);
+		front = glm::normalize(LogicMathUtils::GetForwardXZFromRotationY(rotation));
+		right = LogicMathUtils::GetRightXZFromRotationY(rotation);
 	}
 };

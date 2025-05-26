@@ -1,36 +1,31 @@
-// math
+// 汎用計算関数群
 
 #pragma once
 
-#include "Game/Config/CanonicalDefaults.h"
+#include "Config/CanonicalDefaults.h"
+
+#include "Debug/DebugUtils.h"
 
 #include <glm/glm.hpp>
 
+#include <iostream>
+
+// Define semantic transformations in terms of mathematical transformations
 namespace MathUtils
 {
+	// 度からラジアンへ変換する
 	inline float DegreesToRadians(float deg) { return glm::radians(deg); }
+	// ラジアンから度へ変換する
 	inline float RadiansToDegrees(float rad) { return glm::degrees(rad); }
 
-
-	// 注意: これは XZ平面上で使用される回転です（Z = -Y）
-	inline glm::vec2 RotateVec2_XZ(const glm::vec2& v, float radians)
-	{
-		float c = glm::cos(radians);
-		float s = glm::sin(radians);
-		return glm::vec2(
-			c * v.x - s * v.y,
-			-(s * v.x + c * v.y)
-		);
-	}
-
 	// 標準的な2D回転（XY空間）
-	inline glm::vec2 RotateVec2(const glm::vec2& v, float radians)
+	inline glm::vec2 RotateVec2(const glm::vec2& vec, float radians)
 	{
 		float c = glm::cos(radians);
 		float s = glm::sin(radians);
 		return glm::vec2(
-			c * v.x - s * v.y,
-			s * v.x + c * v.y
+			c * vec.x - s * vec.y,
+			s * vec.x + c * vec.y
 		);
 	}
 
@@ -42,15 +37,8 @@ namespace MathUtils
 		return glm::mat2(c, -s, s, c);
 	}
 
-	// -Zが前方の場合の回転したベクトルを得る
-	inline glm::vec2 ForwardFromRotationY(float radians)
-	{
-		return RotateVec2_XZ(CanonicalDefaults::kLocalForwardXZ, radians);
-	}
 
-	// -Zが前方の場合のFrontベクトルに対するRightベクトルを得る
-	inline glm::vec2 RightFromRotationY(float radians)
-	{
-		return RotateVec2_XZ(CanonicalDefaults::kLocalForwardXZ, radians);
-	}
+
+
+
 }
