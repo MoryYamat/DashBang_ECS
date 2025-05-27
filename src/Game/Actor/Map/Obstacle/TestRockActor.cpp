@@ -96,8 +96,8 @@ TestRockActor::TestRockActor(ECS& ecs, Shader* shader)
 
 	// calc local vector axisX and axisZ
 	float rotRad = logic.rotation;// •`‰æŠî€(+Z)‚Æ˜_—Šî€(-Z)‚Ì®‡«‚ğl‚¦‚é
-	glm::vec2 axisZ = normalize(LogicMathUtils::GetForwardXZFromRotationY(rotRad));
-	glm::vec2 axisX = LogicMathUtils::GetRightXZFromRotationY(rotRad);
+	glm::vec2 axisZ = normalize(LogicDirection::CalcForwardFromYaw(rotRad));
+	glm::vec2 axisX = LogicDirection::CalcRightFromYaw(rotRad);
 	testRockCollisionComp.collider.obb2D.axisX = axisX;
 	testRockCollisionComp.collider.obb2D.axisZ = axisZ;
 	ecs.addComponent(entity, testRockCollisionComp);

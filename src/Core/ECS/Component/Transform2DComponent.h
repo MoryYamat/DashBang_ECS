@@ -23,12 +23,12 @@ struct Transform2DComponent
 	// front (radians‘O’ñ)
 	glm::vec2 GetFrontXZ() const
 	{
-		return LogicMathUtils::GetForwardXZFromRotationY(rotationY);// -ZŠî€
+		return LogicDirection::CalcForwardFromYaw(rotationY);// +ZŠî€
 	}
 
 	// right (radians‘O’ñ)
 	glm::vec2 GetRightXZ() const
 	{
-		return LogicMathUtils::GetRightXZFromRotationY(rotationY);// -ZŠî€
+		return LogicDirection::CalcRightFromYaw(rotationY);// +ZŠî€
 	}
 };

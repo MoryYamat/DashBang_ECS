@@ -382,8 +382,7 @@ void Game::InitializeSkills()
 	SkillDefinition blade;
 	blade.id = 3;
 	blade.name = "Blade";
-	// blade.shape = Attack2DShape{ Rectangle2DAttack{glm::vec2(0.0f, -5.0f), CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f}};
-	blade.shape = Attack2DShape{ Rectangle2DAttack{glm::vec2(0.0f, -5.0f), CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f}};
+	blade.shape = Attack2DShape{ Rectangle2DAttack{glm::vec2(0.0f, 5.0f), CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f}};
 	blade.duration = 1.0f;
 
 	blade.trajectoryType = TrajectoryType::RotateAroundSelf;

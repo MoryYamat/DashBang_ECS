@@ -41,13 +41,13 @@ struct Logic2DTransformComponent
 	// Frontベクトルから回転を得る (radians)
 	float GetRotationYFromFrontVector() const
 	{
-		return LogicMathUtils::GetRotationYFromFrontXZ(front);
+		return LogicDirection::CalcYawFromDirection(front);
 	}
 
 	// FrontベクトルからRightベクトルを得る
 	void UpdateRightFromFront()
 	{
-		right = LogicMathUtils::GetRightXZFromFrontXZ(front);
+		right = LogicDirection::CalcRightFromForward(front);
 	}
 
 	// 初期化時のみ　※ゲームループでは使わない
@@ -62,7 +62,7 @@ struct Logic2DTransformComponent
 	// 初期化時のみ　※ゲームループでは使わない
 	void UpdateDirectionFromRotation()
 	{
-		front = glm::normalize(LogicMathUtils::GetForwardXZFromRotationY(rotation));
-		right = LogicMathUtils::GetRightXZFromRotationY(rotation);
+		front = glm::normalize(LogicDirection::CalcForwardFromYaw(rotation));
+		right = LogicDirection::CalcRightFromYaw(rotation);
 	}
 };

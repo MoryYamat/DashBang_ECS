@@ -112,8 +112,8 @@ TestBaseTerrainActor::TestBaseTerrainActor(ECS& ecs, Shader* shader)
 	// calc local vector axisX and axisZ
 	float rotRad = logic2DComp.rotation;// •`‰æŠî€‚Æ˜_—Šî€‚Ì®‡«‚ğl‚¦‚é
 	// Front = Z axis basis
-	glm::vec2 axisZ = glm::normalize(LogicMathUtils::GetForwardXZFromRotationY((rotRad)));
-	glm::vec2 axisX = LogicMathUtils::GetRightXZFromRotationY(rotRad);
+	glm::vec2 axisZ = glm::normalize(LogicDirection::CalcForwardFromYaw((rotRad)));
+	glm::vec2 axisX = LogicDirection::CalcRightFromYaw(rotRad);
 	collisionComp.collider.obb2D.axisX = axisX;
 	collisionComp.collider.obb2D.axisZ = axisZ;
 	ecs.addComponent(entity, collisionComp);

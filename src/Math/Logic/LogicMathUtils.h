@@ -10,10 +10,10 @@
 
 #include <iostream>
 
-namespace LogicMathUtils
+namespace LogicDirection
 {
-	// ゲームロジック用（+Zが正面） rotationY = 0 -> front = (0, 1) rotationY = pi/2 -> front = (1, 0)
-	inline glm::vec2 RotateVec2_FromPositiveZ(const glm::vec2& vec, float radians)
+	// ゲームロジック用（+Zが正面） rotationY = 0 -> return = (0, 1) rotationY = pi/2 -> return = (1, 0)
+	inline glm::vec2 RotateVec2FromZForward(const glm::vec2& vec, float radians)
 	{
 		float c = glm::cos(radians);
 		float s = glm::sin(radians);
@@ -26,19 +26,19 @@ namespace LogicMathUtils
 	//
 
 	// +Zが前方の場合のradiansだけ回転したベクトルを得る
-	inline glm::vec2 GetForwardXZFromRotationY(float radians)
+	inline glm::vec2 CalcForwardFromYaw(float radians)
 	{
-		return RotateVec2_FromPositiveZ(CanonicalDefaults::kLocalForwardXZ, radians);
+		return RotateVec2FromZForward(CanonicalDefaults::kLocalForwardXZ, radians);
 	}
 
 	// +Zが前方の場合のradinasだけ回転したFrontベクトルに対するRightベクトルを得る
-	inline glm::vec2 GetRightXZFromRotationY(float radians)
+	inline glm::vec2 CalcRightFromYaw(float radians)
 	{
-		return RotateVec2_FromPositiveZ(CanonicalDefaults::kCanonicalFrowardXZ, radians + glm::half_pi<float>());
+		return RotateVec2FromZForward(CanonicalDefaults::kCanonicalFrowardXZ, radians + glm::half_pi<float>());
 	}
 
 	// [-pi, pi]を[0, 2pi]に正規化
-	inline float NormalizeAngleTo2Pi(float rad)
+	inline float NormalizeAnglePositive(float rad)
 	{
 		float constexpr twoPi = 2.0f * glm::pi<float>();
 		float result = std::fmod(rad, twoPi);
@@ -49,7 +49,7 @@ namespace LogicMathUtils
 
 	// 回転原点を定義
 	// 右手系(+Zが正面(0.0°) : ベクトルの回転をラジアンで返す
-	inline float GetRotationYFromFrontXZ(glm::vec2 vecXZ)
+	inline float CalcYawFromDirection(glm::vec2 vecXZ)
 	{
 		// もう少し良い分岐方法を考える
 		if (glm::length(vecXZ) > 0.0001f)
@@ -61,10 +61,10 @@ namespace LogicMathUtils
 			// return std::atan2(-vecXZ.y, -vecXZ.x);// -X軸から-Z軸
 
 			// [0, 2pi] に補正
-			// return NormalizeAngleTo2Pi(std::atan2(-vecXZ.x, -vecXZ.y));// -Z軸から-X軸
+			// return NormalizeAnglePositive(std::atan2(-vecXZ.x, -vecXZ.y));// -Z軸から-X軸
 			// return std::atan2(-vecXZ.x, vecXZ.y);// Z軸から-X軸
 			// return std::atan2(vecXZ.x, -vecXZ.y);// -Z軸から+X軸
-			return NormalizeAngleTo2Pi(std::atan2(vecXZ.x, vecXZ.y));// +Z軸から+X軸
+			return NormalizeAnglePositive(std::atan2(vecXZ.x, vecXZ.y));// +Z軸から+X軸
 		}
 		else
 		{
@@ -75,7 +75,7 @@ namespace LogicMathUtils
 
 
 	// 右手系(反時計回りが正)において，あるベクトルに対する右ベクトルを返す
-	inline glm::vec2 GetRightXZFromFrontXZ(glm::vec2 front)
+	inline glm::vec2 CalcRightFromForward(glm::vec2 front)
 	{
 		return glm::vec2(-front.y, front.x);
 	}

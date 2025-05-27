@@ -19,7 +19,7 @@
 ### **Data Flow**
 ```text
 [ GLFW ]
-　↓
+　↓ 
 [ InputManager -> RawInputState]
 　↓
 [ InputRouterSystem + InputMapping]

@@ -18,7 +18,7 @@ Attack2DShape ShapeUtils::ComputeWorldShape(const Attack2DShape& localShape, con
 			if constexpr (std::is_same_v<T, Circle2DAttack>)
 			{
 				Circle2DAttack result = shape;
-				result.center = transform.positionXZ + LogicMathUtils::RotateVec2_FromPositiveZ(result.center, transform.rotationY) * transform.scale;
+				result.center = transform.positionXZ + LogicDirection::RotateVec2FromZForward(result.center, transform.rotationY) * transform.scale;
 				result.radius *= transform.scale;
 				return Attack2DShape{ result };
 			}
@@ -26,10 +26,10 @@ Attack2DShape ShapeUtils::ComputeWorldShape(const Attack2DShape& localShape, con
 			{
 				Sector2DAttack result = shape;
 				DebugUtils::LogVector_string("ShpeUtils.cpp (shape.direction)", shape.direction);
-				result.center = transform.positionXZ + LogicMathUtils::RotateVec2_FromPositiveZ(result.center, transform.rotationY) * transform.scale;
+				result.center = transform.positionXZ + LogicDirection::RotateVec2FromZForward(result.center, transform.rotationY) * transform.scale;
 
 				// ロジック用方向計算
-				result.direction = glm::normalize(LogicMathUtils::RotateVec2_FromPositiveZ(result.direction, transform.rotationY));
+				result.direction = glm::normalize(LogicDirection::RotateVec2FromZForward(result.direction, transform.rotationY));
 				result.radius *= transform.scale;
 
 				// std::cout << "[ShapeUtils.cpp(ComputeWorldShape)] Sector direction " << result.direction.x << result.direction.y << std::endl;
@@ -42,10 +42,10 @@ Attack2DShape ShapeUtils::ComputeWorldShape(const Attack2DShape& localShape, con
 			{
 				Rectangle2DAttack result = shape;
 				DebugUtils::LogVector_string("ShpeUtils.cpp (shape.direction)", shape.direction);
-				result.center = transform.positionXZ + LogicMathUtils::RotateVec2_FromPositiveZ(result.center, transform.rotationY) * transform.scale;
+				result.center = transform.positionXZ + LogicDirection::RotateVec2FromZForward(result.center, transform.rotationY) * transform.scale;
 
 				// ロジック用方向計算
-				result.direction = glm::normalize(LogicMathUtils::RotateVec2_FromPositiveZ(result.direction, transform.rotationY));
+				result.direction = glm::normalize(LogicDirection::RotateVec2FromZForward(result.direction, transform.rotationY));
 				result.width *= transform.scale;
 				result.height *= transform.scale;
 
