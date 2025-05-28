@@ -32,11 +32,16 @@ private:
 /// 	{ typeid(AIComponent) , { 2: data2, 5: data5 } }
 /// </summary>
 
+
+	std::unordered_set<uint32_t> mLivingEntities;
+
 public:
 	// create
 	Entity createEntity()
 	{
-		return Entity{ nextEntityID++ };
+		Entity e{ nextEntityID++ };
+		mLivingEntities.insert(e.id);
+		return e;
 	}
 
 	// add
@@ -124,11 +129,18 @@ public:
 	{
 		for (auto& [type, entityMap] : mComponentPools)
 		{
-			std::size_t erased = entityMap.erase(e.id);
-			if (erased > 0)
-			{
-				std::cout << "[EntityManager(destroy)] Deletion of Component """ << type.name() << " for " << e.id << " completed successfully\n";
-			}
+			//std::size_t erased = entityMap.erase(e.id);
+			//if (erased > 0)
+			//{
+			//	std::cout << "[EntityManager(destroy)] Deletion of Component """ << type.name() << " for " << e.id << " completed successfully\n";
+			//}
+			entityMap.erase(e.id);
 		}
+		mLivingEntities.erase(e.id);
+	}
+
+	bool isAlive(Entity e) const
+	{
+		return mLivingEntities.count(e.id) > 0;
 	}
 };

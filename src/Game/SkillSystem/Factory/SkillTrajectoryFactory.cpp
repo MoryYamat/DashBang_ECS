@@ -19,6 +19,7 @@ std::function<Transform2DComponent(float)> SkillTrajectoryFactory::Create(
 		{
 			using T = std::decay_t<decltype(p)>;
 
+			// ワールド座標における回転
 			if constexpr (std::is_same_v<T, SkillTrajectory::RotateTrajectoryParams>)
 			{
 				glm::vec2 center = origin.positionXZ;
@@ -36,9 +37,11 @@ std::function<Transform2DComponent(float)> SkillTrajectoryFactory::Create(
 						return Transform2DComponent{ 
 							.positionXZ = center, 
 							.rotationY = origin.rotationY + angle, 
-							.scale = 1.0f };
+							.scale = 1.0f 
+						};
 					};
 			}
+			// ワールド座標における直線移動
 			else if constexpr (std::is_same_v<T, SkillTrajectory::LinearTrajectoryParams>)
 			{
 				glm::vec2 start = origin.positionXZ;
@@ -49,10 +52,11 @@ std::function<Transform2DComponent(float)> SkillTrajectoryFactory::Create(
 					{
 						float d = glm::min(t, duration);
 						glm::vec2 offset = dir * p.speed * d;
-						return Transform2DComponent{ 
-							.positionXZ = start + offset, 
-							.rotationY = angle, 
-							.scale = 1.0f };
+						return Transform2DComponent{
+							.positionXZ = start + offset,
+							.rotationY = angle,
+							.scale = 1.0f 
+						};
 					};
 			}
 			else

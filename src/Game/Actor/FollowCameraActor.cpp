@@ -5,7 +5,7 @@
 #include "Core/ECS/Entity.h"
 #include "Core/ECS/Component/Tags/PlayerControllerComponent.h"
 
-#include "Core/EntityUtils/EntityUtils.h"
+#include "Core/ECS/EntityUtils/EntityUtils.h"
 
 #include "Debug/DebugUtils.h"
 

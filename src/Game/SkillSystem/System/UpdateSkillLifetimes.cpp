@@ -8,6 +8,47 @@
 
 #include <vector>
 
+void SkillSystem::Lifetime::CleanUpCompletedSkills(ECS& ecs)
+{
+	std::vector<Entity> toDestroyInstances;
+	std::vector<Entity> toDestroyHitAreas;
+
+	// パフォーマンスに関する懸念 (再び全コンポーネントを探索している)-> 解決策1. CleanUpCompletedSkill(Entity e)として再探索を避ける
+	// パフォーマンスに関する懸念 (再び全コンポーネントを探索している)-> 解決策2. ecs.addComponent(e, PendingDestroyComponent{});として DestroySystemに統合する
+	// パフォーマンスに関する懸念 (再び全コンポーネントを探索している)
+	for (Entity e : ecs.view<SkillInstanceComponent>())
+	{
+		auto& skillInstance = ecs.get<SkillInstanceComponent>(e);
+
+		if (skillInstance.phase == SkillPhase::Completed)
+		{
+			toDestroyInstances.push_back(e);
+
+			for (Entity hitArea : skillInstance.spawnedHitAreas)
+			{
+				toDestroyHitAreas.push_back(hitArea);
+			}
+		}
+
+	}
+
+	for (Entity e : toDestroyHitAreas)
+	{
+		if (ecs.isAlive(e)) {
+			ecs.destroyEntity(e);
+			std::cout << "[SkillCleanup] Destroyed hit area: " << e.id << std::endl;
+		}
+	}
+
+	for (Entity e : toDestroyInstances)
+	{
+		if (ecs.isAlive(e)) {
+			ecs.destroyEntity(e);
+			std::cout << "[SkillCleanup] Destroyed skill instance: " << e.id << std::endl;
+		}
+	}
+}
+
 void SkillSystem::Lifetime::UpdateSkillLifetimes(ECS& ecs, float deltaTime, SkillDatabase& skillDB)
 {
 	SkillSystem::Lifetime::updateAttack2DAreaCompLifetimes(ecs, deltaTime);

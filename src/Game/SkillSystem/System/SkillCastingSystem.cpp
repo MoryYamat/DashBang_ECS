@@ -86,6 +86,8 @@ void SkillSystem::Casting::SpawnSkillHitArea(ECS& ecs, SkillDatabase& skillDB)
 		std::cout << "[SkillCastingSystem.cpp(SpawnSkillHitArea)] create: " << def.name << " is created. \n";
 		ecs.addComponent(attack, area);
 
+		skillInstance.spawnedHitAreas.push_back(attack);
+
 		// transform‚ð•¡»
 		ecs.addComponent(attack, transform);
 

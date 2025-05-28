@@ -15,4 +15,10 @@ namespace EntityUtils
 	// For name resolution
 	Entity getEntityByName(ECS& ecs, const std::string& name);
 
+	// 親と関連子Entityを削除予約にマークする
+	void MarkForPendingDestroyWithChildren(ECS& ecs, Entity parent, const std::vector<Entity>& children,
+		int delayFrames = 0, bool fadeOut = false);
+
+	// スキルインスタンスが子を持たない場合／オブジェクト単体を削除予約にマークする
+	void MarkForPendingDestroy(ECS& ecs, Entity entity, int delayFrames = 0, bool fadeOut = false);
 }

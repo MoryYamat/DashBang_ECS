@@ -4,7 +4,7 @@
 #pragma once
 
 #include "Core/ECS/Meta/InitComponent/InitSystem.h"
-#include "Core/EntityUtils/EntityUtils.h"
+#include "Core/ECS/EntityUtils/EntityUtils.h"
 
 // #include "Core/Window/WindowManager.h"
 
@@ -33,7 +33,7 @@ struct InitSystem<FollowCameraComponent>
 
 		followCamComp.targetEntity = ePlayerActor;
 		// Relative coordinates
-		followCamComp.offset = { 0.0f, 10.0f, 10.0f };
+		followCamComp.offset = { 0.0f, 8.5f, 8.5f };
 
 		// get 
 		TransformComponent& targetTransform = ecs.get<TransformComponent>(ePlayerActor);

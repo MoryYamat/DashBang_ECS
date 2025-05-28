@@ -7,6 +7,15 @@
 
 #include <cstdint>
 
+// スキル段階
+enum class SkillPhase
+{
+	Casting,
+	Active,
+	Recovery,
+	Completed
+};
+
 // Active Skill 使用時に付与されるデータ
 // Data granted when using Active Skill
 struct SkillInstanceComponent
@@ -17,5 +26,7 @@ struct SkillInstanceComponent
 
 	uint16_t skillId;
 
-	// スキルIDなどもあり
+	SkillPhase phase = SkillPhase::Casting;// スキルの状態段階
+
+	std::vector<Entity> spawnedHitAreas; // 生成されたAttack2DAreaへの参照
 };

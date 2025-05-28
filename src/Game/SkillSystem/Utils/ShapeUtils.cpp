@@ -13,7 +13,7 @@ Attack2DShape ShapeUtils::ComputeWorldShape(const Attack2DShape& localShape, con
 		{
 			using T = std::decay_t<decltype(shape)>;
 
-			std::cout << "[ShapeUtils.cpp]: Transform RotationY: " << transform.rotationY << std::endl;
+			// std::cout << "[ShapeUtils.cpp]: Transform RotationY: " << transform.rotationY << std::endl;
 
 			if constexpr (std::is_same_v<T, Circle2DAttack>)
 			{
@@ -25,7 +25,7 @@ Attack2DShape ShapeUtils::ComputeWorldShape(const Attack2DShape& localShape, con
 			else if constexpr (std::is_same_v<T, Sector2DAttack>)
 			{
 				Sector2DAttack result = shape;
-				DebugUtils::LogVector_string("ShpeUtils.cpp (shape.direction)", shape.direction);
+				// DebugUtils::LogVector_string("ShpeUtils.cpp (shape.direction)", shape.direction);
 				result.center = transform.positionXZ + LogicDirection::RotateVec2FromZForward(result.center, transform.rotationY) * transform.scale;
 
 				// ロジック用方向計算
@@ -34,14 +34,14 @@ Attack2DShape ShapeUtils::ComputeWorldShape(const Attack2DShape& localShape, con
 
 				// std::cout << "[ShapeUtils.cpp(ComputeWorldShape)] Sector direction " << result.direction.x << result.direction.y << std::endl;
 
-				DebugUtils::LogVector("[ShapeUtils.cpp(ComputeWorldShape)] Sector world direction ", result.direction);
+				// DebugUtils::LogVector("[ShapeUtils.cpp(ComputeWorldShape)] Sector world direction ", result.direction);
 
 				return Attack2DShape{ result };
 			}
 			else if constexpr (std::is_same_v<T, Rectangle2DAttack>)
 			{
 				Rectangle2DAttack result = shape;
-				DebugUtils::LogVector_string("ShpeUtils.cpp (shape.direction)", shape.direction);
+				// DebugUtils::LogVector_string("ShpeUtils.cpp (shape.direction)", shape.direction);
 				result.center = transform.positionXZ + LogicDirection::RotateVec2FromZForward(result.center, transform.rotationY) * transform.scale;
 
 				// ロジック用方向計算
@@ -51,7 +51,7 @@ Attack2DShape ShapeUtils::ComputeWorldShape(const Attack2DShape& localShape, con
 
 				// std::cout << "[ShapeUtils.cpp(ComputeWorldShape)] Rect direction " << result.direction.x << result.direction.y << std::endl;
 
-				DebugUtils::LogVector("[ShapeUtils.cpp(ComputeWorldShape)] Rect world direction ", result.direction);
+				// DebugUtils::LogVector("[ShapeUtils.cpp(ComputeWorldShape)] Rect world direction ", result.direction);
 
 				return Attack2DShape{ result };
 			}

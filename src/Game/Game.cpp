@@ -9,6 +9,8 @@
 
 #include "Core/ECS/Meta/InitComponent/FollowCameraInit.h"
 
+#include "Core/ECS/GlobalSystem/GlobalCleanupSystem.h"
+
 //Components
 #include "Core/ECS/Component/TransformComponent.h"
 #include "Core/ECS/Component/TileMapComponent.h"
@@ -61,7 +63,7 @@
 #include "Game/SkillSystem/System/SkillCastingSystem.h"
 #include "Game/SkillSystem/MasterData/SkillSlot.h"
 #include "Game/SkillSystem/System/UpdateSkillLifetimes.h"
-
+#include "Game/SkillSystem/System/UpdateSkillPhase.h"
 // skill trajectory
 #include "Game/SkillSystem/Component/SkillTrajectoryComponent.h"
 #include "Game/SkillSystem/MasterData/SkillTrajectoryData.h"
@@ -195,12 +197,16 @@ void Game::RunLoop()
 }
 
 void Game::updateGameLogics()
-{
-	// Delta Time
+
+{	// Delta Time
 	float currentFrame = static_cast<float>(glfwGetTime());
 	mDeltaTime = currentFrame - mLastFrame;
 	mLastFrame = currentFrame;
 	// std::cout << "[Game.cpp(DeltaTime)]: deltaTime: " << mDeltaTime << "\n";
+
+	// delete PendingDestroyComponent
+	GrobalSystem::RunCleanup(mEcs);
+
 
 	// コリジョンコンテキスト: 1フレームごとに初期化
 	mCollisionResults.Clear();
@@ -225,9 +231,10 @@ void Game::updateGameLogics()
 
 	// skill system
 	SkillSystem::Trigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(mEcs, mSkillInputMap);
-	SkillSystem::Casting::SpawnSkillHitArea(mEcs, mSkillDatabase);
+	//SkillSystem::Casting::SpawnSkillHitArea(mEcs, mSkillDatabase);
+	SkillSystem::Phase::UpdateSkillPhase(mEcs, mDeltaTime, mSkillDatabase);
 	SkillTrajectorySystem::Update(mEcs, mDeltaTime);
-	SkillSystem::Lifetime::UpdateSkillLifetimes(mEcs, mDeltaTime, mSkillDatabase);
+	// SkillSystem::Lifetime::UpdateSkillLifetimes(mEcs, mDeltaTime, mSkillDatabase);
 	// SkillSystem::Trigger::PlayerSkillTriggerSystem::Update(mEcs, mSkillInputMap);
 	// SkillSystem::SkillCastingSystem(mEcs, mSkillDatabase, mRenderContext, mDeltaTime);
 
@@ -244,6 +251,8 @@ void Game::updateGameLogics()
 	// Update Mouse Cursor Logic data 
 	MouseCursorUpdateSystem::Update(mEcs, mInputManager->GetRawInput(), mRenderContext);
 	//MouseCursorUpdateSystem::Update(mEcs, mInputState, mRenderContext);
+
+
 
 	// 
 	GameUtils::CollisionLogic::DetectionSystem::UpdateCollisionResultStorage(mEcs, mCollisionResults);
@@ -377,6 +386,7 @@ void Game::InitializeSkills()
 	slash2.name = "Power Slash";
 	slash2.shape = Attack2DShape{ Sector2DAttack{CanonicalDefaults::kLocalCenterXZ, CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f} };// -Z方向が前方
 	slash2.duration = 1.0f;
+
 	mSkillDatabase.AddSkill(slash2);
 
 	SkillDefinition blade;
