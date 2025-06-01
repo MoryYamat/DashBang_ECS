@@ -2,17 +2,20 @@
 
 #pragma once
 
-#include "Core/ECS/EntityManager.h"
+#include "Engine/ECS/EntityManager.h"
 
 #include "Game/Input/InputState.h"
 
-#include "Core/InputManager/RawInputState.h"
+#include "Engine/InputManager/RawInputState.h"
 
-#include "Graphics/Renderer/RenderContext.h"
+#include "Engine/Graphics/Renderer/RenderContext.h"
 
-namespace MouseCursorUpdateSystem
+#include "Common/EngineNamespaceDecl.h"
+#include "Common/GameNamespaceDecl.h"
+
+namespace Game::Input::Analog
 {
-	void Update(ECS& ecs, const RawInputState& rawInput, RenderContext& renderContext);
+	void Update(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, eNsGfxRender::RenderContext& renderContext);
 
-	void Update(ECS& ecs, InputState& input, RenderContext renderContext);
+	void Update(eNsECS::EntityMgr& ecs, InputState& input, eNsGfxRender::RenderContext renderContext);
 }

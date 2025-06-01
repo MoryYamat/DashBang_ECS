@@ -12,24 +12,28 @@
 
 #include <iostream>
 
-class InputMapping
+namespace Game::Input
 {
-public:
-
-	void bindKey(int keyCode, InputAction action)
+	class InputMapping
 	{
-		keyToAction[keyCode] = action;
-		// std::cout << "[InputMapping.h(bindKey)]: key binded " << keyCode << "\n";
-	}
+	public:
 
-	std::optional<InputAction> getAction(int keyCode) const
-	{
-		auto it = keyToAction.find(keyCode);
-		if (it != keyToAction.end()) return it->second;
-		return std::nullopt;
-	}
+		void bindKey(int keyCode, InputAction action)
+		{
+			keyToAction[keyCode] = action;
+			// std::cout << "[InputMapping.h(bindKey)]: key binded " << keyCode << "\n";
+		}
 
-private:
-	// mapping
-	std::unordered_map<int, InputAction> keyToAction;
-};
+		std::optional<InputAction> getAction(int keyCode) const
+		{
+			auto it = keyToAction.find(keyCode);
+			if (it != keyToAction.end()) return it->second;
+			return std::nullopt;
+		}
+
+	private:
+		// mapping
+		std::unordered_map<int, InputAction> keyToAction;
+	};
+}
+

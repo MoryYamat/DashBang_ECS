@@ -4,22 +4,22 @@
 #include <vector>
 #include <iostream>
 
-#include "Core/ECS/Entity.h"
-#include "Core/ECS/EntityManager.h"
+#include "Engine/ECS/Entity.h"
+#include "Engine/ECS/EntityManager.h"
 
-#include "Core/ECS/Component/MeshComponent.h"
+#include "Engine/ECS/Component/Graphics/MeshComponent.h"
 
-#include "DataTypes/ModelData.h"
+#include "Engine/Graphics/Model/ModelData.h"
 
-#include "Graphics/Renderer/GPUBufferUtils.h"
+#include "Engine/Graphics/Renderer/GPUBufferUtils.h"
 
+#include "Common/GameNamespaceDecl.h"
 
-
-TriangleActor::TriangleActor(ECS& ecs)
+Test::Actor::TriangleActor::TriangleActor(eNsECS::EntityMgr& ecs)
 {
-	Entity entity = ecs.createEntity();
+	eNsECS::Entity entity = ecs.createEntity();
 
-	std::vector<VertexData> vertices = {
+	std::vector < eNsGfxModel::VertexData > vertices = {
 	{ {0.0f,  0.5f, 0.0f} },
 	{ {-0.5f, -0.5f, 0.0f} },
 	{ {0.5f, -0.5f, 0.0f} }
@@ -27,16 +27,16 @@ TriangleActor::TriangleActor(ECS& ecs)
 
 	std::vector<unsigned int> indices = { 0, 1, 2 };
 
-	MeshData meshData;
-	ModelData modelData;
+	eNsGfxModel::MeshData meshData;
+	eNsGfxModel::ModelData modelData;
 	meshData.vertices = vertices;
 	meshData.indices = indices;
 	meshData.hasIndices = true;
 	modelData.meshes.push_back(meshData);
 
-	ModelGPU modelGPU = GPUBufferUtils::createMeshGPUBuffers(modelData);
+	eNsGfxModel::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
 
-	ecs.addComponent(entity, MeshComponent{
+	ecs.addComponent(entity, eNsGfxComp::MeshComponent{
 			modelData,
 			modelGPU
 		});

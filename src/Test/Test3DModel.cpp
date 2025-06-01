@@ -1,26 +1,26 @@
 #include "Test3DModel.h"
 
-#include "Core/ECS/Entity.h"
-#include "Core/ECS/EntityManager.h"
+#include "Engine/ECS/Entity.h"
+#include "Engine/ECS/EntityManager.h"
 
-#include "Core/ECS/Component/MeshComponent.h"
-#include "Core/ECS/Component/TransformComponent.h"
-#include "Core/ECS/Component/ShaderComponent.h"
+#include "Engine/ECS/Component/Graphics/MeshComponent.h"
+#include "Engine/ECS/Component/Common/TransformComponent.h"
+#include "Engine/ECS/Component/Graphics/ShaderComponent.h"
 
-#include "DataTypes/ModelData.h"
+#include "Engine/Graphics/Model/ModelData.h"
 
-#include "Graphics/Model/AssimpImporter.h"
+#include "Engine/Graphics/Model/AssimpImporter.h"
 
-#include "Graphics/Renderer/Shader.h"
-#include "Graphics/Renderer/GPUBufferUtils.h"
+#include "Engine/Graphics/Renderer/Shader.h"
+#include "Engine/Graphics/Renderer/GPUBufferUtils.h"
 
 #include <iostream>
 
-Test3DModel::Test3DModel(ECS& ecs,Shader* shader)
+Test::Actor::Test3DModel::Test3DModel(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader)
 {
-	Entity entity = ecs.createEntity();
+	eNsECS::Entity entity = ecs.createEntity();
 
-	ModelData data = AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
+	eNsGfxModel::ModelData data = eNsGfxModel::AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
 
 	for (const auto& mesh : data.meshes)
 	{
@@ -29,14 +29,14 @@ Test3DModel::Test3DModel(ECS& ecs,Shader* shader)
 			<< ", hasIndices: " << mesh.hasIndices << std::endl;
 	}
 
-	ModelGPU modelGPU = GPUBufferUtils::createMeshGPUBuffers(data);
+	eNsGfxModel::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(data);
 
-	TransformComponent transformComp;
+	eNsCommonComp::TransformComponent transformComp;
 	transformComp.position = glm::vec3(0.0f, 0.0f, -10.0f);
 	transformComp.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	transformComp.scale = glm::vec3(0.01f);
 
-	ShaderComponent shaderComp;
+	eNsGfxComp::ShaderComponent shaderComp;
 
 	shaderComp.shader = shader;
 
@@ -53,7 +53,7 @@ Test3DModel::Test3DModel(ECS& ecs,Shader* shader)
 
 
 
-	ecs.addComponent(entity, MeshComponent{
+	ecs.addComponent(entity, eNsGfxComp::MeshComponent{
 			data,
 			modelGPU
 		});
@@ -65,7 +65,7 @@ Test3DModel::Test3DModel(ECS& ecs,Shader* shader)
 	std::cout << "[Test3Dmodel.cpp]: Test3Dmodel Settings Completed" << std::endl;
 }
 
-Test3DModel::~Test3DModel()
+Test::Actor::Test3DModel::~Test3DModel()
 {
 	
 }

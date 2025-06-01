@@ -3,11 +3,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Debug/DebugUtils.h"
+#include "Engine/Debug/DebugUtils.h"
 
-glm::vec2 GameUtils::SpatialTransform::GetLogicDirectionFromCursorToTarget(
+glm::vec2 Game::Utils::GetLogicDirectionFromCursorToTarget(
 	const glm::vec2& screenMousePos, 
-	const RenderContext& renderContext,
+	const eNsGfxRender::RenderContext& renderContext,
 	const glm::vec2& playerLogicPosXZ // Character position in logical coordinates
 )
 {
@@ -22,7 +22,8 @@ glm::vec2 GameUtils::SpatialTransform::GetLogicDirectionFromCursorToTarget(
 	return direction;
 }
 
-glm::vec2 GameUtils::SpatialTransform::ProjectScreenToLogicXZPlane(const glm::vec2& screenMousePos, const RenderContext& renderContext)
+// マウスのスクリーン座標からワールド座標(XZ平面:y=0)への投影位置の取得
+glm::vec2 Game::Utils::ProjectScreenToLogicXZPlane(const glm::vec2& screenMousePos, const eNsGfxRender::RenderContext& renderContext)
 {
 	// Screen coordinates → NDC → world ray (near/far)
 	// スクリーン座標 → NDC → ワールドレイ（near/far） (マウスポインタのRAY)

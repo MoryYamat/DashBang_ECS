@@ -2,14 +2,19 @@
 
 #pragma once
 
-#include "Core/ECS/EntityManager.h"
+#include "Engine/ECS/EntityManager.h"
 
-#include "Graphics/Renderer/Shader.h"
+#include "Engine/Graphics/Renderer/Shader.h"
 
-class TestRockActor
+#include "Common/EngineNamespaceDecl.h"
+
+namespace Game::Actor::Map
 {
-public:
-	TestRockActor(ECS& ecs, Shader* shader);
+	class TestRockActor
+	{
+	public:
+		TestRockActor(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader);
 
-private:
-};
+	private:
+	};
+}

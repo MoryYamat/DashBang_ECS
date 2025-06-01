@@ -2,11 +2,17 @@
 
 #pragma once
 
-#include "Core/ECS/EntityManager.h"
-#include "Graphics/Renderer/Shader.h"
+#include "Engine/ECS/EntityManager.h"
+#include "Engine/Graphics/Renderer/Shader.h"
 
-class TestBaseTerrainActor
+#include "Common/EngineNamespaceDecl.h"
+
+
+namespace Game::Actor::Map
 {
-public:
-	TestBaseTerrainActor(ECS& ecs, Shader* shader);
-};
+	class TestBaseTerrainActor
+	{
+	public:
+		TestBaseTerrainActor(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader);
+	};
+}

@@ -1,41 +1,47 @@
 #include "PlayerCharacterControlSystem.h"
 
-#include "Core/ECS/Component/Logic2DTransformComponent.h"
-#include "Core/ECS/Component/Tags/PlayerControllerComponent.h"
+#include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
+#include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
 
-#include "Core/InputManager/InputManager.h"
+#include "Engine/InputManager/InputManager.h"
 
 // collision
-#include "Core/ECS/Component/Collision/CollisionComponent.h"
-#include "Core/ECS/Component/Collision/ColliderType.h"
+#include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
+#include "Engine/ECS/Component/Logic2D/ColliderType.h"
 
-#include "Core/ECS/Component/InputActionComponent.h"
+#include "Game/Input/InputActionComponent.h"
 
-#include "Debug/DebugUtils.h"
+#include "Engine/Debug/DebugUtils.h"
 
 #include "Game/Utils/SpatialTransformUtils.h"
 
 #include <glm/ext/matrix_projection.hpp>
 
-#include "Config/CanonicalDefaults.h"
+#include "Engine/Config/CanonicalDefaults.h"
+
+// ========Semantic Layer========
+// Character State
+#include "Game/Character/Component/CharacterStateComponent.h"
+#include "Game/Character/System/CharacterStateSystem.h"
 
 #include <cmath>
 #include <iostream>
 
-// raw Input ‚Æ Game Input ‚Ì•ª—£Œã
-void PlayerCharacterControlSystem::Update(ECS& ecs, const RawInputState& rawInput, RenderContext& renderContext, float deltaTime)
+
+// raw Input ‚Æ Game Input ‚Ì•ª—£Œã (semantic Layer“±“üŒã ”pŽ~)
+void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, eNsGfxRender::RenderContext& renderContext, float deltaTime)
 {
-	InputActionComponent input;
-	for (Entity e : ecs.view<PlayerControllerComponent, InputActionComponent>())
+	gNsInput::InputActionComponent input;
+	for (eNsECS::Entity e : ecs.view<eNsTagComp::PlayerControllerComponent, gNsInput::InputActionComponent>())
 	{
-		input = ecs.get<InputActionComponent>(e);
+		input = ecs.get<gNsInput::InputActionComponent>(e);
 		break;
 	}
 
-	for (Entity e : ecs.view<PlayerControllerComponent, Logic2DTransformComponent>())
+	for (eNsECS::Entity e : ecs.view<eNsTagComp::PlayerControllerComponent, eNsLogic2DComp::Logic2DTransformComponent, eNsLogic2DComp::CollisionComponent>())
 	{
-		auto& logic = ecs.get<Logic2DTransformComponent>(e);
-		auto& collisionComp = ecs.get<CollisionComponent>(e);
+		auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
+		auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
 
 		glm::vec2 moveDir(0.0f);
 
@@ -62,7 +68,7 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, const RawInputState& rawInpu
 			logic.positionXZ += moveDir * deltaTime * 5.0f; // ˆÚ“®‘¬“x
 
 			// collision update
-			if (collisionComp.collider.type == ColliderType::Circle2D)
+			if (collisionComp.collider.type == eNsLogic2DComp::ColliderType::Circle2D)
 			{
 				collisionComp.collider.circle2D.center = logic.positionXZ;
 			}
@@ -70,7 +76,7 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, const RawInputState& rawInpu
 
 
 		//DebugUtils::LogVector("PlayerCharacterControlSystem.cpp", input.screenMousePosition);
-		glm::vec2 dir = GameUtils::SpatialTransform::GetLogicDirectionFromCursorToTarget(rawInput.mousePosition, renderContext, logic.positionXZ);
+		glm::vec2 dir = Game::Utils::GetLogicDirectionFromCursorToTarget(rawInput.mousePosition, renderContext, logic.positionXZ);
 
 		// for testing
 		//GameUtils::SpatialTransform::ProjectScreenToLogicXZPlane(input.screenMousePosition, renderContext);
@@ -106,12 +112,12 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, const RawInputState& rawInpu
 }
 
 
-void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float deltaTime, RenderContext& renderContext)
+void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, InputState& input, float deltaTime, eNsGfxRender::RenderContext& renderContext)
 {
-	for (Entity e : ecs.view<PlayerControllerComponent, Logic2DTransformComponent>())
+	for (eNsECS::Entity e : ecs.view<eNsTagComp::PlayerControllerComponent, eNsLogic2DComp::Logic2DTransformComponent>())
 	{
-		auto& logic = ecs.get<Logic2DTransformComponent>(e);
-		auto& collisionComp = ecs.get<CollisionComponent>(e);
+		auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
+		auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
 
 		glm::vec2 moveDir(0.0f);
 
@@ -138,7 +144,7 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 			logic.positionXZ += moveDir * deltaTime * 5.0f; // ˆÚ“®‘¬“x
 
 			// collision update
-			if (collisionComp.collider.type == ColliderType::Circle2D)
+			if (collisionComp.collider.type == eNsLogic2DComp::ColliderType::Circle2D)
 			{
 				collisionComp.collider.circle2D.center = logic.positionXZ;
 			}
@@ -147,7 +153,7 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 
 		//DebugUtils::LogVector("PlayerCharacterControlSystem.cpp", input.screenMousePosition);
 
-		glm::vec2 dir = GameUtils::SpatialTransform::GetLogicDirectionFromCursorToTarget(input.screenMousePosition, renderContext, logic.positionXZ);
+		glm::vec2 dir = Game::Utils::GetLogicDirectionFromCursorToTarget(input.screenMousePosition, renderContext, logic.positionXZ);
 
 		// for testing
 		//GameUtils::SpatialTransform::ProjectScreenToLogicXZPlane(input.screenMousePosition, renderContext);
@@ -184,11 +190,11 @@ void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float del
 
 
 // Input for the player's character
-void PlayerCharacterControlSystem::Update(ECS& ecs, InputState& input, float deltaTime)
+void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, InputState& input, float deltaTime)
 {
-	for (Entity e : ecs.view<PlayerControllerComponent, Logic2DTransformComponent>())
+	for (eNsECS::Entity e : ecs.view<eNsTagComp::PlayerControllerComponent, eNsLogic2DComp::Logic2DTransformComponent>())
 	{
-		auto& logic = ecs.get<Logic2DTransformComponent>(e);
+		auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
 
 		glm::vec2 moveDir(0.0f);
 

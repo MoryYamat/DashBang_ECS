@@ -1,52 +1,54 @@
 #include "PlayerCharacterActor.h"
 
-#include "Core/ECS/Entity.h"
-#include "Core/ECS/EntityUtils/EntityUtils.h"
-#include "Core/ECS/Component/TransformComponent.h"
-#include "Core/ECS/Component/MeshComponent.h"
-#include "Core/ECS/Component/ShaderComponent.h"
+#include "Engine/ECS/Entity.h"
+#include "Engine/ECS/EntityUtils/EntityUtils.h"
+#include "Engine/ECS/Component/Common/TransformComponent.h"
+#include "Engine/ECS/Component/Graphics/MeshComponent.h"
+#include "Engine/ECS/Component/Graphics/ShaderComponent.h"
 
-#include "Core/ECS/Component/FollowCameraComponent.h"
+#include "Engine/ECS/Component/Camera/FollowCameraComponent.h"
 
 // input
 // #include "Core/ECS/Component/InputComponent.h"
-#include "Core/ECS/Component/InputActionComponent.h"
+#include "Game/Input/InputActionComponent.h"
 
 // test color
-#include "Core/ECS/Component/MaterialComponent.h"
+#include "Engine/ECS/Component/Graphics/MaterialComponent.h"
 
 // Flags
-#include "Core/ECS/Component/Tags/PlayerControllerComponent.h"
-#include "Core/ECS/Component/NameComponent.h"
+#include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
+#include "Engine/ECS/Component/Utils/NameComponent.h"
 
-#include "Core/ECS/Component/Logic2DTransformComponent.h"
+#include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 
 // collision
-#include "Core/ECS/Component/Collision/CollisionComponent.h"
+#include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
 //#include "Core/ECS/Component/Collision/ColliderType.h"
 
 // Skill
-#include "Game/SkillSystem/Component/SkillInstanceComponent.h"
-#include "Game/SkillSystem/Component/ActiveSkillCasterComponent.h"
-#include "Game/SkillSystem/Component/SkillSlotAssignmentComponent.h"
+#include "Game/Combat/Skill/Component/SkillInstanceComponent.h"
+#include "Game/Combat/Skill/Component/ActiveSkillCasterComponent.h"
+#include "Game/Combat/Skill/Component/SkillSlotAssignmentComponent.h"
 
-#include "DataTypes/ModelData.h"
-#include "Graphics/Model/AssimpImporter.h"
-#include "Graphics/Renderer/GPUBufferUtils.h"
+#include "Engine/Graphics/Model/ModelData.h"
+#include "Engine/Graphics/Model/AssimpImporter.h"
+#include "Engine/Graphics/Renderer/GPUBufferUtils.h"
 
 #include "Game/Init/InitModel/InitLogicTransformFromModel.h"
 #include "Game/Init/InitTileMap/InitTileMap.h"
 
-#include "Debug/DebugUtils.h"
+#include "Engine/Debug/DebugUtils.h"
+
+#include "Common/GameNamespaceDecl.h"
 
 #include <iostream>
 
-PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
+Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader)
 {
-	Entity entity = ecs.createEntity();
+	eNsECS::Entity entity = ecs.createEntity();
 
 	// load Model Datas from file
-	ModelData modelData = AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
+	eNsGfxModel::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
 	for (const auto& mesh : modelData.meshes)
 	{
 		std::cout << "[PlayerCharacterActor.cpp]: Vertices: " << mesh.vertices.size()
@@ -55,17 +57,17 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	}
 
 	// set Mesh data to GPUBuffers
-	ModelGPU modelGPU = GPUBufferUtils::createMeshGPUBuffers(modelData);
+	eNsGfxModel::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
 
 	// set MeshComponent
-	ecs.addComponent(entity, MeshComponent{
+	ecs.addComponent(entity, eNsGfxComp::MeshComponent{
 			modelData,
 			modelGPU
 		});
 
 
 	// set TransformComponent
-	TransformComponent transformComp;
+	eNsCommonComp::TransformComponent transformComp;
 	transformComp.position = glm::vec3(0.0f, 0.0f, 0.0f);
 	transformComp.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	transformComp.scale = glm::vec3(0.01f);
@@ -73,7 +75,7 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 
 
 	// set ShaderComponent
-	ShaderComponent shaderComp;
+	eNsGfxComp::ShaderComponent shaderComp;
 	shaderComp.shader = shader;
 	if (shaderComp.shader)
 	{
@@ -90,37 +92,37 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	// Input State Component
 	//InputComponent input;
 	//ecs.addComponent(entity, input);
-	InputActionComponent inputActionComp;
+	gNsInput::InputActionComponent inputActionComp;
 	ecs.addComponent(entity, inputActionComp);
 
 	// Logic2D
-	Logic2DTransformComponent logic;
-	logic = GameInit::LogicTransform::InitLogic2DTransformFromModel(transformComp, modelData);
+	eNsLogic2DComp::Logic2DTransformComponent logic;
+	logic = gNsInit::Logic2D::InitLogic2DTransformFromModel(transformComp, modelData);
 	ecs.addComponent(entity, logic);
 
 	// Controller Flag
-	PlayerControllerComponent PCflag;
+	eNsTagComp::PlayerControllerComponent PCflag;
 	ecs.addComponent(entity, PCflag);
 
 	// Set NameComponent
-	NameComponent nameComp;
+	eNsUtilComp::NameComponent nameComp;
 	nameComp.name = "Player";
 	ecs.addComponent(entity, nameComp);
 
 
 	// set Test Corlor
-	MaterialComponent materialComp;
+	eNsGfxComp::MaterialComponent materialComp;
 	materialComp.baseColor = glm::vec3(0.8f, 0.4f, 0.2f);
 	ecs.addComponent(entity, materialComp);
 
 	// Collsion Initialization
 	// コリジョン初期化
-	CollisionComponent playerCollisionComp;
+	eNsLogic2DComp::CollisionComponent playerCollisionComp;
 	
-	playerCollisionComp.collider.type = ColliderType::Circle2D;
+	playerCollisionComp.collider.type = eNsLogic2DComp::ColliderType::Circle2D;
 	playerCollisionComp.collider.circle2D.center = logic.positionXZ;
 	playerCollisionComp.isStatic = false;
-	float radius = GameInit::LogicTransform::EstimateRadiusFromModelXZ(transformComp, modelData, GameInit::LogicTransform::RadiusEstimateStrategy::MaxAxis);
+	float radius = gNsInit::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, gNsInit::Logic2D::RadiusEstimateStrategy::MaxAxis);
 
 	playerCollisionComp.collider.circle2D.radius = radius;
 	ecs.addComponent(entity, playerCollisionComp);
@@ -140,10 +142,10 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 	//ecs.addComponent(entity, activeSkill2);
 
 	// スキル（ID） を SkillSLotに割り当て
-	SkillSlotAssignmentComponent assign;
-	assign.slotToSkillId[SkillSystem::SkillSlot::Primary] = 1;
-	assign.slotToSkillId[SkillSystem::SkillSlot::Secondary] = 2;
-	assign.slotToSkillId[SkillSystem::SkillSlot::Utility1] = 3;
+	gNsSkillComp::SkillSlotAssignmentComponent assign;
+	assign.slotToSkillId[gNsSkillData::SkillSlot::Primary] = 1;
+	assign.slotToSkillId[gNsSkillData::SkillSlot::Secondary] = 2;
+	assign.slotToSkillId[gNsSkillData::SkillSlot::Utility1] = 3;
 	ecs.addComponent(entity, assign);
 
 	ActiveSkillCasterComponent ascc;
@@ -157,10 +159,10 @@ PlayerCharacter::PlayerCharacter(ECS& ecs, Shader* shader)
 
 	std::cout << "[PlayerCharacterActor.cpp]: Test3Dmodel Settings Completed" << std::endl;
 
-	DebugUtils::LogVector("PlayerCharacterActor.cpp(Color)", materialComp.baseColor);
+	eNsDebugLog::LogVector("PlayerCharacterActor.cpp(Color)", materialComp.baseColor);
 }
 
-PlayerCharacter::~PlayerCharacter()
+Game::Actor::Player::PlayerCharacter::~PlayerCharacter()
 {
 
 }

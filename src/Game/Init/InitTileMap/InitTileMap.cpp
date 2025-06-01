@@ -1,33 +1,35 @@
 #include "InitTileMap.h"
 
-#include "Debug/DebugUtils.h"
+#include "Engine/Debug/DebugUtils.h"
 
 #include "Game/Init/InitModel/InitLogicTransformFromModel.h"
 
-#include "Core/ECS/Component/Collision/CollisionComponent.h"
-#include "Core/ECS/Component/Tags/ObstacleTagComponent.h"
+#include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
+#include "Engine/ECS/Component/Tags/ObstacleTagComponent.h"
 
-#include "Game/CollisionLogic/CollisionUtils/GeometryUtils.h"
+#include "Engine/Physics/Logic2D/DetectionFunctions.h"
 
 #include <iostream>
 
+#include "Common/EngineNamespaceDecl.h"
+#include "Common/GameNamespaceDecl.h"
 
 // A function that creates initialization information for the Tilemap component from the imported BaseMesh model.
 // インポートしたBaseMeshモデルからタイルマップコンポーネント(行列構造)の初期化情報を作成する関数
-TileMapComponent GameInit::TileMapFromMesh::InitTileMapFromBounds(
-	const TransformComponent& transformComp,
-	const ModelData& modelData,
-	const Logic2DTransformComponent& logic2DComp,
-	float tileSize)
+eNsLogic2DComp::TileMapComponent Game::Init::Logic2D::InitTileMapFromBounds(
+	const eNsCommonComp::TransformComponent& transformComp
+	, const eNsGfxModel::ModelData& modelData
+	, const eNsLogic2DComp::Logic2DTransformComponent& logic2DComp
+	, float tileSize)
 {
-	TileMapComponent tileMapComp;
+	eNsLogic2DComp::TileMapComponent tileMapComp;
 	tileMapComp.tileSize = tileSize;
 
 	// 余白タイル(片側当たり)
 	const int marginTiles = 1;
 
 	// Get logical XZ size from model size and drawing scale
-	glm::vec2 logicalTileMapSize = GameInit::TileMapFromMesh::GetModelWorldAABBSizeXZ(transformComp, modelData);
+	glm::vec2 logicalTileMapSize = GetModelWorldAABBSizeXZ(transformComp, modelData);
 
 	// Calculate the number of tiles
 	// タイル枚数(上下左右に margin を加える)
@@ -36,18 +38,21 @@ TileMapComponent GameInit::TileMapFromMesh::InitTileMapFromBounds(
 
 	// Calculate the origin (in world coordinates)
 	// 論理タイルマップの原点のワールド座標における位置
-	glm::vec2 baseOrigin = GameInit::TileMapFromMesh::ComputeTileMapOriginFromModel(transformComp, modelData);
+	glm::vec2 baseOrigin = ComputeTileMapOriginFromModel(transformComp, modelData);
 
 	// Apply Margin Offset
 	// 余白分のオフセットを適用
 	tileMapComp.origin = baseOrigin - glm::vec2(marginTiles * tileSize);
 
-	DebugUtils::LogVector("InitLogicTransformFromModel(origin)", tileMapComp.origin);
+	eNsDebugLog::LogVector("InitLogicTransformFromModel(origin)", tileMapComp.origin);
 
 	return tileMapComp;
 }
 
-glm::vec2 GameInit::TileMapFromMesh::GetModelWorldAABBSizeXZ(const TransformComponent& transformComp, const ModelData& modelData)
+glm::vec2 Game::Init::Logic2D::GetModelWorldAABBSizeXZ(
+	const eNsCommonComp::TransformComponent& transformComp
+	, const eNsGfxModel::ModelData& modelData
+)
 {
 	glm::vec3 min = modelData.min;
 	glm::vec3 max = modelData.max;
@@ -57,7 +62,7 @@ glm::vec2 GameInit::TileMapFromMesh::GetModelWorldAABBSizeXZ(const TransformComp
 	std::vector<glm::vec3> corners;
 	for (int i = 0; i < 8; ++i)
 	{
-		glm::vec3 local = GameInit::TileMapFromMesh::GetAABBCorner(min, max, i);
+		glm::vec3 local = GetAABBCorner(min, max, i);
 		glm::vec4 world = modelMat * glm::vec4(local, 1.0f);// 回転.スケール1.0f
 		corners.push_back(glm::vec3(world));
 	}
@@ -79,14 +84,14 @@ glm::vec2 GameInit::TileMapFromMesh::GetModelWorldAABBSizeXZ(const TransformComp
 
 
 // 設定済みのTileMapComponentの内容からtiles行列(配列)を初期化する関数
-void GameInit::TileMapFromMesh::InitTileMapTiles(TileMapComponent& tileMapComp)
+void Game::Init::Logic2D::InitTileMapTiles(eNsLogic2DComp::TileMapComponent& tileMapComp)
 {
-	tileMapComp.tiles.resize(tileMapComp.numRows, std::vector<Tile>(tileMapComp.numCols));
-	DebugUtils::GeneralLog("InitLogicTransformFromModel(InitTileMapTiles)", "InitTileMapTiles creation completed successfully");
+	tileMapComp.tiles.resize(tileMapComp.numRows, std::vector<eNsLogic2DComp::Tile>(tileMapComp.numCols));
+	eNsDebugLog::GeneralLog("InitLogicTransformFromModel(InitTileMapTiles)", "InitTileMapTiles creation completed successfully");
 }
 
 
-glm::vec3 GameInit::TileMapFromMesh::GetAABBCorner(glm::vec3 min, glm::vec3 max, int i)
+glm::vec3 Game::Init::Logic2D::GetAABBCorner(glm::vec3 min, glm::vec3 max, int i)
 {
 	// 0:(min.x, min.y, min.z)
 	// 1:(max.x, min.y, min.z)
@@ -104,7 +109,10 @@ glm::vec3 GameInit::TileMapFromMesh::GetAABBCorner(glm::vec3 min, glm::vec3 max,
 }
 
 // モデルの最大／最小座標からタイルマップ原点を計算する
-glm::vec2 GameInit::TileMapFromMesh::ComputeTileMapOriginFromModel(const TransformComponent& transformComp, const ModelData& modelData)
+glm::vec2 Game::Init::Logic2D::ComputeTileMapOriginFromModel(
+	const eNsCommonComp::TransformComponent& transformComp
+	, const eNsGfxModel::ModelData& modelData
+)
 {
 	glm::vec3 min = modelData.min;
 	glm::vec3 max = modelData.max;
@@ -116,7 +124,7 @@ glm::vec2 GameInit::TileMapFromMesh::ComputeTileMapOriginFromModel(const Transfo
 
 	for (int i = 0; i < 8; ++i)
 	{
-		glm::vec3 local = GameInit::TileMapFromMesh::GetAABBCorner(min, max, i);
+		glm::vec3 local = GetAABBCorner(min, max, i);
 		glm::vec4 world = modelMatrix * glm::vec4(local, 1.0f);
 
 		minX = std::min(minX, world.x);
@@ -127,17 +135,17 @@ glm::vec2 GameInit::TileMapFromMesh::ComputeTileMapOriginFromModel(const Transfo
 }
 
 
-void GameInit::TileMapFromMesh::ApplyObstacleCollidersToTileMap(ECS& ecs, TileMapComponent& tileMapComp)
+void Game::Init::Logic2D::ApplyObstacleCollidersToTileMap(eNsECS::EntityMgr& ecs, eNsLogic2DComp::TileMapComponent& tileMapComp)
 {
 	// std::cout << "this function is called " << std::endl;
-	for (Entity e : ecs.view<CollisionComponent, ObstacleTagComponent>())
+	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::CollisionComponent, eNsTagComp::ObstacleTagComponent>())
 	{
-		const auto& collisionComp = ecs.get<CollisionComponent>(e);
+		const auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
 
-		if (collisionComp.collider.type != ColliderType::Obb2D)
+		if (collisionComp.collider.type != eNsLogic2DComp::ColliderType::Obb2D)
 			continue;
 
-		const Obb2D& obb = collisionComp.collider.obb2D;
+		const eNsLogic2DComp::Obb2D& obb = collisionComp.collider.obb2D;
 
 		for (int row = 0; row < tileMapComp.numRows; ++row)
 		{
@@ -155,7 +163,7 @@ void GameInit::TileMapFromMesh::ApplyObstacleCollidersToTileMap(ECS& ecs, TileMa
 				//	DebugUtils::LogVector_string("[InitTileMap.cpp(This Tile is Un Walkable)] :", tileCenter);
 				//}
 
-				if (GameUtils::CollisionLogic::GeometryUtils::intersectOBB2D_AABB2D(obb, tileMin, tileMax))
+				if (eNsPhys2DColl::intersectOBB2D_AABB2D(obb, tileMin, tileMax))
 				{
 					tileMapComp.tiles[row][col].isWalkable = false;
 				}
@@ -163,21 +171,22 @@ void GameInit::TileMapFromMesh::ApplyObstacleCollidersToTileMap(ECS& ecs, TileMa
 				//	<< " col:" << col
 				//	<< " Result :" << tileMapComp.tiles[row][col].isWalkable << std::endl;
 
+
 			}
 		}
 	}
 }
 
-void GameInit::TileMapFromMesh::MaskUncoveredTilesByTerrainOBB(ECS& ecs, TileMapComponent& tileMapComp)
+void Game::Init::Logic2D::MaskUncoveredTilesByTerrainOBB(eNsECS::EntityMgr& ecs, eNsLogic2DComp::TileMapComponent& tileMapComp)
 {
-	for (Entity e : ecs.view<CollisionComponent, TileMapComponent>())
+	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::CollisionComponent, eNsLogic2DComp::TileMapComponent>())
 	{
-		const auto& collisionComp = ecs.get<CollisionComponent>(e);
+		const auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
 
-		if (collisionComp.collider.type != ColliderType::Obb2D)
+		if (collisionComp.collider.type != eNsLogic2DComp::ColliderType::Obb2D)
 			continue;
 
-		const Obb2D& obb = collisionComp.collider.obb2D;
+		const eNsLogic2DComp::Obb2D& obb = collisionComp.collider.obb2D;
 
 		for (int row = 0; row < tileMapComp.numRows; ++row)
 		{
@@ -196,7 +205,7 @@ void GameInit::TileMapFromMesh::MaskUncoveredTilesByTerrainOBB(ECS& ecs, TileMap
 				//}
 
 				// TerrainMeshと被らない空中部分のタイルの`unWalkable`設定
-				if (!GameUtils::CollisionLogic::GeometryUtils::intersectOBB2D_AABB2D(obb, tileMin, tileMax))
+				if (!eNsPhys2DColl::intersectOBB2D_AABB2D(obb, tileMin, tileMax))
 				{
 					tileMapComp.tiles[row][col].isWalkable = false;
 				}

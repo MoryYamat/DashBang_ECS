@@ -1,16 +1,16 @@
 #include "TileMapActor.h"
 
-#include "Core/ECS/Entity.h"
+#include "Engine/ECS/Entity.h"
 
-#include "Core/ECS/Component/TileMapComponent.h"
+#include "Engine/ECS/Component/Logic2D/TileMapComponent.h"
 
-#include "Debug/DebugUtils.h"
+#include "Engine/Debug/DebugUtils.h"
 
-TileMapActor::TileMapActor(ECS& ecs)
+Game::Actor::Map::TileMapActor::TileMapActor(eNsECS::EntityMgr& ecs)
 {
-	Entity entity = ecs.createEntity();
+	eNsECS::Entity entity = ecs.createEntity();
 
-	TileMapComponent tileMapComp;
+	eNsLogic2DComp::TileMapComponent tileMapComp;
 
 	// îzóÒÇÃèÓïÒê›íË
 	tileMapComp.numCols = 10;
@@ -21,9 +21,9 @@ TileMapActor::TileMapActor(ECS& ecs)
 	tileMapComp.origin = glm::vec2(tileMapComp.numCols * tileMapComp.tileSize * -0.5f, tileMapComp.numRows * tileMapComp.tileSize * -0.5f);
 
 	// îzóÒçÏê¨
-	tileMapComp.tiles.resize(tileMapComp.numRows, std::vector<Tile>(tileMapComp.numCols));
+	tileMapComp.tiles.resize(tileMapComp.numRows, std::vector<eNsLogic2DComp::Tile>(tileMapComp.numCols));
 
 	ecs.addComponent(entity, tileMapComp);
 
-	DebugUtils::GeneralLog("TileMapActor.cpp", "Tilemap creation completed successfully");
+	eNsDebugLog::GeneralLog("TileMapActor.cpp", "Tilemap creation completed successfully");
 }

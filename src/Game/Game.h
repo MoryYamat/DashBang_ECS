@@ -4,89 +4,107 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Core/ECS/EntityManager.h"
+// ======================= Common =======================
+#include "Common/GameNameSpaceDecl.h"
+#include "Common/EngineNamespaceDecl.h"
 
-#include "Graphics/Renderer/RenderContext.h"
 
-#include "Game/CollisionLogic/Data/CollisionResultStorage.h"
+// ======================= Engine =======================
+#include "Engine/ECS/EntityManager.h"
+
+// Graphics
+#include "Engine/Graphics/Renderer/Shader.h"
+#include "Engine/Graphics/Renderer/RenderContext.h"
+
+#include "Engine/Window/Window.h"
+
+// Input
+#include "Engine/InputManager/InputManager.h"
+#include "Engine/InputManager/RawInputState.h"
+
+
+
+// ======================= Game =======================
+#include "Game/Collision/Data/CollisionResultStorage.h"
 
 #include "Game/Input/InputState.h"
 #include "Game/Input/InputMapping.h"
 
-
-#include "Core/Window/Window.h"
-
 // skill
-#include "Game/SkillSystem/MasterData/SkillDatabase.h"
+#include "Game/Combat/Skill/MasterData/SkillDatabase.h"
+#include "Game/Combat/Skill/Trigger/SkillInputMap.h"
 
-#include "Game/SkillSystem/Trigger/SkillInputMap.h"
 
-// Input
-#include "Core/InputManager/InputManager.h"
-#include "Core/InputManager/RawInputState.h"
 
-class Game
+namespace GameApp
 {
-public:
+	class GameApp
+	{
+	public:
 
-	Game();
+		GameApp();
 
-	bool Initialize();
+		bool Initialize();
 
-	void Shutdown();
+		void Shutdown();
 
-	void RunLoop();
+		void RunLoop();
 
 
-private:
-	// loop flag => 上手に使う方法
-	bool mIsRunning;
+	// できるだけ前方宣言を使用できる構造にする必要がある(構造破綻を防止するため)
+	// できるだけ前方宣言を使用できる構造にする必要がある(構造破綻を防止するため)
+	// できるだけ前方宣言を使用できる構造にする必要がある(構造破綻を防止するため)
+	// できるだけ前方宣言を使用できる構造にする必要がある(構造破綻を防止するため)
+	private:
+		// loop flag => 上手に使う方法
+		bool mIsRunning;
 
-	int windowWidth, windowHeight;
+		int windowWidth, windowHeight;
 
-	// ecs
-	class ECS mEcs;
+		// ecs
+		eNsECS::EntityMgr mECS;
 
-	// shader
-	class Shader* mShader;
-	RenderContext mRenderContext;
+		// shader
+		eNsGfxRender::Shader* mShader;// new するので完全な定義が必要
+		eNsGfxRender::RenderContext mRenderContext;
 
-	class Window mWindow;
+		Engine::Window::Window mWindow;
 
-	class InputManager* mInputManager;
+		eNsInput::InputManager* mInputManager;
 
-	// input states
-	class InputState mInputState;
-	class InputMapping mInputMapping;
+		// input states
+		gNsInput::InputMapping mInputMapping;
 
-	// collision detection results
-	CollisionResultStorage mCollisionResults;
+		// collision detection results
+		gNsCollData::CollisionResultStorage mCollisionResults;
 
-	// skill 
-	SkillDatabase mSkillDatabase;
-	SkillInputMap mSkillInputMap;
+		// skill 
+		gNsSkillData::SkillDatabase mSkillDatabase;
+		gNsSkillTrigger::SkillInputMap mSkillInputMap;
 
-	float mDeltaTime = 0.0f;
-	float mLastFrame = 0.0f;
+		float mDeltaTime = 0.0f;
+		float mLastFrame = 0.0f;
 
-	void updateGameLogics();
+		void updateGameLogics();
 
-	void generateOutputs();
+		void generateOutputs();
 
-	void loadData();
+		void loadData();
 
-	void unloadData();
+		void unloadData();
 
-	void spawnAllActors();
+		void spawnAllActors();
 
-	void RunInitializationPhase();
+		void RunInitializationPhase();
 
-	void updateContext();
+		void updateContext();
 
-	void InitializeInputMapping();
+		void InitializeInputMapping();
 
-	void InitializeSkills();
+		void InitializeSkills();
 
-	void InitializeSkillMappings();
-};
+		void InitializeSkillMappings();
+	};
+}
+
 

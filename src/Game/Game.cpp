@@ -3,33 +3,40 @@
 // std system
 #include <iostream>
 
+// ======================= Engine =======================
+
 //Entity
-#include "Core/ECS/Entity.h"
-#include "Core/ECS/EntityManager.h"
+#include "Engine/ECS/Entity.h"
+#include "Engine/ECS/EntityManager.h"
 
-#include "Core/ECS/Meta/InitComponent/FollowCameraInit.h"
+#include "Engine/ECS/Meta/InitComponent/FollowCameraInit.h"
 
-#include "Core/ECS/GlobalSystem/GlobalCleanupSystem.h"
+#include "Engine/ECS/GlobalSystem/GlobalCleanupSystem.h"
 
 //Components
-#include "Core/ECS/Component/TransformComponent.h"
-#include "Core/ECS/Component/TileMapComponent.h"
+#include "Engine/ECS/Component/Common/TransformComponent.h"
+#include "Engine/ECS/Component/Logic2D/TileMapComponent.h"
 
 // Init Components (Must be included for specialization)
-#include "Core/ECS/Meta/InitComponent/InitDispatcher.h"
-#include "Core/ECS/Meta/InitComponent/TileMapInit.h"
-#include "Core/ECS/Meta/InitComponent/FollowCameraInit.h"
+#include "Engine/ECS/Meta/InitComponent/InitDispatcher.h"
+#include "Engine/ECS/Meta/InitComponent/TileMapInit.h"
+#include "Engine/ECS/Meta/InitComponent/FollowCameraInit.h"
 
 // Window
 
 // physics
-#include "Core/Physics/CollisionUtils.h"
-#include "Core/ECS/Component/Collision/ColliderType.h"
+#include "Engine/Physics/Logic2D/DetectionFunctions.h"
+#include "Engine/ECS/Component/Logic2D/ColliderType.h"
 
 // Graphic
-#include "Graphics/Renderer/Shader.h"
-#include "Graphics/Renderer/RenderSystem.h"
-#include "Graphics/Model/AssimpImporter.h"
+#include "Engine/Graphics/Renderer/RenderSystem.h"
+#include "Engine/Graphics/Model/AssimpImporter.h"
+
+// Debug
+#include "Engine/Debug/DebugSystems/LogicDebugDrawSystem.h"
+#include "Engine/Config/CanonicalDefaults.h"
+
+// ======================= Game =======================
 
 //Game/Actor
 #include "Game/Actor/CameraActor.h"
@@ -51,38 +58,36 @@
 #include "Game/Input/PlayerCharacterControlSystem.h"
 #include "Game/Input/MouseCursorUpdateSystem.h"
 #include "Game/Input/InputRouterSystem.h"
+#include "Game/Input/AnalogInput/AnalogInputRoutingSystem.h"
 
 // Game Init
 #include "Game/Init/InitTileMap/InitTileMap.h"
 
 // collision systems
-#include "Game/CollisionLogic/CollisionSystem/CollisionDetectionSystem.h"
+#include "Game/Collision/System/CollisionDetectionSystem.h"
 
 // skill
-#include "Game/SkillSystem/Trigger/PlayerSkillTriggerSystem.h"
-#include "Game/SkillSystem/System/SkillCastingSystem.h"
-#include "Game/SkillSystem/MasterData/SkillSlot.h"
-#include "Game/SkillSystem/System/UpdateSkillLifetimes.h"
-#include "Game/SkillSystem/System/UpdateSkillPhase.h"
+#include "Game/Combat/Skill/Trigger/PlayerSkillTriggerSystem.h"
+#include "Game/Combat/Skill/System/SkillCastingSystem.h"
+#include "Game/Combat/Skill/MasterData/SkillSlot.h"
+#include "Game/Combat/Skill/System/UpdateSkillLifetimes.h"
+#include "Game/Combat/Skill/System/UpdateSkillPhase.h"
 // skill trajectory
-#include "Game/SkillSystem/Component/SkillTrajectoryComponent.h"
-#include "Game/SkillSystem/MasterData/SkillTrajectoryData.h"
-#include "Game/SkillSystem/System/SkillTrajectorySystem.h"
+#include "Game/Combat/Skill/Component/SkillTrajectoryComponent.h"
+#include "Game/Combat/Skill/MasterData/SkillTrajectoryData.h"
+#include "Game/Combat/Skill/System/SkillTrajectorySystem.h"
 
 // Game/Sync
-#include "Game/Sync/SyncLogicToTransformSystem.h"
+#include "Engine/Sync/LogicToTransformSystem.h"
 
-// Debug
-#include "Debug/DebugSystems/LogicDebugDrawSystem.h"
 
-#include "Config/CanonicalDefaults.h"
 
 // Test
 //#include "Test/TriangleActor.h"
 //#include "Test/Test3DModel.h"
 
 // コンストラクタ
-Game::Game()
+GameApp::GameApp::GameApp()
 	: mIsRunning(true)
 	, mShader(nullptr)
 	, mRenderContext()
@@ -95,12 +100,12 @@ Game::Game()
 }
 
 // 終了処理
-void Game::Shutdown()
+void GameApp::GameApp::Shutdown()
 {
 	unloadData();
 
 	// Destroy all components
-	mEcs.Clear();
+	mECS.Clear();
 
 	delete mShader;
 	mShader = nullptr;
@@ -115,7 +120,7 @@ void Game::Shutdown()
 }
 
 // 初期化
-bool Game::Initialize()
+bool GameApp::GameApp::Initialize()
 {
 	//if (!glfwInit())
 	//{
@@ -151,7 +156,7 @@ bool Game::Initialize()
 	// initialize input system
 	//InputManager::Initialize(WindowManager::GetWindow());
 
-	mInputManager = new InputManager(mWindow.GetGLFWWindow());
+	mInputManager = new eNsInput::InputManager(mWindow.GetGLFWWindow());
 
 	// WindowManager::CaptureMouse();
 
@@ -159,7 +164,7 @@ bool Game::Initialize()
 
 
 	// ShaderInit
-	mShader = new Shader("shaders/basic.vertex.glsl", "shaders/basic.fragment.glsl");
+	mShader = new eNsGfxRender::Shader("shaders/basic.vertex.glsl", "shaders/basic.fragment.glsl");
 
 
 	// Log
@@ -179,7 +184,7 @@ bool Game::Initialize()
 	return true;
 }
 
-void Game::RunLoop()
+void GameApp::GameApp::RunLoop()
 {
 	while (!glfwWindowShouldClose(mWindow.GetGLFWWindow()) && mIsRunning)
 	{
@@ -196,7 +201,7 @@ void Game::RunLoop()
 	}
 }
 
-void Game::updateGameLogics()
+void GameApp::GameApp::updateGameLogics()
 
 {	// Delta Time
 	float currentFrame = static_cast<float>(glfwGetTime());
@@ -205,7 +210,7 @@ void Game::updateGameLogics()
 	// std::cout << "[Game.cpp(DeltaTime)]: deltaTime: " << mDeltaTime << "\n";
 
 	// delete PendingDestroyComponent
-	GrobalSystem::RunCleanup(mEcs);
+	eNsECS::GrobalSystem::RunCleanup(mECS);
 
 
 	// コリジョンコンテキスト: 1フレームごとに初期化
@@ -214,51 +219,51 @@ void Game::updateGameLogics()
 	// Input
 	mInputManager->Update();
  
-	const RawInputState& input = mInputManager->GetRawInput();;
+	const eNsInput::RawInputState& input = mInputManager->GetRawInput();;
 	if (input.keyState.count(GLFW_KEY_ESCAPE) && input.keyState.at(GLFW_KEY_ESCAPE)) {
 		mIsRunning = false;
 	}
 
-	InputRouterSystem(mEcs, mInputManager->GetRawInput(), mInputMapping);
+	InputRouterSystem(mECS, mInputManager->GetRawInput(), mInputMapping);
 
 	// 入力状態マップの更新
 	//mInputMapping.update(mWindow.GetGLFWWindow(), mInputState);
 
 	// characterの移動
-	PlayerCharacterControlSystem::Update(mEcs, mInputManager->GetRawInput(), mRenderContext, mDeltaTime);
+	gNsInput::Player::Update(mECS, mInputManager->GetRawInput(), mRenderContext, mDeltaTime);
 	//PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime, mRenderContext);
 	// PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime);
 
 	// skill system
-	SkillSystem::Trigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(mEcs, mSkillInputMap);
+	gNsSkillTrigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(mECS, mSkillInputMap);
 	//SkillSystem::Casting::SpawnSkillHitArea(mEcs, mSkillDatabase);
-	SkillSystem::Phase::UpdateSkillPhase(mEcs, mDeltaTime, mSkillDatabase);
-	SkillTrajectorySystem::Update(mEcs, mDeltaTime);
+	gNsSkillSystem::UpdateSkillPhase(mECS, mDeltaTime, mSkillDatabase);
+	gNsSkillSystem::SkillTrajectorySystem::Update(mECS, mDeltaTime);
 	// SkillSystem::Lifetime::UpdateSkillLifetimes(mEcs, mDeltaTime, mSkillDatabase);
 	// SkillSystem::Trigger::PlayerSkillTriggerSystem::Update(mEcs, mSkillInputMap);
 	// SkillSystem::SkillCastingSystem(mEcs, mSkillDatabase, mRenderContext, mDeltaTime);
 
 	// 2D (Logic)-> 3D (Drawing)
-	SyncLogicToTransformSystem::Apply2DToTransform(mEcs, mDeltaTime);
+	eNsSyncL2T::Apply2DToTransform(mECS, mDeltaTime);
 
 	// カメラ
-	CameraFollowSystem::Update(mEcs, mDeltaTime);
+	gNsCam::Update(mECS, mDeltaTime);
 	// GameSystemInput::UpdateCamera(mEcs, mInputState, mDeltaTime);
 
 
-	Game::updateContext();
+	GameApp::updateContext();
 
 	// Update Mouse Cursor Logic data 
-	MouseCursorUpdateSystem::Update(mEcs, mInputManager->GetRawInput(), mRenderContext);
+	gNsInput::Analog::Update(mECS, mInputManager->GetRawInput(), mRenderContext);
 	//MouseCursorUpdateSystem::Update(mEcs, mInputState, mRenderContext);
 
 
 
 	// 
-	GameUtils::CollisionLogic::DetectionSystem::UpdateCollisionResultStorage(mEcs, mCollisionResults);
+	gNsCollSystem::UpdateCollisionResultStorage(mECS, mCollisionResults);
 }
 
-void Game::generateOutputs()
+void GameApp::GameApp::generateOutputs()
 {
 	glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -267,53 +272,53 @@ void Game::generateOutputs()
 
 	// An algorithm is needed to set the shader for each object.
 	// RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
-	RenderSystem::RenderSystem(mEcs, *mShader, mWindow.GetAspect(), mRenderContext);
+	eNsGfxRender::RenderSystem(mECS, *mShader, mWindow.GetAspect(), mRenderContext);
 
 
 	// draw for debugging
-	LogicDebugDrawSystem::Draw(mEcs, mRenderContext, mCollisionResults);
+	eNsDebugDraw::Logic2D::Draw(mECS, mRenderContext, mCollisionResults);
 
 
 	//
 	glfwSwapBuffers(mWindow.GetGLFWWindow());
 }
 
-void Game::loadData()
+void GameApp::GameApp::loadData()
 {
-	Game::spawnAllActors();
+	GameApp::spawnAllActors();
 
-	Game::RunInitializationPhase();
+	GameApp::RunInitializationPhase();
 
 	std::cout << "[Game.cpp]: Data loading completed successfully." << std::endl;
 }
 
-void Game::unloadData()
+void GameApp::GameApp::unloadData()
 {
 
 }
 
 
-void Game::spawnAllActors()
+void GameApp::GameApp::spawnAllActors()
 {
 	//TriangleActor tri = TriangleActor(mEcs);
 
 //Test3DModel test3d = Test3DModel(mEcs, mShader);
 
-	PlayerCharacter player = PlayerCharacter(mEcs, mShader);
+	gNsActorPlayer::PlayerCharacter player = gNsActorPlayer::PlayerCharacter(mECS, mShader);
 
-	FollowCameraActor followCam = FollowCameraActor(mEcs);
+	gNsActorCam::FollowCameraActor followCam = gNsActorCam::FollowCameraActor(mECS);
 
-	MouseCursorActor mouseCursor = MouseCursorActor(mEcs);
+	gNsActorAnalogInput::MouseCursorActor mouseCursor = gNsActorAnalogInput::MouseCursorActor(mECS);
 
 	// TileMapActor tilemap = TileMapActor(mEcs);
 	// TestRockActor testRock = TestRockActor(mEcs, mShader);
 
 
-	TestBaseTerrainActor testTerrainMap = TestBaseTerrainActor(mEcs, mShader);
+	gNsActorMap::TestBaseTerrainActor testTerrainMap = gNsActorMap::TestBaseTerrainActor(mECS, mShader);
 
-	TestRockActor testRock = TestRockActor(mEcs, mShader);
+	gNsActorMap::TestRockActor testRock = gNsActorMap::TestRockActor(mECS, mShader);
 
-	TestObject testObj = TestObject(mEcs, mShader);
+	gNsActor::TestObject testObj = gNsActor::TestObject(mECS, mShader);
 
 	// CameraActor camActor = CameraActor(mEcs);
 
@@ -328,7 +333,7 @@ void Game::spawnAllActors()
 	//std::cout << "Result: " << std::boolalpha << hit << std::endl;
 }
 
-void Game::RunInitializationPhase()
+void GameApp::GameApp::RunInitializationPhase()
 {
 	//for (Entity e : mEcs.view<TileMapComponent>())
 	//{
@@ -342,71 +347,71 @@ void Game::RunInitializationPhase()
 	//	InitSystem<FollowCameraComponent>::Init(followCamComp, mEcs, e);
 	//}
 
-	ApplyAllDeferredInitializations<
-		TileMapComponent,
-		FollowCameraComponent
+	eNsECSInitComp::ApplyAllDeferredInitializations<
+		eNsLogic2DComp::TileMapComponent,
+		eNsCamComp::FollowCameraComponent
 	// コンテキスト情報を渡す．
-	>(mEcs, mWindow);
+	>(mECS, mWindow);
 }
 
-void Game::updateContext()
+void GameApp::GameApp::updateContext()
 {
 	// update RenderContext:: viewport 
 	mRenderContext.viewport = glm::vec4(0, 0, mWindow.GetWidth(), mWindow.GetHeight());
 }
 
-void Game::InitializeInputMapping()
+void GameApp::GameApp::InitializeInputMapping()
 {
-	mInputMapping.bindKey(GLFW_KEY_W, InputAction::MoveForward);
-	mInputMapping.bindKey(GLFW_KEY_S, InputAction::MoveBackward);
-	mInputMapping.bindKey(GLFW_KEY_D, InputAction::MoveRight);
-	mInputMapping.bindKey(GLFW_KEY_A, InputAction::MoveLeft);
-	mInputMapping.bindKey(GLFW_MOUSE_BUTTON_1, InputAction::CastSkill1);
-	mInputMapping.bindKey(GLFW_MOUSE_BUTTON_2, InputAction::CastSkill2);
-	mInputMapping.bindKey(GLFW_KEY_1, InputAction::CastSkill3);
+	mInputMapping.bindKey(GLFW_KEY_W, gNsInput::InputAction::MoveForward);
+	mInputMapping.bindKey(GLFW_KEY_S, gNsInput::InputAction::MoveBackward);
+	mInputMapping.bindKey(GLFW_KEY_D, gNsInput::InputAction::MoveRight);
+	mInputMapping.bindKey(GLFW_KEY_A, gNsInput::InputAction::MoveLeft);
+	mInputMapping.bindKey(GLFW_MOUSE_BUTTON_1, gNsInput::InputAction::CastSkill1);
+	mInputMapping.bindKey(GLFW_MOUSE_BUTTON_2, gNsInput::InputAction::CastSkill2);
+	mInputMapping.bindKey(GLFW_KEY_1, gNsInput::InputAction::CastSkill3);
 
 }
 
-void Game::InitializeSkills()
+void GameApp::GameApp::InitializeSkills()
 {
-	SkillDefinition slash;
+	gNsSkillData::SkillDefinition slash;
 	slash.id = 1;
 	slash.name = "Basic Slash";
-	slash.shape = Attack2DShape{ Circle2DAttack{CanonicalDefaults::kLocalCenterXZ, 5.0f} };
+	slash.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Circle2DAttack{CanonicalDefaults::kLocalCenterXZ, 5.0f} };
 	slash.duration = 1.0f;
-	slash.trajectoryType = TrajectoryType::LinearForward;
-	slash.trajectoryParams = SkillTrajectory::LinearTrajectoryParams
+	slash.trajectoryType = gNsSkillData::TrajectoryType::LinearForward;
+	slash.trajectoryParams = gNsSkillData::SkillTrajectory::LinearTrajectoryParams
 	{
 		.speed = 20.0f
 	};
 	mSkillDatabase.AddSkill(slash);
 
-	SkillDefinition slash2;
+	gNsSkillData::SkillDefinition slash2;
 	slash2.id = 2;
 	slash2.name = "Power Slash";
-	slash2.shape = Attack2DShape{ Sector2DAttack{CanonicalDefaults::kLocalCenterXZ, CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f} };// -Z方向が前方
+	slash2.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Sector2DAttack{CanonicalDefaults::kLocalCenterXZ, CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f} };// -Z方向が前方
 	slash2.duration = 1.0f;
 
 	mSkillDatabase.AddSkill(slash2);
 
-	SkillDefinition blade;
+	gNsSkillData::SkillDefinition blade;
 	blade.id = 3;
 	blade.name = "Blade";
-	blade.shape = Attack2DShape{ Rectangle2DAttack{glm::vec2(0.0f, 5.0f), CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f}};
+	blade.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Rectangle2DAttack{glm::vec2(0.0f, 5.0f), CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f}};
 	blade.duration = 1.0f;
-
-	blade.trajectoryType = TrajectoryType::RotateAroundSelf;
-	blade.trajectoryParams = SkillTrajectory::RotateTrajectoryParams
-	{
+	// スキル奇跡の抽象定義の選択
+	blade.trajectoryType = gNsSkillData::TrajectoryType::RotateAroundSelf;
+	blade.trajectoryParams = gNsSkillData::SkillTrajectory::RotateTrajectoryParams
+	{// 関数定義
 		.startAngle = 60.0f,
 		.endAngle = -60.0f
 	};
 	mSkillDatabase.AddSkill(blade);
 }
 
-void  Game::InitializeSkillMappings()
+void GameApp::GameApp::InitializeSkillMappings()
 {
-	mSkillInputMap.bind(InputAction::CastSkill1, SkillSystem::SkillSlot::Primary);// スキルID 1
-	mSkillInputMap.bind(InputAction::CastSkill2, SkillSystem::SkillSlot::Secondary);// スキルID 2
-	mSkillInputMap.bind(InputAction::CastSkill3, SkillSystem::SkillSlot::Utility1);// スキルID 3
+	mSkillInputMap.bind(gNsInput::InputAction::CastSkill1, gNsSkillData::SkillSlot::Primary);// スキルID 1
+	mSkillInputMap.bind(gNsInput::InputAction::CastSkill2, gNsSkillData::SkillSlot::Secondary);// スキルID 2
+	mSkillInputMap.bind(gNsInput::InputAction::CastSkill3, gNsSkillData::SkillSlot::Utility1);// スキルID 3
 }

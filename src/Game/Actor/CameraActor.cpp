@@ -1,39 +1,39 @@
 
 #include "CameraActor.h"
 
-#include "Core/ECS/Entity.h"
-#include "Core/ECS/EntityManager.h"
+#include "Engine/ECS/Entity.h"
+#include "Engine/ECS/EntityManager.h"
 
-#include "Core/ECS/Component/TransformComponent.h"
-#include "Core/ECS/Component/CameraComponent.h"
-#include "Core/ECS/Component/Tags/PlayerControllerComponent.h"
+#include "Engine/ECS/Component/Common/TransformComponent.h"
+#include "Engine/ECS/Component/Camera/CameraComponent.h"
+#include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
 
-#include "Graphics/Renderer/Shader.h"
+#include "Engine/Graphics/Renderer/Shader.h"
 
-#include "Debug/DebugUtils.h"
+#include "Engine/Debug/DebugUtils.h"
 
-CameraActor::CameraActor(ECS& ecs)
+Game::Actor::Camera::CameraActor::CameraActor(eNsECS::EntityMgr& ecs)
 {
-	Entity entity = ecs.createEntity();
+	eNsECS::Entity entity = ecs.createEntity();
 
-	TransformComponent transformComp;
+	eNsCommonComp::TransformComponent transformComp;
 	transformComp.position = glm::vec3(0.0f, 0.0f, 0.0f);
 	transformComp.rotation = glm::vec3(0.0f);
 	transformComp.scale = glm::vec3(1.0f);
+	ecs.addComponent(entity, transformComp);
 
-	CameraComponent cameraComp;
+	eNsCamComp::CameraComponent cameraComp;
 	cameraComp.fov = 60.0f;
 	cameraComp.target = glm::vec3(0.0f, 0.0f, 0.0f);
 	cameraComp.up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-	PlayerControllerComponent player;
+	eNsTagComp::PlayerControllerComponent player;
 	ecs.addComponent(entity, player);
 
 	cameraComp.aspect = 1280.0f / 720.0f;
 	cameraComp.nearClip = 0.1f;
 	cameraComp.farClip = 100.0f;
 
-	ecs.addComponent(entity, transformComp);
 	ecs.addComponent(entity, cameraComp);
 
 

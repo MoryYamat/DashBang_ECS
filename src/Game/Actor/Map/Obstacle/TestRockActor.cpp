@@ -1,36 +1,36 @@
 #include "TestRockActor.h"
 
-#include "Core/ECS/Entity.h"
+#include "Engine/ECS/Entity.h"
 
-#include "Core/ECS/Component/MeshComponent.h"
-#include "Core/ECS/Component/TransformComponent.h"
-#include "Core/ECS/Component/ShaderComponent.h"
-#include "Core/ECS/Component/MaterialComponent.h"
+#include "Engine/ECS/Component/Graphics/MeshComponent.h"
+#include "Engine/ECS/Component/Common/TransformComponent.h"
+#include "Engine/ECS/Component/Graphics/ShaderComponent.h"
+#include "Engine/ECS/Component/Graphics/MaterialComponent.h"
 
-#include "Core/ECS/Component/Logic2DTransformComponent.h"
+#include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 
-#include "Core/ECS/Component/Collision/CollisionComponent.h"
+#include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
 
-#include "Core/ECS/Component/Tags/ObstacleTagComponent.h"
+#include "Engine/ECS/Component/Tags/ObstacleTagComponent.h"
 
-#include "DataTypes/ModelData.h"
+#include "Engine/Graphics/Model/ModelData.h"
 
 #include "Game/Init/InitModel/InitLogicTransformFromModel.h"
 
-#include "Graphics/Model/AssimpImporter.h"
-#include "Graphics/Renderer/GPUBufferUtils.h"
+#include "Engine/Graphics/Model/AssimpImporter.h"
+#include "Engine/Graphics/Renderer/GPUBufferUtils.h"
 
-#include "Math/Logic/LogicMathUtils.h"
+#include "Engine/Math/Logic2D/LogicMathUtils.h"
 
-#include "Debug/DebugUtils.h"
+#include "Engine/Debug/DebugUtils.h"
 
 #include <iostream>
 
-TestRockActor::TestRockActor(ECS& ecs, Shader* shader)
+Game::Actor::Map::TestRockActor::TestRockActor(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader)
 {
-	Entity entity = ecs.createEntity();
+	eNsECS::Entity entity = ecs.createEntity();
 
-	ModelData modelData = AssimpImporter::Import("Assets/Models/TestRock.fbx");
+	eNsGfxModel::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/TestRock.fbx");
 	for (const auto& mesh : modelData.meshes)
 	{
 		std::cout << "[TestRockActor.cpp]: Vertices: " << mesh.vertices.size()
@@ -39,23 +39,23 @@ TestRockActor::TestRockActor(ECS& ecs, Shader* shader)
 	}
 
 	// set Mesh data to GPUBuffers
-	ModelGPU modelGPU = GPUBufferUtils::createMeshGPUBuffers(modelData);
+	eNsGfxModel::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
 
 	// set MeshComponent
-	ecs.addComponent(entity, MeshComponent{
+	ecs.addComponent(entity, eNsGfxComp::MeshComponent{
 			modelData,
 			modelGPU
 		});
 
 	// set TransformComponent
-	TransformComponent transformComp;
+	eNsCommonComp::TransformComponent transformComp;
 	transformComp.position = glm::vec3(10.0f, 0.0f, -2.0f);
 	transformComp.rotation = glm::vec3(0.0f, -60.0f, 0.0f);
 	transformComp.scale = glm::vec3(0.01f);
 	ecs.addComponent(entity, transformComp);
 
 	// set ShaderComponent
-	ShaderComponent shaderComp;
+	eNsGfxComp::ShaderComponent shaderComp;
 	shaderComp.shader = shader;
 	if (shaderComp.shader)
 	{
@@ -71,21 +71,21 @@ TestRockActor::TestRockActor(ECS& ecs, Shader* shader)
 
 
 	// Logic2D
-	Logic2DTransformComponent logic;
-	logic = GameInit::LogicTransform::InitLogic2DTransformFromModel(transformComp, modelData);
+	eNsLogic2DComp::Logic2DTransformComponent logic;
+	logic = Game::Init::Logic2D::InitLogic2DTransformFromModel(transformComp, modelData);
 	ecs.addComponent(entity, logic);
 
 
 	// set Test Corlor
-	MaterialComponent materialComp;
+	eNsGfxComp::MaterialComponent materialComp;
 	materialComp.baseColor = glm::vec3(1.0f, 0.0f, 1.0f);
 	ecs.addComponent(entity, materialComp);
 
 	// for collision setting
-	CollisionComponent testRockCollisionComp;
-	testRockCollisionComp.collider.type = ColliderType::Obb2D;
+	eNsLogic2DComp::CollisionComponent testRockCollisionComp;
+	testRockCollisionComp.collider.type = eNsLogic2DComp::ColliderType::Obb2D;
 	// calc world size on the xz plane
-	glm::vec2 obbSize = GameInit::LogicTransform::GetModelXZSizeWithScale(transformComp, modelData);
+	glm::vec2 obbSize = Game::Init::Logic2D::GetModelXZSizeWithScale(transformComp, modelData);
 	testRockCollisionComp.collider.obb2D.halfExtents = obbSize / 2.0f;
 
 	// calc world center on the xz plane
@@ -96,20 +96,20 @@ TestRockActor::TestRockActor(ECS& ecs, Shader* shader)
 
 	// calc local vector axisX and axisZ
 	float rotRad = logic.rotation;// •`‰æŠî€(+Z)‚Æ˜_—Šî€(-Z)‚Ì®‡«‚ðl‚¦‚é
-	glm::vec2 axisZ = normalize(LogicDirection::CalcForwardFromYaw(rotRad));
-	glm::vec2 axisX = LogicDirection::CalcRightFromYaw(rotRad);
+	glm::vec2 axisZ = glm::normalize(eNsLogic2DMath::CalcForwardFromYaw(rotRad));
+	glm::vec2 axisX = eNsLogic2DMath::CalcRightFromYaw(rotRad);
 	testRockCollisionComp.collider.obb2D.axisX = axisX;
 	testRockCollisionComp.collider.obb2D.axisZ = axisZ;
 	ecs.addComponent(entity, testRockCollisionComp);
 	
 	// obstacle object's tag
-	ObstacleTagComponent obstacleTagComp;
+	eNsTagComp::ObstacleTagComponent obstacleTagComp;
 	ecs.addComponent(entity, obstacleTagComp);
 
 	// Log
-	DebugUtils::LogVector_string("[TestRockActor.cpp(CollsionCenter)]: ", testRockCollisionComp.collider.obb2D.center);
-	DebugUtils::LogVector_string("[TestRockActor.cpp(AxisX)]: ", testRockCollisionComp.collider.obb2D.axisX);
-	DebugUtils::LogVector_string("[TestRockActor.cpp(AxisZ)]: ", testRockCollisionComp.collider.obb2D.axisZ);
+	eNsDebugLog::LogVector_string("[TestRockActor.cpp(CollsionCenter)]: ", testRockCollisionComp.collider.obb2D.center);
+	eNsDebugLog::LogVector_string("[TestRockActor.cpp(AxisX)]: ", testRockCollisionComp.collider.obb2D.axisX);
+	eNsDebugLog::LogVector_string("[TestRockActor.cpp(AxisZ)]: ", testRockCollisionComp.collider.obb2D.axisZ);
 
 
 

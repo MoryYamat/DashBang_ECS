@@ -3,9 +3,16 @@
 
 #pragma once
 
-#include "Core/ECS/EntityManager.h"
-#include "Core/InputManager/RawInputState.h"
+#include "Engine/ECS/EntityManager.h"
+#include "Engine/InputManager/RawInputState.h"
 #include "Game/Input/InputMapping.h"
-#include "Core/ECS/Component/InputActionComponent.h"
+#include "Game/Input/InputActionComponent.h"
 
-void InputRouterSystem(ECS& ecs, const RawInputState& rawInput, const InputMapping& mapping);
+#include "Common/EngineNamespaceDecl.h"
+
+#include "Common/GameNamespaceDecl.h"
+
+namespace Game::Input
+{
+	void InputRouterSystem(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, const gNsInput::InputMapping& mapping);
+}

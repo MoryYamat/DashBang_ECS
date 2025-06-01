@@ -2,13 +2,17 @@
 
 #pragma once 
 
-#include "Core/ECS/EntityManager.h"
+#include "Engine/ECS/EntityManager.h"
 
 #include "Game/Input/InputState.h"
 
+#include "Common/EngineNamespaceDecl.h"
 
-class MouseCursorActor
+namespace Game::Actor::AnalogInput
 {
-public:
-	MouseCursorActor(ECS& ecs);
-};
+	class MouseCursorActor
+	{
+	public:
+		MouseCursorActor(eNsECS::EntityMgr& ecs);
+	};
+}

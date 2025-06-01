@@ -1,41 +1,41 @@
 #include "TestObject.h"
 
-#include "Core/ECS/Entity.h"
-#include "Core/ECS/EntityUtils/EntityUtils.h"
-#include "Core/ECS/Component/TransformComponent.h"
-#include "Core/ECS/Component/MeshComponent.h"
-#include "Core/ECS/Component/ShaderComponent.h"
+#include "Engine/ECS/Entity.h"
+#include "Engine/ECS/EntityUtils/EntityUtils.h"
+#include "Engine/ECS/Component/Common/TransformComponent.h"
+#include "Engine/ECS/Component/Graphics/MeshComponent.h"
+#include "Engine/ECS/Component/Graphics/ShaderComponent.h"
 
-#include "Core/ECS/Component/FollowCameraComponent.h"
+#include "Engine/ECS/Component/Camera/FollowCameraComponent.h"
 
 // input
 // #include "Core/ECS/Component/InputComponent.h"
-#include "Core/ECS/Component/InputActionComponent.h"
+#include "Game/Input/InputActionComponent.h"
 
 // test color
-#include "Core/ECS/Component/MaterialComponent.h"
+#include "Engine/ECS/Component/Graphics/MaterialComponent.h"
 
 // Flags
-#include "Core/ECS/Component/Tags/PlayerControllerComponent.h"
-#include "Core/ECS/Component/NameComponent.h"
+#include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
+#include "Engine/ECS/Component/Utils/NameComponent.h"
 
-#include "Core/ECS/Component/Logic2DTransformComponent.h"
+#include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 
 
-#include "DataTypes/ModelData.h"
-#include "Graphics/Model/AssimpImporter.h"
-#include "Graphics/Renderer/GPUBufferUtils.h"
+#include "Engine/Graphics/Model/ModelData.h"
+#include "Engine/Graphics/Model/AssimpImporter.h"
+#include "Engine/Graphics/Renderer/GPUBufferUtils.h"
 
-#include "Debug/DebugUtils.h"
+#include "Engine/Debug/DebugUtils.h"
 
 #include <iostream>
 
-TestObject::TestObject(ECS& ecs, Shader* shader)
+Game::Actor::TestObject::TestObject(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader)
 {
-	Entity entity = ecs.createEntity();
+	eNsECS::Entity entity = ecs.createEntity();
 
 	// load Model Datas from file
-	ModelData modelData = AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
+	eNsGfxModel::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
 	for (const auto& mesh : modelData.meshes)
 	{
 		std::cout << "[PlayerCharacterActor.cpp]: Vertices: " << mesh.vertices.size()
@@ -44,17 +44,17 @@ TestObject::TestObject(ECS& ecs, Shader* shader)
 	}
 
 	// set Mesh data to GPUBuffers
-	ModelGPU modelGPU = GPUBufferUtils::createMeshGPUBuffers(modelData);
+	eNsGfxModel::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
 
 	// set MeshComponent
-	ecs.addComponent(entity, MeshComponent{
+	ecs.addComponent(entity, eNsGfxComp::MeshComponent{
 			modelData,
 			modelGPU
 		});
 
 
 	// set TransformComponent
-	TransformComponent transformComp;
+	eNsCommonComp::TransformComponent transformComp;
 	transformComp.position = glm::vec3(0.0f, 0.0f, 0.0f);
 	transformComp.rotation = glm::vec3(0.0f, 45.0f, 0.0f);
 	transformComp.scale = glm::vec3(0.01f);
@@ -62,7 +62,7 @@ TestObject::TestObject(ECS& ecs, Shader* shader)
 
 
 	// set ShaderComponent
-	ShaderComponent shaderComp;
+	eNsGfxComp::ShaderComponent shaderComp;
 	shaderComp.shader = shader;
 	if (shaderComp.shader)
 	{
@@ -77,7 +77,7 @@ TestObject::TestObject(ECS& ecs, Shader* shader)
 	ecs.addComponent(entity, shaderComp);
 
 	// set Test Corlor
-	MaterialComponent materialComp;
+	eNsGfxComp::MaterialComponent materialComp;
 	materialComp.baseColor = glm::vec3(1.0f, 1.0f, 1.0f);
 	ecs.addComponent(entity, materialComp);
 }

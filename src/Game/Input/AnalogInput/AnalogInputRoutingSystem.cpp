@@ -1,0 +1,19 @@
+#include "AnalogInputRoutingSystem.h"
+
+#include "Engine/ECS/Component/Input/AnalogInputComponent.h"
+
+#include "Game/Utils/SpatialTransformUtils.h"
+
+#include "Common/EngineNamespaceDecl.h"
+
+void Game::Input::Analog::RouteAnalogInput(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, const eNsGfxRender::RenderContext& renderContext)
+{
+	for (eNsECS::Entity e : ecs.view<eNsInputComp::AnalogInputComponent>())
+	{
+		auto& analog = ecs.get<eNsInputComp::AnalogInputComponent>(e);
+
+		analog.cursorLogicPositionXZ = Game::Utils::ProjectScreenToLogicXZPlane(rawInput.mousePosition, renderContext);
+		analog.cursorDelta = rawInput.mouseDelta;
+		analog.scrollDelta = rawInput.scrollDelta;
+	}
+}

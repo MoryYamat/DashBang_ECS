@@ -2,11 +2,11 @@
 
 #include <iostream>
 
-void InputRouterSystem(ECS& ecs, const RawInputState& rawInput, const InputMapping& mapping)
+void Game::Input::InputRouterSystem(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, const InputMapping& mapping)
 {
-	for (Entity e : ecs.view<InputActionComponent>())
+	for (eNsECS::Entity e : ecs.view<gNsInput::InputActionComponent>())
 	{
-		auto& inputComp = ecs.get<InputActionComponent>(e);
+		auto& inputComp = ecs.get<gNsInput::InputActionComponent>(e);
 
 		inputComp.previous = inputComp.current;
 		inputComp.current.clear();

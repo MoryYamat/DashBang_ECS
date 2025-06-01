@@ -3,16 +3,21 @@
 
 #pragma once
 
-#include "Core/ECS/EntityManager.h"
+#include "Engine/ECS/EntityManager.h"
 
-#include "Graphics/Renderer/Shader.h"
+#include "Engine/Graphics/Renderer/Shader.h"
 
-class TestObject
+#include "Common/EngineNamespaceDecl.h"
+
+namespace Game::Actor
 {
-public:
-	TestObject(ECS& ecs, Shader* shader);
+	class TestObject
+	{
+	public:
+		TestObject(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader);
 
-private:
+	private:
 
 
-};
+	};
+}

@@ -2,19 +2,24 @@
 
 #pragma once
 
-#include "DataTypes/ModelData.h"
-#include "Core/ECS/Component/Logic2DTransformComponent.h"
+#include "Engine/Graphics/Model/ModelData.h"
+#include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 
-#include "Core/ECS/Component/TransformComponent.h"
+#include "Engine/ECS/Component/Common/TransformComponent.h"
 
-#include "Core/ECS/Component/TileMapComponent.h"
+#include "Engine/ECS/Component/Logic2D/TileMapComponent.h"
 
 #include <string>
 
-namespace GameInit::LogicTransform
+#include "Common/EngineNamespaceDecl.h"
+
+namespace Game::Init::Logic2D
 {
 	// 3D -> 2D
-	Logic2DTransformComponent InitLogic2DTransformFromModel(const TransformComponent& transformComp, const ModelData& modelData);
+	eNsLogic2DComp::Logic2DTransformComponent InitLogic2DTransformFromModel(
+		const eNsCommonComp::TransformComponent& transformComp
+		, const eNsGfxModel::ModelData& modelData
+	);
 
 	// 3D -> 3D
 
@@ -23,13 +28,13 @@ namespace GameInit::LogicTransform
 	
 	// Get logical XZ size from model size, taking into account scale
 	// // スケールを考慮してモデルサイズから論理XZサイズを取得します
-	glm::vec2 GetModelXZSizeWithScale(const TransformComponent& transformComp, const ModelData& modelData);
+	glm::vec2 GetModelXZSizeWithScale(const eNsCommonComp::TransformComponent& transformComp, const eNsGfxModel::ModelData& modelData);
 
 
 }
 
 // For Player's 2DCircle Collision form
-namespace GameInit::LogicTransform
+namespace Game::Init::Logic2D
 {
 	enum class RadiusEstimateStrategy
 	{
@@ -44,8 +49,8 @@ namespace GameInit::LogicTransform
 	// モデルのXZ平面における大きさの最大軸を半径にする場合
 
 	float EstimateRadiusFromModelXZ(
-		const TransformComponent& transformComp,
-		const ModelData& modelData,
+		const eNsCommonComp::TransformComponent& transformComp,
+		const eNsGfxModel::ModelData& modelData,
 		RadiusEstimateStrategy strategy = RadiusEstimateStrategy::MaxAxis
 	);
 }

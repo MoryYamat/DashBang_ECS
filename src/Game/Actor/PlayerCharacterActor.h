@@ -3,18 +3,25 @@
 
 #pragma once
 
-#include "Core/ECS/EntityManager.h"
+#include "Engine/ECS/EntityManager.h"
 
-#include "Graphics/Renderer/Shader.h"
+#include "Engine/Graphics/Renderer/Shader.h"
 
-class PlayerCharacter
+#include "Common/EngineNamespaceDecl.h"
+#include "Common/GameNamespaceDecl.h"
+
+namespace Game::Actor::Player
 {
-public:
-	PlayerCharacter(ECS& ecs, Shader* shader);
+	class PlayerCharacter
+	{
+	public:
+		PlayerCharacter(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader);
 
-	~PlayerCharacter();
+		~PlayerCharacter();
 
-private:
+	private:
 
 
-};
+	};
+}
+

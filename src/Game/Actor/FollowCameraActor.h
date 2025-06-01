@@ -2,26 +2,34 @@
 
 #pragma once
 
-#include "Core/ECS/EntityManager.h"
+#include "Engine/ECS/EntityManager.h"
 
-#include "Core/ECS/Component/TransformComponent.h"
-#include "Core/ECS/Component/CameraComponent.h"
-#include "Core/ECS/Component/Logic2DTransformComponent.h"
-#include "Core/ECS/Component/FollowCameraComponent.h"
+#include "Engine/ECS/Component/Common/TransformComponent.h"
+#include "Engine/ECS/Component/Camera/CameraComponent.h"
+#include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
+#include "Engine/ECS/Component/Camera/FollowCameraComponent.h"
 
+#include "Common/EngineNamespaceDecl.h"
 
-class FollowCameraActor
+namespace Game::Actor::Camera
 {
-public:
-	FollowCameraActor(ECS& ecs);
+	class FollowCameraActor
+	{
+	public:
+		FollowCameraActor(eNsECS::EntityMgr& ecs);
 
 
-private:
-	
+	private:
 
-	// （カメラの位置がモデルの正面ベクトルの対角方向にくるようにカメラの位置と向きを初期化するテンプレート）（ほぼデバッグ用）
-	void initializeFollowCameraGetFront(FollowCameraComponent& followCamComp, Logic2DTransformComponent& targetLogic2DTransform);
 
-	void initializeCameraVectors(CameraComponent& camComp, TransformComponent& camTransform, TransformComponent& targetTransformComp);
+		// （カメラの位置がモデルの正面ベクトルの対角方向にくるようにカメラの位置と向きを初期化するテンプレート）（ほぼデバッグ用）
+		void initializeFollowCameraGetFront(eNsCamComp::FollowCameraComponent& followCamComp
+			, eNsLogic2DComp::Logic2DTransformComponent& targetLogic2DTransform);
 
-};
+		void initializeCameraVectors(eNsCamComp::CameraComponent& camComp
+			, eNsCommonComp::TransformComponent& camTransform
+			, eNsCommonComp::TransformComponent& targetTransformComp);
+
+	};
+}
+

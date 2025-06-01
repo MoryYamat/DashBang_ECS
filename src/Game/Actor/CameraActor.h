@@ -1,14 +1,20 @@
 // Camera
 #pragma once
 
+#include "Engine/ECS/EntityManager.h"
 
-class CameraActor
+#include "Common/EngineNamespaceDecl.h"
+
+namespace Game::Actor::Camera
 {
-public:
+	class CameraActor
+	{
+	public:
 
-	CameraActor(class ECS& ecs);
+		CameraActor(eNsECS::EntityMgr& ecs);
 
-private:
+	private:
 
 
-};
+	};
+}

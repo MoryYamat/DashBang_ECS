@@ -2,11 +2,20 @@
 
 #pragma once
 
-#include "Core/ECS/EntityManager.h"
+#include "Engine/ECS/EntityManager.h"
 
-class TileMapActor
+#include "Common/EngineNamespaceDecl.h"
+
+namespace Game::Actor::Map
 {
-public:
+	// (現在未使用)テストタイルマップ用(削除予定)
+	// (現在未使用)テストタイルマップ用(削除予定)
+	// (現在未使用)テストタイルマップ用(削除予定)
+	class TileMapActor
+	{
+	public:
 
-	TileMapActor(ECS& ecs);
-};
+		TileMapActor(eNsECS::EntityMgr& ecs);
+	};
+}
+

@@ -1,11 +1,11 @@
 #include "CameraControlSystem.h"
 
 // Core/ECS
-#include "Core/ECS/Component/TransformComponent.h"
-#include "Core/ECS/Component/Tags/PlayerControllerComponent.h"
+#include "Engine/ECS/Component/Common/TransformComponent.h"
+#include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
 
 // Core/Window
-#include "Core/Window/WindowManager.h"
+#include "Engine/Window/WindowManager.h"
 
 #include <iostream>
 #include <algorithm>
@@ -23,13 +23,13 @@
 // The internal state of ÅeInputStateÅf is not rewritten here.
 // The internal state of ÅeInputStateÅf is not rewritten here.
 // ÅeInputStateÅeÇÃì‡ïîèÛë‘ÇÕÇ±Ç±Ç≈ÇÕèëÇ´ä∑Ç¶Ç»Ç¢
-void GameSystemInput::UpdateCamera(ECS& ecs, InputState& input, float deltaTime)
+void Game::Camera::Input::UpdateCamera(eNsECS::EntityMgr& ecs, gNsInput::InputState& input, float deltaTime)
 {
 
-	for (auto entity : ecs.view<TransformComponent, CameraComponent, PlayerControllerComponent>())
+	for (eNsECS::Entity entity : ecs.view<eNsCommonComp::TransformComponent, eNsCamComp::CameraComponent, eNsTagComp::PlayerControllerComponent>())
 	{
-		auto& transformComp = ecs.get<TransformComponent>(entity);
-		auto& cameraComp = ecs.get<CameraComponent>(entity);
+		auto& transformComp = ecs.get<eNsCommonComp::TransformComponent>(entity);
+		auto& cameraComp = ecs.get<eNsCamComp::CameraComponent>(entity);
 
 		float velocity = cameraComp.moveSpeed * deltaTime;
 
@@ -37,13 +37,13 @@ void GameSystemInput::UpdateCamera(ECS& ecs, InputState& input, float deltaTime)
 		// It defines the movement
 		// It defines the movement
 		// It defines the movement
-		if (input.isPressed(InputAction::MoveForward))
+		if (input.isPressed(gNsInput::InputAction::MoveForward))
 			transformComp.position += cameraComp.front * velocity;
-		if (input.isPressed(InputAction::MoveBackward))
+		if (input.isPressed(gNsInput::InputAction::MoveBackward))
 			transformComp.position -= cameraComp.front * velocity;
-		if (input.isPressed(InputAction::MoveRight))
+		if (input.isPressed(gNsInput::InputAction::MoveRight))
 			transformComp.position += cameraComp.right * velocity;
-		if (input.isPressed(InputAction::MoveLeft))
+		if (input.isPressed(gNsInput::InputAction::MoveLeft))
 			transformComp.position -= cameraComp.right * velocity;
 
 
@@ -61,18 +61,18 @@ void GameSystemInput::UpdateCamera(ECS& ecs, InputState& input, float deltaTime)
 
 			// pitchêßå¿
 			cameraComp.pitch = std::clamp(cameraComp.pitch, -89.0f, 89.0f);
-			GameSystemInput::updateCameraVector(cameraComp);
+			updateCameraVector(cameraComp);
 		}
 
 		if (input.requestMouseCaptureToggle)
 		{
 			if (input.mouseCaptured)
 			{
-				WindowManager::CaptureMouse();
+				eNsWindow::WindowManager::CaptureMouse();
 			}
 			else
 			{
-				WindowManager::ReleaseMouse();
+				eNsWindow::WindowManager::ReleaseMouse();
 			}
 
 			// fix later
@@ -89,7 +89,7 @@ void GameSystemInput::UpdateCamera(ECS& ecs, InputState& input, float deltaTime)
 }
 
 // 
-void GameSystemInput::updateCameraVector(CameraComponent& cameraComp)
+void Game::Camera::Input::updateCameraVector(eNsCamComp::CameraComponent& cameraComp)
 {
 	glm::vec3 front;
 	front.x = cos(glm::radians(cameraComp.yaw)) * cos(glm::radians(cameraComp.pitch));

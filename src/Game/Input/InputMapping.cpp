@@ -1,6 +1,6 @@
 #include "InputMapping.h"
 
-#include "Core/Window/WindowManager.h"
+#include "Engine/Window/WindowManager.h"
 
 #include <iostream>
 

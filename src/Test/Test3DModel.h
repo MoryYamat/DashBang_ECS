@@ -1,12 +1,22 @@
 #pragma once
 
+#include "Engine/ECS/EntityManager.h"
 
-class Test3DModel
+#include "Engine/Graphics/Renderer/Shader.h"
+
+#include "Common/EngineNamespaceDecl.h"
+
+
+namespace Test::Actor
 {
-public:
-	Test3DModel(class ECS& ecs,class Shader* shader);
+	class Test3DModel
+	{
+	public:
+		Test3DModel(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader);
 
-	~Test3DModel();
-private:
+		~Test3DModel();
+	private:
 
-};
+	};
+}
+

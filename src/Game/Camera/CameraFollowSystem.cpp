@@ -1,32 +1,32 @@
 #include "CameraFollowSystem.h"
 
-#include "Core/ECS/Component/CameraComponent.h"
+#include "Engine/ECS/Component/Camera/CameraComponent.h"
 
 
 
-#include "Debug/DebugUtils.h"
+#include "Engine/Debug/DebugUtils.h"
 
 #include <glm/gtx/rotate_vector.hpp>
 
 #include <iostream>
 
-void CameraFollowSystem::Update(ECS& ecs, float deltaTime)
+void Game::Camera::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 {
-	for (Entity e : ecs.view<FollowCameraComponent, TransformComponent, CameraComponent>())
+	for (eNsECS::Entity e : ecs.view<eNsCamComp::FollowCameraComponent, eNsCommonComp::TransformComponent, eNsCamComp::CameraComponent>())
 	{
 
 
-		auto& followCam = ecs.get<FollowCameraComponent>(e);
-		auto& camTransform = ecs.get<TransformComponent>(e);
-		auto& camComp = ecs.get<CameraComponent>(e);
+		auto& followCam = ecs.get<eNsCamComp::FollowCameraComponent>(e);
+		auto& camTransform = ecs.get<eNsCommonComp::TransformComponent>(e);
+		auto& camComp = ecs.get<eNsCamComp::CameraComponent>(e);
 
 
 
 		// If the targetEntity does not have a TransformComponent
-		if (!ecs.hasComponent<TransformComponent>(followCam.targetEntity)) return;
+		if (!ecs.hasComponent<eNsCommonComp::TransformComponent>(followCam.targetEntity)) return;
 
-		const auto& targetLogic2DTransform = ecs.get<Logic2DTransformComponent>(followCam.targetEntity);
-		TransformComponent targetTransformComp = ecs.get<TransformComponent>(followCam.targetEntity);
+		const auto& targetLogic2DTransform = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(followCam.targetEntity);
+		eNsCommonComp::TransformComponent targetTransformComp = ecs.get<eNsCommonComp::TransformComponent>(followCam.targetEntity);
 
 
 		camTransform.position = targetTransformComp.position + followCam.offset;
@@ -51,7 +51,9 @@ void CameraFollowSystem::Update(ECS& ecs, float deltaTime)
 	}
 }
 
-void CameraFollowSystem::setFollowCameraGetFront(FollowCameraComponent& followCamComp, Logic2DTransformComponent& targetLogic2DTransform)
+void Game::Camera::setFollowCameraGetFront(eNsCamComp::FollowCameraComponent& followCamComp
+	, eNsLogic2DComp::Logic2DTransformComponent& targetLogic2DTransform
+)
 {
 	// Calculating camera position
 	// 論理データのfrontに対して、対角上に存在するように計算している
@@ -62,7 +64,10 @@ void CameraFollowSystem::setFollowCameraGetFront(FollowCameraComponent& followCa
 	followCamComp.offset = glm::rotate(followCamComp.offset, yawRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-void CameraFollowSystem::setCameraVectors(CameraComponent& camComp, TransformComponent& camTransform, TransformComponent& targetTransformComp)
+void Game::Camera::setCameraVectors(eNsCamComp::CameraComponent& camComp
+	, eNsCommonComp::TransformComponent& camTransform
+	, eNsCommonComp::TransformComponent& targetTransformComp
+)
 {
 	camComp.front = glm::normalize(targetTransformComp.position - camTransform.position);
 	camComp.right = glm::normalize(glm::cross(camComp.front, camComp.up));

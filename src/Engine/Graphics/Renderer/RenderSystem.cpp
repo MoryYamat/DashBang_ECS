@@ -1,0 +1,182 @@
+#include "RenderSystem.h"
+
+#include "Engine/ECS/Entity.h"
+
+
+#include "Engine/ECS/Component/Graphics/MaterialComponent.h"
+
+#include <iostream>
+
+// Changed to update RenderContext
+void Engine::Graphics::Render::RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader& shader, float aspect, RenderContext& context)
+{
+	// View行列、Projection行列
+	glm::mat4 view, projection;
+
+	if (!getCameraMatrices(ecs, view, projection, context))
+	{
+		std::cerr << "[RenderSystem.cpp]: No valid camera found in ECS." << std::endl;
+		return;
+	}
+
+
+
+	for (eNsECS::Entity entity : ecs.view<eNsCommonComp::TransformComponent, eNsGfxComp::MeshComponent, eNsGfxComp::MaterialComponent>())
+	{
+		auto& transformComp = ecs.get<eNsCommonComp::TransformComponent>(entity);
+		auto& meshComp = ecs.get<eNsGfxComp::MeshComponent>(entity);
+		auto& materialComp = ecs.get<eNsGfxComp::MaterialComponent>(entity);
+
+		// state machine (シェーダーを切り替えると、viewもprojectionもセットする必要あり。)
+		shader.Use();
+		shader.setMat4("model", transformComp.toMatrix());
+		shader.setMat4("view", view);
+		shader.setMat4("projection", projection);
+		shader.setVec3("uBaseColor", materialComp.baseColor);
+		drawMesh(meshComp);
+	}
+
+	context.viewMatrix = view;
+	context.projectionMatrix = projection;
+	//context.viewport = {0, 0, WindowManager::GetWidth(), WindowManager::GetHeight()};
+}
+
+void Engine::Graphics::Render::drawMesh(const eNsGfxComp::MeshComponent& meshComp)
+{
+
+	for (size_t i = 0; i < meshComp.modelData.meshes.size(); ++i)
+	{
+		const auto& meshGPU = meshComp.modelGPU.meshesGPU[i];
+		const auto& meshData = meshComp.modelData.meshes[i];
+
+		glBindVertexArray(meshGPU.vao);
+
+		if (meshData.hasIndices)
+		{
+			glDrawElements(GL_TRIANGLES, meshGPU.indexCount, GL_UNSIGNED_INT, 0);
+			//std::cout << "[RenderSystem.cpp]: draw elements" << std::endl;// for debugging
+		}
+		else
+		{
+			glDrawArrays(GL_TRIANGLES, 0, meshGPU.indexCount);
+			//std::cout << "[RenderSystem.cpp]: draw Arrays" << std::endl;// for debugging
+		}
+	}
+
+	glBindVertexArray(0);
+
+	//glBindVertexArray(meshComp.modelGPU.meshesGPU[0].vao);
+	//if (meshComp.modelData.meshes[0].hasIndices)
+	//{
+	//	glDrawElements(GL_TRIANGLES, meshComp.modelGPU.meshesGPU[0].indexCount, GL_UNSIGNED_INT, 0);
+	//	//std::cout << "[RenderSystem.cpp]: draw elements" << std::endl;
+	//}
+	//else
+	//{
+	//	glDrawArrays(GL_TRIANGLES, 0, meshComp.modelGPU.meshesGPU[0].indexCount);
+	//	//std::cout << "[RenderSystem.cpp]: draw Arrays" << std::endl;
+	//}
+
+}
+
+bool Engine::Graphics::Render::getCameraMatrices(eNsECS::EntityMgr& ecs, glm::mat4& view, glm::mat4& projection)
+{
+	eNsCommonComp::TransformComponent* camTransformComp = nullptr;
+	eNsCamComp::CameraComponent* camComp = nullptr;
+
+	for (eNsECS::Entity entity : ecs.view<eNsCommonComp::TransformComponent, eNsCamComp::CameraComponent>())
+	{
+		camTransformComp = &ecs.get<eNsCommonComp::TransformComponent>(entity);
+		camComp = &ecs.get<eNsCamComp::CameraComponent>(entity);
+		break;
+	}
+
+	if (!camTransformComp || !camComp)
+	{
+		std::cerr << "[RenderSystem.cpp(getCameraMatrices)]: No Camera found!" << std::endl;
+		return false;
+	}
+
+	view = computeViewMatrix(*camTransformComp, *camComp);
+	projection = computeProjectionMatrix(camComp->fov, camComp->aspect, camComp->nearClip, camComp->farClip);
+
+	return true;
+}
+
+bool Engine::Graphics::Render::getCameraMatrices(eNsECS::EntityMgr& ecs, glm::mat4& view, glm::mat4& projection, RenderContext& context)
+{
+
+	for (eNsECS::Entity entity : ecs.view<eNsCommonComp::TransformComponent, eNsCamComp::CameraComponent>())
+	{
+		const auto& camTransformComp = ecs.get<eNsCommonComp::TransformComponent>(entity);
+		const auto& camComp = ecs.get<eNsCamComp::CameraComponent>(entity);
+
+		view = computeViewMatrix(camTransformComp, camComp);
+		projection = computeProjectionMatrix(camComp.fov, camComp.aspect, camComp.nearClip, camComp.farClip);
+
+		context.cameraPosition = camTransformComp.position;
+		context.cameraFront = camComp.front;
+		context.cameraRight = camComp.right;
+		context.cameraUp = camComp.up;
+
+		return true;
+
+	}
+
+
+	// カメラが見つからなかった
+	std::cerr << "[RenderSystem.cpp(getCameraMatrices)]: No Camera found!" << std::endl;
+
+	return false;
+}
+
+
+
+glm::mat4 Engine::Graphics::Render::computeViewMatrix(const eNsCommonComp::TransformComponent& transformComp, const eNsCamComp::CameraComponent& cameraComp)
+{
+	glm::vec3 position = transformComp.position;
+	return glm::lookAt(position, position + cameraComp.front, cameraComp.up);
+}
+
+glm::mat4 Engine::Graphics::Render::computeProjectionMatrix(float fov, float aspect, float nearClip, float farClip)
+{
+	return glm::perspective(glm::radians(fov), aspect, nearClip, farClip);
+}
+
+
+
+// For simple testing
+void Engine::Graphics::Render::RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader& shader, float aspect)
+{
+	//for (auto entity : ecs.view<MeshComponent>())// for Test
+	//{
+	//	//auto& transformComp = ecs.get<TransformComponent>(entity);
+	//	auto& meshComp = ecs.get<MeshComponent>(entity);
+	// 
+	//	drawMesh(meshComp);
+	//}
+	glm::mat4 view, projection;
+
+	if (!getCameraMatrices(ecs, view, projection))
+	{
+		std::cerr << "[RenderSystem.cpp]: No valid camera found in ECS." << std::endl;
+		return;
+	}
+
+
+
+	for (eNsECS::Entity entity : ecs.view<eNsCommonComp::TransformComponent, eNsGfxComp::MeshComponent>())
+	{
+		auto& transformComp = ecs.get<eNsCommonComp::TransformComponent>(entity);
+		auto& meshComp = ecs.get<eNsGfxComp::MeshComponent>(entity);
+
+
+		// state machine (シェーダーを切り替えると、viewもprojectionもセットする必要あり。)
+		shader.Use();
+		shader.setMat4("model", transformComp.toMatrix());
+		shader.setMat4("view", view);
+		shader.setMat4("projection", projection);
+		drawMesh(meshComp);
+	}
+
+}

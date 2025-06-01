@@ -1,17 +1,20 @@
 // update transformcomponent -> stateless
 #pragma once
 
-#include "Core/ECS/EntityManager.h"
+#include "Engine/ECS/EntityManager.h"
 
 
-#include "Core/ECS/Component/CameraComponent.h"
+#include "Engine/ECS/Component/Camera/CameraComponent.h"
 
 
 #include "Game/Input/InputState.h"
 
-namespace GameSystemInput
-{
-	void UpdateCamera(class ECS& ecs, InputState& input, float deltaTime);
+#include "Common/EngineNamespaceDecl.h"
+#include "Common/GameNamespaceDecl.h"
 
-	void updateCameraVector(CameraComponent& cameraComp);
+namespace Game::Camera::Input
+{
+	void UpdateCamera(eNsECS::EntityMgr& ecs, gNsInput::InputState& input, float deltaTime);
+
+	void updateCameraVector(eNsCamComp::CameraComponent& cameraComp);
 }

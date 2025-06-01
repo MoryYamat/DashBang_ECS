@@ -8,14 +8,14 @@
 
 #include "Game/Game.h"
 
-#include "Core/ECS/Entity.h"
+#include "Engine/ECS/Entity.h"
 
 // main
 int main()
 {
 	//std::cout << "sizeof(Entity): " << sizeof(Entity) << std::endl;
 
-	Game game;
+	GameApp::GameApp game;
 
 	std::cout << "[main.cpp]: Launching the game..." << std::endl;
 

@@ -1,26 +1,34 @@
 #include "MouseCursorActor.h"
 
-#include "Core/ECS/Entity.h"
+#include "Engine/ECS/Entity.h"
 
-#include "Core/ECS/Component/Logic2DTransformComponent.h"
-#include "Core/ECS/Component/MouseCursorComponent.h"
+#include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 
-#include "Core/ECS/Component/Tags/PlayerControllerComponent.h"
+// åªç›ñ¢égóp
+#include "Engine/ECS/Component/Input/MouseCursorComponent.h"
+
+// ç≈êVî≈
+#include "Engine/ECS/Component/Input/AnalogInputComponent.h"
+
+#include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
 
 // 
-MouseCursorActor::MouseCursorActor(ECS& ecs)
+Game::Actor::AnalogInput::MouseCursorActor::MouseCursorActor(eNsECS::EntityMgr& ecs)
 {
-	Entity entity = ecs.createEntity();
+	eNsECS::Entity entity = ecs.createEntity();
 
-	// cursor comp
-	MouseCursorComponent mouseComp;
+	// cursor comp (îpé~ó\íË)
+	eNsInputComp::MouseCursorComponent mouseComp;
 	ecs.addComponent(entity, mouseComp);
 
+	// analog input (ç≈êVî≈ (25/06/01))
+	ecs.addComponent(entity, eNsInputComp::AnalogInputComponent{});
+
 	// logic 2d transform comp
-	Logic2DTransformComponent logic2DComp;
+	eNsLogic2DComp::Logic2DTransformComponent logic2DComp;
 	ecs.addComponent(entity, logic2DComp);
 
 	// player cotrolloer comp
-	PlayerControllerComponent playerComp;
+	eNsTagComp::PlayerControllerComponent playerComp;
 	ecs.addComponent(entity, playerComp);
 }
