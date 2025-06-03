@@ -11,10 +11,13 @@ void Game::Input::InputRouterSystem(eNsECS::EntityMgr& ecs, const eNsInput::RawI
 		inputComp.previous = inputComp.current;
 		inputComp.current.clear();
 
+		// 
 		for (const auto& [key, isDown] : rawInput.keyState)
 		{
+			// 押下されていないならばスキップ
 			if (!isDown) continue;
 
+			// 押下されている"かつ"マッピングされている場合
 			if (auto actionOpt = mapping.getAction(key))
 			{
 				inputComp.current[*actionOpt] = true;

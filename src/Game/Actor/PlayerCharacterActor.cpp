@@ -6,11 +6,20 @@
 #include "Engine/ECS/Component/Graphics/MeshComponent.h"
 #include "Engine/ECS/Component/Graphics/ShaderComponent.h"
 
+#include "Engine/ECS/Component/Logic2D/Velocity2DComponent.h"
+
 #include "Engine/ECS/Component/Camera/FollowCameraComponent.h"
+
+#include "Engine/ECS/Component/Tags/PlayerCharacterTag.h"
 
 // input
 // #include "Core/ECS/Component/InputComponent.h"
 #include "Game/Input/InputActionComponent.h"
+
+// Intent
+#include "Game/Character/Movement/Component/Intent/MovementIntentComponent.h"
+#include "Game/Character/Movement/Component/Intent/FacingIntentComponent.h"
+#include "Game/Character/Stats/Component/CharacterStatsComponent.h"
 
 // test color
 #include "Engine/ECS/Component/Graphics/MaterialComponent.h"
@@ -160,6 +169,25 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	std::cout << "[PlayerCharacterActor.cpp]: Test3Dmodel Settings Completed" << std::endl;
 
 	eNsDebugLog::LogVector("PlayerCharacterActor.cpp(Color)", materialComp.baseColor);
+
+	// velocity
+	ecs.addComponent(entity, eNsLogic2DComp::Velocity2DComponent{});
+
+	// Intent base
+
+	// movement
+	ecs.addComponent(entity, gNsCharacterIntent::MovementIntentComponent{});
+
+	// front
+	ecs.addComponent(entity, gNsCharacterIntent::FacingIntentComponent{});
+
+	// stats
+	ecs.addComponent(entity, gNsCharacter::Stats::CharacterStatsComponent{
+		.moveSpeed = 5.0f
+		});
+
+	// Tag
+	ecs.addComponent(entity, eNsTagComp::PlayerCharacterTag{});
 }
 
 Game::Actor::Player::PlayerCharacter::~PlayerCharacter()

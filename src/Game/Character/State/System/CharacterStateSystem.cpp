@@ -1,6 +1,6 @@
 #include "CharacterStateSystem.h"
 
-#include "Game/Character/Component/CharacterStateComponent.h"
+#include "Game/Character/State/Component/CharacterStateComponent.h"
 
 #include "Common/GameNamespaceDecl.h"
 
@@ -26,7 +26,11 @@ void Game::Character::State::CharacterStateSystem::UpdateStates(eNsECS::EntityMg
 	}
 }
 
-void Game::Character::State::CharacterStateSystem::RequestStateChange(eNsECS::EntityMgr& ecs, eNsECS::Entity e, CharacterBehaviorState nextState)
+void Game::Character::State::CharacterStateSystem::RequestStateChange(
+	eNsECS::EntityMgr& ecs
+	, eNsECS::Entity e
+	, CharacterBehaviorState nextState
+)
 {
 	auto& state = ecs.get<CharacterStateComponent>(e);
 
@@ -38,7 +42,19 @@ void Game::Character::State::CharacterStateSystem::RequestStateChange(eNsECS::En
 
 	state.requestedNextState = nextState;
 }
-void Game::Character::State::CharacterStateSystem::ForceCrowdControl(eNsECS::EntityMgr& ecs, eNsECS::Entity e, CharacterCrowdControlState ccState)
+void Game::Character::State::CharacterStateSystem::ForceCrowdControl(
+	eNsECS::EntityMgr& ecs
+	, eNsECS::Entity e
+	, CharacterCrowdControlState ccState
+)
 {
+	auto& state = ecs.get<gNsCharacterState::CharacterStateComponent>(e);
+	state.crowdControl = ccState;
 
+	// é©ìÆìIÇ…çsìÆÇé~ÇﬂÇÈ
+	if (ccState != gNsCharacterState::CharacterCrowdControlState::None)
+	{
+		state.requestedNextState = gNsCharacterState::CharacterBehaviorState::Idle;
+		state.canBeInterrupted = true;
+	}
 }

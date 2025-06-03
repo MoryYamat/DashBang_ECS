@@ -10,10 +10,9 @@
 #include "Common/EngineNamespaceDecl.h"
 #include "Common/GameNamespaceDecl.h"
 
-namespace Game::Character::Facing
+namespace Game::Character::Movement
 {
 	// PlayerCharacter‚ÌfrontŒü‚«‚ğXV‚·‚é
-	void UpdatePlayerFacing(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, const eNsGfxRender::RenderContext& renderContext);
 	void UpdatePlayerFacing(eNsECS::EntityMgr& ecs);
 
 	// void UpdateAIFacing(ECS& ecs);

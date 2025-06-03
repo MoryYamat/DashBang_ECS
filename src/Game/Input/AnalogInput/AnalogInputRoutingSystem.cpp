@@ -6,6 +6,8 @@
 
 #include "Common/EngineNamespaceDecl.h"
 
+#include "Engine/Debug/DebugUtils.h"
+
 void Game::Input::Analog::RouteAnalogInput(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, const eNsGfxRender::RenderContext& renderContext)
 {
 	for (eNsECS::Entity e : ecs.view<eNsInputComp::AnalogInputComponent>())
@@ -15,5 +17,7 @@ void Game::Input::Analog::RouteAnalogInput(eNsECS::EntityMgr& ecs, const eNsInpu
 		analog.cursorLogicPositionXZ = Game::Utils::ProjectScreenToLogicXZPlane(rawInput.mousePosition, renderContext);
 		analog.cursorDelta = rawInput.mouseDelta;
 		analog.scrollDelta = rawInput.scrollDelta;
+
+		// eNsDebugLog::LogVector("AnalogInputRoutingSystem.cpp(Route)", analog.cursorLogicPositionXZ);
 	}
 }

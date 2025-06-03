@@ -10,6 +10,6 @@
 namespace Game::Character::Movement
 {
 
-	void UpdateCharacterVelocity(eNsECS::EntityMgr& ecs);
+	void CharacterMovementSystem(eNsECS::EntityMgr& ecs, float deltaTime);
 	//void UpdateMovement(ECS& ecs, float deltaTime);
 }

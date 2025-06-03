@@ -5,6 +5,8 @@
 // Game Namespace (gNs)
 namespace Game
 {
+	namespace Feature {}
+
 	// actor initialize
 	namespace Actor
 	{
@@ -18,8 +20,11 @@ namespace Game
 	// character
 	namespace Character
 	{
+
 		namespace Intent {}
+		namespace Movement {}
 		namespace State {}
+		namespace Stats {}
 	}
 
 	// input
@@ -89,8 +94,12 @@ namespace gNsActorCam = Game::Actor::Camera;
 namespace gNsActorPlayer = Game::Actor::Player;
 
 // Game::Character:: 
+namespace gNsCharacter = Game::Character;
+// 
 namespace gNsCharacterIntent = Game::Character::Intent;// Character intent
+namespace gNsCharacterMovement = Game::Character::Movement;// 
 namespace gNsCharacterState = Game::Character::State;// Character state
+namespace gNsCharacterStats = Game::Character::Stats;
 
 
 // Game::Input:: 

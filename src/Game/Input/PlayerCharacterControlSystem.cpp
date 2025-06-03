@@ -21,8 +21,8 @@
 
 // ========Semantic Layer========
 // Character State
-#include "Game/Character/Component/CharacterStateComponent.h"
-#include "Game/Character/System/CharacterStateSystem.h"
+#include "Game/Character/State/Component/CharacterStateComponent.h"
+#include "Game/Character/State/System/CharacterStateSystem.h"
 
 #include <cmath>
 #include <iostream>

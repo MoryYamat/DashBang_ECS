@@ -10,6 +10,8 @@
 // ç≈êVî≈
 #include "Engine/ECS/Component/Input/AnalogInputComponent.h"
 
+#include "Engine/ECS/Component/Input/InputBindingComponent.h"
+
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
 
 // 
@@ -29,6 +31,9 @@ Game::Actor::AnalogInput::MouseCursorActor::MouseCursorActor(eNsECS::EntityMgr& 
 	ecs.addComponent(entity, logic2DComp);
 
 	// player cotrolloer comp
-	eNsTagComp::PlayerControllerComponent playerComp;
-	ecs.addComponent(entity, playerComp);
+	 eNsTagComp::PlayerControllerComponent playerComp;
+	 ecs.addComponent(entity, playerComp);
+
+	// binding
+	ecs.addComponent(entity, eNsInputComp::InputBindingComponent{});
 }

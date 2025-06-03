@@ -6,9 +6,11 @@
 
 #include "Game/Input/InputActionComponent.h"
 #include "Engine/ECS/Component/Input/AnalogInputComponent.h"
+#include "Engine/ECS/Component/Input/InputBindingComponent.h"
 
-#include "Game/Character/Component/Intent/MovementIntentComponent.h"
-#include "Game/Character/Component/Intent/FacingIntentComponent.h"
+
+#include "Game/Character/Movement/Component/Intent/MovementIntentComponent.h"
+#include "Game/Character/Movement/Component/Intent/FacingIntentComponent.h"
 
 
 #include "Engine/InputManager/RawInputState.h"
@@ -29,14 +31,21 @@ namespace Game::Input::Intent
 	{
 		// 入力状態をもとにIntentコンポーネントへ反映する
 		static void UpdatePlayerIntent(eNsECS::EntityMgr& ecs
-			, const eNsInput::RawInputState& rawInput
 			, const eNsGfxRender::RenderContext& renderContext
 		);
 
 		// ワールド基準移動 (Global X-Z)
-		static void updatePlayerMovementIntent(gNsCharacterIntent::MovementIntentComponent& intent, gNsInput::InputActionComponent& input);
+		static void updatePlayerMovementIntent(
+			gNsCharacterIntent::MovementIntentComponent& intent
+			, gNsInput::InputActionComponent& input
+		);
 
 
-		static void updatePlayerDirectionIntent(gNsCharacterIntent::FacingIntentComponent& intent, eNsInputComp::AnalogInputComponent& analogInput);
+		// mouse input -> intent facing
+		static void updatePlayerDirectionIntent(
+			eNsInputComp::AnalogInputComponent& analog,
+			gNsCharacterIntent::FacingIntentComponent& facing,
+			eNsLogic2DComp::Logic2DTransformComponent& logic
+		);
 	};
 }

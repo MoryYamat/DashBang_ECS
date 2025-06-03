@@ -3,7 +3,7 @@
 
 #pragma once
 
-namespace Game::Character 
+namespace Game::Character::Stats
 {
 	struct CharacterStatsComponent
 	{

@@ -23,6 +23,8 @@ namespace Engine::ECS
 			return id != other.id;
 		}
 
+		bool isValid() const { return id != INVALID_ENTITY_ID; }
+
 		static const Entity INVALID;
 
 		// –³Œø‚ÈEntityID‚Ì’è‹`

@@ -4,7 +4,7 @@
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Game/Character/Behavior/CharacterState.h"
+#include "Game/Character/State/Behavior/CharacterState.h"
 
 #include "Common/EngineNamespaceDecl.h"
 

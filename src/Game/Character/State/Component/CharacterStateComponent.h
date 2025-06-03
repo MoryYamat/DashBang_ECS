@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Game/Character/Behavior/CharacterState.h"
+#include "Game/Character/State/Behavior/CharacterState.h"
 
 #include <optional>
 

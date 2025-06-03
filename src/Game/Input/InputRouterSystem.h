@@ -14,5 +14,6 @@
 
 namespace Game::Input
 {
+	//	GLFW‚Ì¶‚Ì“ü—Í‚ğComponent‚Ì’ŠÛ“ü—Í‚ÉŠ„‚è“–‚Ä‚é
 	void InputRouterSystem(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, const gNsInput::InputMapping& mapping);
 }

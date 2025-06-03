@@ -2,31 +2,80 @@
 
 #include "Game/Utils/SpatialTransformUtils.h"
 
+#include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
 
-// Update Character Intent Components
+#include "Engine/Debug/DebugUtils.h"
+
+#include "Engine/Config/CanonicalDefaults.h"
+
+#include <glm/glm.hpp>
+
+// 最適化必要
+// 最適化必要
+// 最適化必要
+// 最適化必要
+// プレイヤーキャラクター用インテントコンポーネントと入力の連携 (Linking the Intent Component for Player Characters and Input)
 void Game::Input::Intent::IntentMappingSystem::UpdatePlayerIntent(eNsECS::EntityMgr& ecs
-	, const eNsInput::RawInputState& rawInput
 	, const eNsGfxRender::RenderContext& renderContext
 )
 {
-
-	for (eNsECS::Entity e : ecs.view<gNsInput::InputActionComponent,
-		gNsCharacterIntent::MovementIntentComponent
-		, gNsCharacterIntent::FacingIntentComponent
-		, eNsLogic2DComp::Logic2DTransformComponent>()
-		)
+	// update player movement intent
+	for (eNsECS::Entity e : ecs.view<
+		gNsInput::InputActionComponent
+		, gNsCharacterIntent::MovementIntentComponent
+		, eNsTagComp::PlayerControllerComponent
+	>())
 	{
 		auto& input = ecs.get<gNsInput::InputActionComponent>(e);
 		auto& move = ecs.get<gNsCharacterIntent::MovementIntentComponent>(e);
-		auto& facing = ecs.get<gNsCharacterIntent::FacingIntentComponent>(e);
-		auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
 
 		updatePlayerMovementIntent(move, input);
+
+
 	}
+
+	// by mouse Cursor
+	for (eNsECS::Entity e : ecs.view<
+		eNsInputComp::AnalogInputComponent,
+		eNsInputComp::InputBindingComponent>())
+	{
+		// バインドされたデータを取得
+		auto& binding = ecs.get<eNsInputComp::InputBindingComponent>(e);
+
+		// EntityおよびComponentが有効か確認
+		if (!binding.controllingEntity.isValid()) continue;
+		if (!ecs.isAlive(binding.controllingEntity)) continue;
+		if (!ecs.hasComponent<gNsCharacterIntent::FacingIntentComponent>(binding.controllingEntity)) continue;
+
+		// アナログ入力データを取得
+		auto& analog = ecs.get<eNsInputComp::AnalogInputComponent>(e);
+
+		// 操作対象の`Entity`を取得
+		auto& facing = ecs.get<gNsCharacterIntent::FacingIntentComponent>(binding.controllingEntity);
+		auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(binding.controllingEntity);
+
+		updatePlayerDirectionIntent(analog, facing, logic);
+	}
+
+
+	//for (eNsECS::Entity e : ecs.view <
+	//	eNsInputComp::AnalogInputComponent
+	//	, gNsCharacterIntent::FacingIntentComponent
+	//	>())
+	//{
+	//	auto& analog = ecs.get<eNsInputComp::AnalogInputComponent>(e);
+	//	auto& logic = ecs.get <eNsLogic2DComp::Logic2DTransformComponent>(e);
+	//	auto& facing = ecs.get<gNsCharacterIntent::FacingIntentComponent>(e);
+
+	//	updatePlayerDirectionIntent(facing, analog, logic);
+	//}
 }
 
 
-void Game::Input::Intent::IntentMappingSystem::updatePlayerMovementIntent(gNsCharacterIntent::MovementIntentComponent& intent, gNsInput::InputActionComponent& input)
+void Game::Input::Intent::IntentMappingSystem::updatePlayerMovementIntent(
+	gNsCharacterIntent::MovementIntentComponent& intent
+	, gNsInput::InputActionComponent& input
+)
 {
 	glm::vec2 moveDir(0.0f);
 	if (input.isPressed(InputAction::MoveForward))	moveDir.y -= 1.0f;
@@ -34,9 +83,11 @@ void Game::Input::Intent::IntentMappingSystem::updatePlayerMovementIntent(gNsCha
 	if (input.isPressed(InputAction::MoveRight))	moveDir.x += 1.0f;
 	if (input.isPressed(InputAction::MoveLeft))		moveDir.x -= 1.0f;
 
+
 	if (glm::length(moveDir) > 0.001f)
 	{
-		intent.direction = glm::normalize(moveDir);
+		// directionは使用側で正規化する
+		intent.direction = moveDir;
 		intent.isActive = true;
 	}
 	else
@@ -46,8 +97,20 @@ void Game::Input::Intent::IntentMappingSystem::updatePlayerMovementIntent(gNsCha
 	}
 }
 
-
-void Game::Input::Intent::IntentMappingSystem::updatePlayerDirectionIntent(gNsCharacterIntent::FacingIntentComponent& intent, eNsInputComp::AnalogInputComponent& analogInput)
+void Game::Input::Intent::IntentMappingSystem::updatePlayerDirectionIntent(
+	eNsInputComp::AnalogInputComponent& analog,
+	gNsCharacterIntent::FacingIntentComponent& facing,
+	eNsLogic2DComp::Logic2DTransformComponent& logic
+)
 {
 
+	glm::vec2 dir = analog.cursorLogicPositionXZ - logic.positionXZ;
+
+	if (glm::length(dir) > 0.0001f && !glm::any(glm::isnan(dir)))
+		facing.front = glm::normalize(dir);
+	else
+		facing.front = CanonicalDefaults::kCanonicalFrowardXZ;
+
+
+	// eNsDebugLog::LogVector("PlayerIntentMapper.cpp(direction)", facing.front);
 }

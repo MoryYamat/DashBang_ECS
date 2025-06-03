@@ -38,6 +38,9 @@
 
 // ======================= Game =======================
 
+//Game/ Feature
+#include "Game/Feature/MovementFeature.h"
+
 //Game/Actor
 #include "Game/Actor/CameraActor.h"
 #include "Game/Actor/PlayerCharacterActor.h"
@@ -60,8 +63,12 @@
 #include "Game/Input/InputRouterSystem.h"
 #include "Game/Input/AnalogInput/AnalogInputRoutingSystem.h"
 
+// Game/Input/Intent
+#include "Game/Input/Intent/PlayerIntentMapper.h"
+
 // Game Init
 #include "Game/Init/InitTileMap/InitTileMap.h"
+#include "Game/Init/InitComponent/InputBindingInit.h"
 
 // collision systems
 #include "Game/Collision/System/CollisionDetectionSystem.h"
@@ -224,13 +231,20 @@ void GameApp::GameApp::updateGameLogics()
 		mIsRunning = false;
 	}
 
-	InputRouterSystem(mECS, mInputManager->GetRawInput(), mInputMapping);
-
+	gNsInput::InputRouterSystem(mECS, mInputManager->GetRawInput(), mInputMapping);
+	gNsInput::Analog::RouteAnalogInput(mECS, mInputManager->GetRawInput(), mRenderContext);
 	// 入力状態マップの更新
 	//mInputMapping.update(mWindow.GetGLFWWindow(), mInputState);
 
-	// characterの移動
-	gNsInput::Player::Update(mECS, mInputManager->GetRawInput(), mRenderContext, mDeltaTime);
+	// ====INTENT====
+	gNsInputIntent::IntentMappingSystem::UpdatePlayerIntent(mECS, mRenderContext);
+
+	// Feature
+	// Movement
+	Game::Feature::MovementFeature::Update(mECS, mDeltaTime);
+
+	// characterの移動 (削除予定(Intentレイヤー導入のため))
+	// gNsInput::Player::Update(mECS, mInputManager->GetRawInput(), mRenderContext, mDeltaTime);
 	//PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime, mRenderContext);
 	// PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime);
 
@@ -253,8 +267,8 @@ void GameApp::GameApp::updateGameLogics()
 
 	GameApp::updateContext();
 
-	// Update Mouse Cursor Logic data 
-	gNsInput::Analog::Update(mECS, mInputManager->GetRawInput(), mRenderContext);
+	// Update Mouse Cursor Logic data (削除予定(Intent レイヤー導入のため))
+	// gNsInput::Analog::Update(mECS, mInputManager->GetRawInput(), mRenderContext);
 	//MouseCursorUpdateSystem::Update(mEcs, mInputState, mRenderContext);
 
 
@@ -352,6 +366,8 @@ void GameApp::GameApp::RunInitializationPhase()
 		eNsCamComp::FollowCameraComponent
 	// コンテキスト情報を渡す．
 	>(mECS, mWindow);
+
+	gNsInit::Input::InputBindingInitializationSystem(mECS);
 }
 
 void GameApp::GameApp::updateContext()
@@ -360,6 +376,8 @@ void GameApp::GameApp::updateContext()
 	mRenderContext.viewport = glm::vec4(0, 0, mWindow.GetWidth(), mWindow.GetHeight());
 }
 
+// 別処理か別ファイルへ分離予定(JSONもしくはCSVなどで与えるようにするべき)
+// ゲーム中に設定で変更できるようにするべき
 void GameApp::GameApp::InitializeInputMapping()
 {
 	mInputMapping.bindKey(GLFW_KEY_W, gNsInput::InputAction::MoveForward);
@@ -372,6 +390,7 @@ void GameApp::GameApp::InitializeInputMapping()
 
 }
 
+// 別処理か別ファイルへ分離予定(スキル定義はJSONもしくはCSVなどで与えるようにするべき)
 void GameApp::GameApp::InitializeSkills()
 {
 	gNsSkillData::SkillDefinition slash;
@@ -409,6 +428,8 @@ void GameApp::GameApp::InitializeSkills()
 	mSkillDatabase.AddSkill(blade);
 }
 
+// 別処理か別ファイルへ分離予定(JSONもしくはCSVなどで与えるようにするべき)
+// ゲーム中に設定で変更できるようにするべき
 void GameApp::GameApp::InitializeSkillMappings()
 {
 	mSkillInputMap.bind(gNsInput::InputAction::CastSkill1, gNsSkillData::SkillSlot::Primary);// スキルID 1

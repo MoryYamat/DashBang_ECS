@@ -27,6 +27,7 @@
 
 namespace Engine::ECS::Meta::Init
 {
+	// 名前空間をゲーム側にする必要あり
 	template<>
 	struct InitSystem<eNsCamComp::FollowCameraComponent>
 	{

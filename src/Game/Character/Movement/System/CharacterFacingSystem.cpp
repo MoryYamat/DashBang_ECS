@@ -3,6 +3,8 @@
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 
+#include "Game/Character/Movement/Component/Intent/FacingIntentComponent.h"
+
 #include "Game/Utils/SpatialTransformUtils.h"
 
 #include "Engine/Config/CanonicalDefaults.h"
@@ -11,13 +13,17 @@
 
 #include <GLM/glm.hpp>
 
-void Game::Character::Facing::UpdatePlayerFacing(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, const eNsGfxRender::RenderContext& renderContext)
+void Game::Character::Movement::UpdatePlayerFacing(eNsECS::EntityMgr& ecs)
 {
-	for (eNsECS::Entity e : ecs.view<eNsTagComp::PlayerControllerComponent, eNsLogic2DComp::Logic2DTransformComponent>())
+	for (eNsECS::Entity e : ecs.view<
+		eNsLogic2DComp::Logic2DTransformComponent,
+		gNsCharacterIntent::FacingIntentComponent>())
 	{
 		auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
+		auto& facing = ecs.get<gNsCharacterIntent::FacingIntentComponent>(e);
 
-
+		logic.front = facing.front;
+		logic.UpdateRightFromFront();
 
 		// PlayerCharacterControllerÇÕå¥ë•àÍÇ¬ÇæÇØ
 		// ecs.find<PlayerControllerComponent>()Çópà”ÇµÇƒbreakÇè¡Ç∑

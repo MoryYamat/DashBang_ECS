@@ -11,7 +11,7 @@
 #include <glm/glm.hpp>
 
 
-// rawInputとGameInputの分離後（最新版）
+// 現在未使用：意図層導入後未使用 (今後使用可能性あり，(タイトル画面などゲーム外のアナログ入力反映のため))
 void Game::Input::Analog::Update(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, eNsGfxRender::RenderContext& renderContext)
 {
 	for (eNsECS::Entity e : ecs.view<eNsInputComp::MouseCursorComponent, eNsLogic2DComp::Logic2DTransformComponent>())
@@ -33,7 +33,7 @@ void Game::Input::Analog::Update(eNsECS::EntityMgr& ecs, const eNsInput::RawInpu
 	}
 }
 
-// 昔のやつ
+// 昔のやつ (削除予定)
 void Game::Input::Analog::Update(eNsECS::EntityMgr& ecs, InputState& input, eNsGfxRender::RenderContext renderContext)
 {
 	for (eNsECS::Entity e : ecs.view<eNsInputComp::MouseCursorComponent, eNsLogic2DComp::Logic2DTransformComponent>())
