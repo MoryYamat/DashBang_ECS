@@ -5,12 +5,73 @@
 #include "Engine/ECS/Component/Logic2D/Transform2DComponent.h"
 
 #include "Game/Combat/Skill/Component/SkillInstanceComponent.h"
+#include "Game/Combat/Skill/Intent/Component/SkillIntentComponent.h"
 
 #include "Game/Combat/Skill/Component/SkillSlotAssignmentComponent.h"
 
 #include <iostream>
 
+// Intentを評価してSkillIntstanceを生成するように改修
+void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerSkillsFromIntent(eNsECS::EntityMgr& ecs)
+{
+	for (eNsECS::Entity e : ecs.view<
+		gNsSkillIntent::SkillIntentComponent,
+		gNsSkillComp::SkillSlotAssignmentComponent,
+		eNsLogic2DComp::Logic2DTransformComponent>())
+	{
+		const auto& intent = ecs.get<gNsSkillIntent::SkillIntentComponent>(e);
+		const auto& slotAssign = ecs.get<gNsSkillComp::SkillSlotAssignmentComponent>(e);
+		const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
 
+		if (!intent.isActive) continue;
+
+		for (auto slot : intent.requestedSlots)
+		{
+			// contains に変更可能？
+			auto it = slotAssign.slotToSkillId.find(slot);
+			if (it == slotAssign.slotToSkillId.end()) continue;
+
+			int skillId = it->second;
+
+			// すでに該当スキルが発動中かどうかチェック
+			bool alreadyCasting = false;
+
+			for (eNsECS::Entity eSkill : ecs.view<gNsSkillComp::SkillInstanceComponent>())
+			{
+				const auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(eSkill);
+				if (skillInstance.caster == e && skillInstance.skillId == skillId)
+				{
+					alreadyCasting = true;
+					break;
+				}
+			}
+			
+			if (alreadyCasting) continue;
+
+			// SkillInstance を生成
+			eNsECS::Entity skillEntity = ecs.createEntity();
+
+			gNsSkillComp::SkillInstanceComponent skillInstance;
+			skillInstance.caster = e;
+			skillInstance.skillId = skillId;
+			skillInstance.timeSinceCast = 0.0f;
+			ecs.addComponent(skillEntity, skillInstance);
+
+			eNsLogic2DComp::Transform2DComponent transform2DComp;
+			transform2DComp.positionXZ = logic.positionXZ;
+			transform2DComp.rotationY = logic.GetRotationYFromFrontVector();
+			transform2DComp.scale = 1.0f;
+			ecs.addComponent(skillEntity, transform2DComp);
+
+			std::cout << "[SkillTrigger] Entity " << e.id
+				<< " triggered skill " << skillId
+				<< " via slot " << static_cast<int>(slot)
+				<< std::endl;
+		}
+	}
+}
+
+// InputActionをトリガーにして直接スキルを生成している(25/06/04)-> 意図層(SkillIntent)を介してトリガーするように変更する必要がある
 void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(eNsECS::EntityMgr& ecs, SkillInputMap& inputMap)
 {
 	for (eNsECS::Entity ePlayer : ecs.view<eNsTagComp::PlayerControllerComponent, gNsInput::InputActionComponent, gNsSkillComp::SkillSlotAssignmentComponent>())
@@ -23,6 +84,7 @@ void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerSkillsFromIn
 			if (!input.isPressed(action))
 				continue;
 
+			// containsで省略可能のはず(C++20)
 			auto it = slotAssign.slotToSkillId.find(slot);
 			if (it == slotAssign.slotToSkillId.end())
 				continue;

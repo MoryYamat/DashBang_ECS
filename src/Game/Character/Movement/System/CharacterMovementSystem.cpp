@@ -24,13 +24,13 @@ void Game::Character::Movement::CharacterMovementSystem(eNsECS::EntityMgr& ecs, 
 		// 位置を速度に基づいて更新
 		logic.positionXZ += vel.velocity * deltaTime;
 
-		for (eNsECS::Entity e2 : ecs.view<
-			gNsCharacterIntent::FacingIntentComponent
-		>())
-		{
-			auto& facing = ecs.get<gNsCharacterIntent::FacingIntentComponent>(e2);
-			logic.front = facing.front;
-		}
+		//for (eNsECS::Entity e2 : ecs.view<
+		//	gNsCharacterIntent::FacingIntentComponent
+		//>())
+		//{
+		//	auto& facing = ecs.get<gNsCharacterIntent::FacingIntentComponent>(e2);
+		//	logic.front = facing.front;
+		//}
 	}
 }
 

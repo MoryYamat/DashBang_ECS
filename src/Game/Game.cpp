@@ -39,7 +39,12 @@
 // ======================= Game =======================
 
 //Game/ Feature
-#include "Game/Feature/MovementFeature.h"
+#include "Game/00_Feature/MovementFeature.h"
+//Game/ Layer
+#include "Game/01_Layer/InputLayerFeature.h"
+#include "Game/01_Layer/IntentLayerFeature.h"
+#include "Game/01_Layer/LogicLayerFeature.h"
+
 
 //Game/Actor
 #include "Game/Actor/CameraActor.h"
@@ -64,7 +69,7 @@
 #include "Game/Input/AnalogInput/AnalogInputRoutingSystem.h"
 
 // Game/Input/Intent
-#include "Game/Input/Intent/PlayerIntentMapper.h"
+#include "Game/Input/Intent/PlayerMovementIntentMapper.h"
 
 // Game Init
 #include "Game/Init/InitTileMap/InitTileMap.h"
@@ -237,12 +242,9 @@ void GameApp::GameApp::updateGameLogics()
 	//mInputMapping.update(mWindow.GetGLFWWindow(), mInputState);
 
 	// ====INTENT====
-	gNsInputIntent::IntentMappingSystem::UpdatePlayerIntent(mECS, mRenderContext);
+	// gNsInputIntent::IntentMappingSystem::UpdatePlayerMovementIntent(mECS);
 
-	// Feature
-	// Movement
-	Game::Feature::MovementFeature::Update(mECS, mDeltaTime);
-
+	
 	// character‚ÌˆÚ“® (íœ—\’è(IntentƒŒƒCƒ„[“±“ü‚Ì‚½‚ß))
 	// gNsInput::Player::Update(mECS, mInputManager->GetRawInput(), mRenderContext, mDeltaTime);
 	//PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime, mRenderContext);
@@ -275,6 +277,12 @@ void GameApp::GameApp::updateGameLogics()
 
 	// 
 	gNsCollSystem::UpdateCollisionResultStorage(mECS, mCollisionResults);
+
+	// Update from the top layer	
+	gNsLayer::IntentLayerFeature::Update(mECS);
+
+
+	gNsLayer::LogicLayerFeature::Update(mECS, mDeltaTime);
 }
 
 void GameApp::GameApp::generateOutputs()

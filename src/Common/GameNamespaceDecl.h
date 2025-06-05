@@ -7,6 +7,8 @@ namespace Game
 {
 	namespace Feature {}
 
+	namespace Layer {}
+
 	// actor initialize
 	namespace Actor
 	{
@@ -64,6 +66,8 @@ namespace Game
 			namespace Trigger {}
 			namespace Data {}
 			namespace Utils {}
+
+			namespace Intent {}
 		}
 	}
 
@@ -84,6 +88,12 @@ namespace Game
 }
 
 // ======================= Alias =======================
+
+// Game::Feature
+namespace gNsFeature = Game::Feature;
+
+// Game::Layer
+namespace gNsLayer = Game::Layer;
 
 // Game::Actor::
 namespace gNsActor = Game::Actor;
@@ -128,3 +138,5 @@ namespace gNsSkillSystem = Game::Combat::Skill::System;
 namespace gNsSkillData = Game::Combat::Skill::Data;
 namespace gNsSkillTrigger = Game::Combat::Skill::Trigger;
 namespace gNsSkillUtils = Game::Combat::Skill::Utils;
+// Intent
+namespace gNsSkillIntent = Game::Combat::Skill::Intent;

@@ -67,6 +67,11 @@ void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, const eNsInput::RawInpu
 			moveDir = glm::normalize(moveDir);
 			logic.positionXZ += moveDir * deltaTime * 5.0f; // 移動速度
 
+			// ここが問題だと思う(責務分離)
+			// ここが問題だと思う(責務分離)
+			// ここが問題だと思う(責務分離)
+			// ここが問題だと思う(責務分離)
+			// ここが問題だと思う(責務分離)
 			// collision update
 			if (collisionComp.collider.type == eNsLogic2DComp::ColliderType::Circle2D)
 			{

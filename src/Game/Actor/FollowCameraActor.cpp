@@ -64,6 +64,8 @@ Game::Actor::Camera::FollowCameraActor::FollowCameraActor(eNsECS::EntityMgr& ecs
 	//DebugUtils::LogVector("FollowCameraActor.cpp", CamTransformComp.position);
 }
 
+
+// 現在未使用
 void Game::Actor::Camera::FollowCameraActor::initializeFollowCameraGetFront(
 	eNsCamComp::FollowCameraComponent& followCamComp
 		, eNsLogic2DComp::Logic2DTransformComponent& targetLogic2DTransform
@@ -79,6 +81,7 @@ void Game::Actor::Camera::FollowCameraActor::initializeFollowCameraGetFront(
 }
 
 
+// 現在未使用
 // Calculates the coordinate data for drawing the camera component from logical data
 void Game::Actor::Camera::FollowCameraActor::initializeCameraVectors(
 	eNsCamComp::CameraComponent& camComp

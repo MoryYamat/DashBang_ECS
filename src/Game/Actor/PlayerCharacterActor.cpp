@@ -39,6 +39,8 @@
 #include "Game/Combat/Skill/Component/ActiveSkillCasterComponent.h"
 #include "Game/Combat/Skill/Component/SkillSlotAssignmentComponent.h"
 
+#include "Game/Combat/Skill/Component/SkillInputBindingComponent.h"
+
 #include "Engine/Graphics/Model/ModelData.h"
 #include "Engine/Graphics/Model/AssimpImporter.h"
 #include "Engine/Graphics/Renderer/GPUBufferUtils.h"
@@ -150,13 +152,20 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	//activeSkill2.skillId = 2;
 	//ecs.addComponent(entity, activeSkill2);
 
-	// スキル（ID） を SkillSLotに割り当て
+	// スキル（ID） を SkillSLotに割り当て 情報を保持
 	gNsSkillComp::SkillSlotAssignmentComponent assign;
 	assign.slotToSkillId[gNsSkillData::SkillSlot::Primary] = 1;
 	assign.slotToSkillId[gNsSkillData::SkillSlot::Secondary] = 2;
 	assign.slotToSkillId[gNsSkillData::SkillSlot::Utility1] = 3;
 	ecs.addComponent(entity, assign);
 
+	// InputAction と スキルスロットの割り当てを保持
+	gNsSkillComp::SkillInputBindingComponent binding;
+	binding.actionToSlot[gNsInput::InputAction::CastSkill1] = gNsSkillData::SkillSlot::Primary;
+	binding.actionToSlot[gNsInput::InputAction::CastSkill2] = gNsSkillData::SkillSlot::Secondary;
+	binding.actionToSlot[gNsInput::InputAction::CastSkill3] = gNsSkillData::SkillSlot::Utility1;
+
+	// 必要？（未使用のため検討が必要）何のために用意したか不明
 	ActiveSkillCasterComponent ascc;
 	ecs.addComponent(entity, ascc);
 

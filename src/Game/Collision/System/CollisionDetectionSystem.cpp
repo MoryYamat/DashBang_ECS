@@ -2,11 +2,14 @@
 
 #include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
+#include "Engine/ECS/Component/Tags/PlayerCharacterTag.h"
+
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 
 #include "Engine/ECS/Component/Logic2D/TileMapComponent.h"
 
 #include "Game/Collision/Extractor/PlayerTileCollisionExtractor.h"
+
 
 #include "Game/Collision/Data/CollisionContextData.h"
 
@@ -20,14 +23,14 @@ void Game::Collision::System::UpdateCollisionResultStorage(eNsECS::EntityMgr& ec
 {
 	Game::Collision::Data::PlayerCollisionContext playerCollisionCtx;
 
-	for (eNsECS::Entity e : ecs.view<eNsTagComp::PlayerControllerComponent, eNsLogic2DComp::Logic2DTransformComponent, eNsLogic2DComp::CollisionComponent>())
+	for (eNsECS::Entity e : ecs.view<eNsTagComp::PlayerCharacterTag, eNsLogic2DComp::Logic2DTransformComponent, eNsLogic2DComp::CollisionComponent>())
 	{
 		const auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
 		const auto& logic2DComp = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
 
 		playerCollisionCtx.center = collisionComp.collider.circle2D.center;
 		playerCollisionCtx.radius = collisionComp.collider.circle2D.radius;
-		// playerCollisionContext.playerEntity = e;
+	//	playerCollisionCtx.playerEntity = e;
 
 		break;
 	}

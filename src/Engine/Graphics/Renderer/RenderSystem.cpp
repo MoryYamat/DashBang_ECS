@@ -7,6 +7,35 @@
 
 #include <iostream>
 
+// 現在未使用
+//void Engine::Graphics::Render::UpdateRenderContext(eNsECS::EntityMgr& ecs, eNsGfxRender::RenderContext& context)
+//{
+//	for (eNsECS::Entity e : ecs.view<
+//		eNsCommonComp::TransformComponent,
+//		eNsCamComp::CameraComponent>())
+//	{
+//		const auto& transform = ecs.get<eNsCommonComp::TransformComponent>(e);
+//		const auto& cam = ecs.get<eNsCamComp::CameraComponent>(e);
+//
+//		// view / projection matrixの更新
+//		glm::mat4 view = glm::lookAt(transform.position, transform.position + cam.front, cam.up);
+//		glm::mat4 projection = glm::perspective(glm::radians(cam.fov), cam.aspect, cam.nearClip, cam.farClip);
+//
+//		// キャッシュ
+//		context.cameraPosition = transform.position;
+//		context.cameraFront = cam.front;
+//		context.cameraRight = cam.right;
+//		context.cameraUp = cam.up;
+//
+//		context.viewMatrix = view;
+//		context.projectionMatrix = projection;
+//
+//		return;// 最初のカメラのみ使用
+//	}
+//
+//	std::cerr << "[CameraSystem::UpdateRenderContext] : No camera found in ECS." << std::endl;
+//}
+
 // Changed to update RenderContext
 void Engine::Graphics::Render::RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader& shader, float aspect, RenderContext& context)
 {

@@ -1,4 +1,4 @@
-#include "PlayerIntentMapper.h"
+#include "PlayerMovementIntentMapper.h"
 
 #include "Game/Utils/SpatialTransformUtils.h"
 
@@ -15,9 +15,7 @@
 // 最適化必要
 // 最適化必要
 // プレイヤーキャラクター用インテントコンポーネントと入力の連携 (Linking the Intent Component for Player Characters and Input)
-void Game::Input::Intent::IntentMappingSystem::UpdatePlayerIntent(eNsECS::EntityMgr& ecs
-	, const eNsGfxRender::RenderContext& renderContext
-)
+void Game::Input::Intent::MovementIntentMappingSystem::UpdatePlayerMovementIntent(eNsECS::EntityMgr& ecs)
 {
 	// update player movement intent
 	for (eNsECS::Entity e : ecs.view<
@@ -72,7 +70,7 @@ void Game::Input::Intent::IntentMappingSystem::UpdatePlayerIntent(eNsECS::Entity
 }
 
 
-void Game::Input::Intent::IntentMappingSystem::updatePlayerMovementIntent(
+void Game::Input::Intent::MovementIntentMappingSystem::updatePlayerMovementIntent(
 	gNsCharacterIntent::MovementIntentComponent& intent
 	, gNsInput::InputActionComponent& input
 )
@@ -97,7 +95,7 @@ void Game::Input::Intent::IntentMappingSystem::updatePlayerMovementIntent(
 	}
 }
 
-void Game::Input::Intent::IntentMappingSystem::updatePlayerDirectionIntent(
+void Game::Input::Intent::MovementIntentMappingSystem::updatePlayerDirectionIntent(
 	eNsInputComp::AnalogInputComponent& analog,
 	gNsCharacterIntent::FacingIntentComponent& facing,
 	eNsLogic2DComp::Logic2DTransformComponent& logic

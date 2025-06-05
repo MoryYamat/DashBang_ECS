@@ -1,12 +1,13 @@
-// Intent -> Velocity -> Position
-
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"
 
-namespace Game::Feature
+#include "Common/EngineNamespaceDecl.h"
+
+
+namespace Game::Layer
 {
-	class MovementFeature
+	class LogicLayerFeature
 	{
 	public:
 		static void Update(eNsECS::EntityMgr& ecs, float deltaTime);

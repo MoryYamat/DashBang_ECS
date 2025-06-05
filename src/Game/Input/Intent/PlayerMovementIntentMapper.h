@@ -14,7 +14,6 @@
 
 
 #include "Engine/InputManager/RawInputState.h"
-#include "Engine/Graphics/Renderer/RenderContext.h"
 
 #include "Common/GameNamespaceDecl.h"
 
@@ -27,12 +26,10 @@
 namespace Game::Input::Intent
 {
 
-	struct IntentMappingSystem
+	struct MovementIntentMappingSystem
 	{
 		// 入力状態をもとにIntentコンポーネントへ反映する
-		static void UpdatePlayerIntent(eNsECS::EntityMgr& ecs
-			, const eNsGfxRender::RenderContext& renderContext
-		);
+		static void UpdatePlayerMovementIntent(eNsECS::EntityMgr& ecs);
 
 		// ワールド基準移動 (Global X-Z)
 		static void updatePlayerMovementIntent(

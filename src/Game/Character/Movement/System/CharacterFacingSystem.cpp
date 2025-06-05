@@ -23,6 +23,7 @@ void Game::Character::Movement::UpdatePlayerFacing(eNsECS::EntityMgr& ecs)
 		auto& facing = ecs.get<gNsCharacterIntent::FacingIntentComponent>(e);
 
 		logic.front = facing.front;
+		logic.rotation = logic.GetRotationYFromFrontVector();
 		logic.UpdateRightFromFront();
 
 		// PlayerCharacterController‚ÍŒ´‘¥ˆê‚Â‚¾‚¯

@@ -4,10 +4,14 @@
 #include "Engine/ECS/Component/Logic2D/TileMapComponent.h"
 
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
+#include "Engine/ECS/Component/Tags/PlayerCharacterTag.h"
+
 
 #include "Engine/ECS/Component/Logic2D/Transform2DComponent.h"
 
 #include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
+
+#include "Engine/ECS/Component/Input/AnalogInputComponent.h"
 
 #include "Engine/Debug/DebugUtils.h"
 
@@ -37,6 +41,7 @@ void Engine::Debug::Drawing::Logic2D::Draw(eNsECS::EntityMgr& ecs,
 	//
 	DebugDrawLogicTileMaps(ecs, renderContext);
 
+	// PlayerCharacterとマウスカーソルのXZ平面上の位置を十字で描画
 	DebugDrawLogicPlayerPositions(ecs, renderContext);
 
 	DebugDrawPlayerCollision(ecs, renderContext);
@@ -59,11 +64,21 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawLogicPlayerPositions(eNsECS::Enti
 	glm::vec3 color = glm::vec3(1.0f, 0.0f, 0.0f);
 
 
-	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::Logic2DTransformComponent, eNsTagComp::PlayerControllerComponent>())
+	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::Logic2DTransformComponent, eNsTagComp::PlayerCharacterTag>())
 	{
 		const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
 
 		glm::vec3 worldPos(logic.positionXZ.x, 0.01f, logic.positionXZ.y);
+
+		eNsDebugDraw::DrawCross(worldPos, 0.1f, color);
+	}
+
+	// mouse cursor position
+	for (eNsECS::Entity e : ecs.view<eNsInputComp::AnalogInputComponent>())
+	{
+		const auto& analogInput = ecs.get<eNsInputComp::AnalogInputComponent>(e);
+
+		glm::vec3 worldPos(analogInput.cursorLogicPositionXZ.x, 0.01f, analogInput.cursorLogicPositionXZ.y);
 
 		eNsDebugDraw::DrawCross(worldPos, 0.1f, color);
 	}

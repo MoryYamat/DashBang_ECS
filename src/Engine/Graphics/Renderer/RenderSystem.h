@@ -23,6 +23,8 @@ namespace Engine::Graphics::Render
 	void RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader& shader, float aspect);
 	void RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader& shader, float aspect, RenderContext& context);
 
+	// åªç›ñ¢égóp
+	// void UpdateRenderContext(eNsECS::EntityMgr& ecs, eNsGfxRender::RenderContext& context);
 
 	void drawMesh(const eNsGfxComp::MeshComponent& meshComp);
 

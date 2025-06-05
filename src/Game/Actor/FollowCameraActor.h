@@ -21,7 +21,7 @@ namespace Game::Actor::Camera
 
 	private:
 
-
+		// 現在未使用
 		// （カメラの位置がモデルの正面ベクトルの対角方向にくるようにカメラの位置と向きを初期化するテンプレート）（ほぼデバッグ用）
 		void initializeFollowCameraGetFront(eNsCamComp::FollowCameraComponent& followCamComp
 			, eNsLogic2DComp::Logic2DTransformComponent& targetLogic2DTransform);
