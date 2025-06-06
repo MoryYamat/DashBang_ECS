@@ -37,8 +37,11 @@ namespace Engine::ECS
 	/// 	{ typeid(AIComponent) , { 2: data2, 5: data5 } }
 	/// </summary>
 
-
+		// 
 		std::unordered_set<uint32_t> mLivingEntities;
+
+		// グローバルに存在する参照すべき共有情報
+		std::unordered_map<std::type_index, std::shared_ptr<void>> mResources;
 
 	public:
 		// create
@@ -147,6 +150,29 @@ namespace Engine::ECS
 		bool isAlive(Entity e) const
 		{
 			return mLivingEntities.count(e.id) > 0;
+		}
+
+		// Resource 登録・取得API
+
+		// Resourceを登録
+		template<typename T>
+		void addResource(const T& resource)
+		{
+			mResources[std::type_index(typeid(T)] = std::make_shared<T>(resource);
+		}
+
+		// mResourceを取得
+		template<typename T>
+		T& getResource()
+		{
+			return *std::static_pointer_cast<T>(mResources[std::type_index(typeid(T))]);
+		}
+
+		// Resouceが存在するか確認
+		template<typename T>
+		bool hasResource() const
+		{
+			return mResources.count(std::type_index(typeid(T))) > 0;
 		}
 	};
 }

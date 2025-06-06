@@ -104,6 +104,8 @@ namespace GameApp
 		void InitializeSkills();
 
 		void InitializeSkillMappings();
+
+		void InitializeGlobalResouces();
 	};
 }
 

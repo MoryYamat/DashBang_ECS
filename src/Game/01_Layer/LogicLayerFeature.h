@@ -4,12 +4,13 @@
 
 #include "Common/EngineNamespaceDecl.h"
 
+#include "Common/GameNamespaceDecl.h"
 
 namespace Game::Layer
 {
 	class LogicLayerFeature
 	{
 	public:
-		static void Update(eNsECS::EntityMgr& ecs, float deltaTime);
+		static void Update(eNsECS::EntityMgr& ecs, float deltaTime, gNsSkillData::SkillDatabase& skillDB);
 	};
 }
