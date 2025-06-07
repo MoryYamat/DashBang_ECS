@@ -7,7 +7,9 @@ namespace Game
 {
 	namespace Feature 
 	{
+		namespace Character {}
 		namespace Combat {}
+		namespace Setting {}
 	}
 
 	namespace Layer {}

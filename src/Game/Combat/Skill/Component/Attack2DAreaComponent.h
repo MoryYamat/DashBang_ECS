@@ -30,7 +30,7 @@ namespace Game::Combat::Skill::Component
 	struct Circle2DAttack
 	{
 		glm::vec2 center = CanonicalDefaults::kLocalCenterXZ;
-		float radius;
+		float radius = 0.0f;
 	};
 
 	// 2DîŒ`

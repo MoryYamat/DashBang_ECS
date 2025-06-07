@@ -14,6 +14,9 @@
 
 namespace Game::Input
 {
-	//	GLFWの生の入力をComponentの抽象入力に割り当てる
+	// GLFWの生の入力をComponentベースの抽象入力に割り当てる
+	void InputRouterSystem(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput);
+
+	//	GLFWの生の入力をComponentの抽象入力に割り当てる(ECSグローバルリソース実装後未使用)
 	void InputRouterSystem(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, const gNsInput::InputMapping& mapping);
 }

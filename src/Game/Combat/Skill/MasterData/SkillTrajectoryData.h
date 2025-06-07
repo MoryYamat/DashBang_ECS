@@ -19,6 +19,8 @@ namespace Game::Combat::Skill::Data
 
 	namespace SkillTrajectory
 	{
+		struct StaticTrajectory {};
+
 		struct RotateTrajectoryParams
 		{
 			// degrees
@@ -38,6 +40,7 @@ namespace Game::Combat::Skill::Data
 		};
 
 		using TrajectoryParamsVariant = std::variant<std::monostate
+			, StaticTrajectory
 			, RotateTrajectoryParams
 			, LinearTrajectoryParams
 			, CurvedTrajectoryParams>;

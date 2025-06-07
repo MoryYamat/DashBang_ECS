@@ -31,8 +31,8 @@ namespace Game::Combat::Skill::Data
 		gNsSkillComp::Attack2DShape shape;// 形状定義
 
 		// 軌跡データ
-		TrajectoryType trajectoryType;// 軌跡タイプ
-		SkillTrajectory::TrajectoryParamsVariant trajectoryParams;// 軌跡パラメータ
+		TrajectoryType trajectoryType = gNsSkillData::TrajectoryType::None;// 軌跡タイプ
+		SkillTrajectory::TrajectoryParamsVariant trajectoryParams = gNsSkillData::SkillTrajectory::StaticTrajectory{};// 軌跡パラメータ
 	};
 }
 

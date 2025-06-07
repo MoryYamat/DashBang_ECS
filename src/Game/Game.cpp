@@ -223,14 +223,15 @@ void GameApp::GameApp::updateGameLogics()
 
 {	// Delta Time
 	float currentFrame = static_cast<float>(glfwGetTime());
-	mDeltaTime = currentFrame - mLastFrame;
+	// mDeltaTime = currentFrame - mLastFrame;
+	float deltaTime = currentFrame - mLastFrame;
 	mLastFrame = currentFrame;
 	// std::cout << "[Game.cpp(DeltaTime)]: deltaTime: " << mDeltaTime << "\n";
 
 	// delete PendingDestroyComponent
 	eNsECS::GrobalSystem::RunCleanup(mECS);
 
-
+	// ECSのグローバルリソースへ以降予定(移行後削除予定)
 	// コリジョンコンテキスト: 1フレームごとに初期化
 	mCollisionResults.Clear();
 
@@ -242,7 +243,11 @@ void GameApp::GameApp::updateGameLogics()
 		mIsRunning = false;
 	}
 
-	gNsInput::InputRouterSystem(mECS, mInputManager->GetRawInput(), mInputMapping);
+	// ECSのグローバルリソースからMappingを取得して，InputActionComponentを変更するように修正する
+	// 修正済みのため削除予定
+	// gNsInput::InputRouterSystem(mECS, mInputManager->GetRawInput(), mInputMapping);
+	// InputRouter
+	gNsInput::InputRouterSystem(mECS, mInputManager->GetRawInput());
 	gNsInput::Analog::RouteAnalogInput(mECS, mInputManager->GetRawInput(), mRenderContext);
 	// 入力状態マップの更新
 	//mInputMapping.update(mWindow.GetGLFWWindow(), mInputState);
@@ -256,7 +261,7 @@ void GameApp::GameApp::updateGameLogics()
 	//PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime, mRenderContext);
 	// PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime);
 
-	// skill system
+	// skill system (削除予定(レイヤー構造導入のため))
 	// gNsSkillTrigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(mECS, mSkillInputMap);
 	// SkillSystem::Casting::SpawnSkillHitArea(mEcs, mSkillDatabase);
 	// gNsSkillSystem::UpdateSkillPhase(mECS, mDeltaTime, mSkillDatabase);
@@ -266,10 +271,10 @@ void GameApp::GameApp::updateGameLogics()
 	// SkillSystem::SkillCastingSystem(mEcs, mSkillDatabase, mRenderContext, mDeltaTime);
 
 	// 2D (Logic)-> 3D (Drawing)
-	eNsSyncL2T::Apply2DToTransform(mECS, mDeltaTime);
+	eNsSyncL2T::Apply2DToTransform(mECS, deltaTime);
 
 	// カメラ
-	gNsCam::Update(mECS, mDeltaTime);
+	gNsCam::Update(mECS, deltaTime);
 	// GameSystemInput::UpdateCamera(mEcs, mInputState, mDeltaTime);
 
 
@@ -281,13 +286,13 @@ void GameApp::GameApp::updateGameLogics()
 
 
 
-	// 
+	// ECSのグローバルリソースへ以降予定(移行後削除予定)
 	gNsCollSystem::UpdateCollisionResultStorage(mECS, mCollisionResults);
 
 	// Update from the top layer	
 	gNsLayer::IntentLayerFeature::Update(mECS);
 
-	gNsLayer::LogicLayerFeature::Update(mECS, mDeltaTime);
+	gNsLayer::LogicLayerFeature::Update(mECS, deltaTime);
 }
 
 void GameApp::GameApp::generateOutputs()
@@ -393,60 +398,61 @@ void GameApp::GameApp::updateContext()
 // ゲーム中に設定で変更できるようにするべき
 void GameApp::GameApp::InitializeInputMapping()
 {
-	mInputMapping.bindKey(GLFW_KEY_W, gNsInput::InputAction::MoveForward);
-	mInputMapping.bindKey(GLFW_KEY_S, gNsInput::InputAction::MoveBackward);
-	mInputMapping.bindKey(GLFW_KEY_D, gNsInput::InputAction::MoveRight);
-	mInputMapping.bindKey(GLFW_KEY_A, gNsInput::InputAction::MoveLeft);
-	mInputMapping.bindKey(GLFW_MOUSE_BUTTON_1, gNsInput::InputAction::CastSkill1);
-	mInputMapping.bindKey(GLFW_MOUSE_BUTTON_2, gNsInput::InputAction::CastSkill2);
-	mInputMapping.bindKey(GLFW_KEY_1, gNsInput::InputAction::CastSkill3);
+	//mInputMapping.bindKey(GLFW_KEY_W, gNsInput::InputAction::MoveForward);
+	//mInputMapping.bindKey(GLFW_KEY_S, gNsInput::InputAction::MoveBackward);
+	//mInputMapping.bindKey(GLFW_KEY_D, gNsInput::InputAction::MoveRight);
+	//mInputMapping.bindKey(GLFW_KEY_A, gNsInput::InputAction::MoveLeft);
+	//mInputMapping.bindKey(GLFW_MOUSE_BUTTON_1, gNsInput::InputAction::CastSkill1);
+	//mInputMapping.bindKey(GLFW_MOUSE_BUTTON_2, gNsInput::InputAction::CastSkill2);
+	//mInputMapping.bindKey(GLFW_KEY_1, gNsInput::InputAction::CastSkill3);
 
 }
 
 // 別処理か別ファイルへ分離予定(スキル定義はJSONもしくはCSVなどで与えるようにするべき)
 // Combat/Skill/System/InitializeSkills.h へ責務以降 => Featureをインターフェースとして，InitializeLayerFeatureで呼び出す構造へ
+// 削除予定( 別ファイルへ分離したため )
 void GameApp::GameApp::InitializeSkills()
 {
-	gNsSkillData::SkillDefinition slash;
-	slash.id = 1;
-	slash.name = "Basic Slash";
-	slash.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Circle2DAttack{CanonicalDefaults::kLocalCenterXZ, 5.0f} };
-	slash.duration = 1.0f;
-	slash.trajectoryType = gNsSkillData::TrajectoryType::LinearForward;
-	slash.trajectoryParams = gNsSkillData::SkillTrajectory::LinearTrajectoryParams
-	{
-		.speed = 20.0f
-	};
-	mSkillDatabase.AddSkill(slash);
+	//gNsSkillData::SkillDefinition slash;
+	//slash.id = 1;
+	//slash.name = "Basic Slash";
+	//slash.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Circle2DAttack{CanonicalDefaults::kLocalCenterXZ, 5.0f} };
+	//slash.duration = 1.0f;
+	//slash.trajectoryType = gNsSkillData::TrajectoryType::LinearForward;
+	//slash.trajectoryParams = gNsSkillData::SkillTrajectory::LinearTrajectoryParams
+	//{
+	//	.speed = 20.0f
+	//};
+	//mSkillDatabase.AddSkill(slash);
 
-	gNsSkillData::SkillDefinition slash2;
-	slash2.id = 2;
-	slash2.name = "Power Slash";
-	slash2.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Sector2DAttack{CanonicalDefaults::kLocalCenterXZ, CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f} };// -Z方向が前方
-	slash2.duration = 1.0f;
+	//gNsSkillData::SkillDefinition slash2;
+	//slash2.id = 2;
+	//slash2.name = "Power Slash";
+	//slash2.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Sector2DAttack{CanonicalDefaults::kLocalCenterXZ, CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f} };// -Z方向が前方
+	//slash2.duration = 1.0f;
 
-	mSkillDatabase.AddSkill(slash2);
+	//mSkillDatabase.AddSkill(slash2);
 
-	gNsSkillData::SkillDefinition blade;
-	blade.id = 3;
-	blade.name = "Blade";
-	blade.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Rectangle2DAttack{glm::vec2(0.0f, 5.0f), CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f}};
-	blade.duration = 1.0f;
-	// スキル奇跡の抽象定義の選択
-	blade.trajectoryType = gNsSkillData::TrajectoryType::RotateAroundSelf;
-	blade.trajectoryParams = gNsSkillData::SkillTrajectory::RotateTrajectoryParams
-	{// 関数定義
-		.startAngle = 60.0f,
-		.endAngle = -60.0f
-	};
-	mSkillDatabase.AddSkill(blade);
+	//gNsSkillData::SkillDefinition blade;
+	//blade.id = 3;
+	//blade.name = "Blade";
+	//blade.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Rectangle2DAttack{glm::vec2(0.0f, 5.0f), CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f}};
+	//blade.duration = 1.0f;
+	//// スキル奇跡の抽象定義の選択
+	//blade.trajectoryType = gNsSkillData::TrajectoryType::RotateAroundSelf;
+	//blade.trajectoryParams = gNsSkillData::SkillTrajectory::RotateTrajectoryParams
+	//{// 関数定義
+	//	.startAngle = 60.0f,
+	//	.endAngle = -60.0f
+	//};
+	//mSkillDatabase.AddSkill(blade);
 }
 
 // 別処理か別ファイルへ分離予定(JSONもしくはCSVなどで与えるようにするべき)
 // ゲーム中に設定で変更できるようにするべき
 void GameApp::GameApp::InitializeSkillMappings()
 {
-	mSkillInputMap.bind(gNsInput::InputAction::CastSkill1, gNsSkillData::SkillSlot::Primary);// スキルID 1
-	mSkillInputMap.bind(gNsInput::InputAction::CastSkill2, gNsSkillData::SkillSlot::Secondary);// スキルID 2
-	mSkillInputMap.bind(gNsInput::InputAction::CastSkill3, gNsSkillData::SkillSlot::Utility1);// スキルID 3
+	//mSkillInputMap.bind(gNsInput::InputAction::CastSkill1, gNsSkillData::SkillSlot::Primary);// スキルID 1
+	//mSkillInputMap.bind(gNsInput::InputAction::CastSkill2, gNsSkillData::SkillSlot::Secondary);// スキルID 2
+	//mSkillInputMap.bind(gNsInput::InputAction::CastSkill3, gNsSkillData::SkillSlot::Utility1);// スキルID 3
 }

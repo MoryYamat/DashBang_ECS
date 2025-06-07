@@ -26,6 +26,7 @@ namespace Game::Collision::Data
 		}
 	};
 
+	// 1フレームのコリジョン情報バッファ
 	class CollisionResultStorage
 	{
 	public:
@@ -55,5 +56,10 @@ namespace Game::Collision::Data
 		std::vector<CollisionContact> mContacts;
 
 		std::vector<glm::ivec2> mTileCollisions;
+
+
+		// unordered_multimap<Entity, CollisionContact> を併用して検索最適化
+
+		// FrameScopedStorage<CollisionResultStorage> などでライフサイクル管理の明示化
 	};
 }

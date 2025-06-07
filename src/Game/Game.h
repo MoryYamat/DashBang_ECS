@@ -79,10 +79,10 @@ namespace GameApp
 		gNsCollData::CollisionResultStorage mCollisionResults;
 
 		// skill 
-		gNsSkillData::SkillDatabase mSkillDatabase;
+		// gNsSkillData::SkillDatabase mSkillDatabase;
 		gNsSkillTrigger::SkillInputMap mSkillInputMap;
 
-		float mDeltaTime = 0.0f;
+		// float mDeltaTime = 0.0f;
 		float mLastFrame = 0.0f;
 
 		void updateGameLogics();
@@ -105,6 +105,11 @@ namespace GameApp
 
 		void InitializeSkillMappings();
 
+		// ECSのグローバルリソースとして保持する基準
+		// ：どのエンティティやシステムからも参照される
+		// ：頻繁に変更されず，不変／静的に扱える => SkillInputMap, InputMapping
+		// ：複数のSystemが依存しているが，Componentではない => CollisionResultStorage(状態ではなくバッファ)
+		// ：状態を持つ必要がなく，ECSの生存管理に関係しない
 		void InitializeGlobalResouces();
 	};
 }

@@ -14,6 +14,7 @@ void Game::Input::Analog::RouteAnalogInput(eNsECS::EntityMgr& ecs, const eNsInpu
 	{
 		auto& analog = ecs.get<eNsInputComp::AnalogInputComponent>(e);
 
+		// マウスのスクリーン座標からXZ平面への投影位置の計算
 		analog.cursorLogicPositionXZ = Game::Utils::ProjectScreenToLogicXZPlane(rawInput.mousePosition, renderContext);
 		analog.cursorDelta = rawInput.mouseDelta;
 		analog.scrollDelta = rawInput.scrollDelta;

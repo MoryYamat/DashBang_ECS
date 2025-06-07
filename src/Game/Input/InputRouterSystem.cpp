@@ -1,6 +1,31 @@
 #include "InputRouterSystem.h"
 
+#include "Game/Input/InputMapping.h"
+
 #include <iostream>
+
+void Game::Input::InputRouterSystem(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput)
+{
+	auto& map = ecs.getResource<gNsInput::InputMapping>();
+
+	for (eNsECS::Entity e : ecs.view<gNsInput::InputActionComponent>())
+	{
+		auto& inputComp = ecs.get<gNsInput::InputActionComponent>(e);
+
+		inputComp.previous = inputComp.current;
+		inputComp.current.clear();
+
+		for (const auto& [key, isDown] : rawInput.keyState)
+		{
+			if (!isDown) continue;
+
+			if (auto actionOpt = map.getAction(key))
+			{
+				inputComp.current[*actionOpt] = true;
+			}
+		}
+	}
+}
 
 void Game::Input::InputRouterSystem(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, const InputMapping& mapping)
 {
