@@ -39,8 +39,9 @@
 // ======================= Game =======================
 
 //Game/ Feature
-#include "Game/00_Feature/MovementFeature.h"
+#include "Game/00_Feature/Character/Movement/MovementFeature.h"
 //Game/ Layer
+#include "Game/01_Layer/InitializeLayerFeature.h"
 #include "Game/01_Layer/InputLayerFeature.h"
 #include "Game/01_Layer/IntentLayerFeature.h"
 #include "Game/01_Layer/LogicLayerFeature.h"
@@ -187,9 +188,14 @@ bool GameApp::GameApp::Initialize()
 	InitializeInputMapping();
 
 	// Initialize Skill database
-	InitializeSkills();
+	// InitializeSkills();
+
+	// 遅らせ初期化
+	gNsLayer::InitializeLayerFeature::DelayedInitialzation(mECS);
+
 
 	InitializeSkillMappings();
+
 
 	loadData();
 
@@ -251,10 +257,10 @@ void GameApp::GameApp::updateGameLogics()
 	// PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime);
 
 	// skill system
-	gNsSkillTrigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(mECS, mSkillInputMap);
-	//SkillSystem::Casting::SpawnSkillHitArea(mEcs, mSkillDatabase);
-	gNsSkillSystem::UpdateSkillPhase(mECS, mDeltaTime, mSkillDatabase);
-	gNsSkillSystem::SkillTrajectorySystem::Update(mECS, mDeltaTime);
+	// gNsSkillTrigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(mECS, mSkillInputMap);
+	// SkillSystem::Casting::SpawnSkillHitArea(mEcs, mSkillDatabase);
+	// gNsSkillSystem::UpdateSkillPhase(mECS, mDeltaTime, mSkillDatabase);
+	// gNsSkillSystem::SkillTrajectorySystem::Update(mECS, mDeltaTime);
 	// SkillSystem::Lifetime::UpdateSkillLifetimes(mEcs, mDeltaTime, mSkillDatabase);
 	// SkillSystem::Trigger::PlayerSkillTriggerSystem::Update(mEcs, mSkillInputMap);
 	// SkillSystem::SkillCastingSystem(mEcs, mSkillDatabase, mRenderContext, mDeltaTime);
@@ -280,7 +286,6 @@ void GameApp::GameApp::updateGameLogics()
 
 	// Update from the top layer	
 	gNsLayer::IntentLayerFeature::Update(mECS);
-
 
 	gNsLayer::LogicLayerFeature::Update(mECS, mDeltaTime);
 }
@@ -399,6 +404,7 @@ void GameApp::GameApp::InitializeInputMapping()
 }
 
 // 別処理か別ファイルへ分離予定(スキル定義はJSONもしくはCSVなどで与えるようにするべき)
+// Combat/Skill/System/InitializeSkills.h へ責務以降 => Featureをインターフェースとして，InitializeLayerFeatureで呼び出す構造へ
 void GameApp::GameApp::InitializeSkills()
 {
 	gNsSkillData::SkillDefinition slash;

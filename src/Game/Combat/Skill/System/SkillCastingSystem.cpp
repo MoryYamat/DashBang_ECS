@@ -15,6 +15,109 @@
 
 #include "Engine/Debug/DebugUtils.h"
 
+void Game::Combat::Skill::System::spawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsSkillData::SkillDatabase& skillDB, eNsECS::Entity skillEntity)
+{
+	auto& instance = ecs.get<gNsSkillComp::SkillInstanceComponent>(skillEntity);
+
+	std::cout << "[SkillCastingSystem] Checking if SkillID " << instance.skillId << " exists..." << std::endl;
+	if (!skillDB.Has(instance.skillId)) {
+		std::cout << "[SkillCastingSystem] SkillID not found, skipping." << std::endl;
+	}
+
+	const gNsSkillData::SkillDefinition& def = skillDB.Get(instance.skillId);
+
+	auto& transform = ecs.get<eNsLogic2DComp::Transform2DComponent>(skillEntity);
+	const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(instance.caster);
+
+	// world 変換
+	glm::vec2 worldCenter = logic.positionXZ;
+	gNsSkillComp::Attack2DShape shape = def.shape;
+
+
+	// 攻撃範囲エンティティ生成
+	eNsECS::Entity attack = ecs.createEntity();
+	gNsSkillComp::Attack2DAreaComponent area;
+	area.shape = shape;
+	area.lifetime = def.duration;
+	area.owner = instance.caster;
+	area.skillEntity = skillEntity;
+	std::cout << "[SkillCastingSystem.cpp(SpawnSkillHitArea)] create: " << def.name << " is created. \n";
+	ecs.addComponent(attack, area);
+
+	instance.spawnedHitAreas.push_back(attack);
+
+	// transformを複製
+	ecs.addComponent(attack, transform);
+
+	// 攻撃判定 Entityに軌跡コンポーネントを追加
+	gNsSkillComp::SkillTrajectoryComponent traj;
+	traj.type = def.trajectoryType;
+	traj.elapsedTime = 0.0f;
+	traj.trajectoryFunc = gNsSkillFactory::SkillTrajectoryFactory::Create(def, transform);
+	ecs.addComponent(attack, traj);
+}
+
+// (廃止 (呼び出し型をグローバルではなく，ローカルに変更))攻撃判定計上を生成(ECSグローバルリソース(スキル定義のデータベース)を使用した実装) 
+void Game::Combat::Skill::System::SpawnSkillHitArea(eNsECS::EntityMgr& ecs)
+{
+	gNsSkillData::SkillDatabase& skillDB = ecs.getResource<gNsSkillData::SkillDatabase>();
+
+	for (eNsECS::Entity e : ecs.view<gNsSkillComp::SkillInstanceComponent>())
+	{
+		auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(e);
+
+
+		// (状態レイヤー導入時変更予定 時間による制御はおかしいため)初回発動時のみ
+		if (skillInstance.timeSinceCast > 0.0f)
+			continue;
+
+		
+		std::cout << "[SkillCastingSystem] Checking if SkillID " << skillInstance.skillId << " exists..." << std::endl;
+		if (!skillDB.Has(skillInstance.skillId)) {
+			std::cout << "[SkillCastingSystem] SkillID not found, skipping." << std::endl;
+			continue;
+		}
+
+
+
+		if (!skillDB.Has(skillInstance.skillId)) continue;
+		const gNsSkillData::SkillDefinition& def = skillDB.Get(skillInstance.skillId);
+
+		auto& transform = ecs.get<eNsLogic2DComp::Transform2DComponent>(e);
+		const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(skillInstance.caster);
+
+		// world 変換
+		glm::vec2 worldCenter = logic.positionXZ;
+		gNsSkillComp::Attack2DShape shape = def.shape;
+
+
+		// 攻撃範囲エンティティ生成
+		eNsECS::Entity attack = ecs.createEntity();
+		gNsSkillComp::Attack2DAreaComponent area;
+		area.shape = shape;
+		area.lifetime = def.duration;
+		area.owner = skillInstance.caster;
+		area.skillEntity = e;
+		std::cout << "[SkillCastingSystem.cpp(SpawnSkillHitArea)] create: " << def.name << " is created. \n";
+		ecs.addComponent(attack, area);
+
+		skillInstance.spawnedHitAreas.push_back(attack);
+
+		// transformを複製
+		ecs.addComponent(attack, transform);
+
+		// 攻撃判定 Entityに軌跡コンポーネントを追加
+		gNsSkillComp::SkillTrajectoryComponent traj;
+		traj.type = def.trajectoryType;
+		traj.elapsedTime = 0.0f;
+		traj.trajectoryFunc = gNsSkillFactory::SkillTrajectoryFactory::Create(def, transform);
+		ecs.addComponent(attack, traj);
+	}
+	// std::cout << "[SkillCastingSystem.cpp(SpawnSkillHitArea)] Hit Area is created successfully\n";
+
+}
+
+// 攻撃判定形状を作成(昔仕様：ECSグローバルリソース実装後廃止予定)
 void Game::Combat::Skill::System::SpawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsSkillData::SkillDatabase& skillDB)
 {
 	for (eNsECS::Entity e : ecs.view<gNsSkillComp::SkillInstanceComponent>())
@@ -28,6 +131,7 @@ void Game::Combat::Skill::System::SpawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsS
 
 		std::cout << "[SkillCastingSystem] skillId: " << skillInstance.skillId << std::endl;
 
+		if (!skillDB.Has(skillInstance.skillId)) continue;
 		const gNsSkillData::SkillDefinition& def = skillDB.Get(skillInstance.skillId);
 		auto& transform = ecs.get<eNsLogic2DComp::Transform2DComponent>(e);
 		const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(skillInstance.caster);

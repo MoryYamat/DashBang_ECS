@@ -155,10 +155,22 @@ namespace Engine::ECS
 		// Resource “o˜^Eæ“¾API
 
 		// Resource‚ğ“o˜^
-		template<typename T>
-		void addResource(const T& resource)
+		//template<typename T>
+		//void addResource(const T& resource)
+		//{
+		//	mResources[std::type_index(typeid(T))] = std::make_shared<T>(resource);
+		//}
+
+		// Resource‚ğ“o˜^
+		template<typename T, typename... Args>
+		T& createResource(Args&&... args)
 		{
-			mResources[std::type_index(typeid(T)] = std::make_shared<T>(resource);
+			// ƒCƒ“ƒXƒ^ƒ“ƒX¶¬
+			auto res = std::make_shared<T>(std::forward<Args>(args)...);
+			// V‹Kì¬
+			mResources[std::type_index(typeid(T))] = res;
+			// shared_ptr<T>‚ğ•Ô‚·
+			return *res;
 		}
 
 		// mResource‚ğæ“¾

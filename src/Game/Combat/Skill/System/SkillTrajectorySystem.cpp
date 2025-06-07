@@ -3,6 +3,7 @@
 #include "Game/Combat/Skill/Factory/SkillTrajectoryFactory.h"
 #include "Game/Combat/Skill/Component/SkillTrajectoryComponent.h"
 
+
 void Game::Combat::Skill::System::SkillTrajectorySystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 	for(eNsECS::Entity e : ecs.view<gNsSkillComp::SkillTrajectoryComponent, eNsLogic2DComp::Transform2DComponent>())

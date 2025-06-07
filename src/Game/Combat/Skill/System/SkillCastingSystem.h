@@ -4,6 +4,7 @@
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"
+#include "Engine/ECS/Entity.h"
 
 #include "Game/Input/InputMapping.h"
 
@@ -16,6 +17,12 @@
 
 namespace Game::Combat::Skill::System
 {
+	// スキル形状を定義に従って作成
+	void spawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsSkillData::SkillDatabase& skillDB, eNsECS::Entity skillEntity);
+
+	// 廃止
+	void SpawnSkillHitArea(eNsECS::EntityMgr& ecs);
+
 	// スキルの論理的形状（HitArea）を定義に従って生成する
 	void SpawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsSkillData::SkillDatabase& skillDB);
 

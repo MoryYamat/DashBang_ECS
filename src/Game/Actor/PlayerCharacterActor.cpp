@@ -40,6 +40,8 @@
 #include "Game/Combat/Skill/Component/SkillSlotAssignmentComponent.h"
 
 #include "Game/Combat/Skill/Component/SkillInputBindingComponent.h"
+// intent
+#include "Game/Combat/Skill/Intent/Component/SkillIntentComponent.h"
 
 #include "Engine/Graphics/Model/ModelData.h"
 #include "Engine/Graphics/Model/AssimpImporter.h"
@@ -164,6 +166,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	binding.actionToSlot[gNsInput::InputAction::CastSkill1] = gNsSkillData::SkillSlot::Primary;
 	binding.actionToSlot[gNsInput::InputAction::CastSkill2] = gNsSkillData::SkillSlot::Secondary;
 	binding.actionToSlot[gNsInput::InputAction::CastSkill3] = gNsSkillData::SkillSlot::Utility1;
+	ecs.addComponent(entity, binding);
 
 	// 必要？（未使用のため検討が必要）何のために用意したか不明
 	ActiveSkillCasterComponent ascc;
@@ -183,6 +186,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	ecs.addComponent(entity, eNsLogic2DComp::Velocity2DComponent{});
 
 	// Intent base
+	ecs.addComponent(entity, gNsSkillIntent::SkillIntentComponent{});
 
 	// movement
 	ecs.addComponent(entity, gNsCharacterIntent::MovementIntentComponent{});

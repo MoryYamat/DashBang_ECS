@@ -26,13 +26,27 @@ namespace Game::Combat::Skill::Data
 
 		const SkillDefinition& Get(int id) const
 		{
-			// .conatins(id)に変更予定(C++20)
-			auto it = mDefinitions.find(id);
-			if (it == mDefinitions.end())
-			{
+			// ~~.conatins(id)に変更予定(C++20)~~ => (.containsは存在確認をしたいだけの時.)
+			//auto it = mDefinitions.find(id);
+			//if (it == mDefinitions.end())
+			//{
+			//	throw std::out_of_range("[SkillDatabase::Get] SkillID not found: " + std::to_string(id));
+			//}
+			//return it->second;
+
+			// 例外を投げる構造はよくない => そもそも存在しないIDをGetしないような構造が必要 (呼び出し側でHasなどでifする？)
+			try {
+				return mDefinitions.at(id);
+			}
+			catch (const std::out_of_range&) {
 				throw std::out_of_range("[SkillDatabase::Get] SkillID not found: " + std::to_string(id));
 			}
-			return it->second;
+		}
+
+		// 存在確認 => 存在確認(Has)と取得(Get)を一対の処理にした，tryGetを作ればいい？
+		bool Has(int id) const
+		{
+			return mDefinitions.contains(id);
 		}
 
 	private:

@@ -4,7 +4,7 @@
 
 #include "Engine/ECS/EntityManager.h"
 
-namespace Game::Feature
+namespace Game::Feature::Character
 {
 	class MovementFeature
 	{

@@ -5,7 +5,10 @@
 // Game Namespace (gNs)
 namespace Game
 {
-	namespace Feature {}
+	namespace Feature 
+	{
+		namespace Combat {}
+	}
 
 	namespace Layer {}
 

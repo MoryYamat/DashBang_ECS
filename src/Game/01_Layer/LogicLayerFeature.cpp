@@ -1,21 +1,31 @@
-#inclu7de "LogicLayerFeature.h"
+#include "LogicLayerFeature.h"
 
-#include "Game/00_Feature/Movement/MovementFeature.h"
+#include "Game/00_Feature/Character/Movement/MovementFeature.h"
 
 #include "Game/00_Feature/Collision/CollisionFeature.h"
 
-#include "Game/00_Feature/Skill/SkillFeature.h"
+#include "Game/00_Feature/Combat/Skill/SkillFeature.h"
 
 
-void Game::Layer::LogicLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaTime, gNsSkillData::SkillDatabase& skillDB)
+void Game::Layer::LogicLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 {
+	// ------------------------- キャラクター関連処理 -------------------------
 	// キャラクターの向きと位置を更新する
-	gNsFeature::MovementFeature::UpdateLogicFacing(ecs);
-	Game::Feature::MovementFeature::UpdateLogicPosition(ecs, deltaTime);
+	gNsFeature::Character::MovementFeature::UpdateLogicFacing(ecs);
+	Game::Feature::Character::MovementFeature::UpdateLogicPosition(ecs, deltaTime);
 
-	// Skill
-	gNsFeature::SkillFeature::SkillGenerateSystem(ecs, skillDB);
-	78
+	// ------------------------- スキル関連処理 -------------------------
+	// Intentに応じてスキルインスタンスを生成
+	gNsFeature::Combat::SkillFeature::TriggerSkillsFromIntent(ecs);
+
+	// スキルフェーズ
+	gNsFeature::Combat::SkillFeature::UpdateSkillPhaseSystem(ecs, deltaTime);
+
+	gNsFeature::Combat::SkillFeature::UpdateSkillTrajectorySystem(ecs, deltaTime);
+
+
+
+	// ------------------------- コリジョン関連処理 -------------------------
 	// コリジョンの位置情報などを更新する(CollisionComp.center etc.)
 	gNsFeature::CollisionFeature::SyncLogicCollision(ecs);
 }

@@ -11,6 +11,6 @@ namespace Game::Layer
 	{
 	public:
 
-		static void Initialze(eNsECS::EntityMgr& ecs);
+		static void DelayedInitialzation(eNsECS::EntityMgr& ecs);
 	};
 }

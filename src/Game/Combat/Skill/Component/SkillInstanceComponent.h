@@ -43,6 +43,9 @@ namespace Game::Combat::Skill::Component
 
 		float timeSinceCast = 0.0f;
 
+		// 将来的には，フラグではなく，**段階制御**を導入する(1スキル複数形状に対応するため)
+		bool hasSpawned = false;
+
 		uint16_t skillId;
 
 		SkillPhase phase = SkillPhase::Casting;// スキルの状態段階

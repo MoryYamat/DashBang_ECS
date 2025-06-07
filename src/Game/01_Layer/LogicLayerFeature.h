@@ -11,6 +11,6 @@ namespace Game::Layer
 	class LogicLayerFeature
 	{
 	public:
-		static void Update(eNsECS::EntityMgr& ecs, float deltaTime, gNsSkillData::SkillDatabase& skillDB);
+		static void Update(eNsECS::EntityMgr& ecs, float deltaTime);
 	};
 }

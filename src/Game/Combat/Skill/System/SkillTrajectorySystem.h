@@ -16,6 +16,7 @@ namespace Game::Combat::Skill::System
 	class SkillTrajectorySystem
 	{
 	public:
+
 		static void Update(eNsECS::EntityMgr& ecs, float deltaTime);
 	};
 }

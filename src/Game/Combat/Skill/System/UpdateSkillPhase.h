@@ -12,6 +12,8 @@
 
 namespace Game::Combat::Skill::System
 {
+	void UpdateSkillPhase(eNsECS::EntityMgr& ecs, float deltaTime);
+
 	void UpdateSkillPhase(eNsECS::EntityMgr& ecs, float deltaTime, gNsSkillData::SkillDatabase& skillDB);
 
 }
