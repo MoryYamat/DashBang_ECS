@@ -18,9 +18,9 @@ void Game::Layer::LogicLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 	// Intentに応じてスキルインスタンスを生成
 	gNsFeature::Combat::SkillFeature::TriggerSkillsFromIntent(ecs);
 
-	// スキルフェーズ
+	// スキルフェーズ(寿命管理と判定生成)
 	gNsFeature::Combat::SkillFeature::UpdateSkillPhaseSystem(ecs, deltaTime);
-
+	// スキル軌跡更新
 	gNsFeature::Combat::SkillFeature::UpdateSkillTrajectorySystem(ecs, deltaTime);
 
 

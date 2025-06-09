@@ -308,6 +308,9 @@ void GameApp::GameApp::generateOutputs()
 
 
 	// draw for debugging
+	// (ECSグローバルリソース導入後変更必要)
+	// (ECSグローバルリソース導入後変更必要)
+	// (ECSグローバルリソース導入後変更必要)
 	eNsDebugDraw::Logic2D::Draw(mECS, mRenderContext, mCollisionResults);
 
 

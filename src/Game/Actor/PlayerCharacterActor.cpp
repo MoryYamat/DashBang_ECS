@@ -34,6 +34,9 @@
 #include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
 //#include "Core/ECS/Component/Collision/ColliderType.h"
 
+// collision comp
+#include "Game/Collision/Component/CollisionMaskComponent.h"
+
 // Skill
 #include "Game/Combat/Skill/Component/SkillInstanceComponent.h"
 #include "Game/Combat/Skill/Component/ActiveSkillCasterComponent.h"
@@ -49,6 +52,8 @@
 
 #include "Game/Init/InitModel/InitLogicTransformFromModel.h"
 #include "Game/Init/InitTileMap/InitTileMap.h"
+
+
 
 #include "Engine/Debug/DebugUtils.h"
 
@@ -140,6 +145,10 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	playerCollisionComp.collider.circle2D.radius = radius;
 	ecs.addComponent(entity, playerCollisionComp);
 
+	// Collision Mask èâä˙âª
+	gNsCollComp::CollisionMaskComponent playerMask;
+	playerMask.selfLayer = gNsCollData::Layer::Player;
+	playerMask.collidesWithMask = static_cast<uint8_t>(gNsCollData::Layer::Tile | gNsCollData::Layer::Tile);
 
 	// à»ëOÇÃê›åv
 	//SkillInstanceComponent activeSkill1;

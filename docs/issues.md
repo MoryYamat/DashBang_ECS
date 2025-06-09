@@ -15,8 +15,8 @@
 * Defining hierarchical relationships between `Entity` and implementing semantics based on names
     * Processing to limit duplicate `Entity` names
     * Name search processing -> Improved efficiency
-* *** Consider a good way to manage the lifespan of `Entity` (even if you delete an `Entity`, the `Component` will remain. If there is a process that references the `Entity`, you need to manage the deletion carefully)**
-
+* ** Consider a good way to manage the lifespan of `Entity` (even if you delete an `Entity`, the `Component` will remain. If there is a process that references the `Entity`, you need to manage the deletion carefully) **
+* Consider restricting the acquisition and reference of non-existent `Entity` and good exception handling methods to improve safety.
 
 ## **Physical Layer**
 * Physics layer (collision) implementation

@@ -62,4 +62,6 @@ namespace Game::Collision::Data
 
 		// FrameScopedStorage<CollisionResultStorage> などでライフサイクル管理の明示化
 	};
+
+
 }

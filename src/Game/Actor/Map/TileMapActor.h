@@ -2,7 +2,11 @@
 
 #pragma once
 
+#include "Engine/ECS/Entity.h"
 #include "Engine/ECS/EntityManager.h"
+
+#include "Engine/ECS/Component/Common/TransformComponent.h"
+#include "Engine/Graphics/Model/ModelData.h"
 
 #include "Common/EngineNamespaceDecl.h"
 
@@ -15,7 +19,15 @@ namespace Game::Actor::Map
 	{
 	public:
 
-		TileMapActor(eNsECS::EntityMgr& ecs);
+		// TerrainMesh‚©‚çŒÄ‚Ño‚· («—ˆ“I‚É‚Í“®“I¶¬^íœ‚¨‚æ‚ÑLOD‚É‘Î‰—\’è)
+		static eNsECS::Entity Create(
+			eNsECS::EntityMgr& ecs,
+			const eNsCommonComp::TransformComponent& transform,
+			const eNsGfxModel::ModelData& modelData,
+			float tileSize
+		);
+
+		// TileMapActor(eNsECS::EntityMgr& ecs);
 	};
 }
 

@@ -36,3 +36,4 @@ void Game::Collision::Data::CollisionResultStorage::AddTileCollision(const std::
 {
 	mTileCollisions.insert(mTileCollisions.end(), indices.begin(), indices.end());
 }
+

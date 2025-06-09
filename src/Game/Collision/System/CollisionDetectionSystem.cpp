@@ -47,6 +47,8 @@ void Game::Collision::System::UpdateCollisionResultStorage(eNsECS::EntityMgr& ec
 }
 
 
+
+
 void Game::Collision::System::CollisionDetectionSystem(eNsECS::EntityMgr& ecs, gNsCollData::CollisionResultStorage& collisionResultStorage)
 {
 
