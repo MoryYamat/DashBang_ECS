@@ -6,10 +6,13 @@
 #include "Engine/ECS/Component/Logic2D/Transform2DComponent.h"
 #include "Game/Combat/Skill/Component/SkillInstanceComponent.h"
 
+
 #include "Game/Combat/Skill/MasterData/SkillDefinition.h"
 
 #include "Game/Combat/Skill/Component/SkillTrajectoryComponent.h"
 #include "Game/Combat/Skill/Factory/SkillTrajectoryFactory.h"
+
+#include "Game/ECS/Component/TeamComponent.h"
 
 #include "Engine/Math/MathUtils.h"
 
@@ -28,6 +31,7 @@ void Game::Combat::Skill::System::spawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsS
 
 	auto& transform = ecs.get<eNsLogic2DComp::Transform2DComponent>(skillEntity);
 	const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(instance.caster);
+	const auto& casterTeam = ecs.get<gNsECSComp::TeamComponent>(instance.caster).team;
 
 	// world 変換
 	glm::vec2 worldCenter = logic.positionXZ;
@@ -55,6 +59,42 @@ void Game::Combat::Skill::System::spawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsS
 	traj.elapsedTime = 0.0f;
 	traj.trajectoryFunc = gNsSkillFactory::SkillTrajectoryFactory::Create(def, transform);
 	ecs.addComponent(attack, traj);
+
+	// コリジョンマスクを作成
+	gNsCollComp::CollisionMaskComponent mask;
+	mask = generateSkillCollisionMask(ecs, instance.caster);
+	ecs.addComponent(attack, mask);
+
+}
+
+
+gNsCollComp::CollisionMaskComponent Game::Combat::Skill::System::generateSkillCollisionMask(
+	eNsECS::EntityMgr& ecs,
+	eNsECS::Entity caster
+)
+{
+	gNsCollComp::CollisionMaskComponent mask;
+	// 将来的には，このselfLayerもskillDefinitionから自動設定する必要があると思われる
+	// 将来的には，このselfLayerもskillDefinitionから自動設定する必要があると思われる
+	// 将来的には，このselfLayerもskillDefinitionから自動設定する必要があると思われる
+	mask.selfLayer = gNsCollData::Layer::Skill;
+
+	gNsECSComp::Team team = ecs.get<gNsECSComp::TeamComponent>(caster).team;
+
+	switch (team)
+	{
+	case gNsECSComp::Team::PlayerTeam:
+		mask.collidesWithMask = static_cast<uint32_t>(gNsCollData::Layer::Enemy | gNsCollData::Layer::Neutral);
+		break;
+	case gNsECSComp::Team::EnemyTeam:
+		mask.collidesWithMask = static_cast<uint32_t>(gNsCollData::Layer::Player | gNsCollData::Layer::Neutral | gNsCollData::Layer::Friendly);
+		break;
+	case gNsECSComp::Team::Neutral:
+		mask.collidesWithMask = static_cast<uint32_t>(gNsCollData::Layer::Enemy | gNsCollData::Layer::Player | gNsCollData::Layer::Friendly);
+		break;
+	}
+
+	return mask;
 }
 
 // (廃止 (呼び出し型をグローバルではなく，ローカルに変更))攻撃判定計上を生成(ECSグローバルリソース(スキル定義のデータベース)を使用した実装) 

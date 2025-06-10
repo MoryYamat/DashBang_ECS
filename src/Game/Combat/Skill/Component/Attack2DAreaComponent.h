@@ -77,7 +77,7 @@ namespace Game::Combat::Skill::Component
 	{
 		Attack2DShape shape;
 		float lifetime = 1.0f;
-		eNsECS::Entity owner;// 攻撃者(キャラクター)
-		eNsECS::Entity skillEntity;// この判定が属するスキルインスタンス
+		eNsECS::Entity owner = eNsECS::Entity::INVALID;// 攻撃者(キャラクター)
+		eNsECS::Entity skillEntity = eNsECS::Entity::INVALID;// この判定が属するスキルインスタンス
 	};
 }

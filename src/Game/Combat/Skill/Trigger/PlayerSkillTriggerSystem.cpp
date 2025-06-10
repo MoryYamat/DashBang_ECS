@@ -9,6 +9,7 @@
 #include "Game/Combat/Skill/Component/SkillInstanceComponent.h"
 #include "Game/Combat/Skill/Intent/Component/SkillIntentComponent.h"
 
+#include "Game/ECS/Tags/CharacterAttribTags.h"
 
 #include "Game/Combat/Skill/Component/SkillSlotAssignmentComponent.h"
 
@@ -22,7 +23,7 @@ void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerPlayerSkills
 		gNsSkillIntent::SkillIntentComponent,
 		gNsSkillComp::SkillSlotAssignmentComponent,
 		eNsLogic2DComp::Logic2DTransformComponent,
-		eNsTagComp::PlayerCharacterTag>())
+		gNsTags::PlayerCharacterTag>())
 	{
 		const auto& intent = ecs.get<gNsSkillIntent::SkillIntentComponent>(ePlayer);
 		const auto& slotAssign = ecs.get<gNsSkillComp::SkillSlotAssignmentComponent>(ePlayer);

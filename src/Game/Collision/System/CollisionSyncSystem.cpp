@@ -13,9 +13,9 @@ void Game::Collision::System::CollisionSyncSystem(eNsECS::EntityMgr& ecs)
 		auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
 		auto& collision = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
 
-		if (collision.collider.type == eNsLogic2DComp::ColliderType::Circle2D)
-		{
-			collision.collider.circle2D.center = logic.positionXZ;
-		}
+		//if (collision.collider.type == eNsLogic2DComp::ColliderType::Circle2D)
+		//{
+		//	collision.collider.circle2D.center = logic.positionXZ;
+		//}
 	}
 }

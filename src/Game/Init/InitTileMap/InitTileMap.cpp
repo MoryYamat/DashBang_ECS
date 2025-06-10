@@ -7,6 +7,9 @@
 #include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
 #include "Engine/ECS/Component/Tags/ObstacleTagComponent.h"
 
+
+#include "Engine/ECS/Component/Tags/MapTags.h"
+
 #include "Engine/Physics/Logic2D/DetectionFunctions.h"
 
 #include <iostream>
@@ -138,20 +141,29 @@ glm::vec2 Game::Init::Logic2D::ComputeTileMapOriginFromModel(
 void Game::Init::Logic2D::ApplyObstacleCollidersToTileMap(eNsECS::EntityMgr& ecs, eNsLogic2DComp::TileMapComponent& tileMapComp)
 {
 	// std::cout << "this function is called " << std::endl;
-	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::CollisionComponent, eNsTagComp::ObstacleTagComponent>())
+	for (eNsECS::Entity e : ecs.view<
+		eNsLogic2DComp::CollisionComponent,
+		eNsTagComp::ObstacleTagComponent,
+		eNsLogic2DComp::Logic2DTransformComponent>())
 	{
 		const auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
+		auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
+		//if (collisionComp.collider.type != eNsLogic2DComp::ColliderType::Obb2D)
+		//	continue;
 
-		if (collisionComp.collider.type != eNsLogic2DComp::ColliderType::Obb2D)
+		if (!collisionComp.collider.IsObb2D())
 			continue;
 
-		const eNsLogic2DComp::Obb2D& obb = collisionComp.collider.obb2D;
+		// ローカル情報 -> ワールド変換
+		const eNsLogic2DComp::Obb2D& obblocal = collisionComp.collider.AsObb2D();
+		eNsLogic2DComp::Obb2D obbWorld = obblocal;
+		obbWorld.center += logic.positionXZ;
 
 		for (int row = 0; row < tileMapComp.numRows; ++row)
 		{
 			for(int col = 0; col < tileMapComp.numCols; ++col)
 			{
-				glm::vec2 tileCenter = tileMapComp.GetTileCenter(row, col);
+				// glm::vec2 tileCenter = tileMapComp.GetTileCenter(row, col);
 
 				auto [tileMin, tileMax] = tileMapComp.GetTileAABB(row, col);
 				//if (obb.contains(tileCenter))
@@ -163,7 +175,7 @@ void Game::Init::Logic2D::ApplyObstacleCollidersToTileMap(eNsECS::EntityMgr& ecs
 				//	DebugUtils::LogVector_string("[InitTileMap.cpp(This Tile is Un Walkable)] :", tileCenter);
 				//}
 
-				if (eNsPhys2DColl::intersectOBB2D_AABB2D(obb, tileMin, tileMax))
+				if (eNsPhys2DColl::intersectOBB2D_AABB2D(obbWorld, tileMin, tileMax))
 				{
 					tileMapComp.tiles[row][col].isWalkable = false;
 				}
@@ -179,14 +191,27 @@ void Game::Init::Logic2D::ApplyObstacleCollidersToTileMap(eNsECS::EntityMgr& ecs
 
 void Game::Init::Logic2D::MaskUncoveredTilesByTerrainOBB(eNsECS::EntityMgr& ecs, eNsLogic2DComp::TileMapComponent& tileMapComp)
 {
-	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::CollisionComponent, eNsLogic2DComp::TileMapComponent>())
+	for (eNsECS::Entity e : ecs.view<
+		eNsLogic2DComp::CollisionComponent,
+		eNsTagComp::TerrainMeshTag,
+		eNsLogic2DComp::Logic2DTransformComponent>())
 	{
 		const auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
+		const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
 
-		if (collisionComp.collider.type != eNsLogic2DComp::ColliderType::Obb2D)
+		//if (collisionComp.collider.type != eNsLogic2DComp::ColliderType::Obb2D)
+		//	continue;
+
+		//const eNsLogic2DComp::Obb2D& obb = collisionComp.collider.obb2D;
+
+		if (!collisionComp.collider.IsObb2D())
 			continue;
 
-		const eNsLogic2DComp::Obb2D& obb = collisionComp.collider.obb2D;
+		// ローカル情報 -> ワールド変換
+		const eNsLogic2DComp::Obb2D& obblocal = collisionComp.collider.AsObb2D();
+		eNsLogic2DComp::Obb2D obbWorld = obblocal;
+		obbWorld.center += logic.positionXZ;
+
 
 		for (int row = 0; row < tileMapComp.numRows; ++row)
 		{
@@ -205,7 +230,7 @@ void Game::Init::Logic2D::MaskUncoveredTilesByTerrainOBB(eNsECS::EntityMgr& ecs,
 				//}
 
 				// TerrainMeshと被らない空中部分のタイルの`unWalkable`設定
-				if (!eNsPhys2DColl::intersectOBB2D_AABB2D(obb, tileMin, tileMax))
+				if (!eNsPhys2DColl::intersectOBB2D_AABB2D(obbWorld, tileMin, tileMax))
 				{
 					tileMapComp.tiles[row][col].isWalkable = false;
 				}

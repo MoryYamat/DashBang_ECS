@@ -7,14 +7,28 @@
 namespace Game::Collision::Data
 {
 	// bit flag
-	enum class Layer : uint8_t
+	enum class Layer : uint32_t
 	{
 		None = 0,
+		// Player
 		Player = 1 << 0,
+		// 敵
 		Enemy = 1 << 1,
-		Tile = 1 << 2,
-		Skill = 1 << 3,
-		Sensor = 1 << 4,
+		// 味方
+		Friendly = 1 << 2,
+		// 中立
+		Neutral = 1 << 3,
+
+		// 相殺されないスキル
+		Skill = 1 << 4,
+		// 相殺対象になりうるスキル
+		SkillCounterable = 1 << 5,
+		// 相殺されないが当たるスキル?
+		SkillUnblockable = 1 << 6,
+
+
+		Tile = 1 << 7,
+		Sensor = 1 << 8,
 
 
 		All = 0xFF
@@ -23,6 +37,6 @@ namespace Game::Collision::Data
 	// 演算子オーバーロード
 	inline Layer operator|(Layer a, Layer b)
 	{
-		return static_cast<Layer>(static_cast<uint8_t>(a) | static_cast<uint8_t>(b));
+		return static_cast<Layer>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));
 	}
 }

@@ -8,6 +8,8 @@
 #include "Game/Combat/Skill/Component/SkillInputBindingComponent.h"
 #include "Game/Combat/Skill/Intent/Component/SkillIntentComponent.h"
 
+#include "Game/ECS/Tags/CharacterAttribTags.h"
+
 #include "Common/GameNamespaceDecl.h"
 
 #include <iostream>
@@ -20,7 +22,7 @@ void Game::Input::Intent::SkillIntentMappingSystem::UpdatePlayerSkillIntent(eNsE
 		gNsInput::InputActionComponent,
 		gNsSkillComp::SkillInputBindingComponent,
 		gNsSkillIntent::SkillIntentComponent,
-		eNsTagComp::PlayerCharacterTag>())
+		gNsTags::PlayerCharacterTag>())
 	{
 		// ‚±‚±‚Ü‚Å—ˆ‚Ä‚È‚¢
 		const auto& input = ecs.get<gNsInput::InputActionComponent>(e);

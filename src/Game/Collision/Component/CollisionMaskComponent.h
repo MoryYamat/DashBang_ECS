@@ -11,6 +11,6 @@ namespace Game::Collision::Component
 	struct CollisionMaskComponent
 	{
 		Game::Collision::Data::Layer selfLayer = Game::Collision::Data::Layer::None;
-		uint8_t collidesWithMask = 0; // ORしたマスク (bit mask)
+		uint32_t collidesWithMask = 0; // ORしたマスク (bit mask)
 	};
 }

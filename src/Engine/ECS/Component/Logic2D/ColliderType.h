@@ -1,5 +1,6 @@
-// Define the name of ColliderType and data structure
-
+// Collision shape local definition **Use in conjunction with world transformation info when used**
+// コリジョンの形状ローカル定義 **使用時にワールド変換情報と組み合わせて使う**
+// 
 #pragma once
 
 #include <GLM/glm.hpp>
@@ -7,6 +8,9 @@
 #include <cmath>
 
 #include "Common/EngineNamespaceDecl.h"
+
+#include <variant>
+#include <cassert>
 
 namespace Engine::ECS::Component::Logic2D
 {
@@ -25,6 +29,7 @@ namespace Engine::ECS::Component::Logic2D
 	// 2D円
 	struct Circle2D
 	{
+		// ローカルオフセット
 		glm::vec2 center;
 		float radius;
 	};
@@ -32,6 +37,7 @@ namespace Engine::ECS::Component::Logic2D
 	// 2D正方形
 	struct Box2D
 	{
+		// ローカルオフセット
 		glm::vec2 center;
 		glm::vec2 halfExtents;
 	};
@@ -40,6 +46,7 @@ namespace Engine::ECS::Component::Logic2D
 	// 回転あり境界ボックス
 	struct Obb2D
 	{
+		// ローカルオフセット
 		glm::vec2 center;//
 		glm::vec2 halfExtents; // (width/2, height/2)
 		glm::vec2 axisX; // X軸方向の単位ベクトル
@@ -60,42 +67,88 @@ namespace Engine::ECS::Component::Logic2D
 
 	struct AABB3D
 	{
+		// ローカルオフセット
 		glm::vec3 min;
 		glm::vec3 max;
 	};
 
 	struct Sphere3D
 	{
+		// ローカルオフセット
 		glm::vec3 center;
 		float radius;
 	};
 
 	struct Capsule3D
 	{
+		// ローカルオフセット
 		glm::vec3 base;
 		glm::vec3 tip;
 		float radius;
 	};
 
+	using CollideVariant = std::variant<std::monostate, Circle2D, Box2D, Obb2D, AABB3D, Sphere3D, Capsule3D>;
 
 	// Collider Data Structure
 	struct Collider
 	{
-		eNsLogic2DComp::ColliderType type;
+		//eNsLogic2DComp::ColliderType type;
 
-		union
+		// パフォーマンスと安全性を高める方法を考えるまではVariantで
+		CollideVariant shape;
+
+		ColliderType getType() const
 		{
-			// sizeof (need to think about bottlenecks)
-			eNsLogic2DComp::Circle2D circle2D;
-			eNsLogic2DComp::Box2D box2D;
-			eNsLogic2DComp::Obb2D obb2D;
-			eNsLogic2DComp::AABB3D aabb3D;
-			eNsLogic2DComp::Sphere3D sphere3D;
-			eNsLogic2DComp::Capsule3D capsule3D;
-		};
+			return std::visit([](auto&& arg) -> ColliderType {
+				using T = std::decay_t<decltype(arg)>;
+				if constexpr (std::is_same_v<T, Circle2D>) return ColliderType::Circle2D;
+				else if constexpr (std::is_same_v<T, Box2D>) return ColliderType::Box2D;
+				else if constexpr (std::is_same_v<T, Obb2D>) return ColliderType::Obb2D;
+				else if constexpr (std::is_same_v<T, AABB3D>) return ColliderType::AABB3D;
+				else if constexpr (std::is_same_v<T, Sphere3D>) return ColliderType::Sphere3D;
+				else if constexpr (std::is_same_v<T, Capsule3D>) return ColliderType::Capsule3D;
+				else return ColliderType::None;
+				}, shape);
+		}
 
-		// default Constructor
-		Collider() : type(eNsLogic2DComp::ColliderType::None), box2D{} {}
+		// helper functions
+		bool IsCircle2D() const { return std::holds_alternative<Circle2D>(shape); }
+		bool IsBox2D() const { return std::holds_alternative<Box2D>(shape); }
+		bool IsObb2D() const { return std::holds_alternative<Obb2D>(shape); }
+
+		Circle2D& AsCircle2D() { return std::get<Circle2D>(shape); }
+		Box2D& AsBox2D() { return std::get<Box2D>(shape); }
+		Obb2D& AsObb2D() { return std::get<Obb2D>(shape); }
+
+		const Circle2D& AsCircle2D() const 
+		{ 
+			assert(IsCircle2D());
+			return std::get<Circle2D>(shape); 
+		}
+		const Box2D& AsBox2D() const 
+		{
+			assert(IsBox2D());
+			return std::get<Box2D>(shape); 
+		}
+		const Obb2D& AsObb2D() const 
+		{
+			assert(IsObb2D());// 開発時のみチェック
+			return std::get<Obb2D>(shape); 
+		}
+		
+		//union
+		//{
+		//	// sizeof (need to think about bottlenecks)
+		//	eNsLogic2DComp::Circle2D circle2D;
+		//	eNsLogic2DComp::Box2D box2D;
+		//	eNsLogic2DComp::Obb2D obb2D;
+		//	eNsLogic2DComp::AABB3D aabb3D;
+		//	eNsLogic2DComp::Sphere3D sphere3D;
+		//	eNsLogic2DComp::Capsule3D capsule3D;
+		//};
+
+		//// default Constructor
+		//Collider() : type(eNsLogic2DComp::ColliderType::None), box2D{} {}
 	};
 
 }

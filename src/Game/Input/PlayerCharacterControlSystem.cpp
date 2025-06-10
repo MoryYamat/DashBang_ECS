@@ -73,9 +73,14 @@ void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, const eNsInput::RawInpu
 			// ここが問題だと思う(責務分離)
 			// ここが問題だと思う(責務分離)
 			// collision update
-			if (collisionComp.collider.type == eNsLogic2DComp::ColliderType::Circle2D)
+			//if (collisionComp.collider.type == eNsLogic2DComp::ColliderType::Circle2D)
+			//{
+			//	collisionComp.collider.circle2D.center = logic.positionXZ;
+			//}
+			// ここで，(local)centerを更新するのはよくない
+			if (collisionComp.collider.IsCircle2D())
 			{
-				collisionComp.collider.circle2D.center = logic.positionXZ;
+				collisionComp.collider.AsCircle2D().center = logic.positionXZ;
 			}
 		}
 
@@ -148,10 +153,16 @@ void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, InputState& input, floa
 			moveDir = glm::normalize(moveDir);
 			logic.positionXZ += moveDir * deltaTime * 5.0f; // 移動速度
 
-			// collision update
-			if (collisionComp.collider.type == eNsLogic2DComp::ColliderType::Circle2D)
+			//// collision update
+			//if (collisionComp.collider.type == eNsLogic2DComp::ColliderType::Circle2D)
+			//{
+			//	collisionComp.collider.circle2D.center = logic.positionXZ;
+			//}
+
+			// ここで，(local)centerを更新するのはよくない
+			if (collisionComp.collider.IsCircle2D())
 			{
-				collisionComp.collider.circle2D.center = logic.positionXZ;
+				collisionComp.collider.AsCircle2D().center = logic.positionXZ;
 			}
 		}
 

@@ -47,7 +47,9 @@ namespace Game::Init::Logic2D
 // For set tile attributes
 namespace Game::Init::Logic2D
 {
+	// 障害物アクターとかぶるタイルマップの属性を`unWalkable`へ設定する
 	void ApplyObstacleCollidersToTileMap(eNsECS::EntityMgr& ecs, eNsLogic2DComp::TileMapComponent& tileMapComp);
 
+	// 中空にあるタイルマップの属性を`unWalkable`へ設定
 	void MaskUncoveredTilesByTerrainOBB(eNsECS::EntityMgr& ecs, eNsLogic2DComp::TileMapComponent& tileMapComp);
 }

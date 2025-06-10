@@ -1,5 +1,7 @@
 #include "LogicDebugDrawSystem.h"
 
+#include "Engine/ECS/Component/Common/TransformComponent.h"
+
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 #include "Engine/ECS/Component/Logic2D/TileMapComponent.h"
 
@@ -20,6 +22,8 @@
 #include "Game/Combat/Skill/Component/Attack2DAreaComponent.h"
 
 #include "Game/Combat/Skill/Utils/ShapeUtils.h"
+
+#include "Game/ECS/Tags/CharacterAttribTags.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -64,7 +68,7 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawLogicPlayerPositions(eNsECS::Enti
 	glm::vec3 color = glm::vec3(1.0f, 0.0f, 0.0f);
 
 
-	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::Logic2DTransformComponent, eNsTagComp::PlayerCharacterTag>())
+	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::Logic2DTransformComponent, gNsTags::PlayerCharacterTag>())
 	{
 		const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
 
@@ -129,22 +133,49 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawLogicTileMaps(eNsECS::EntityMgr& 
 
 }
 
+// uion使用時の条件分岐
+//void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerCollision(eNsECS::EntityMgr& ecs, const eNsGfxRender::RenderContext& renderContext)
+//{
+//	glm::vec3 color = glm::vec3(0.0f, 1.0f, 1.0f);
+//
+//	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::CollisionComponent>())
+//	{
+//		const auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
+//
+//
+//		if (collisionComp.collider.type == eNsLogic2DComp::ColliderType::Circle2D)
+//		{
+//			glm::vec2 center = collisionComp.collider.circle2D.center;
+//			float radius = collisionComp.collider.circle2D.radius;
+//
+//			eNsDebugDraw::DrawCircle2D(center, radius, color);
+//		}
+//	}
+//}
+
+// variantの条件分岐
 void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerCollision(eNsECS::EntityMgr& ecs, const eNsGfxRender::RenderContext& renderContext)
 {
 	glm::vec3 color = glm::vec3(0.0f, 1.0f, 1.0f);
 
-	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::CollisionComponent>())
+	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::CollisionComponent, eNsCommonComp::TransformComponent>())
 	{
 		const auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
+		const auto& transformComp = ecs.get<eNsCommonComp::TransformComponent>(e);
 
+		std::visit([&](auto&& shape) {
+			using T = std::decay_t<decltype(shape)>;
+			if constexpr (std::is_same_v<T, eNsLogic2DComp::Circle2D>)
+			{
+				// ローカル -> ワールド変換
+				glm::vec2 worldCenter = glm::vec2(transformComp.position.x, transformComp.position.z)
+					+ shape.center;// ローカルオフセット
 
-		if (collisionComp.collider.type == eNsLogic2DComp::ColliderType::Circle2D)
-		{
-			glm::vec2 center = collisionComp.collider.circle2D.center;
-			float radius = collisionComp.collider.circle2D.radius;
+				float worldRadius = shape.radius;// 必要ならスケーリング(ローカルにスケーリングを適用済(修正必要))
 
-			eNsDebugDraw::DrawCircle2D(center, radius, color);
-		}
+				eNsDebugDraw::DrawCircle2D(worldCenter, worldRadius, color);
+			}
+			}, collisionComp.collider.shape);
 	}
 }
 

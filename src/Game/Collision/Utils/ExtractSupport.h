@@ -33,7 +33,7 @@ namespace Game::Collision::Utils
 		)
 	{
 		// a ‚Ì selfLayer ‚É‘Î‚µ‚Ä b.collidesWithMask‚ªˆê’v‚µ‚Ä‚¢‚é‚©
-		return (static_cast<uint8_t>(a.selfLayer) & b.collidesWithMask) ||
-			(static_cast<uint8_t>(b.selfLayer) & a.collidesWithMask);
+		return (static_cast<uint32_t>(a.selfLayer) & b.collidesWithMask) ||
+			(static_cast<uint32_t>(b.selfLayer) & a.collidesWithMask);
 	}
 }

@@ -10,6 +10,7 @@
 
 #include "Game/Collision/Extractor/PlayerTileCollisionExtractor.h"
 
+#include "Game/ECS/Tags/CharacterAttribTags.h"
 
 #include "Game/Collision/Data/CollisionContextData.h"
 
@@ -23,13 +24,14 @@ void Game::Collision::System::UpdateCollisionResultStorage(eNsECS::EntityMgr& ec
 {
 	Game::Collision::Data::PlayerCollisionContext playerCollisionCtx;
 
-	for (eNsECS::Entity e : ecs.view<eNsTagComp::PlayerCharacterTag, eNsLogic2DComp::Logic2DTransformComponent, eNsLogic2DComp::CollisionComponent>())
+	for (eNsECS::Entity e : ecs.view<gNsTags::PlayerCharacterTag, eNsLogic2DComp::Logic2DTransformComponent, eNsLogic2DComp::CollisionComponent>())
 	{
 		const auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
 		const auto& logic2DComp = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
 
-		playerCollisionCtx.center = collisionComp.collider.circle2D.center;
-		playerCollisionCtx.radius = collisionComp.collider.circle2D.radius;
+		// 更新 (名残，形状情報／変換情報の明確な責務分離後未使用)
+		playerCollisionCtx.center = logic2DComp.positionXZ;
+		// playerCollisionCtx.radius = collisionComp.collider.circle2D.radius;
 	//	playerCollisionCtx.playerEntity = e;
 
 		break;

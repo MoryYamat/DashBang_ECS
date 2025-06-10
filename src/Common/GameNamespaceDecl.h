@@ -24,6 +24,16 @@ namespace Game
 		namespace Player {}
 	}
 
+	namespace ECS
+	{
+		namespace Component
+		{
+
+		}
+
+		namespace Tags {}
+	}
+
 	// character
 	namespace Character
 	{
@@ -100,6 +110,10 @@ namespace gNsFeature = Game::Feature;
 
 // Game::Layer
 namespace gNsLayer = Game::Layer;
+
+// ECS
+namespace gNsTags = Game::ECS::Tags;
+namespace gNsECSComp = Game::ECS::Component;
 
 // Game::Actor::
 namespace gNsActor = Game::Actor;

@@ -25,6 +25,7 @@ namespace Engine::Debug::Drawing::Logic2D
 	// 2D円を描画(デバッグ用)
 	void DebugDrawPlayerCollision(eNsECS::EntityMgr& ecs, const eNsGfxRender::RenderContext& renderContext);
 
+
 	// TileMapとPlayerCircle2Dのコリジョンを描画
 	void DebugDrawPlayerAndTileMap(eNsECS::EntityMgr& ecs,
 		const eNsGfxRender::RenderContext& renderContext,

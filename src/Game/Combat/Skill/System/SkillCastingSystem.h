@@ -10,6 +10,7 @@
 
 #include "Engine/Graphics/Renderer/RenderContext.h"
 
+#include "Game/Collision/Component/CollisionMaskComponent.h"
 
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
 
@@ -26,5 +27,10 @@ namespace Game::Combat::Skill::System
 	// スキルの論理的形状（HitArea）を定義に従って生成する
 	void SpawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsSkillData::SkillDatabase& skillDB);
 
+	// 攻撃範囲形状のCollisionMaskを作成する
+	gNsCollComp::CollisionMaskComponent generateSkillCollisionMask(
+		eNsECS::EntityMgr& ecs,
+		eNsECS::Entity caster
+	);
 	// void RotateVec2(const glm::vec2& v, float radians);
 }

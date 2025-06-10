@@ -9,12 +9,12 @@
 
 #include "Common/EngineNamespaceDecl.h"
 
-namespace Game::Collision::Utils
-{
-	// Scan the circle Collider and all tiles in the TileMap, and do something to the tiles that are in contact.
-	// 円ColliderとTileMapの全タイルとを走査し、接触しているタイルに対して何か処理をする
-	void TestCircleTileMapCollisionHighlight(
-		const eNsLogic2DComp::CollisionComponent& colliderComp,
-		const eNsLogic2DComp::TileMapComponent& tileMapComp
-	);
-}
+//namespace Game::Collision::Utils
+//{
+//	// Scan the circle Collider and all tiles in the TileMap, and do something to the tiles that are in contact.
+//	// 円ColliderとTileMapの全タイルとを走査し、接触しているタイルに対して何か処理をする
+//	void TestCircleTileMapCollisionHighlight(
+//		const eNsLogic2DComp::CollisionComponent& colliderComp,
+//		const eNsLogic2DComp::TileMapComponent& tileMapComp
+//	);
+//}

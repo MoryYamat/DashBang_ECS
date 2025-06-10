@@ -14,6 +14,8 @@
 
 #include "Engine/ECS/Component/Logic2D/TileMapComponent.h"
 
+#include "Engine/ECS/Component/Tags/MapTags.h"
+
 #include "Game/Init/InitModel/InitLogicTransformFromModel.h"
 #include "Game/Init/InitTileMap/InitTileMap.h"
 
@@ -87,6 +89,7 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 	std::cout << "TestBaseTerrainActor.cpp: Rotation " << logic2DComp.rotation << std::endl;
 
 
+	// 削除予定
 //	// 1.0f -> 1.0m (想定)
 //	eNsLogic2DComp::TileMapComponent tileMapComp;
 //	tileMapComp.tileSize = 0.5f;
@@ -99,32 +102,32 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 //
 //	ecs.addComponent(entity, tileMapComp);
 
-	//eNsLogic2DComp::CollisionComponent collisionComp;
-	//// calc world size on the xz plane
-	//collisionComp.collider.type = eNsLogic2DComp::ColliderType::Obb2D;
-	//collisionComp.collider.obb2D.center = logic2DComp.positionXZ;
-	//glm::vec2 worldSize = gNsInit::Logic2D::GetModelXZSizeWithScale(transformComp, modelData);
-	//collisionComp.collider.obb2D.halfExtents = worldSize * 0.5f;
-
-	//// calc world center on the xz plane
-	//glm::vec3 localCenter = modelData.GetCenter();
-	//glm::vec3 worldCenter3D = transformComp.toMatrix() * glm::vec4(localCenter, 1.0f);
-	//glm::vec2 worldCenterXZ = glm::vec2(worldCenter3D.x, worldCenter3D.z);
-	//collisionComp.collider.obb2D.center = worldCenterXZ;
-
+	eNsLogic2DComp::CollisionComponent collisionComp;
+	// calc world size on the xz plane
+	glm::vec2 worldSize = gNsInit::Logic2D::GetModelXZSizeWithScale(transformComp, modelData);
+	// calc world center on the xz plane
+	glm::vec3 localCenter = modelData.GetCenter();
+	glm::vec3 worldCenter3D = transformComp.toMatrix() * glm::vec4(localCenter, 1.0f);
+	glm::vec2 worldCenterXZ = glm::vec2(worldCenter3D.x, worldCenter3D.z);
 	// calc local vector axisX and axisZ
-	//float rotRad = logic2DComp.rotation;// 描画基準と論理基準の整合性を考える
-	//// Front = Z axis basis
-	//glm::vec2 axisZ = glm::normalize(eNsLogic2DMath::CalcForwardFromYaw((rotRad)));
-	//glm::vec2 axisX = eNsLogic2DMath::CalcRightFromYaw(rotRad);
-	//collisionComp.collider.obb2D.axisX = axisX;
-	//collisionComp.collider.obb2D.axisZ = axisZ;
-	//ecs.addComponent(entity, collisionComp);
+	float rotRad = logic2DComp.rotation;// 描画基準と論理基準の整合性を考える
+	// Front = Z axis basis
+	glm::vec2 axisZ = glm::normalize(eNsLogic2DMath::CalcForwardFromYaw((rotRad)));
+	glm::vec2 axisX = eNsLogic2DMath::CalcRightFromYaw(rotRad);
 
+	collisionComp.collider.shape = eNsLogic2DComp::Obb2D
+	{
+		.center = glm::vec2(0.0f),// ローカルオフセット
+		.halfExtents = worldSize * 0.5f,
+		.axisX = axisX,
+		.axisZ = axisZ
+	};
+	ecs.addComponent(entity, collisionComp);
 
+	ecs.addComponent(entity, eNsTagComp::TerrainMeshTag{});
 
 	// TileMapActorの作成(Entityとして)
-	gNsActor::Map::TileMapActor::Create(ecs, transformComp, modelData, 0.5f);
+	[[maybe_unused]] auto _ =  gNsActor::Map::TileMapActor::Create(ecs, transformComp, modelData, 0.5f);
 
 
 	// 最終ログ

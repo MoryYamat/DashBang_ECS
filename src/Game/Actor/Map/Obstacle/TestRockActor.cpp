@@ -83,23 +83,26 @@ Game::Actor::Map::TestRockActor::TestRockActor(eNsECS::EntityMgr& ecs, eNsGfxRen
 
 	// for collision setting
 	eNsLogic2DComp::CollisionComponent testRockCollisionComp;
-	testRockCollisionComp.collider.type = eNsLogic2DComp::ColliderType::Obb2D;
 	// calc world size on the xz plane
 	glm::vec2 obbSize = Game::Init::Logic2D::GetModelXZSizeWithScale(transformComp, modelData);
-	testRockCollisionComp.collider.obb2D.halfExtents = obbSize / 2.0f;
-
 	// calc world center on the xz plane
 	glm::vec3 localCenter = modelData.GetCenter();
 	glm::vec3 worldCenter3D = transformComp.toMatrix() * glm::vec4(localCenter, 1.0f);
 	glm::vec2 worldCenterXZ = glm::vec2(worldCenter3D.x, worldCenter3D.z);
-	testRockCollisionComp.collider.obb2D.center = worldCenterXZ;
-
 	// calc local vector axisX and axisZ
 	float rotRad = logic.rotation;// 描画基準(+Z)と論理基準(-Z)の整合性を考える
 	glm::vec2 axisZ = glm::normalize(eNsLogic2DMath::CalcForwardFromYaw(rotRad));
 	glm::vec2 axisX = eNsLogic2DMath::CalcRightFromYaw(rotRad);
-	testRockCollisionComp.collider.obb2D.axisX = axisX;
-	testRockCollisionComp.collider.obb2D.axisZ = axisZ;
+
+	testRockCollisionComp.collider.shape = eNsLogic2DComp::Obb2D{
+		.center = glm::vec2(0.0f),// ローカルオフセット
+		.halfExtents =obbSize / 2.0f,
+		.axisX = axisX,
+		.axisZ = axisZ
+	};
+
+
+
 	ecs.addComponent(entity, testRockCollisionComp);
 	
 	// obstacle object's tag
@@ -107,9 +110,9 @@ Game::Actor::Map::TestRockActor::TestRockActor(eNsECS::EntityMgr& ecs, eNsGfxRen
 	ecs.addComponent(entity, obstacleTagComp);
 
 	// Log
-	eNsDebugLog::LogVector_string("[TestRockActor.cpp(CollsionCenter)]: ", testRockCollisionComp.collider.obb2D.center);
-	eNsDebugLog::LogVector_string("[TestRockActor.cpp(AxisX)]: ", testRockCollisionComp.collider.obb2D.axisX);
-	eNsDebugLog::LogVector_string("[TestRockActor.cpp(AxisZ)]: ", testRockCollisionComp.collider.obb2D.axisZ);
+	//eNsDebugLog::LogVector_string("[TestRockActor.cpp(CollsionCenter)]: ", testRockCollisionComp.collider.obb2D.center);
+	//eNsDebugLog::LogVector_string("[TestRockActor.cpp(AxisX)]: ", testRockCollisionComp.collider.obb2D.axisX);
+	//eNsDebugLog::LogVector_string("[TestRockActor.cpp(AxisZ)]: ", testRockCollisionComp.collider.obb2D.axisZ);
 
 
 

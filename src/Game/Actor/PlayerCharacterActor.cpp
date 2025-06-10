@@ -53,7 +53,9 @@
 #include "Game/Init/InitModel/InitLogicTransformFromModel.h"
 #include "Game/Init/InitTileMap/InitTileMap.h"
 
-
+// Game ECS
+#include "Game/ECS/Tags/CharacterAttribTags.h"
+#include "Game/ECS/Component/TeamComponent.h"
 
 #include "Engine/Debug/DebugUtils.h"
 
@@ -136,19 +138,20 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	// Collsion Initialization
 	// コリジョン初期化
 	eNsLogic2DComp::CollisionComponent playerCollisionComp;
-	
-	playerCollisionComp.collider.type = eNsLogic2DComp::ColliderType::Circle2D;
-	playerCollisionComp.collider.circle2D.center = logic.positionXZ;
+	playerCollisionComp.collider.shape = eNsLogic2DComp::Circle2D{
+		.center = glm::vec2(0.0f),// ローカルセンター
+		.radius = gNsInit::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, gNsInit::Logic2D::RadiusEstimateStrategy::MaxAxis)
+	};
+	//playerCollisionComp.collider.circle2D.center = logic.positionXZ;
 	playerCollisionComp.isStatic = false;
-	float radius = gNsInit::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, gNsInit::Logic2D::RadiusEstimateStrategy::MaxAxis);
-
-	playerCollisionComp.collider.circle2D.radius = radius;
+	// float radius = gNsInit::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, gNsInit::Logic2D::RadiusEstimateStrategy::MaxAxis);
+	// playerCollisionComp.collider.circle2D.radius = radius;
 	ecs.addComponent(entity, playerCollisionComp);
 
 	// Collision Mask 初期化
 	gNsCollComp::CollisionMaskComponent playerMask;
 	playerMask.selfLayer = gNsCollData::Layer::Player;
-	playerMask.collidesWithMask = static_cast<uint8_t>(gNsCollData::Layer::Tile | gNsCollData::Layer::Tile);
+	playerMask.collidesWithMask = static_cast<uint32_t>(gNsCollData::Layer::Tile | gNsCollData::Layer::Tile);
 
 	// 以前の設計
 	//SkillInstanceComponent activeSkill1;
@@ -181,7 +184,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	ActiveSkillCasterComponent ascc;
 	ecs.addComponent(entity, ascc);
 
-	std::cout << "[[PlayerCharacterActor.cpp(radius)] : radius. " << radius << std::endl;
+	// std::cout << "[[PlayerCharacterActor.cpp(radius)] : radius. " << radius << std::endl;
 
 	//std::cout << "[PlayerCharacterActor.cpp]: Logic Position: x. " << logic.positionXZ.x << " z. " << logic.positionXZ.y << std::endl;
 	//std::cout << "[PlayerCharacterActor.cpp]: Logic Rotation " << logic.rotation << std::endl;
@@ -209,7 +212,11 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 		});
 
 	// Tag
-	ecs.addComponent(entity, eNsTagComp::PlayerCharacterTag{});
+	ecs.addComponent(entity, gNsTags::PlayerCharacterTag{});
+
+	ecs.addComponent(entity, gNsECSComp::TeamComponent{
+		.team = gNsECSComp::Team::PlayerTeam
+		});
 }
 
 Game::Actor::Player::PlayerCharacter::~PlayerCharacter()

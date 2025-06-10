@@ -4,6 +4,8 @@
 
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
 
+#include "Game/ECS/Tags/CharacterAttribTags.h"
+
 #include "Engine/Debug/DebugUtils.h"
 
 #include "Engine/Config/CanonicalDefaults.h"
@@ -19,10 +21,9 @@ void Game::Input::Intent::MovementIntentMappingSystem::UpdatePlayerMovementInten
 {
 	// update player movement intent
 	for (eNsECS::Entity e : ecs.view<
-		gNsInput::InputActionComponent
-		, gNsCharacterIntent::MovementIntentComponent
-		, eNsTagComp::PlayerControllerComponent
-	>())
+		gNsInput::InputActionComponent,
+		gNsCharacterIntent::MovementIntentComponent,
+		gNsTags::PlayerCharacterTag>())
 	{
 		auto& input = ecs.get<gNsInput::InputActionComponent>(e);
 		auto& move = ecs.get<gNsCharacterIntent::MovementIntentComponent>(e);
