@@ -112,8 +112,8 @@ void Engine::Debug::Drawing::DrawCircle2D(const glm::vec2& centerXZ, float radiu
 		glVertex3f(p.x, p.y, p.z);
 	}
 	glEnd();
-
-
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void Engine::Debug::Drawing::DrawFilledCircle2D(const glm::vec2& centerXZ, float radius, const glm::vec4& color, int segments)
