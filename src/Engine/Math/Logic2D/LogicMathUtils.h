@@ -73,7 +73,6 @@ namespace Engine::Math::Logic2D
 	}
 
 
-
 	// 右手系(反時計回りが正)において，あるベクトルに対する右ベクトルを返す
 	inline glm::vec2 CalcRightFromForward(glm::vec2 front)
 	{

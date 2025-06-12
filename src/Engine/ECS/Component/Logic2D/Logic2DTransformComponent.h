@@ -45,5 +45,6 @@ namespace Engine::ECS::Component::Logic2D
 			front = glm::normalize(eNsLogic2DMath::CalcForwardFromYaw(rotation));
 			right = eNsLogic2DMath::CalcRightFromYaw(rotation);
 		}
+
 	};
 }

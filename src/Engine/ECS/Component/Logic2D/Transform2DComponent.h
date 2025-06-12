@@ -22,7 +22,7 @@ namespace Engine::ECS::Component::Logic2D
 		float scale = 1.0f; // uniform
 
 		glm::vec2 front = CanonicalDefaults::kLocalForwardXZ;
-		glm::vec2 right = glm::vec2(-front.y, front.x);
+		glm::vec2 right = eNsLogic2DMath::CalcRightFromForward(front);
 
 		// front (radiansëOíÒ)
 		glm::vec2 GetFrontXZ() const
@@ -34,6 +34,12 @@ namespace Engine::ECS::Component::Logic2D
 		glm::vec2 GetRightXZ() const
 		{
 			return eNsLogic2DMath::CalcRightFromYaw(rotationY);// +ZäÓèÄ
+		}
+
+		// frontÇ…çáÇÌÇπÇƒçXêV
+		void UpdateRightFromFront()
+		{
+			right = eNsLogic2DMath::CalcRightFromForward(front);
 		}
 	};
 }

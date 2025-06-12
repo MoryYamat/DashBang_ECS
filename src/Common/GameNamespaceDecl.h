@@ -70,6 +70,8 @@ namespace Game
 		namespace System {}
 		namespace Extract {}
 		namespace Utils {}
+		namespace Convert {}
+		namespace Intersect {}
 	}
 
 	namespace Combat
@@ -151,6 +153,8 @@ namespace gNsCollData = Game::Collision::Data;//
 namespace gNsCollSystem = Game::Collision::System;
 namespace gNsCollExtract = Game::Collision::Extract;
 namespace gNsCollUtil = Game::Collision::Utils;
+namespace gNsCollConvert = Game::Collision::Convert;
+namespace gNsCollIntersect = Game::Collision::Intersect;
 
 // Game::Combat::
 namespace gNsSkillComp = Game::Combat::Skill::Component;
