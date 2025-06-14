@@ -65,6 +65,7 @@ namespace Game
 
 	namespace Collision
 	{
+		namespace Init {}
 		namespace Component {}
 		namespace Data {}
 		namespace System {}
@@ -148,6 +149,7 @@ namespace gNsInit = Game::Init;
 
 // Game::Collision::
 namespace gNsColl = Game::Collision;
+namespace gNsCollInit = Game::Collision::Init;
 namespace gNsCollComp = Game::Collision::Component;
 namespace gNsCollData = Game::Collision::Data;// 
 namespace gNsCollSystem = Game::Collision::System;

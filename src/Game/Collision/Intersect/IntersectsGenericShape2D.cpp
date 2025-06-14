@@ -13,41 +13,79 @@ bool Game::Collision::Intersect::Intersects(const GenericShape2D& a, const Gener
 		using L = std::decay_t<decltype(lhs)>;
 		using R = std::decay_t<decltype(rhs)>;
 
-		// –³Œø‚ÈŒ`ó(monostate)‚È‚çfalse
-		if constexpr (std::is_same_v<L, std::monostate> || std::is_same_v<R, std::monostate>)
+		if constexpr (std::is_same_v<L, std::monostate> || std::is_same_v<R, std::monostate>) {
 			return false;
+		}
 
-		// Circle - Circle
-		else if constexpr (std::is_same_v<L, Circle2D> && std::is_same_v<R, Circle2D>)
+		if constexpr (std::is_same_v<L, Circle2D> && std::is_same_v<R, Circle2D>) {
 			return Intersects_Circle_Circle(lhs, rhs);
-
-		// Circle - Sector
-		else if constexpr (std::is_same_v<L, Circle2D> && std::is_same_v<R, Sector2D>)
+		}
+		else if constexpr (std::is_same_v<L, Circle2D> && std::is_same_v<R, Sector2D>) {
 			return Intersects_Circle_Sector(lhs, rhs);
-
-		// Circle - Obb		
-		else if constexpr (std::is_same_v<L, Circle2D> && std::is_same_v<R, Obb2D>)
+		}
+		else if constexpr (std::is_same_v<L, Sector2D> && std::is_same_v<R, Circle2D>) {
+			return Intersects_Circle_Sector(rhs, lhs); // ˆø”‚Ì‡”Ô‚ğ“ü‚ê‘Ö‚¦‚é
+		}
+		else if constexpr (std::is_same_v<L, Circle2D> && std::is_same_v<R, Obb2D>) {
 			return Intersects_Circle_Obb(lhs, rhs);
-
-		// Sector - Sector
-		else if constexpr (std::is_same_v<L, Sector2D> && std::is_same_v<R, Sector2D>)
+		}
+		else if constexpr (std::is_same_v<L, Obb2D> && std::is_same_v<R, Circle2D>) {
+			return Intersects_Circle_Obb(rhs, lhs); // ˆø”‚Ì‡”Ô‚ğ“ü‚ê‘Ö‚¦‚é
+		}
+		else if constexpr (std::is_same_v<L, Sector2D> && std::is_same_v<R, Sector2D>) {
 			return Intersects_Sector_Sector(lhs, rhs);
-
-		// Sector - Obb
-		else if constexpr (std::is_same_v<L, Sector2D> && std::is_same_v<R, Obb2D>)
+		}
+		else if constexpr (std::is_same_v<L, Sector2D> && std::is_same_v<R, Obb2D>) {
 			return Intersects_Sector_Obb(lhs, rhs);
-
-		// Obb - Obb
-		else if constexpr (std::is_same_v<L, Obb2D> && std::is_same_v<R, Obb2D>)
+		}
+		else if constexpr (std::is_same_v<L, Obb2D> && std::is_same_v<R, Sector2D>) {
+			return Intersects_Sector_Obb(rhs, lhs); // ‡˜”½“]
+		}
+		else if constexpr (std::is_same_v<L, Obb2D> && std::is_same_v<R, Obb2D>) {
 			return Intersects_Obb_Obb(lhs, rhs);
-
-		// ‚Ù‚©‚Ì”»’è‚à‡Ÿ’Ç‰Á
-
-		else
-			std::cout << "[IntersectsGenericShape2D.cpp(Intersects)]: There is no corresponding shape pair.\n";
+		}
+		else {
+			std::cout << "[IntersectsGenericShape2D.cpp]: No handler for ("
+				<< typeid(L).name() << ", " << typeid(R).name() << ")\n";
 			return false;
-
+		}
 		}, a, b);
+
+		//// –³Œø‚ÈŒ`ó(monostate)‚È‚çfalse
+		//if constexpr (std::is_same_v<L, std::monostate> || std::is_same_v<R, std::monostate>)
+		//	return false;
+
+		//// Circle - Circle
+		//else if constexpr (std::is_same_v<L, Circle2D> && std::is_same_v<R, Circle2D>)
+		//	return Intersects_Circle_Circle(lhs, rhs);
+
+		//// Circle - Sector
+		//else if constexpr (std::is_same_v<L, Circle2D> && std::is_same_v<R, Sector2D>)
+		//	return Intersects_Circle_Sector(lhs, rhs);
+
+		//// Circle - Obb		
+		//else if constexpr (std::is_same_v<L, Circle2D> && std::is_same_v<R, Obb2D>)
+		//	return Intersects_Circle_Obb(lhs, rhs);
+
+		//// Sector - Sector
+		//else if constexpr (std::is_same_v<L, Sector2D> && std::is_same_v<R, Sector2D>)
+		//	return Intersects_Sector_Sector(lhs, rhs);
+
+		//// Sector - Obb
+		//else if constexpr (std::is_same_v<L, Sector2D> && std::is_same_v<R, Obb2D>)
+		//	return Intersects_Sector_Obb(lhs, rhs);
+
+		//// Obb - Obb
+		//else if constexpr (std::is_same_v<L, Obb2D> && std::is_same_v<R, Obb2D>)
+		//	return Intersects_Obb_Obb(lhs, rhs);
+
+		//// ‚Ù‚©‚Ì”»’è‚à‡Ÿ’Ç‰Á
+
+		//else
+		//	std::cout << "[IntersectsGenericShape2D.cpp(Intersects)]: There is no corresponding shape pair.\n";
+		//	return false;
+
+		//}, a, b);
 }
 
 bool Game::Collision::Intersect::Intersects_Circle_Circle(const Circle2D& a, const Circle2D& b)

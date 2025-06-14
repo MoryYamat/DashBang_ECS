@@ -33,11 +33,16 @@ std::function<eNsLogic2DComp::Transform2DComponent(float)> Game::Combat::Skill::
 					{
 						float progress = glm::clamp(t / duration, 0.0f, 1.0f);// 経過時間を 0.0 - 1.0 に正規化
 						float angle = glm::mix(startRad, endRad, progress);// angle: startAngle から endAngle まで線形補間 
+
+						float yaw = origin.rotationY + angle;
 						// Transform2DComponent の rotationY にこの角度を設定
-						return eNsLogic2DComp::Transform2DComponent{ 
-							.positionXZ = center, 
-							.rotationY = origin.rotationY + angle, 
-							.scale = 1.0f 
+						return eNsLogic2DComp::Transform2DComponent{
+							.positionXZ = center,
+							// .rotationY = origin.rotationY + angle, 
+							.rotationY = yaw,
+							.scale = 1.0f,
+							.front = eNsLogic2DMath::CalcForwardFromYaw(yaw),
+							.right = eNsLogic2DMath::CalcRightFromYaw(yaw),
 						};
 					};
 			}
@@ -55,7 +60,7 @@ std::function<eNsLogic2DComp::Transform2DComponent(float)> Game::Combat::Skill::
 						return eNsLogic2DComp::Transform2DComponent{
 							.positionXZ = start + offset,
 							.rotationY = angle,
-							.scale = 1.0f 
+							.scale = 1.0f
 						};
 					};
 			}

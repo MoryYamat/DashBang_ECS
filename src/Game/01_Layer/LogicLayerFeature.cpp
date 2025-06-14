@@ -24,10 +24,11 @@ void Game::Layer::LogicLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 	gNsFeature::Combat::SkillFeature::UpdateSkillTrajectorySystem(ecs, deltaTime);
 
 
-
 	// ------------------------- コリジョン関連処理 -------------------------
 	// コリジョンの位置情報などを更新する(CollisionComp.center etc.) (コリジョンはローカル形状情報に責務分離したためSyncCollは不要)
 	// コリジョンの位置情報などを更新する(CollisionComp.center etc.) (コリジョンはローカル形状情報に責務分離したためSyncCollは不要)
 	// コリジョンの位置情報などを更新する(CollisionComp.center etc.) (コリジョンはローカル形状情報に責務分離したためSyncCollは不要)
 	// gNsFeature::CollisionFeature::SyncLogicCollision(ecs);
+
+	gNsFeature::CollisionFeature::UpdateCollisionBuffer(ecs);
 }

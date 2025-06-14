@@ -14,6 +14,8 @@
 
 namespace Engine::ECS::Detail
 {
+
+
 	// AND: ‚·‚×‚Ä‚ÌŒ^‚ğ‚Â‚©
 	template<typename... MustComponents>
 	bool hasAllComponents(const std::unordered_map<std::type_index, std::unordered_map<uint32_t, std::shared_ptr<void>>>& pools,

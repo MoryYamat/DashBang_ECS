@@ -114,7 +114,7 @@ namespace Engine::ECS
 
 		}
 
-		// FilterSpec構造体：{std::taple<MustComps...>, std::tuple<AnyComps...>}
+		// viewに使用：FilterSpec構造体：{std::taple<MustComps...>, std::tuple<AnyComps...>}
 		template<typename MustSet, typename AnySet>
 		struct FilterSpec {};
 

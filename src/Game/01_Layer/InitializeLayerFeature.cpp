@@ -4,6 +4,8 @@
 
 #include "Game/00_Feature/System/InputFeature.h"
 
+#include "Game/00_Feature/Collision/CollisionFeature.h"
+
 #include "Common/GameNamespaceDecl.h"
 
 void Game::Layer::InitializeLayerFeature::DelayedInitialzation(eNsECS::EntityMgr& ecs)
@@ -18,4 +20,7 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialzation(eNsECS::EntityMgr
 
 	// スキルデータベース/定義初期化
 	gNsFeature::Combat::SkillFeature::InitializeSkillDatabase(ecs);
+
+	// Collision Result Buffer
+	gNsFeature::CollisionFeature::InitCollisionBuffer(ecs);
 }

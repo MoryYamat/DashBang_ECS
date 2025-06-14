@@ -30,13 +30,38 @@
 
 void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs)
 {
+	assert(ecs.hasResource<gNsCollData::CollisionResultBuffer>() && "CollisionResultBuffer not initialized");
 	auto& buffer = ecs.getResource<gNsCollData::CollisionResultBuffer>();
+	// std::cout << "[CollisionDetectionSystem.cpp()]Collision Count: " << buffer.results.size() << std::endl;
+
+	// バッファクリア
 	buffer.clear();
 
-	auto entities = ecs.view <
-		eNsLogic2DComp::CollisionComponent,
-		gNsCollComp::CollisionMaskComponent,
-		eNsLogic2DComp::Logic2DTransformComponent>();
+	//auto entities = ecs.view <
+	//	eNsLogic2DComp::CollisionComponent,
+	//	gNsCollComp::CollisionMaskComponent,
+	//	eNsLogic2DComp::Logic2DTransformComponent>();
+
+	// Must=>And , Any=>OR
+	// using Must = std::tuple<gNsCollComp::CollisionMaskComponent, eNsLogic2DComp::CollisionComponent>;
+	using Must = std::tuple<gNsCollComp::CollisionMaskComponent>;
+	// CollisionComponentをMustにすると，Skillに対応できない問題
+	// CollisionComponentをMustにすると，Skillに対応できない問題
+	// CollisionComponentをMustにすると，Skillに対応できない問題
+	
+	using Any = std::tuple<eNsLogic2DComp::Logic2DTransformComponent, eNsLogic2DComp::Transform2DComponent>;
+
+	auto entities = ecs.view(eNsECS::EntityMgr::FilterSpec<Must, Any>{});
+
+	// スキル発生時にTransform2DComponentを検索できていない
+	//for (auto e : entities)
+	//{
+	//	std::cout << "Entity: " << e.id << std::endl;
+	//	std::cout << "  Has Mask: " << ecs.hasComponent<gNsCollComp::CollisionMaskComponent>(e) << std::endl;
+	//	std::cout << "  Has Collider: " << ecs.hasComponent<eNsLogic2DComp::CollisionComponent>(e) << std::endl;
+	//	std::cout << "  Has Logic2DTransform: " << ecs.hasComponent<eNsLogic2DComp::Logic2DTransformComponent>(e) << std::endl;
+	//	std::cout << "  Has Transform2D: " << ecs.hasComponent<eNsLogic2DComp::Transform2DComponent>(e) << std::endl;
+	//}
 
 	for (size_t i = 0; i < entities.size(); ++i)
 	{
@@ -45,27 +70,34 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 			eNsECS::Entity eA = entities[i];
 			eNsECS::Entity eB = entities[j];
 
+
 			auto& maskA = ecs.get<gNsCollComp::CollisionMaskComponent>(eA);
 			auto& maskB = ecs.get<gNsCollComp::CollisionMaskComponent>(eB);
 
+			// std::cout << "[CollisionDetectionSystem.cpp()]: before mask judge\n";
 			if (!gNsCollUtil::shouldCollide(maskA, maskB))
 				continue;
 
-			auto& colA = ecs.get<eNsLogic2DComp::CollisionComponent>(eA);
-			auto& colB = ecs.get<eNsLogic2DComp::CollisionComponent>(eB);
-
-
-
-			auto& transA = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(eA);
-			auto& transB = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(eB);
 
 			auto shapeA = gNsCollConvert::MakeGenericShape2D(eA, ecs);
 			auto shapeB = gNsCollConvert::MakeGenericShape2D(eB, ecs);
 
+			//std::visit([](auto&& s) {
+			//	std::cout << "[shapeA] type: " << typeid(s).name() << std::endl;
+			//	}, shapeA);
+
+			//std::visit([](auto&& s) {
+			//	std::cout << "[shapeB] type: " << typeid(s).name() << std::endl;
+			//	}, shapeB);
+
 			if (gNsCollIntersect::Intersects(shapeA, shapeB))
 			{
 				// 仮のContactInfo（後で精密な法線・深度が必要になれば拡張）
-				gNsCollData::ContactInfo info{ .contactNormal = glm::normalize(transB.positionXZ - transA.positionXZ), .penetrationDepth = 0.0f };
+				gNsCollData::ContactInfo info{ //.contactNormal = glm::normalize(transB.positionXZ - transA.positionXZ), 
+					.penetrationDepth = 0.0f };
+
+				std::cout << "[CollisionDetectionSystem]: collider detcted" << std::endl;
+				// バッファ追加
 				buffer.add(gNsCollData::CollisionResult{ eA, eB, info });
 			}
 		}

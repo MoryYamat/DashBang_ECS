@@ -50,8 +50,7 @@ bool Engine::Physics::Logic2D::Collision::Intersects_Circle2D_Sector2D(const glm
 	float cosThresholdSq = cosThreshold * cosThreshold;
 
 	// 投影長が有効な角度内か（余弦定理ベース）
-	bool angleCheck = dotSq >= distSq * cosThresholdSq;
-	if (angleCheck)
+	if (dotSq >= distSq * (cosThresholdSq - 0.0001f))
 		return true;
 
 	// 弧の端と円がかすっているか（外縁）
@@ -99,7 +98,7 @@ bool Engine::Physics::Logic2D::Collision::Intersects_Circle2D_Arc2D(
 	float cosThreshold = std::cos(arcAngle * 0.5f);
 	float cosThresholdSq = cosThreshold * cosThreshold;
 
-	return dotSq >= distSq * cosThresholdSq;
+	return dotSq >= distSq * (cosThresholdSq - 0.0001f);
 }
 
 bool Engine::Physics::Logic2D::Collision::Intersects_Circle2D_Obb2D(

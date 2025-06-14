@@ -21,7 +21,11 @@ gNsCollData::GenericShape2D Game::Collision::Convert::MakeGenericShape2D(
 		}
 	}
 
-	assert(false && "No valid shape or transform");
+	//‚±‚Ì•ªŠò‚Éˆø‚Á‚©‚©‚Á‚Ä‚È‚¢‚Ì‚ª–â‘è
+	// ˆê’U‰ðŒˆiCollisionMask‚ðŽ‚Á‚Ä‚¢‚é‚ªCAttack2DShape‚àCollisionCompoent‚àŽ‚Á‚Ä‚¢‚È‚¢(TileMapActor)Entity‚ª‚ ‚é) => monostate‚ð•Ô‚·
+
+	// assert(false && "No valid shape or transform");
+	// std::cerr << "[MakeGenericShape2D] Warning: Entity " << e.id << " has no valid shape or transform.\n";
 	return gNsCollData::GenericShape2D{}; // monostate
 }
 

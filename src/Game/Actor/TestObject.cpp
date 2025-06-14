@@ -21,12 +21,18 @@
 
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 
+#include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
+
+#include "Game/Collision/Component/CollisionMaskComponent.h"
+#include "Game/ECS/Component/TeamComponent.h"
 
 #include "Engine/Graphics/Model/ModelData.h"
 #include "Engine/Graphics/Model/AssimpImporter.h"
 #include "Engine/Graphics/Renderer/GPUBufferUtils.h"
 
 #include "Engine/Debug/DebugUtils.h"
+
+#include "Game/Init/InitModel/InitLogicTransformFromModel.h"
 
 #include <iostream>
 
@@ -76,8 +82,36 @@ Game::Actor::TestObject::TestObject(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader
 	}
 	ecs.addComponent(entity, shaderComp);
 
+	// Logic2D
+	eNsLogic2DComp::Logic2DTransformComponent logic;
+	logic = gNsInit::Logic2D::InitLogic2DTransformFromModel(transformComp, modelData);
+	ecs.addComponent(entity, logic);
+
 	// set Test Corlor
 	eNsGfxComp::MaterialComponent materialComp;
 	materialComp.baseColor = glm::vec3(1.0f, 1.0f, 1.0f);
 	ecs.addComponent(entity, materialComp);
+
+	// Collsion Initialization
+// コリジョン初期化
+	eNsLogic2DComp::CollisionComponent playerCollisionComp;
+	playerCollisionComp.collider.shape = eNsLogic2DComp::Circle2D{
+		.center = glm::vec2(0.0f),// ローカルセンター
+		.radius = gNsInit::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, gNsInit::Logic2D::RadiusEstimateStrategy::MaxAxis)
+	};
+	//playerCollisionComp.collider.circle2D.center = logic.positionXZ;
+	playerCollisionComp.isStatic = false;
+	// float radius = gNsInit::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, gNsInit::Logic2D::RadiusEstimateStrategy::MaxAxis);
+	// playerCollisionComp.collider.circle2D.radius = radius;
+	ecs.addComponent(entity, playerCollisionComp);
+
+	// Collision Mask 初期化
+	gNsCollComp::CollisionMaskComponent playerMask;
+	playerMask.selfLayer = gNsCollData::Layer::Enemy;
+	playerMask.collidesWithMask = static_cast<uint32_t>(gNsCollData::Layer::Neutral | gNsCollData::Layer::Player);
+	ecs.addComponent(entity, playerMask);
+
+	ecs.addComponent(entity, gNsECSComp::TeamComponent{
+	.team = gNsECSComp::Team::EnemyTeam
+		});
 }

@@ -22,6 +22,8 @@
 
 #include "Engine/Math/Logic2D/LogicMathUtils.h"
 
+#include "Game/Collision/Component/CollisionMaskComponent.h"
+
 #include "Engine/Debug/DebugUtils.h"
 
 #include <iostream>
@@ -114,7 +116,9 @@ Game::Actor::Map::TestRockActor::TestRockActor(eNsECS::EntityMgr& ecs, eNsGfxRen
 	//eNsDebugLog::LogVector_string("[TestRockActor.cpp(AxisX)]: ", testRockCollisionComp.collider.obb2D.axisX);
 	//eNsDebugLog::LogVector_string("[TestRockActor.cpp(AxisZ)]: ", testRockCollisionComp.collider.obb2D.axisZ);
 
-
+	//gNsCollComp::CollisionMaskComponent mask;
+	//mask.selfLayer = gNsCollData::Layer::Enemy;
+	//mask.collidesWithMask = static_cast<uint32_t>(gNsCollData::Layer::Player);
 
 	std::cout << "[TestRockActor.cpp]: Test3Dmodel Settings Completed" << std::endl;
 }

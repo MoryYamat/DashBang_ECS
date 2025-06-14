@@ -30,7 +30,12 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 	gNsSkillData::SkillDefinition slash2;
 	slash2.id = 2;
 	slash2.name = "Power Slash";
-	slash2.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Sector2DAttack{CanonicalDefaults::kLocalCenterXZ, CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f} };// -Z•ûŒü‚ª‘O•û
+	slash2.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Sector2DAttack{
+		.center = CanonicalDefaults::kLocalCenterXZ,
+		. direction = CanonicalDefaults::kLocalForwardXZ, 
+		. angle = 0.5236f, // –ñ57“x
+		. radius = 10.0f
+	} };// -Z•ûŒü‚ª‘O•û
 	slash2.duration = 1.0f;
 
 	db.AddSkill(slash2);

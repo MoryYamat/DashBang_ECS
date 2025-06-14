@@ -53,6 +53,8 @@ void Game::Combat::Skill::System::spawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsS
 	// transformを複製
 	ecs.addComponent(attack, transform);
 
+	eNsDebugLog::LogVector_string("skillCastingSystem.cpp()", transform.positionXZ);
+
 	// 攻撃判定 Entityに軌跡コンポーネントを追加
 	gNsSkillComp::SkillTrajectoryComponent traj;
 	traj.type = def.trajectoryType;

@@ -151,7 +151,8 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	// Collision Mask ‰Šú‰»
 	gNsCollComp::CollisionMaskComponent playerMask;
 	playerMask.selfLayer = gNsCollData::Layer::Player;
-	playerMask.collidesWithMask = static_cast<uint32_t>(gNsCollData::Layer::Tile | gNsCollData::Layer::Tile);
+	playerMask.collidesWithMask = static_cast<uint32_t>(gNsCollData::Layer::Neutral | gNsCollData::Layer::Enemy);
+	ecs.addComponent(entity, playerMask);
 
 	// ˆÈ‘O‚ÌİŒv
 	//SkillInstanceComponent activeSkill1;
