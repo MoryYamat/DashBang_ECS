@@ -46,6 +46,8 @@ namespace Engine
 
 	namespace ECS
 	{
+		namespace Detail {}
+
 		namespace Component
 		{
 			namespace Utils {}// ECS utilities (e.g. name)

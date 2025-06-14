@@ -14,6 +14,29 @@
 
 namespace Game::Collision::Data
 {
+	// 衝突の詳細情報(法線方向など)
+	struct ContactInfo
+	{
+		glm::vec2 contactNormal;// 衝突面法線方向
+		float penetrationDepth;// めり込み量
+	};
+
+	// 衝突結果
+	struct CollisionResult
+	{
+		eNsECS::Entity entityA;// 衝突体A
+		eNsECS::Entity entityB;// 衝突体B
+		ContactInfo contact;// 衝突の詳細情報(法線方向など)
+	};
+
+	// Bufferデータ(毎フレーム更新)
+	struct CollisionResultBuffer
+	{
+		std::vector<CollisionResult> results;
+		void clear() { results.clear(); }
+		void add(const CollisionResult& result) { results.push_back(result); }
+	};
+
 	struct CollisionContact
 	{
 		eNsECS::Entity entityA;// 衝突体A

@@ -55,7 +55,7 @@ namespace Game::Combat::Skill::Component
 	// A structure that acts as an interface to selectively generate shapes to be used
 	struct Attack2DShape
 	{
-		using VariantType = std::variant<Circle2DAttack, Sector2DAttack, Rectangle2DAttack>;
+		using VariantType = std::variant<std::monostate, Circle2DAttack, Sector2DAttack, Rectangle2DAttack>;
 		VariantType shape;
 
 		// helper functions

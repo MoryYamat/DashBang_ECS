@@ -12,6 +12,7 @@
 // 
 namespace Game::Collision::System
 {
+	void UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs);
 
 	// ECSグローバルリソース導入後未使用(削除予定)
 	void UpdateCollisionResultStorage(eNsECS::EntityMgr& ecs, gNsCollData::CollisionResultStorage& collisionResultStorage);

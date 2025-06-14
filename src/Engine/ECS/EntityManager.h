@@ -110,6 +110,60 @@ namespace Engine::ECS
 
 		}
 
+		// FilterSpec\‘¢‘ÌF{std::taple<MustComps...>, std::tuple<AnyComps...>}
+		template<typename MustSet, typename AnySet>
+		struct FilterSpec {};
+
+		//using Must = std::tuple<TransformComponent, LogicComponent>;
+		//using Any = std::tuple<AIComponent, PhysicsComponent>;
+		//auto result = ecs.view(FilterSpec<Must, Any>{});
+
+		// Must‚¾‚¯“n‚·‚ÆANDŒŸõ Any‚¾‚¯“n‚·‚ÆORŒŸõ —¼•û“n‚·‚ÆAND + ORŒŸõ@
+		template<typename... MustComponents, typename... AnyComponents>
+		std::vector<Entity> view(FilterSpec<std::tuple<MustComponents...>, std::tuple<AnyComponents...>>)
+		{
+			std::vector<Entity> result;
+
+			using FirstMust = std::conditional_t<
+				sizeof...(MustComponents) != 0,
+				typename std::tuple_element<0, std::tuple<MustComponents...>>::type,
+				void>;
+
+			if constexpr (!std::is_same_v<FirstMust, void>)
+			{
+				std::type_index baseType = std::type_index(typeid(FirstMust));
+				if (mComponentPools.count(baseType) == 0) return result;
+				const auto& basePool = mComponentPools.at(baseType);
+
+				for (const auto& [entityID, _] : basePool)
+				{
+					bool hasAll = Detail::hasAllComponents<MustComponents...>(mComponentPools, entityID);
+					bool hasAny = Detail::hasAnyComponents<AnyComponents...>(mComponentPools, entityID);
+					if (hasAll && (sizeof...(AnyComponents) == 0 || hasAny))
+					{
+						result.push_back(Entity{ entityID });
+					}
+				}
+			}
+			else
+			{
+				// Must‚ª‹ó‚Ìê‡ -> Any‚Å‘–¸ (ORŒŸõ‚Ì‚İ)
+				if (mComponentPools.empty()) return result;
+				// ”CˆÓ‚Ìƒv[ƒ‹‚ğˆê‚Âæ“¾
+				const auto& basePool = mComponentPools.begin()->second;
+
+				for (const auto& [entityID, _] : basePool)
+				{
+					bool hasAny = Detail::hasAnyComponents<AnyComponents...>(mComponentPools, entityID);
+					if (hasAny)
+					{
+						result.push_back(Entity{ entityID });
+					}
+				}
+			}
+		}
+
+		// Entity‚ªŠY“–Component‚ğ‚Á‚Ä‚¢‚é‚©”»’è‚·‚é
 		template<typename T>
 		bool hasComponent(Entity e) const
 		{
@@ -189,3 +243,27 @@ namespace Engine::ECS
 	};
 }
 
+namespace Engine::ECS::Detail
+{
+	// AND: ‚·‚×‚Ä‚ÌŒ^‚ğ‚Â‚©
+	template<typename... MustComponents>
+	bool hasAllComponents(const std::unordered_map<std::type_index, std::unordered_map<uint32_t, std::shared_ptr<void>>>& pools,
+		uint32_t entityID)
+	{
+		return (...&& (
+			pools.count(std::type_index(typeid(MustComponents))) &&
+			pools.at(std::type_index(typeid(MustComponents))).count(entityID)
+			));
+	}
+
+	// OR: ‚¢‚¸‚ê‚©‚ÌŒ^‚ğ‚Â‚©
+	template<typename... AnyComponents>
+	bool hasAnyComponents(const std::unordered_map<std::type_index, std::unordered_map<uint32_t, std::shared_ptr<void>>>& pools,
+		uint32_t entityID)
+	{
+		return (... || (
+			pools.count(std::type_index(typeid(AnyComponents))) &&
+			pools.at(std::type_idex(typeid(AnyComponents))).count(Entity)
+			));
+	}
+}

@@ -65,29 +65,9 @@ namespace Engine::ECS::Component::Logic2D
 		}
 	};
 
-	struct AABB3D
-	{
-		// ローカルオフセット
-		glm::vec3 min;
-		glm::vec3 max;
-	};
 
-	struct Sphere3D
-	{
-		// ローカルオフセット
-		glm::vec3 center;
-		float radius;
-	};
 
-	struct Capsule3D
-	{
-		// ローカルオフセット
-		glm::vec3 base;
-		glm::vec3 tip;
-		float radius;
-	};
-
-	using CollideVariant = std::variant<std::monostate, Circle2D, Box2D, Obb2D, AABB3D, Sphere3D, Capsule3D>;
+	using CollideVariant = std::variant<std::monostate, Circle2D, Box2D, Obb2D>;
 
 	// Collider Data Structure
 	struct Collider
@@ -104,9 +84,6 @@ namespace Engine::ECS::Component::Logic2D
 				if constexpr (std::is_same_v<T, Circle2D>) return ColliderType::Circle2D;
 				else if constexpr (std::is_same_v<T, Box2D>) return ColliderType::Box2D;
 				else if constexpr (std::is_same_v<T, Obb2D>) return ColliderType::Obb2D;
-				else if constexpr (std::is_same_v<T, AABB3D>) return ColliderType::AABB3D;
-				else if constexpr (std::is_same_v<T, Sphere3D>) return ColliderType::Sphere3D;
-				else if constexpr (std::is_same_v<T, Capsule3D>) return ColliderType::Capsule3D;
 				else return ColliderType::None;
 				}, shape);
 		}
@@ -136,23 +113,31 @@ namespace Engine::ECS::Component::Logic2D
 			return std::get<Obb2D>(shape); 
 		}
 		
-		//union
-		//{
-		//	// sizeof (need to think about bottlenecks)
-		//	eNsLogic2DComp::Circle2D circle2D;
-		//	eNsLogic2DComp::Box2D box2D;
-		//	eNsLogic2DComp::Obb2D obb2D;
-		//	eNsLogic2DComp::AABB3D aabb3D;
-		//	eNsLogic2DComp::Sphere3D sphere3D;
-		//	eNsLogic2DComp::Capsule3D capsule3D;
-		//};
-
-		//// default Constructor
-		//Collider() : type(eNsLogic2DComp::ColliderType::None), box2D{} {}
 	};
 
 }
 
+//struct AABB3D
+//{
+//	// ローカルオフセット
+//	glm::vec3 min;
+//	glm::vec3 max;
+//};
+
+//struct Sphere3D
+//{
+//	// ローカルオフセット
+//	glm::vec3 center;
+//	float radius;
+//};
+
+//struct Capsule3D
+//{
+//	// ローカルオフセット
+//	glm::vec3 base;
+//	glm::vec3 tip;
+//	float radius;
+//};
 
 //// 2D
 //enum class Collider2DType

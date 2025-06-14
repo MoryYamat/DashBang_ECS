@@ -26,14 +26,5 @@ namespace Game::Collision::Utils
 		const eNsLogic2DComp::TileMapComponent& tileMapComp
 	);
 
-	// 2つのエンティティが衝突判定すべきかを判定
-	inline bool shouldCollide(
-		const gNsCollComp::CollisionMaskComponent& a,
-		const gNsCollComp::CollisionMaskComponent& b
-		)
-	{
-		// a の selfLayer に対して b.collidesWithMaskが一致しているか
-		return (static_cast<uint32_t>(a.selfLayer) & b.collidesWithMask) ||
-			(static_cast<uint32_t>(b.selfLayer) & a.collidesWithMask);
-	}
+
 }

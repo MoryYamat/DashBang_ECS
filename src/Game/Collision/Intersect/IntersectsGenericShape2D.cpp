@@ -6,6 +6,7 @@
 
 #include "Common/EngineNamespaceDecl.h"
 
+// 静的関数ディスパッチ => 動的関数ディスパッチへ移行することを検討するべき
 bool Game::Collision::Intersect::Intersects(const GenericShape2D& a, const GenericShape2D& b)
 {
 	return std::visit([](auto&& lhs, auto&& rhs) -> bool {
