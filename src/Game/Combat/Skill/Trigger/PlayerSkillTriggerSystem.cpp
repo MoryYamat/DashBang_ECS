@@ -72,6 +72,8 @@ void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerPlayerSkills
 				eNsLogic2DComp::Transform2DComponent transform2DComp;
 				transform2DComp.positionXZ = logic.positionXZ;
 				transform2DComp.rotationY = logic.GetRotationYFromFrontVector();
+				transform2DComp.front = logic.front;
+				transform2DComp.right = logic.right;
 				transform2DComp.scale = 1.0f;
 				ecs.addComponent(skillEntity, transform2DComp);
 
