@@ -41,5 +41,6 @@ namespace Engine::ECS::Component::Logic2D
 		{
 			right = eNsLogic2DMath::CalcRightFromForward(front);
 		}
+
 	};
 }

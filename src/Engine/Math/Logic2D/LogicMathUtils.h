@@ -34,7 +34,7 @@ namespace Engine::Math::Logic2D
 	// +Zが前方の場合のradinasだけ回転したFrontベクトルに対するRightベクトルを得る
 	inline glm::vec2 CalcRightFromYaw(float radians)
 	{
-		return RotateVec2FromZForward(CanonicalDefaults::kCanonicalFrowardXZ, radians + glm::half_pi<float>());
+		return RotateVec2FromZForward(CanonicalDefaults::kCanonicalForwardXZ, radians + glm::half_pi<float>());
 	}
 
 	// [-pi, pi]を[0, 2pi]に正規化
@@ -77,5 +77,34 @@ namespace Engine::Math::Logic2D
 	inline glm::vec2 CalcRightFromForward(glm::vec2 front)
 	{
 		return glm::vec2(-front.y, front.x);
+		//return glm::vec2(front.y, front.x);
+	}
+
+}
+
+namespace Engine::Math::Logic2D
+{
+	namespace Transform
+	{
+		// ローカルオフセットをワールド空間へ変換(位置ベクトル)
+		inline glm::vec2 ApplyLocalOffset(
+			const glm::vec2& localOffset,
+			const glm::vec2& positionXZ,
+			float rotationY = 0.0f,
+			glm::vec2 scale = glm::vec2(1.0f)
+		)
+		{
+			glm::vec2 rotated = RotateVec2FromZForward(localOffset, rotationY);
+			return positionXZ + rotated * scale;
+		}
+
+		// ローカル方向ベクトルをワールド空間へ変換（normalize推奨）
+		inline glm::vec2 TransformDirection(
+			const glm::vec2& localDirection,
+			float rotationY = 0.0f// ローカル回転
+		)
+		{
+			return RotateVec2FromZForward(localDirection, rotationY);
+		}
 	}
 }

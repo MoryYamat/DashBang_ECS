@@ -102,7 +102,7 @@ void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, const eNsInput::RawInpu
 		}
 		else
 		{
-			logic.front = CanonicalDefaults::kCanonicalFrowardXZ;
+			logic.front = CanonicalDefaults::kCanonicalForwardXZ;
 		}
 
 

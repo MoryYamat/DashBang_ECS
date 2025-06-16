@@ -148,6 +148,7 @@
     * ~~`ShouldCollide`処理の改善(自己衝突について)~~
         * 一旦解決 => collisionMaskComponentの責務明確化 => collidesWithMaskでは，自分が能動的に衝突したい相手Layerだけ指定する
 		* あとで構造的な解決を図る
+* **コリジョン誤判定バグ修正**
     
 
 * Character状態遷移および状態管理の処理／構造の実装

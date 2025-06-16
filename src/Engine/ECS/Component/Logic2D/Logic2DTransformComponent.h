@@ -21,7 +21,7 @@ namespace Engine::ECS::Component::Logic2D
 		float rotation = CanonicalDefaults::kCanonicalRotationY;// radians!
 
 		// Front and right vectors
-		glm::vec2 front = CanonicalDefaults::kCanonicalFrowardXZ;
+		glm::vec2 front = CanonicalDefaults::kCanonicalForwardXZ;
 		glm::vec2 right = CanonicalDefaults::kCanonicalRightXZ;
 
 		// scale

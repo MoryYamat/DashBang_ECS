@@ -20,12 +20,14 @@ namespace CanonicalDefaults
 	constexpr glm::vec3 kCanonicalOrigin = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	// 
-	constexpr glm::vec2 kCanonicalFrowardXZ = glm::vec2(0.0f, 1.0f);
-	constexpr glm::vec2 kCanonicalRightXZ = glm::vec2(-1.0f, 0.0f);
+	constexpr glm::vec2 kCanonicalForwardXZ = glm::vec2(0.0f, 1.0f);
+	constexpr glm::vec2 kCanonicalRightXZ = glm::vec2(1.0f, 0.0f);
+	// constexpr glm::vec2 kCanonicalRightXZ = glm::vec2(- 1.0f, 0.0f);
 
 	// 
 	constexpr glm::vec2 kLocalForwardXZ = glm::vec2(0.0f, 1.0f);
-	constexpr glm::vec2 kLocalRightXZ = glm::vec2(-1.0f, 0.0f);
+	constexpr glm::vec2 kLocalRightXZ = glm::vec2(1.0f, 0.0f);
+	// constexpr glm::vec2 kLocalRightXZ = glm::vec2(-1.0f, 0.0f);
 
 	//
 	constexpr glm::vec2 kLocalCenterXZ = glm::vec2(0.0f, 0.0f);

@@ -40,7 +40,10 @@ namespace Engine
 
 	namespace Math
 	{
-		namespace Logic2D {}
+		namespace Logic2D 
+		{
+			namespace Transform {}
+		}
 		namespace Render {}
 	}
 

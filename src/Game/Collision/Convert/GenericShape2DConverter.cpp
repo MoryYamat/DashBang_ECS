@@ -104,6 +104,7 @@ gNsCollData::GenericShape2D Game::Collision::Convert::BuildGenericShape2D(const 
 		}, attackShape.shape);
 }
 
+// 未使用
 gNsCollData::GenericShape2D Game::Collision::Convert::ConvertFromCollider(const eNsLogic2DComp::Collider& collider
 	, const eNsLogic2DComp::Logic2DTransformComponent& transform)
 {
@@ -140,6 +141,7 @@ gNsCollData::GenericShape2D Game::Collision::Convert::ConvertFromCollider(const 
 		}, collider.shape);
 }
 
+// 未使用
 gNsCollData::GenericShape2D Game::Collision::Convert::ConvertFromAttackShape(const gNsSkillComp::Attack2DShape& attackShape
 	, const eNsLogic2DComp::Transform2DComponent& worldTransform)
 {
@@ -178,26 +180,41 @@ gNsCollData::GenericShape2D Game::Collision::Convert::ConvertFromAttackShape(con
 		}, attackShape.shape);
 }
 
-glm::vec2 Game::Collision::Convert::applyLocalToWorldPoint(const glm::vec2& localOffset, const eNsLogic2DComp::Logic2DTransformComponent& transfrom)
+glm::vec2 Game::Collision::Convert::applyLocalToWorldPoint(const glm::vec2& localOffset, const eNsLogic2DComp::Logic2DTransformComponent& transform)
 {
-	return transfrom.positionXZ
-		+ transfrom.front * localOffset.y
-		+ transfrom.right * localOffset.x;
+	//return transform.positionXZ
+	//	+ transform.front * localOffset.y
+	//	+ transform.right * localOffset.x;
+	//return eNsLogic2DMath::Transform::ApplyLocalOffset(localOffset, transform.positionXZ, transform.front, transform.right);
+	// return transform.positionXZ + eNsLogic2DMath::RotateVec2FromZForward(result.center, transform.rotationY) * transform.scale
+	//return transform.positionXZ
+	//	+ eNsLogic2DMath::RotateVec2FromZForward(localOffset, transform.rotation) * transform.scale;
+	
+	return eNsLogic2DMath::Transform::ApplyLocalOffset(localOffset, transform.positionXZ, transform.rotation, transform.scale);
 }
 
-glm::vec2 Game::Collision::Convert::applyLocalToWorldPoint(const glm::vec2& localOffset, const eNsLogic2DComp::Transform2DComponent& transfrom)
+glm::vec2 Game::Collision::Convert::applyLocalToWorldPoint(const glm::vec2& localOffset, const eNsLogic2DComp::Transform2DComponent& transform)
 {
-	return transfrom.positionXZ
-		+ transfrom.front * localOffset.y
-		+ transfrom.right * localOffset.x;// rightは初期化後更新していない(YAGNI: You Aren't Gonna Need it) 
+	//return transform.positionXZ
+	//	+ transform.front * localOffset.y
+	//	+ transform.right * localOffset.x;// rightは初期化後更新していない(YAGNI: You Aren't Gonna Need it) 
+	//return transform.positionXZ
+	//	+ eNsLogic2DMath::RotateVec2FromZForward(localOffset, transform.rotationY) * transform.scale;
+
+	//glm::vec2 front = eNsLogic2DMath::CalcForwardFromYaw(transform.rotationY);
+	//glm::vec2 right = eNsLogic2DMath::CalcRightFromForward(front);
+	//return transform.positionXZ
+	//	+ front * localOffset.y
+	//	+ right * localOffset.x;
+	return eNsLogic2DMath::Transform::ApplyLocalOffset(localOffset, transform.positionXZ, transform.rotationY, glm::vec2(transform.scale, transform.scale));
 }
 
-glm::vec2 Game::Collision::Convert::transformLocalPointToWorld(const glm::vec2& localDir, const eNsLogic2DComp::Logic2DTransformComponent& transfrom)
+glm::vec2 Game::Collision::Convert::transformLocalPointToWorld(const glm::vec2& localDir, const eNsLogic2DComp::Logic2DTransformComponent& transform)
 {
-	return transfrom.front * localDir.y + transfrom.right * localDir.x;
+	return eNsLogic2DMath::Transform::TransformDirection(localDir, transform.rotation);;
 }
 
-glm::vec2 Game::Collision::Convert::transformLocalPointToWorld(const glm::vec2& localDir, const eNsLogic2DComp::Transform2DComponent& transfrom)
+glm::vec2 Game::Collision::Convert::transformLocalPointToWorld(const glm::vec2& localDir, const eNsLogic2DComp::Transform2DComponent& transform)
 {
-	return transfrom.front * localDir.y + transfrom.right * localDir.x;// rightは初期化後更新していない(YAGNI: You Aren't Gonna Need it) 
+	return eNsLogic2DMath::Transform::TransformDirection(localDir, transform.rotationY); // rightは初期化後更新していない(YAGNI: You Aren't Gonna Need it) 
 }

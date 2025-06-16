@@ -14,6 +14,27 @@ bool Engine::Physics::Logic2D::Collision::intersects_Circle2D_Circle2D(const glm
 	return distanceSq <= raidusSum * raidusSum;
 }
 
+//glm::vec2 toCircle = circleCenter - sectorCenter;
+//float distSq = glm::dot(toCircle, toCircle);
+//float maxRange = sectorRadius + circleRadius;
+
+//// まず距離で除外
+//if (distSq > maxRange * maxRange)
+//	return false;
+
+//// 次に角度で除外（atan2を用いた明示的比較）
+//float angleToCircle = std::atan2(toCircle.y, toCircle.x);
+//float angleDir = std::atan2(sectorDirection.y, sectorDirection.x);
+
+//float angleDiff = std::abs(angleToCircle - angleDir);
+//if (angleDiff > glm::pi<float>())
+//	angleDiff = glm::two_pi<float>() - angleDiff;
+
+//if (angleDiff > sectorAngle * 0.5f)
+//	return false;
+
+//return true;
+
 bool Engine::Physics::Logic2D::Collision::Intersects_Circle2D_Sector2D(const glm::vec2& circleCenter, float circleRadius,
 	const glm::vec2& sectorCenter,
 	const glm::vec2& sectorDirection, // normalized

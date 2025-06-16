@@ -69,14 +69,14 @@ namespace Game::Collision::Convert
 		eNsECS::EntityMgr& ecs);
 
 	// ローカル形状のオフセットを適用して中心座標のワールド変換を取得する
-	glm::vec2 applyLocalToWorldPoint(const glm::vec2& localOffset, const eNsLogic2DComp::Logic2DTransformComponent& transfrom);
+	glm::vec2 applyLocalToWorldPoint(const glm::vec2& localOffset, const eNsLogic2DComp::Logic2DTransformComponent& transform);
 
 	// ローカル形状のオフセットを適用して中心座標のワールド変換を取得する
-	glm::vec2 applyLocalToWorldPoint(const glm::vec2& localOffset, const eNsLogic2DComp::Transform2DComponent& transfrom);
+	glm::vec2 applyLocalToWorldPoint(const glm::vec2& localOffset, const eNsLogic2DComp::Transform2DComponent& transform);
 
 	// ローカル形状の方向ベクトルをとワールド変換情報から方向ベクトルのワールド変換
-	glm::vec2 transformLocalPointToWorld(const glm::vec2& localOffset, const eNsLogic2DComp::Logic2DTransformComponent& transfrom);
+	glm::vec2 transformLocalPointToWorld(const glm::vec2& localOffset, const eNsLogic2DComp::Logic2DTransformComponent& transform);
 
 	// ローカル形状の方向ベクトルをとワールド変換情報から方向ベクトルのワールド変換
-	glm::vec2 transformLocalPointToWorld(const glm::vec2& localOffset, const eNsLogic2DComp::Transform2DComponent& transfrom);
+	glm::vec2 transformLocalPointToWorld(const glm::vec2& localOffset, const eNsLogic2DComp::Transform2DComponent& transform);
 }

@@ -108,7 +108,7 @@ void Game::Input::Intent::MovementIntentMappingSystem::updatePlayerDirectionInte
 	if (glm::length(dir) > 0.0001f && !glm::any(glm::isnan(dir)))
 		facing.front = glm::normalize(dir);
 	else
-		facing.front = CanonicalDefaults::kCanonicalFrowardXZ;
+		facing.front = CanonicalDefaults::kCanonicalForwardXZ;
 
 
 	// eNsDebugLog::LogVector("PlayerIntentMapper.cpp(direction)", facing.front);

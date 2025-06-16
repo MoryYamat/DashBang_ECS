@@ -21,7 +21,8 @@ gNsSkillComp::Attack2DShape Game::Combat::Skill::Utils::ComputeWorldShape(
 			if constexpr (std::is_same_v<T, gNsSkillComp::Circle2DAttack>)
 			{
 				gNsSkillComp::Circle2DAttack result = shape;
-				result.center = transform.positionXZ + eNsLogic2DMath::RotateVec2FromZForward(result.center, transform.rotationY) * transform.scale;
+				// result.center = transform.positionXZ + eNsLogic2DMath::RotateVec2FromZForward(result.center, transform.rotationY) * transform.scale;
+				result.center = eNsLogic2DMath::Transform::ApplyLocalOffset(result.center, transform.positionXZ);
 				result.radius *= transform.scale;
 				return gNsSkillComp::Attack2DShape{ result };
 			}
@@ -29,10 +30,12 @@ gNsSkillComp::Attack2DShape Game::Combat::Skill::Utils::ComputeWorldShape(
 			{
 				gNsSkillComp::Sector2DAttack result = shape;
 				// DebugUtils::LogVector_string("ShpeUtils.cpp (shape.direction)", shape.direction);
-				result.center = transform.positionXZ + eNsLogic2DMath::RotateVec2FromZForward(result.center, transform.rotationY) * transform.scale;
+				// result.center = transform.positionXZ + eNsLogic2DMath::RotateVec2FromZForward(result.center, transform.rotationY) * transform.scale;
+				result.center = eNsLogic2DMath::Transform::ApplyLocalOffset(result.center, transform.positionXZ);
 
 				// ロジック用方向計算
-				result.direction = glm::normalize(eNsLogic2DMath::RotateVec2FromZForward(result.direction, transform.rotationY));
+				// result.direction = glm::normalize(eNsLogic2DMath::RotateVec2FromZForward(result.direction, transform.rotationY));
+				result.direction = glm::normalize(eNsLogic2DMath::Transform::TransformDirection(result.direction, transform.rotationY));
 				result.radius *= transform.scale;
 
 				// std::cout << "[ShapeUtils.cpp(ComputeWorldShape)] Sector direction " << result.direction.x << result.direction.y << std::endl;
@@ -45,10 +48,12 @@ gNsSkillComp::Attack2DShape Game::Combat::Skill::Utils::ComputeWorldShape(
 			{
 				gNsSkillComp::Rectangle2DAttack result = shape;
 				// DebugUtils::LogVector_string("ShpeUtils.cpp (shape.direction)", shape.direction);
-				result.center = transform.positionXZ + eNsLogic2DMath::RotateVec2FromZForward(result.center, transform.rotationY) * transform.scale;
+				// result.center = transform.positionXZ + eNsLogic2DMath::RotateVec2FromZForward(result.center, transform.rotationY) * transform.scale;
+				result.center = eNsLogic2DMath::Transform::ApplyLocalOffset(result.center, transform.positionXZ, transform.rotationY);
 
 				// ロジック用方向計算
-				result.direction = glm::normalize(eNsLogic2DMath::RotateVec2FromZForward(result.direction, transform.rotationY));
+				// result.direction = glm::normalize(eNsLogic2DMath::RotateVec2FromZForward(result.direction, transform.rotationY));
+				result.direction = glm::normalize(eNsLogic2DMath::Transform::TransformDirection(result.direction, transform.rotationY));
 				result.width *= transform.scale;
 				result.height *= transform.scale;
 
