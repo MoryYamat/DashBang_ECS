@@ -45,7 +45,7 @@
 #include "Game/01_Layer/InputLayerFeature.h"
 #include "Game/01_Layer/IntentLayerFeature.h"
 #include "Game/01_Layer/LogicLayerFeature.h"
-
+#include "Game/01_Layer/StateLayerFeature.hpp"
 
 //Game/Actor
 #include "Game/Actor/CameraActor.h"
@@ -85,6 +85,7 @@
 #include "Game/Combat/Skill/MasterData/SkillSlot.h"
 #include "Game/Combat/Skill/System/UpdateSkillLifetimes.h"
 #include "Game/Combat/Skill/System/UpdateSkillPhase.h"
+
 // skill trajectory
 #include "Game/Combat/Skill/Component/SkillTrajectoryComponent.h"
 #include "Game/Combat/Skill/MasterData/SkillTrajectoryData.h"
@@ -293,6 +294,8 @@ void GameApp::GameApp::updateGameLogics()
 	gNsLayer::IntentLayerFeature::Update(mECS);
 
 	gNsLayer::LogicLayerFeature::Update(mECS, deltaTime);
+
+	gNsLayer::StateLayerFeature::Update(mECS, deltaTime);
 }
 
 void GameApp::GameApp::generateOutputs()

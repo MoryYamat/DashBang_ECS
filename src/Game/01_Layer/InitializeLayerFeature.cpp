@@ -6,6 +6,8 @@
 
 #include "Game/00_Feature/Collision/CollisionFeature.h"
 
+#include "Game/00_Feature/Character/State/CharacterStateFeature.hpp"
+
 #include "Common/GameNamespaceDecl.h"
 
 void Game::Layer::InitializeLayerFeature::DelayedInitialzation(eNsECS::EntityMgr& ecs)
@@ -23,4 +25,7 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialzation(eNsECS::EntityMgr
 
 	// Collision Result Buffer
 	gNsFeature::CollisionFeature::InitCollisionBuffer(ecs);
+
+	// CharacterStateTransitionデータベース初期化
+	gNsFeature::Character::StateFeature::InitTransitionDatabase(ecs);
 }

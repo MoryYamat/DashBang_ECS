@@ -10,6 +10,8 @@
 
 namespace Game::Character::State
 {
+
+
 	class CharacterStateSystem
 	{
 	public:

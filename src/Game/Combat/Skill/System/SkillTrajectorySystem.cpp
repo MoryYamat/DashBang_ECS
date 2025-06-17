@@ -23,7 +23,7 @@ void Game::Combat::Skill::System::SkillTrajectorySystem::Update(eNsECS::EntityMg
 
 		transform = trajComp.trajectoryFunc(trajComp.elapsedTime);
 
-		std::cout << "entity" << e.id << "\n";
+		// std::cout << "entity" << e.id << "\n";
 
 		// eNsDebugLog::LogVector_string("SkillTrajectorySystem.cpp: transform ", transform.positionXZ);
 	}

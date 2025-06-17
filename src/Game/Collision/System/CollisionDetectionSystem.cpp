@@ -96,7 +96,7 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 				gNsCollData::ContactInfo info{ //.contactNormal = glm::normalize(transB.positionXZ - transA.positionXZ), 
 					.penetrationDepth = 0.0f };
 
-				std::cout << "[CollisionDetectionSystem]: collider detcted" << std::endl;
+				// std::cout << "[CollisionDetectionSystem]: collider detcted" << std::endl;
 				// バッファ追加
 				buffer.add(gNsCollData::CollisionResult{ eA, eB, info });
 			}

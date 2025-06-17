@@ -53,6 +53,9 @@
 #include "Game/Init/InitModel/InitLogicTransformFromModel.h"
 #include "Game/Init/InitTileMap/InitTileMap.h"
 
+// character 
+#include "Game/Character/State/Component/CharacterStateComponent.h"
+
 // Game ECS
 #include "Game/ECS/Tags/CharacterAttribTags.h"
 #include "Game/ECS/Component/TeamComponent.h"
@@ -218,6 +221,24 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	ecs.addComponent(entity, gNsECSComp::TeamComponent{
 		.team = gNsECSComp::Team::PlayerTeam
 		});
+
+	ecs.addComponent(entity, gNsCharacterState::CharacterStateComponent{});
+	
+	// std::cout << "[PlayerCharacterActor.cpp] Created Player Entity: " << entity.id << std::endl;
+	//if (ecs.hasComponent<gNsCharacterState::CharacterStateComponent>(entity)) {
+	//	std::cout << "[Šm”F] CharacterStateComponent ‚Í Entity " << entity.id << " ‚É‘¶Ý‚µ‚Ä‚¢‚Ü‚·" << std::endl;
+	//}
+	//else {
+	//	std::cout << "[Œx] CharacterStateComponent ‚Í Entity " << entity.id << " ‚É‘¶Ý‚µ‚Ä‚¢‚Ü‚¹‚ñ" << std::endl;
+	//}
+
+	//std::cout << "addComponent ‚Ì typeid: " << typeid(gNsCharacterState::CharacterStateComponent).name() << std::endl;
+
+	//for (eNsECS::Entity e : ecs.view<gNsCharacterState::CharacterStateComponent>()) {
+	//	std::cout << "view ‚Ì Entity: " << e.id << std::endl;
+	//}
+	//std::cout << "view ‚Ì typeid: " << typeid(decltype(ecs.view<gNsCharacterState::CharacterStateComponent>())).name() << std::endl;
+
 }
 
 Game::Actor::Player::PlayerCharacter::~PlayerCharacter()
