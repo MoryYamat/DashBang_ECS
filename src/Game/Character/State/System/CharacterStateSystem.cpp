@@ -49,9 +49,6 @@ void Game::Character::State::CharacterStateSystem::UpdateStates(eNsECS::EntityMg
 
 		state.requestedNextState.reset();
 
-
-
-
 	}
 
 	// std::cout << "[CharacterStateSystem.cpp(Update)]: test deltaTime: " << deltaTime << "\n";

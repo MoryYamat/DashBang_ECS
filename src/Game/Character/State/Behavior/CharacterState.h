@@ -14,6 +14,7 @@ namespace Game::Character::State
         Dead,		// €–S
 	};
 
+
     // s“®§ŒÀó‘Ô’è‹`
     enum class CharacterCrowdControlState
     {
