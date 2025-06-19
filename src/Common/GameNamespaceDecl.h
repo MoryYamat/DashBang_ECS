@@ -40,7 +40,10 @@ namespace Game
 
 		namespace Intent {}
 		namespace Movement {}
-		namespace State {}
+		namespace State 
+		{
+			namespace Life {}
+		}
 		namespace Stats {}
 	}
 
