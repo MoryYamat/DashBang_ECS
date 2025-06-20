@@ -13,7 +13,7 @@ namespace Game::Character::State::Life
 	{
 		std::vector<gNsCharaLifeState::StateTransitionRule> rules;
 
-		const StateTransitionRule* FindRule(LifeState from, LifeState to) const
+		const gNsCharaLifeState::StateTransitionRule* FindRule(LifeState from, LifeState to) const
 		{
 			for (const auto& rule : rules)
 			{

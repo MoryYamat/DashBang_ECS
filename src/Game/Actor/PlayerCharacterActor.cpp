@@ -56,6 +56,8 @@
 // character 
 // life
 #include "Game/Character/State/Component/LifeStateComponent.hpp"
+// movement
+#include "Game/Character/State/Component/MovementStateComponent.hpp"
 
 // Game ECS
 #include "Game/ECS/Tags/CharacterAttribTags.h"
@@ -225,7 +227,11 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 
 
 	// logical state comp
+	// life
 	ecs.addComponent(entity, gNsCharaLifeState::CharacterLifeStateComponent{});
+
+	// movenet
+	ecs.addComponent(entity, gNsCharaMoveState::CharacterMovementStateComponent{});
 
 	// std::cout << "[PlayerCharacterActor.cpp] Created Player Entity: " << entity.id << std::endl;
 	//if (ecs.hasComponent<gNsCharacterState::CharacterStateComponent>(entity)) {
