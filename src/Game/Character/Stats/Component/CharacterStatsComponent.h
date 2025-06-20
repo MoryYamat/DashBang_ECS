@@ -8,7 +8,7 @@ namespace Game::Character::Stats
 	struct CharacterStatsComponent
 	{
 		float maxHp = 100.0f;
-		float currentHp = 100.0f;
+		float currentHP = 100.0f;
 
 
 		float moveSpeed = 5.0f;// base move speed

@@ -42,6 +42,7 @@ namespace Engine
 	{
 		namespace Logic2D 
 		{
+			namespace Vector {}
 			namespace Transform {}
 		}
 		namespace Render {}

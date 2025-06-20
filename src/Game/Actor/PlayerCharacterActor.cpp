@@ -54,7 +54,8 @@
 #include "Game/Init/InitTileMap/InitTileMap.h"
 
 // character 
-#include "Game/Character/State/Component/CharacterStateComponent.h"
+// life
+#include "Game/Character/State/Component/LifeStateComponent.hpp"
 
 // Game ECS
 #include "Game/ECS/Tags/CharacterAttribTags.h"
@@ -222,8 +223,10 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 		.team = gNsECSComp::Team::PlayerTeam
 		});
 
-	ecs.addComponent(entity, gNsCharacterState::CharacterStateComponent{});
-	
+
+	// logical state comp
+	ecs.addComponent(entity, gNsCharaLifeState::CharacterLifeStateComponent{});
+
 	// std::cout << "[PlayerCharacterActor.cpp] Created Player Entity: " << entity.id << std::endl;
 	//if (ecs.hasComponent<gNsCharacterState::CharacterStateComponent>(entity)) {
 	//	std::cout << "[Šm”F] CharacterStateComponent ‚Í Entity " << entity.id << " ‚É‘¶Ý‚µ‚Ä‚¢‚Ü‚·" << std::endl;

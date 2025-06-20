@@ -9,7 +9,7 @@ namespace Game::Character::State::Movement
 		Moving,
 	};
 
-	struct MovementStateComponent
+	struct CharacterMovementStateComponent
 	{
 		MovementState current = MovementState::Idle;
 		// MovementState previous = MovementState::Idle;

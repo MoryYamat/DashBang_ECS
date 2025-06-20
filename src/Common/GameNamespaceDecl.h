@@ -43,6 +43,7 @@ namespace Game
 		namespace State 
 		{
 			namespace Life {}
+			namespace Movement {}
 		}
 		namespace Stats {}
 	}
@@ -135,6 +136,8 @@ namespace gNsCharacter = Game::Character;
 namespace gNsCharacterIntent = Game::Character::Intent;// Character intent
 namespace gNsCharacterMovement = Game::Character::Movement;// 
 namespace gNsCharacterState = Game::Character::State;// Character state
+namespace gNsCharaLifeState = Game::Character::State::Life;
+namespace gNsCharaMoveState = Game::Character::State::Movement;
 namespace gNsCharacterStats = Game::Character::Stats;
 
 

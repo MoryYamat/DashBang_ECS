@@ -84,6 +84,17 @@ namespace Engine::Math::Logic2D
 
 namespace Engine::Math::Logic2D
 {
+	namespace Vector
+	{
+		inline float SquaredLength(const glm::vec2& vec)
+		{
+			return vec.x * vec.x + vec.y * vec.y;
+		}
+	}
+}
+
+namespace Engine::Math::Logic2D
+{
 	namespace Transform
 	{
 		// ローカルオフセットをワールド空間へ変換(位置ベクトル)
