@@ -44,6 +44,7 @@ namespace Game
 		{
 			namespace Life {}
 			namespace Movement {}
+			namespace Action {}
 		}
 		namespace Stats {}
 	}
@@ -138,6 +139,7 @@ namespace gNsCharacterMovement = Game::Character::Movement;//
 namespace gNsCharacterState = Game::Character::State;// Character state
 namespace gNsCharaLifeState = Game::Character::State::Life;
 namespace gNsCharaMoveState = Game::Character::State::Movement;
+namespace gNsCharaActionState = Game::Character::State::Action;
 namespace gNsCharacterStats = Game::Character::Stats;
 
 

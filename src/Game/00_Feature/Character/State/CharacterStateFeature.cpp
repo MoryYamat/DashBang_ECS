@@ -8,6 +8,10 @@
 #include "Game/Character/State/Init/InitCharaMoveStateTransitionDatabase.hpp"
 #include "Game/Character/State/System/Movement/MovementStateSystem.hpp"
 
+// action state
+#include "Game/Character/State/Init/InitCharaActionStateTransitionDatabase.hpp"
+#include "Game/Character/State/System/Action/ActionStateSystem.hpp"
+
 #include "Common/GameNamespaceDecl.h"
 
 void Game::Feature::Character::StateFeature::InitTransitionDatabase(eNsECS::EntityMgr& ecs)
@@ -17,6 +21,9 @@ void Game::Feature::Character::StateFeature::InitTransitionDatabase(eNsECS::Enti
 
 	// movement
 	gNsCharaMoveState::InitCharaMovementStateTransitionDatabase(ecs);
+
+	// action
+	gNsCharaActionState::InitCharaActionStateTransitionDatabase(ecs);
 }
 
 void Game::Feature::Character::StateFeature::UpdateCharacterState(eNsECS::EntityMgr& ecs, float deltaTime)
@@ -26,4 +33,7 @@ void Game::Feature::Character::StateFeature::UpdateCharacterState(eNsECS::Entity
 
 	// movement
 	gNsCharaMoveState::MovementStateSystem::UpdateStates(ecs, deltaTime);
+
+	// action
+	gNsCharaActionState::ActionStateSystem::UpdateStates(ecs, deltaTime);
 }

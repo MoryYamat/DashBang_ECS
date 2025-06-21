@@ -14,7 +14,26 @@ namespace Game::Character::State::Action
 
 	struct CharacterActionStateComponent
 	{
-		ActionState current = AcctionState::None;
+		ActionState current = ActionState::None;
 		// ActionState previous = AcctionState::None;
 	};
+
+	inline const char* ToString(ActionState state)
+	{
+		switch (state)
+		{
+		case Game::Character::State::Action::ActionState::None:
+			return "None";
+		case Game::Character::State::Action::ActionState::SkillCasting:
+			return "SkillCasting";
+		case Game::Character::State::Action::ActionState::Rolling:
+			return "Rolling";
+		case Game::Character::State::Action::ActionState::Guarding:
+			return "Guarding";
+		case Game::Character::State::Action::ActionState::UsingItem:
+			return "UsingItem";
+		default:
+			break;
+		}
+	}
 }

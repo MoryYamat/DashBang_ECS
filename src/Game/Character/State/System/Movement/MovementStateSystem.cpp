@@ -25,7 +25,7 @@ void Game::Character::State::Movement::MovementStateSystem::UpdateStates(eNsECS:
 
             if (AreConditionsMet(move, vel, deltaTime, rule.conditions))
             {
-                std::cout << "[LifeStateSystem(Changed State)] Entity " << e.id
+                std::cout << "[MovementStateSystem(Changed State)] Entity " << e.id
                     << ": " << ToString(move.current)
                     << " -> " << ToString(rule.to) << std::endl;
 

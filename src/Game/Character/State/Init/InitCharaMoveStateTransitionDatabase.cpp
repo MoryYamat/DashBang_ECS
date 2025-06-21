@@ -34,6 +34,6 @@ void Game::Character::State::Movement::InitCharaMovementStateTransitionDatabase(
 		}
 	};
 
-	std::cout << "[InitLifeStateTransitionDatabase.cpp]: Initialization of the Life state transition condition database completed successfully.\n";
+	std::cout << "[InitCharaMovementStateTransitionDatabase.cpp]: Move state transition condition database initialization completed successfully.\n";
 
 }
