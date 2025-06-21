@@ -1,4 +1,4 @@
-#include "ActionStateTransitionEvaluator.hpp"
+ï»¿#include "ActionStateTransitionEvaluator.hpp"
 
 
 bool Game::Character::State::Action::AreConditionsMet
@@ -31,19 +31,28 @@ bool Game::Character::State::Action::EvaluateCondition
 	switch (condition.type)
 	{
 	case Condition::RequestSkillCast:
-		// ‰¼‚Ìƒtƒ‰ƒO‚ğ current ó‘Ô‚©‚ç”»’è
+		// ä»®ã®ãƒ•ãƒ©ã‚°ã‚’ current çŠ¶æ…‹ã‹ã‚‰åˆ¤å®š
 		// return intent.isActive && !intent.requestedSlots.empty();
 		return intent.isActive;
 
 	//case Condition::RequestRoll:
-	//	// “¯—l‚É None ó‘Ô‚È‚ç‰ñ”ğ‰Â”\i“ü—Í‚È‚Ç–¢À‘•‚Ìb’è‘Î‰j
+	//	// åŒæ§˜ã« None çŠ¶æ…‹ãªã‚‰å›é¿å¯èƒ½ï¼ˆå…¥åŠ›ãªã©æœªå®Ÿè£…ã®æš«å®šå¯¾å¿œï¼‰
 	//	return action.current == gNsCharaActionState::ActionState::None;
 
 	//case Condition::RequestGuard:
 	//	return action.current == gNsCharaActionState::ActionState::None;
 
 	case Condition::IsTimeElapsed:
-		return deltaTime > condition.floatValue;
+	{
+		static float elapsedTime = 0.0f;
+		elapsedTime += deltaTime;
+
+		if (elapsedTime >= condition.floatValue) {
+			elapsedTime = 0.0f; // æ¡ä»¶ã‚’æº€ãŸã—ãŸã‚‰ãƒªã‚»ãƒƒãƒˆ
+			return true;
+		}
+		return false;
+	}
 
 	default:
 		return false;
