@@ -9,10 +9,11 @@ namespace Game::Character::State::Action
 {
 	enum class TransitionConditionType
 	{ 
-		RequestSkillCast,
-		RequestRoll,
-		RequestGuard,
-		IsTimeElapsed,
+		SkillTriggered,
+		//RequestRoll,
+		//RequestGuard,
+		RequestUseItem,
+		ActionDurationElapsed,
 		// ç°å„í«â¡
 	};
 

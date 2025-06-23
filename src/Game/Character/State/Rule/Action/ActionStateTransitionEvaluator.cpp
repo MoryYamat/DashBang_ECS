@@ -17,7 +17,9 @@ bool Game::Character::State::Action::AreConditionsMet
 	return true;
 }
 
-
+// Fixme: ここで条件評価の定義をしているのはおかしい気がする
+// Fixme: ここで条件評価の定義をしているのはおかしい気がする
+// Fixme: ここで条件評価の定義をしているのはおかしい気がする
 bool Game::Character::State::Action::EvaluateCondition
 (
 	const gNsCharaActionState::CharacterActionStateComponent& action,
@@ -30,19 +32,14 @@ bool Game::Character::State::Action::EvaluateCondition
 
 	switch (condition.type)
 	{
-	case Condition::RequestSkillCast:
+	case Condition::SkillTriggered:
 		// 仮のフラグを current 状態から判定
 		// return intent.isActive && !intent.requestedSlots.empty();
-		return intent.isActive;
+		return intent.isActive;// 仮のフラグ
+		// 本当は，キャラクターのスキル実行状態に基づいている必要がある
+		// このRequestSkillCastは，トリガーがおされて，スキルが実行可能な場合遷移する
 
-	//case Condition::RequestRoll:
-	//	// 同様に None 状態なら回避可能（入力など未実装の暫定対応）
-	//	return action.current == gNsCharaActionState::ActionState::None;
-
-	//case Condition::RequestGuard:
-	//	return action.current == gNsCharaActionState::ActionState::None;
-
-	case Condition::IsTimeElapsed:
+	case Condition::ActionDurationElapsed:
 	{
 		static float elapsedTime = 0.0f;
 		elapsedTime += deltaTime;

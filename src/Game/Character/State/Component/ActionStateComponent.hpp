@@ -7,8 +7,8 @@ namespace Game::Character::State::Action
 	{
 		None,
 		SkillCasting,// 複数フェーズあるが上層では一括で扱う
-		Rolling, // 回避スキルとして扱う
-		Guarding,// ガード
+		//Rolling, // 回避スキルとして扱う
+		//Guarding,// ガード
 		UsingItem// アイテム使用
 	};
 
@@ -26,10 +26,10 @@ namespace Game::Character::State::Action
 			return "None";
 		case Game::Character::State::Action::ActionState::SkillCasting:
 			return "SkillCasting";
-		case Game::Character::State::Action::ActionState::Rolling:
-			return "Rolling";
-		case Game::Character::State::Action::ActionState::Guarding:
-			return "Guarding";
+		//case Game::Character::State::Action::ActionState::Rolling:
+		//	return "Rolling";
+		//case Game::Character::State::Action::ActionState::Guarding:
+		//	return "Guarding";
 		case Game::Character::State::Action::ActionState::UsingItem:
 			return "UsingItem";
 		default:
