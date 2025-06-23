@@ -180,6 +180,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	assign.slotToSkillId[gNsSkillData::SkillSlot::Primary] = 1;
 	assign.slotToSkillId[gNsSkillData::SkillSlot::Secondary] = 2;
 	assign.slotToSkillId[gNsSkillData::SkillSlot::Utility1] = 3;
+	assign.slotToSkillId[gNsSkillData::SkillSlot::Utility2] = 4;
 	ecs.addComponent(entity, assign);
 
 	// InputAction と スキルスロットの割り当てを保持
@@ -187,6 +188,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	binding.actionToSlot[gNsInput::InputAction::CastSkill1] = gNsSkillData::SkillSlot::Primary;
 	binding.actionToSlot[gNsInput::InputAction::CastSkill2] = gNsSkillData::SkillSlot::Secondary;
 	binding.actionToSlot[gNsInput::InputAction::CastSkill3] = gNsSkillData::SkillSlot::Utility1;
+	binding.actionToSlot[gNsInput::InputAction::CastSkill4] = gNsSkillData::SkillSlot::Utility2;
 	ecs.addComponent(entity, binding);
 
 	// 必要？（未使用のため検討が必要）何のために用意したか不明

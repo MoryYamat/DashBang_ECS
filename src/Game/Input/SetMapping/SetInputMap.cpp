@@ -16,4 +16,5 @@ void Game::Input::Setting::InitInputMap(eNsECS::EntityMgr& ecs)
 	map.bindKey(GLFW_MOUSE_BUTTON_1, gNsInput::InputAction::CastSkill1);
 	map.bindKey(GLFW_MOUSE_BUTTON_2, gNsInput::InputAction::CastSkill2);
 	map.bindKey(GLFW_KEY_1, gNsInput::InputAction::CastSkill3);
+	map.bindKey(GLFW_KEY_2, gNsInput::InputAction::CastSkill4);
 }

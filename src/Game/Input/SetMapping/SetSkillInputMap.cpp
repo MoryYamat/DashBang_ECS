@@ -11,4 +11,5 @@ void Game::Input::Setting::InitSkillInputMap(eNsECS::EntityMgr& ecs)
 	skillMap.bind(gNsInput::InputAction::CastSkill1, gNsSkillData::SkillSlot::Primary);// スキルID 1
 	skillMap.bind(gNsInput::InputAction::CastSkill2, gNsSkillData::SkillSlot::Secondary);// スキルID 2
 	skillMap.bind(gNsInput::InputAction::CastSkill3, gNsSkillData::SkillSlot::Utility1);// スキルID 3
+	skillMap.bind(gNsInput::InputAction::CastSkill4, gNsSkillData::SkillSlot::Utility2);// スキルID 3
 }

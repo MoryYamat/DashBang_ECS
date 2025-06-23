@@ -42,7 +42,7 @@ void Game::Combat::Skill::System::spawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsS
 	eNsECS::Entity attack = ecs.createEntity();
 	gNsSkillComp::Attack2DAreaComponent area;
 	area.shape = shape;
-	area.lifetime = def.duration;
+	area.lifetime = def.phaseTiming.duration;
 	area.owner = instance.caster;
 	area.skillEntity = skillEntity;
 	std::cout << "[SkillCastingSystem.cpp(SpawnSkillHitArea)] create: " << def.name << " is created. \n";
@@ -137,7 +137,7 @@ void Game::Combat::Skill::System::SpawnSkillHitArea(eNsECS::EntityMgr& ecs)
 		eNsECS::Entity attack = ecs.createEntity();
 		gNsSkillComp::Attack2DAreaComponent area;
 		area.shape = shape;
-		area.lifetime = def.duration;
+		area.lifetime = def.phaseTiming.duration;
 		area.owner = skillInstance.caster;
 		area.skillEntity = e;
 		std::cout << "[SkillCastingSystem.cpp(SpawnSkillHitArea)] create: " << def.name << " is created. \n";
@@ -226,7 +226,7 @@ void Game::Combat::Skill::System::SpawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsS
 		eNsECS::Entity attack = ecs.createEntity();
 		gNsSkillComp::Attack2DAreaComponent area;
 		area.shape = shape;
-		area.lifetime = def.duration;
+		area.lifetime = def.phaseTiming.duration;
 		area.owner = skillInstance.caster;
 		area.skillEntity = e;
 		std::cout << "[SkillCastingSystem.cpp(SpawnSkillHitArea)] create: " << def.name << " is created. \n";

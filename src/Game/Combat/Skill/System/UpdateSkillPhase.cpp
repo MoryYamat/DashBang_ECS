@@ -23,7 +23,7 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 		switch (instance.phase)
 		{
 		case gNsSkillComp::SkillPhase::Casting:
-			if (instance.timeSinceCast >= def.castTime && !instance.hasSpawned)
+			if (instance.timeSinceCast >= def.phaseTiming.castTime && !instance.hasSpawned)
 			{
 				instance.phase = gNsSkillComp::SkillPhase::Active;
 				instance.timeSinceCast = 0.0f;// リセット
@@ -33,7 +33,7 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 			break;
 
 		case gNsSkillComp::SkillPhase::Active:
-			if (instance.timeSinceCast >= def.duration)
+			if (instance.timeSinceCast >= def.phaseTiming.duration)
 			{
 				instance.phase = gNsSkillComp::SkillPhase::Recovery;
 				instance.timeSinceCast = 0.0f;
@@ -41,7 +41,7 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 			break;
 
 		case gNsSkillComp::SkillPhase::Recovery:
-			if (instance.timeSinceCast >= def.recoveryTime)
+			if (instance.timeSinceCast >= def.phaseTiming.recoveryTime)
 			{
 				instance.phase = gNsSkillComp::SkillPhase::Completed;
 			}
@@ -52,7 +52,9 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 			// SkillSystem::Lifetime::CleanUpCompletedSkills(ecs);
 			std::cout << "[UpdateSkillPhase.cpp(Completed Skill)] entity id " << instance.skillId << std::endl;
 
-			eNsECS::EntityUtils::MarkForPendingDestroyWithChildren(ecs, e, instance.spawnedHitAreas);
+			// eNsECS::EntityUtils::MarkForPendingDestroyWithChildren(ecs, e, instance.spawnedHitAreas);
+
+			eNsECS::EntityUtils::MarkForPendingDestroy(ecs, e); // スキルインスタンスを削除
 
 			// addPendingDestroyComp(ecs, e, instance);
 
@@ -76,7 +78,7 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 		switch (instance.phase)
 		{
 		case gNsSkillComp::SkillPhase::Casting:
-			if (instance.timeSinceCast >= def.castTime)
+			if (instance.timeSinceCast >= def.phaseTiming.castTime)
 			{
 				instance.phase = gNsSkillComp::SkillPhase::Active;
 				instance.timeSinceCast = 0.0f;// リセット
@@ -85,7 +87,7 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 			break;
 
 		case gNsSkillComp::SkillPhase::Active:
-			if (instance.timeSinceCast >= def.duration)
+			if (instance.timeSinceCast >= def.phaseTiming.duration)
 			{
 				instance.phase = gNsSkillComp::SkillPhase::Recovery;
 				instance.timeSinceCast = 0.0f;
@@ -93,7 +95,7 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 			break;
 
 		case gNsSkillComp::SkillPhase::Recovery:
-			if (instance.timeSinceCast >= def.recoveryTime)
+			if (instance.timeSinceCast >= def.phaseTiming.recoveryTime)
 			{
 				instance.phase = gNsSkillComp::SkillPhase::Completed;
 			}

@@ -34,7 +34,7 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 		.castTime = 0.3f, // キャストタイム(発生までの時間)
 		.recoveryTime = 0.4f, // リカバリータイム(スキル終了後の待機時間)
 		.duration = 1.0f, // スキル本体の持続時間
-		.cooldown = 1.0f // スキルの再使用待機時間
+		.cooldown = 0.0f // スキルの再使用待機時間
 	};
 
 	// スキルのアーマー情報を定義
@@ -93,8 +93,8 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 	projectile.phaseTiming = SkillPhaseTiming{
 		.castTime = 0.3f, // キャストタイム(発生までの時間)
 		.recoveryTime = 0.3f, // リカバリータイム(スキル終了後の待機時間)
-		.duration = 5.0f, // スキル本体の持続時間
-		.cooldown = 0.3f // スキルの再使用待機時間
+		.duration = 3.0f, // スキル本体の持続時間
+		.cooldown = 0.0f // スキルの再使用待機時間
 	};
 
 	// スキルのアーマー情報を定義
@@ -153,8 +153,8 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 	testSkill.phaseTiming = SkillPhaseTiming{
 		.castTime = 0.5f, // キャストタイム(発生までの時間)
 		.recoveryTime = 0.5f, // リカバリータイム(スキル終了後の待機時間)
-		.duration = 2.0f, // スキル本体の持続時間
-		.cooldown = 1.0f // スキルの再使用待機時間
+		.duration = 1.0f, // スキル本体の持続時間
+		.cooldown = 2.0f // スキルの再使用待機時間
 	};
 
 	// スキルのアーマー情報を定義
