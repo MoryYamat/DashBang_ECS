@@ -2,7 +2,7 @@
 
 #include "Game/Input/Intent/PlayerSkillIntentMapper.h"
 
-#include "Game/Combat/Skill/Trigger/PlayerSkillTriggerSystem.h"
+#include "Game/Combat/Skill/System/Trigger/PlayerSkillTriggerSystem.h"
 
 #include "Game/Combat/Skill/System/SkillCastingSystem.h"
 #include "Game/Combat/Skill/System/UpdateSkillPhase.h"

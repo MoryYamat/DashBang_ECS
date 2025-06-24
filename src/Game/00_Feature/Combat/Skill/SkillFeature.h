@@ -27,7 +27,7 @@ namespace Game::Feature::Combat
 
 		static void UpdateSkillPhaseSystem(eNsECS::EntityMgr& ecs, float deltaTime);
 
-		static void UpdateSkillAttackLifetimeSystem(eNsECS::EntityMgr& ecs, float deltaTime);
+		// static void UpdateSkillAttackLifetimeSystem(eNsECS::EntityMgr& ecs, float deltaTime);
 
 	};
 }

@@ -7,6 +7,8 @@
 
 #include "Engine/ECS/Component/Tags/PendingDestroyComponent.h"
 
+#include "Game/Character/State/Component/CCStateComponent.hpp"
+
 #include "Engine/ECS/EntityUtils/EntityUtils.h"
 
 void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float deltaTime)
@@ -50,11 +52,17 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 		case gNsSkillComp::SkillPhase::Completed:
 			// ↓↓↓古の関数(削除予定)↓↓↓
 			// SkillSystem::Lifetime::CleanUpCompletedSkills(ecs);
-			std::cout << "[UpdateSkillPhase.cpp(Completed Skill)] entity id " << instance.skillId << std::endl;
+			
+			if (!instance.isSkillCompleted && AllAttacksDestroyed(ecs, instance) && !IsSkillInterrupted(instance, ecs))
+			{
+				std::cout << "[UpdateSkillPhase.cpp(Completed Skill)] entity id " << instance.skillId << std::endl;
+				instance.isSkillCompleted = true; // フラグを立てて重複削除防止
+				eNsECS::EntityUtils::MarkForPendingDestroy(ecs, e); // スキルインスタンスを削除
+			}
+
 
 			// eNsECS::EntityUtils::MarkForPendingDestroyWithChildren(ecs, e, instance.spawnedHitAreas);
 
-			eNsECS::EntityUtils::MarkForPendingDestroy(ecs, e); // スキルインスタンスを削除
 
 			// addPendingDestroyComp(ecs, e, instance);
 
@@ -63,6 +71,36 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 
 
 	}
+}
+
+// 
+bool Game::Combat::Skill::System::AllAttacksDestroyed(eNsECS::EntityMgr& ecs, const gNsSkillComp::SkillInstanceComponent& instance)
+{
+	for (const eNsECS::Entity& hitArea : instance.spawnedHitAreas)
+	{
+		if (ecs.isAlive(hitArea) && ecs.hasComponent<gNsSkillComp::Attack2DAreaComponent>(hitArea))
+		{
+			return false; // まだ攻撃エリアが存在する
+		}
+	}
+	return true; // すべての攻撃エリアが削除された
+}
+
+// スキル中断の判定 (今後拡張する)
+bool Game::Combat::Skill::System::IsSkillInterrupted(const gNsSkillComp::SkillInstanceComponent& instance, eNsECS::EntityMgr& ecs)
+{
+	// キャスターのエンティティが生存しているか確認
+	if (!ecs.isAlive(instance.caster)) return true;
+	if (instance.isInterrupted) return true;
+
+	//// キャスターがスタンや中断状態か確認
+	//if (ecs.hasComponent<gNsStateComp::CharacterStateComponent>(instance.caster))
+	//{
+	//	const auto& state = ecs.get<gNsStateComp::CharacterStateComponent>(instance.caster);
+	//	return state.isStunned || state.isInterrupted; // 状態によっては中断扱いにする
+	//}
+
+	return false;
 }
 
 // スキルの寿命管理システム(ECSのグローバルリソース導入後廃止(現在未使用))

@@ -80,7 +80,7 @@
 #include "Game/Collision/System/CollisionDetectionSystem.h"
 
 // skill
-#include "Game/Combat/Skill/Trigger/PlayerSkillTriggerSystem.h"
+#include "Game/Combat/Skill/System/Trigger/PlayerSkillTriggerSystem.h"
 #include "Game/Combat/Skill/System/SkillCastingSystem.h"
 #include "Game/Combat/Skill/MasterData/SkillSlot.h"
 #include "Game/Combat/Skill/System/UpdateSkillLifetimes.h"

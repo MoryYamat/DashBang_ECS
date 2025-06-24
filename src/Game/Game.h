@@ -32,7 +32,7 @@
 
 // skill
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
-#include "Game/Combat/Skill/Trigger/SkillInputMap.h"
+#include "Game/Combat/Skill/System/Trigger/SkillInputMap.h"
 
 
 

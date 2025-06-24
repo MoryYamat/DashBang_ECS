@@ -52,6 +52,12 @@ namespace Game::Combat::Skill::Component
 		std::vector<eNsECS::Entity> spawnedHitAreas; // 生成されたAttack2DAreaへの参照
 
 		std::unordered_map<SkillPhase, PhaseTiming> timings;
+
+		// スキルのライフタイム
+		bool isSkillCompleted = false;
+
+		// スタンや死亡などによる中断フラグ
+		bool isInterrupted = false;
 	};
 }
 

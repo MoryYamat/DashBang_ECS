@@ -163,21 +163,13 @@
         * ~~現在の構造は，`InputActionComponent`の変化が直接各システムの挙動の`トリガー`になっている~~
         * ~~しかしそれでは，ゲームの状態管理に基づく入力や応答変化に(柔軟に)対応するのが難しい~~
         * ~~そこで`InputActionComponent`の変化を`IntentMappingSystem`によってマッピングすることで`キャラクター状態管理`と連携するよう構造を改善する~~
-    * `requestedNextState`を発行するシステムの実装
+    * ~~`requestedNextState`を発行するシステムの実装~~
     * `状態の階層`実装：`Moving`-> `WalkForward`/ `RunBackward`etc.
         * 論理状態と状態表現の分離
 * `スキル状態`と`キャラクター状態`の分離と同期(非同期)処理実装
-    * 実装イメージ
-```planetext
-[Skill動作]      ----|=========|=========|=========|
-[キャラ操作拘束] ----|=========|=========|=========|
-[攻撃判定]             ----|======| or   ----|===============...|          
 
-Casting     →   Active   →  Recovery → Completed
-                 ↑             ↑
-    判定生成↑     判定消滅（独立に）
+* 処理フロー変更：`SkillIntent`=>`SkillTrigger`を廃止し，`CharacterIntent`->`CharacterState`へ改善するリファクタリングの実施
 
-```
      
 
 
@@ -225,9 +217,12 @@ Casting     →   Active   →  Recovery → Completed
     * `幽霊参照`の**構造的な**対策
         * `世代番号`の参照も持たせるとか
 
+
 * `SceneManager`の実装
 * `AssetsManager`の実装
 * ``
+
+* `スキルシステム`の大幅改修=> 第2世代に移行することによって，より良い構造と明確な責務分離を達成する
 
 * `AssimpImporter`のインポート時の、スケール設定の見直し.
     * `.fbx`形式のインポートがcmを仮定している可能性がある。

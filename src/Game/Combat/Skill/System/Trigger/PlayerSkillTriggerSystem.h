@@ -5,7 +5,7 @@
 #include "Engine/ECS/EntityManager.h"
 #include "Game/Input/InputActionComponent.h"
 
-#include "Game/Combat/Skill/Trigger/SkillInputMap.h"
+#include "Game/Combat/Skill/System/Trigger/SkillInputMap.h"
 
 #include "Common/EngineNamespaceDecl.h"
 #include "Common/GameNamespaceDecl.h"

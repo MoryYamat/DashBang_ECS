@@ -2,7 +2,7 @@
 
 #include "Common/GameNamespaceDecl.h"
 
-#include "Game/Combat/Skill/Trigger/SkillInputMap.h"
+#include "Game/Combat/Skill/System/Trigger/SkillInputMap.h"
 
 void Game::Input::Setting::InitSkillInputMap(eNsECS::EntityMgr& ecs)
 {

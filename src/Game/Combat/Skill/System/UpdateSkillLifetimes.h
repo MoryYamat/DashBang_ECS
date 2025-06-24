@@ -30,4 +30,5 @@ namespace Game::Combat::Skill::System
 	void updateSkillInstanceCompLifetimes(eNsECS::EntityMgr& ecs, float deltaTime, gNsSkillData::SkillDatabase& skillDB);
 	// ƒXƒLƒ‹ó‘Ô“±“üŒã(ÅV)
 	// void updateSkillInstanceCompLifetimes(ECS& ecs);
+
 }

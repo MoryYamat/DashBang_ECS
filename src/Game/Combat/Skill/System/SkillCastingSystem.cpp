@@ -41,14 +41,14 @@ void Game::Combat::Skill::System::spawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsS
 	// 攻撃範囲エンティティ生成
 	eNsECS::Entity attack = ecs.createEntity();
 	gNsSkillComp::Attack2DAreaComponent area;
-	area.shape = shape;
-	area.lifetime = def.phaseTiming.duration;
-	area.owner = instance.caster;
-	area.skillEntity = skillEntity;
+	area.shape = shape;							// 攻撃範囲の形状を設定
+	area.lifetime = def.phaseTiming.duration;	// 攻撃範囲のライフタイムを設定
+	area.owner = instance.caster;				// 攻撃範囲の所有者を設定
+	area.skillEntity = skillEntity;				// スキルエンティティを設定
 	std::cout << "[SkillCastingSystem.cpp(SpawnSkillHitArea)] create: " << def.name << " is created. \n";
 	ecs.addComponent(attack, area);
 
-	instance.spawnedHitAreas.push_back(attack);
+	instance.spawnedHitAreas.push_back(attack);// 生成された攻撃範囲をSkillInstanceに追加
 
 	// transformを複製
 	ecs.addComponent(attack, transform);
