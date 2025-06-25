@@ -43,8 +43,11 @@
 #include "Game/Combat/Skill/Component/SkillSlotAssignmentComponent.h"
 
 #include "Game/Combat/Skill/Component/SkillInputBindingComponent.h"
+
 // intent
-#include "Game/Combat/Skill/Intent/Component/SkillIntentComponent.h"
+#include "Game/Character/Control/Skill/Intent/SkillIntentComponent.hpp"
+
+#include "Game/Character/State/Component/Action/Skill/CharacterSkillExecutionStateComponent.hpp"
 
 #include "Engine/Graphics/Model/ModelData.h"
 #include "Engine/Graphics/Model/AssimpImporter.h"
@@ -59,7 +62,7 @@
 // movement
 #include "Game/Character/State/Component/MovementStateComponent.hpp"
 // action
-#include "Game/Character/State/Component/ActionStateComponent.hpp"
+#include "Game/Character/State/Component/Action/ActionStateComponent.hpp"
 
 // Game ECS
 #include "Game/ECS/Tags/CharacterAttribTags.h"
@@ -209,7 +212,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	ecs.addComponent(entity, eNsLogic2DComp::Velocity2DComponent{});
 
 	// Intent base
-	ecs.addComponent(entity, gNsSkillIntent::SkillIntentComponent{});
+	ecs.addComponent(entity, gNsCharacterControlSkill::SkillIntentComponent{});
 
 	// movement
 	ecs.addComponent(entity, gNsCharacterIntent::MovementIntentComponent{});
@@ -239,6 +242,9 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 
 	// action
 	ecs.addComponent(entity, gNsCharaActionState::CharacterActionStateComponent{});
+
+	// skill execution state
+	ecs.addComponent(entity, gNsCharaActionState::CharacterSkillExecutionStateComponent{});
 
 	// std::cout << "[PlayerCharacterActor.cpp] Created Player Entity: " << entity.id << std::endl;
 	//if (ecs.hasComponent<gNsCharacterState::CharacterStateComponent>(entity)) {

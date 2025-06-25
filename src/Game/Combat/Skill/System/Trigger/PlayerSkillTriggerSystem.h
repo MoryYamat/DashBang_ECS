@@ -16,7 +16,9 @@ namespace Game::Combat::Skill::Trigger
 	{
 	public:
 		static void TriggerPlayerSkillsFromIntent(eNsECS::EntityMgr& ecs);
-		static void TriggerSkillsFromInput(eNsECS::EntityMgr& ecs, SkillInputMap& inputMap);
+		
+		// íœ—\’è:ŒÃ‚¢ƒo[ƒWƒ‡ƒ“
+		// static void TriggerSkillsFromInput(eNsECS::EntityMgr& ecs, SkillInputMap& inputMap);
 
 		// static void Update(ECS& ecs, SkillInputMap& SkillInputMap);
 	};

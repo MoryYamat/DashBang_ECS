@@ -15,6 +15,7 @@
 
 #include <iostream>
 
+// 削除予定：未使用
 // Intentを評価してSkillIntstanceを生成するように改修
 void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerPlayerSkillsFromIntent(eNsECS::EntityMgr& ecs)
 {
@@ -88,67 +89,68 @@ void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerPlayerSkills
 }
 
 // InputActionをトリガーにして直接スキルを生成している(25/06/04)-> 意図層(SkillIntent)を介してトリガーするように変更する必要がある
-void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(eNsECS::EntityMgr& ecs, SkillInputMap& inputMap)
-{
-	for (eNsECS::Entity ePlayer : ecs.view<eNsTagComp::PlayerControllerComponent, gNsInput::InputActionComponent, gNsSkillComp::SkillSlotAssignmentComponent>())
-	{
-		const auto& input = ecs.get<gNsInput::InputActionComponent>(ePlayer);
-		auto& slotAssign = ecs.get<gNsSkillComp::SkillSlotAssignmentComponent>(ePlayer);
-
-		for (const auto& [action, slot] : inputMap.getAllBindings())
-		{
-			if (!input.isPressed(action))
-				continue;
-
-			// containsで省略可能のはず(C++20)
-			auto it = slotAssign.slotToSkillId.find(slot);
-			if (it == slotAssign.slotToSkillId.end())
-				continue;
-
-			int skillId = it->second;
-
-			bool alreadyCasting = false;
-
-			// SkillInstanceが存在するかチェック
-			for (eNsECS::Entity eSkill : ecs.view<gNsSkillComp::SkillInstanceComponent>())
-			{
-				const auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(eSkill);
-				if (skillInstance.caster == ePlayer && skillInstance.skillId == skillId)
-				{
-					// SkillInstance のCasterとPlayerEntityが整合すれば，alreadyCasting
-					alreadyCasting = true;
-					break;
-				}
-			}
-
-			// まだ，alreadyCasting = falseの場合(まだSkillInstanceが存在しない場合)作成する
-			if (!alreadyCasting)
-			{
-				// Transformも生成
-				eNsECS::Entity skillEntity = ecs.createEntity();
-				gNsSkillComp::SkillInstanceComponent skillInstance;
-				skillInstance.caster = ePlayer;
-				skillInstance.skillId = skillId;
-				skillInstance.timeSinceCast = 0.0f;
-				ecs.addComponent(skillEntity, skillInstance);
-
-				std::cout << "[SkillTrigger] Player " << ePlayer.id
-					<< " triggered skill " << skillId
-					<< " via slot " << static_cast<int>(slot)
-					<< std::endl;
-
-				const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(ePlayer);
-				eNsLogic2DComp::Transform2DComponent transform2DComp;
-				transform2DComp.positionXZ = logic.positionXZ;
-				transform2DComp.rotationY = logic.GetRotationYFromFrontVector();// radians
-				transform2DComp.scale = 1.0f;
-				ecs.addComponent(skillEntity, transform2DComp);
-
-				std::cout << "[PlayerSkillTriggerSystem.cpp(rotation)] rotation Y " << transform2DComp.rotationY << std::endl;
-			}
-		}	
-	}
-}
+// 
+//void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(eNsECS::EntityMgr& ecs, SkillInputMap& inputMap)
+//{
+//	for (eNsECS::Entity ePlayer : ecs.view<eNsTagComp::PlayerControllerComponent, gNsInput::InputActionComponent, gNsSkillComp::SkillSlotAssignmentComponent>())
+//	{
+//		const auto& input = ecs.get<gNsInput::InputActionComponent>(ePlayer);
+//		auto& slotAssign = ecs.get<gNsSkillComp::SkillSlotAssignmentComponent>(ePlayer);
+//
+//		for (const auto& [action, slot] : inputMap.getAllBindings())
+//		{
+//			if (!input.isPressed(action))
+//				continue;
+//
+//			// containsで省略可能のはず(C++20)
+//			auto it = slotAssign.slotToSkillId.find(slot);
+//			if (it == slotAssign.slotToSkillId.end())
+//				continue;
+//
+//			int skillId = it->second;
+//
+//			bool alreadyCasting = false;
+//
+//			// SkillInstanceが存在するかチェック
+//			for (eNsECS::Entity eSkill : ecs.view<gNsSkillComp::SkillInstanceComponent>())
+//			{
+//				const auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(eSkill);
+//				if (skillInstance.caster == ePlayer && skillInstance.skillId == skillId)
+//				{
+//					// SkillInstance のCasterとPlayerEntityが整合すれば，alreadyCasting
+//					alreadyCasting = true;
+//					break;
+//				}
+//			}
+//
+//			// まだ，alreadyCasting = falseの場合(まだSkillInstanceが存在しない場合)作成する
+//			if (!alreadyCasting)
+//			{
+//				// Transformも生成
+//				eNsECS::Entity skillEntity = ecs.createEntity();
+//				gNsSkillComp::SkillInstanceComponent skillInstance;
+//				skillInstance.caster = ePlayer;
+//				skillInstance.skillId = skillId;
+//				skillInstance.timeSinceCast = 0.0f;
+//				ecs.addComponent(skillEntity, skillInstance);
+//
+//				std::cout << "[SkillTrigger] Player " << ePlayer.id
+//					<< " triggered skill " << skillId
+//					<< " via slot " << static_cast<int>(slot)
+//					<< std::endl;
+//
+//				const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(ePlayer);
+//				eNsLogic2DComp::Transform2DComponent transform2DComp;
+//				transform2DComp.positionXZ = logic.positionXZ;
+//				transform2DComp.rotationY = logic.GetRotationYFromFrontVector();// radians
+//				transform2DComp.scale = 1.0f;
+//				ecs.addComponent(skillEntity, transform2DComp);
+//
+//				std::cout << "[PlayerSkillTriggerSystem.cpp(rotation)] rotation Y " << transform2DComp.rotationY << std::endl;
+//			}
+//		}	
+//	}
+//}
 
 //void SkillSystem::Trigger::PlayerSkillTriggerSystem::Update(ECS& ecs, SkillInputMap& SkillInputMap)
 //{

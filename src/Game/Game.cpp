@@ -44,9 +44,9 @@
 #include "Game/01_Layer/InitializeLayerFeature.h"
 #include "Game/01_Layer/InputLayerFeature.h"
 #include "Game/01_Layer/IntentLayerFeature.h"
+#include "Game/01_Layer/ResolverLayerFeature.hpp"
 #include "Game/01_Layer/LogicLayerFeature.h"
 #include "Game/01_Layer/StateLayerFeature.hpp"
-
 //Game/Actor
 #include "Game/Actor/CameraActor.h"
 #include "Game/Actor/PlayerCharacterActor.h"
@@ -293,8 +293,13 @@ void GameApp::GameApp::updateGameLogics()
 	// Update from the top layer	
 	gNsLayer::IntentLayerFeature::Update(mECS);
 
+	// Resolver Layer
+	gNsLayer::ResolverLayerFeature::Update(mECS);
+
+	// Logic Layer
 	gNsLayer::LogicLayerFeature::Update(mECS, deltaTime);
 
+	// state layer
 	gNsLayer::StateLayerFeature::Update(mECS, deltaTime);
 }
 

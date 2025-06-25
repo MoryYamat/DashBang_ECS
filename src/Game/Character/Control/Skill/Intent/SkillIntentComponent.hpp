@@ -9,11 +9,14 @@
 #include <vector>
 
 
-namespace Game::Character::Control
+namespace Game::Character::Control::Skill
 {
 	struct SkillIntentComponent
 	{
+		// 要求されたスキルスロット
 		std::vector<gNsSkillData::SkillSlot> requestedSlots;
+
+		// ボタンが押されているかどうか
 		bool isActive = false;
 	};
 }

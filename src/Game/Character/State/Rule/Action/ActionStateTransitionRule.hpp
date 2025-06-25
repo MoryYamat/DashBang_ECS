@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Game/Character/State/Component/ActionStateComponent.hpp"
+#include "Game/Character/State/Component/Action/ActionStateComponent.hpp"
 
 #include <string>
 #include <vector>

@@ -16,10 +16,11 @@ namespace Game::Combat::Skill::Component
 	// スキル段階
 	enum class SkillPhase
 	{
-		Casting,
-		Active,
-		Recovery,
-		Completed
+		Casting,// スキルのキャスト段階
+		Active,// スキルのアクティブ段階(攻撃など)
+		Recovery,// スキルの硬直
+		Completed, // スキルの完了段階(終了状態)
+		Interrupted // スキルの中断段階(スタンや死亡など)
 	};
 
 	struct PhaseTiming

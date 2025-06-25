@@ -80,7 +80,9 @@ namespace GameApp
 
 		// skill 
 		// gNsSkillData::SkillDatabase mSkillDatabase;
-		gNsSkillTrigger::SkillInputMap mSkillInputMap;
+		// 削除予定：現在未使用：ECSのグローバルリソースに移行済み
+		// 削除予定：現在未使用：ECSのグローバルリソースに移行済み
+		//gNsSkillTrigger::SkillInputMap mSkillInputMap;
 
 		// float mDeltaTime = 0.0f;
 		float mLastFrame = 0.0f;

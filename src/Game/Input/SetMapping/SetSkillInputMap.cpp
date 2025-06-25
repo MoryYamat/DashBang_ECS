@@ -4,9 +4,11 @@
 
 #include "Game/Combat/Skill/System/Trigger/SkillInputMap.h"
 
+#include "Game/Character/Control/Skill/MapData/SkillInputMap.hpp"
+
 void Game::Input::Setting::InitSkillInputMap(eNsECS::EntityMgr& ecs)
 {
-	auto& skillMap = ecs.createResource<gNsSkillTrigger::SkillInputMap>();
+	auto& skillMap = ecs.createResource<gNsCharacterControlSkill::SkillInputMap>();
 
 	skillMap.bind(gNsInput::InputAction::CastSkill1, gNsSkillData::SkillSlot::Primary);// スキルID 1
 	skillMap.bind(gNsInput::InputAction::CastSkill2, gNsSkillData::SkillSlot::Secondary);// スキルID 2

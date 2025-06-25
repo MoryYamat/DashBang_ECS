@@ -14,5 +14,7 @@ namespace Game::Feature::Character
 		static void InitTransitionDatabase(eNsECS::EntityMgr& ecs);
 
 		static void UpdateCharacterState(eNsECS::EntityMgr& ecs, float deltaTime);
+
+		static void UPdateCharacterSkillExecutionState(eNsECS::EntityMgr& ecs, float deltaTime);
 	};
 }

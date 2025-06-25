@@ -28,7 +28,7 @@ void Game::Feature::Combat::SkillFeature::UpateSkillIntent(eNsECS::EntityMgr& ec
 void Game::Feature::Combat::SkillFeature::TriggerSkillsFromIntent(eNsECS::EntityMgr& ecs)
 {
 	// player Skill trigger
-	gNsSkillTrigger::PlayerSkillTriggerSystem::TriggerPlayerSkillsFromIntent(ecs);
+	// gNsSkillTrigger::PlayerSkillTriggerSystem::TriggerPlayerSkillsFromIntent(ecs);
 }
 
 // îpé~

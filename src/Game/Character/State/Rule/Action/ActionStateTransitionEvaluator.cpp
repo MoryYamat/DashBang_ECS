@@ -4,55 +4,40 @@
 bool Game::Character::State::Action::AreConditionsMet
 (
 	const gNsCharaActionState::CharacterActionStateComponent& action,
-	const gNsSkillIntent::SkillIntentComponent& intent,
+	const gNsCharaActionState::CharacterSkillExecutionStateComponent& skillExec,
 	float deltaTime,
 	const std::vector<gNsCharaActionState::TransitionCondition>& conditions
 )
 {
 	for (const auto& cond : conditions)
 	{
-		if (!EvaluateCondition(action, intent, deltaTime, cond))
+		if (!EvaluateCondition(action, skillExec, deltaTime, cond))
 			return false;
 	}
 	return true;
 }
 
-// Fixme: ここで条件評価の定義をしているのはおかしい気がする
-// Fixme: ここで条件評価の定義をしているのはおかしい気がする
-// Fixme: ここで条件評価の定義をしているのはおかしい気がする
 bool Game::Character::State::Action::EvaluateCondition
 (
 	const gNsCharaActionState::CharacterActionStateComponent& action,
-	const gNsSkillIntent::SkillIntentComponent& intent,
+	const gNsCharaActionState::CharacterSkillExecutionStateComponent& skillExec,
 	float deltaTime,
 	const gNsCharaActionState::TransitionCondition& condition
 )
 {
 	using Condition = gNsCharaActionState::TransitionConditionType;
-
 	switch (condition.type)
 	{
 	case Condition::SkillTriggered:
-		// 仮のフラグを current 状態から判定
-		// return intent.isActive && !intent.requestedSlots.empty();
-		return intent.isActive;// 仮のフラグ
-		// 本当は，キャラクターのスキル実行状態に基づいている必要がある
-		// このRequestSkillCastは，トリガーがおされて，スキルが実行可能な場合遷移する
-
+		// キャラクターのスキル実行状態が開始されたかどうか
+		return skillExec.previousPhase == gNsCharaActionState::CharacterSkillExecutionPhase::None
+			&& skillExec.currentPhase == gNsCharaActionState::CharacterSkillExecutionPhase::Casting;
+		// Fixme: ActionDurationElapsedという名前はあいまいで誤解が生じやすい：例えば，SkillExitTriggeredのように，スキルが終了するトリガーが発生したことがわかるような名前がよい
 	case Condition::ActionDurationElapsed:
-	{
-		static float elapsedTime = 0.0f;
-		elapsedTime += deltaTime;
-
-		if (elapsedTime >= condition.floatValue) {
-			elapsedTime = 0.0f; // 条件を満たしたらリセット
-			return true;
-		}
-		return false;
-	}
-
+		// キャラクターのスキル実行状態が完了したか，スキル実行が中断された場合
+		return skillExec.currentPhase == Character::State::Action::CharacterSkillExecutionPhase::Completed
+			|| skillExec.currentPhase == Character::State::Action::CharacterSkillExecutionPhase::Interrupted;
 	default:
 		return false;
 	}
-
 }

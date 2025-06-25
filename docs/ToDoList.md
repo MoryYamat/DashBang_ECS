@@ -153,24 +153,31 @@
 * 処理の共通性や相違性からコードやファイルを整理／まとめる 
 
 
-## ↓↓↓ now ↓↓↓
-
 * Character状態遷移および状態管理の処理／構造の実装
     * ~~`入力`->`意図`->(`状態`)->`論理`->`描画`という階層分け~~
     * `入力`->`意図`->(`Resolver`)->`論理`->`論理状態` -> `描画状態` -> `描画`という階層分け
 * ~~(意味)状態レイヤー((Semantic) state Layer)の導入~~
-    * それに伴う，GLFW入力->入力抽象化->マッピング->`InputActionComponent`に反映という構造の`意味レイヤー`への適用のための改造
+    * ~~それに伴う，GLFW入力->入力抽象化->マッピング->`InputActionComponent`に反映という構造の`意味レイヤー`への適用のための改造~~
         * ~~現在の構造は，`InputActionComponent`の変化が直接各システムの挙動の`トリガー`になっている~~
         * ~~しかしそれでは，ゲームの状態管理に基づく入力や応答変化に(柔軟に)対応するのが難しい~~
         * ~~そこで`InputActionComponent`の変化を`IntentMappingSystem`によってマッピングすることで`キャラクター状態管理`と連携するよう構造を改善する~~
     * ~~`requestedNextState`を発行するシステムの実装~~
     * `状態の階層`実装：`Moving`-> `WalkForward`/ `RunBackward`etc.
         * 論理状態と状態表現の分離
-* `スキル状態`と`キャラクター状態`の分離と同期(非同期)処理実装
+* ~~`スキル状態`と`キャラクター状態`の分離と同期(非同期)処理実装~~
 
-* 処理フロー変更：`SkillIntent`=>`SkillTrigger`を廃止し，`CharacterIntent`->`CharacterState`へ改善するリファクタリングの実施
 
-     
+## ↓↓↓ now ↓↓↓
+* ~~処理フロー変更：`SkillIntent`=>`SkillTrigger`を廃止し，`CharacterIntent`->`CharacterState`へ改善するリファクタリングの実施~~
+* リファクタリング:
+    * `SkillInstance`の`Phase`に基づいた`CharacterSkillExecutionState`の`currentPhase`の更新は順序関係が逆なのではないか
+    * `CharacterSkillExecutionState`の`Reset`に遅延を設けると，スムーズなアクションに影響を及ぼすことが考えられる
+    * `UPdateCharacterSkillExecutionState`の実行レイヤーの場所は`logicLayer`で行ってはダメなのではないか
+    * **スキルボタンを同時押しすると，同時に複数のスキルを発動できてしまう問題**
+    * **スキルの攻撃判定寿命とキャラクターのスキル実行状態フェーズが同期している問題**-> **同期する場合(近距離攻撃など)と同期しない場合(遠距離攻撃など)の分離か適切な実装を行う必要がある**
+
+
+* **フォルダ構造整理**     
 
 
 * スキル状態遷移および状態管理の処理／構造の実装
