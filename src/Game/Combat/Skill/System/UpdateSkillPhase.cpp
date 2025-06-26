@@ -11,6 +11,7 @@
 
 #include "Engine/ECS/EntityUtils/EntityUtils.h"
 
+// Fixme: スキルの種類によってSkillPhaseの更新処理を分ける必要があるかもしれない
 void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 	gNsSkillData::SkillDatabase& skillDB = ecs.getResource<gNsSkillData::SkillDatabase>();

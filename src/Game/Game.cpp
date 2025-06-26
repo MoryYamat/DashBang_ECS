@@ -296,11 +296,13 @@ void GameApp::GameApp::updateGameLogics()
 	// Resolver Layer
 	gNsLayer::ResolverLayerFeature::Update(mECS);
 
+	// state layer
+	gNsLayer::StateLayerFeature::Update(mECS, deltaTime);
+
 	// Logic Layer
 	gNsLayer::LogicLayerFeature::Update(mECS, deltaTime);
 
-	// state layer
-	gNsLayer::StateLayerFeature::Update(mECS, deltaTime);
+
 }
 
 void GameApp::GameApp::generateOutputs()

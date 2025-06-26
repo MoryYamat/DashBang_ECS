@@ -16,6 +16,27 @@
 #include "Common/GameNamespaceDecl.h"
 
 
+namespace Game::Combat::Skill::Data
+{
+	// スキルのトリガータイミングを定義する列挙型
+	enum class SkillTriggerTiming
+	{
+		OnCastingStart,// スキルのキャスト開始時
+		OnCastingEnd,// スキルのキャスト終了時
+		OnActiveStart,// スキルがアクティブになったとき
+		OnActiveEnd,// スキルがアクティブを終了したとき
+		OnRecoveryStart,// スキルのリカバリー開始時
+	};
+
+	// スキルの攻撃判定ライフタイムの管理方法を定義する列挙型
+	enum class AttackLifeTimeMode
+	{
+		SyncWithSkillPhase, // meleeなど
+		IndependentEntityLifetime, // Projectile
+		AttachedToChildEntity// 設置型など
+	};
+}
+
 // 
 namespace Game::Combat::Skill::Data
 {

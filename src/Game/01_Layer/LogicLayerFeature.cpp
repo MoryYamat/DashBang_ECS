@@ -28,7 +28,8 @@ void Game::Layer::LogicLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 	// 検討必要：ここでキャラクターのスキル実行状態を更新するかどうか
 	// 検討必要：ここでキャラクターのスキル実行状態を更新するかどうか
 	// 検討必要：ここでキャラクターのスキル実行状態を更新するかどうか
-	gNsFeature::Character::StateFeature::UPdateCharacterSkillExecutionState(ecs, deltaTime);
+	// stateへ移設
+	// gNsFeature::Character::StateFeature::UPdateCharacterSkillExecutionState(ecs, deltaTime);
 
 
 	// スキル軌跡更新
