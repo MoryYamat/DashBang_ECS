@@ -22,6 +22,7 @@
 // Intent -> Resolver -> Logic : Intent‚ÆState‚ÉŠî‚Ã‚¢‚ÄƒXƒLƒ‹‚ÌÀs‰Â”Û‚ğ”»’è‚·‚é
 void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::EntityMgr& ecs, float deltaTime)
 {
+
 	for (eNsECS::Entity ePlayer : ecs.view<
 		gNsCharacterControlSkill::SkillIntentComponent,
 		gNsSkillComp::SkillSlotAssignmentComponent,

@@ -34,7 +34,6 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 		.castTime = 0.3f, // キャストタイム(発生までの時間)
 		.recoveryTime = 0.4f, // リカバリータイム(スキル終了後の待機時間)
 		.duration = 1.0f, // スキル本体の持続時間
-		.cooldown = 0.0f // スキルの再使用待機時間
 	};
 
 	// スキルのアーマー情報を定義
@@ -73,6 +72,14 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 	// スキルのキャスト状態と攻撃判定の同期／非同期を定義
 	slash.castSyncType = SkillCastSyncType::Synchronous; // キャスト状態と攻撃判定の同期
 	slash.movementLockType = SkillMovementLockType::Locked; // スキルの移動ロックタイプ：ロック
+	
+	// スキルのあたり判定の情報を設定
+	slash.attackTiming = gNsSkillData::SkillAttackTiming
+	{
+		.attackLifeTimeMode = gNsSkillData::AttackLifeTimeMode::SyncWithSkillPhase, // 攻撃判定ライフタイムの管理方法
+		.triggerTiming = gNsSkillData::SkillTriggerTiming::OnCastingEnd, // スキルのトリガータイミング
+		.attackDuration = 1.0f, // 攻撃判定の生存時間（秒） (Projectile寿命，Dotの継続時間など)
+	};
 	db.AddSkill(slash);
 
 
@@ -93,8 +100,7 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 	projectile.phaseTiming = SkillPhaseTiming{
 		.castTime = 0.3f, // キャストタイム(発生までの時間)
 		.recoveryTime = 0.3f, // リカバリータイム(スキル終了後の待機時間)
-		.duration = 3.0f, // スキル本体の持続時間
-		.cooldown = 0.0f // スキルの再使用待機時間
+		.duration = 2.0f, // スキル本体の持続時間
 	};
 
 	// スキルのアーマー情報を定義
@@ -134,6 +140,15 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 	// スキルのキャスト状態と攻撃判定の同期／非同期を定義
 	projectile.castSyncType = SkillCastSyncType::Asynchronous; // キャスト状態と攻撃判定の非同期
 	projectile.movementLockType = SkillMovementLockType::Free; // スキルの移動ロックタイプ：自由
+
+	// スキルのあたり判定の情報を設定
+	projectile.attackTiming = gNsSkillData::SkillAttackTiming
+	{
+		.attackLifeTimeMode = gNsSkillData::AttackLifeTimeMode::IndependentEntityLifetime, // 攻撃判定ライフタイムの管理方法
+		.triggerTiming = gNsSkillData::SkillTriggerTiming::OnCastingEnd, // スキルのトリガータイミング
+		.attackDuration = 5.0f, // 攻撃判定の生存時間（秒） (Projectile寿命，Dotの継続時間など)
+	};
+
 	db.AddSkill(projectile);
 
 
@@ -154,7 +169,6 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 		.castTime = 0.5f, // キャストタイム(発生までの時間)
 		.recoveryTime = 0.5f, // リカバリータイム(スキル終了後の待機時間)
 		.duration = 1.0f, // スキル本体の持続時間
-		.cooldown = 2.0f // スキルの再使用待機時間
 	};
 
 	// スキルのアーマー情報を定義
@@ -196,6 +210,15 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 	// スキルのキャスト状態と攻撃判定の同期／非同期を定義
 	testSkill.castSyncType = SkillCastSyncType::Synchronous; // キャスト状態と攻撃判定の同期
 	testSkill.movementLockType = SkillMovementLockType::Locked; // スキルの移動ロックタイプ：ロック
+
+	// スキルのあたり判定の情報を設定
+	testSkill.attackTiming = gNsSkillData::SkillAttackTiming
+	{
+		.attackLifeTimeMode = gNsSkillData::AttackLifeTimeMode::SyncWithSkillPhase, // 攻撃判定ライフタイムの管理方法
+		.triggerTiming = gNsSkillData::SkillTriggerTiming::OnCastingEnd, // スキルのトリガータイミング
+		.attackDuration = 1.0f, // 攻撃判定の生存時間（秒） (Projectile寿命，Dotの継続時間など)
+	};
+
 	db.AddSkill(testSkill);
 
 	// テスト用スキル定義2
@@ -215,7 +238,6 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 		.castTime = 1.0f, // キャストタイム(発生までの時間)
 		.recoveryTime = 1.0f, // リカバリータイム(スキル終了後の待機時間)
 		.duration = 4.0f, // スキル本体の持続時間
-		.cooldown = 10.0f // スキルの再使用待機時間
 	};
 
 	// スキルのアーマー情報を定義
@@ -251,6 +273,15 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 	// スキルのキャスト状態と攻撃判定の同期／非同期を定義
 	testSkill2.castSyncType = SkillCastSyncType::Synchronous; // キャスト状態と攻撃判定の同期
 	testSkill2.movementLockType = SkillMovementLockType::Locked; // スキルの移動ロックタイプ：Locked
+
+	// スキルのあたり判定の情報を設定
+	testSkill2.attackTiming = gNsSkillData::SkillAttackTiming
+	{
+		.attackLifeTimeMode = gNsSkillData::AttackLifeTimeMode::IndependentEntityLifetime, // 攻撃判定ライフタイムの管理方法
+		.triggerTiming = gNsSkillData::SkillTriggerTiming::OnCastingEnd, // スキルのトリガータイミング
+		.attackDuration = 5.0f, // 攻撃判定の生存時間（秒） (Projectile寿命，Dotの継続時間など)
+	};
+
 	db.AddSkill(testSkill2);
 
 	//gNsSkillData::SkillDefinition slash;

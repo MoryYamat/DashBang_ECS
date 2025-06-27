@@ -1,5 +1,4 @@
 // 
-
 #include "SkillCastingSystem.h"
 
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
@@ -7,12 +6,15 @@
 #include "Game/Combat/Skill/Component/SkillInstanceComponent.h"
 
 
+
 #include "Game/Combat/Skill/MasterData/SkillDefinition.h"
 
 #include "Game/Combat/Skill/Component/SkillTrajectoryComponent.h"
 #include "Game/Combat/Skill/Factory/SkillTrajectoryFactory.h"
 
+// Game ECS
 #include "Game/ECS/Component/TeamComponent.h"
+#include "Game/ECS/Component/LifetimeComponent.hpp"
 
 #include "Engine/Math/MathUtils.h"
 
@@ -42,11 +44,36 @@ void Game::Combat::Skill::System::spawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsS
 	eNsECS::Entity attack = ecs.createEntity();
 	gNsSkillComp::Attack2DAreaComponent area;
 	area.shape = shape;							// 攻撃範囲の形状を設定
-	area.lifetime = def.phaseTiming.duration;	// 攻撃範囲のライフタイムを設定
+
+	// Fixme: lifetimeは`LifetimeComponent`に責務分離したため削除予定
+	area.lifetime = def.attackTiming.attackDuration;	// 攻撃範囲のライフタイムを設定
+
 	area.owner = instance.caster;				// 攻撃範囲の所有者を設定
 	area.skillEntity = skillEntity;				// スキルエンティティを設定
 	std::cout << "[SkillCastingSystem.cpp(SpawnSkillHitArea)] create: " << def.name << " is created. \n";
 	ecs.addComponent(attack, area);
+
+	// Fixme : 関数として切り出したい
+	// Fixme : 関数として切り出したい
+	// Fixme : 関数として切り出したい
+	gNsECSComp::LifetimeComponent lifetime;
+	if (def.attackTiming.attackLifeTimeMode == gNsSkillData::AttackLifeTimeMode::SyncWithSkillPhase)
+	{
+		lifetime.totalLifetime = def.phaseTiming.duration;	// スキルフェーズの持続時間と同期
+	}
+	else if (def.attackTiming.attackLifeTimeMode == gNsSkillData::AttackLifeTimeMode::IndependentEntityLifetime)
+	{
+		// 攻撃範囲のライフタイムは独立しているため、ここでは特に設定しない
+		lifetime.totalLifetime = def.attackTiming.attackDuration; // 独立したライフタイムを使用
+	}
+	else if (def.attackTiming.attackLifeTimeMode == gNsSkillData::AttackLifeTimeMode::AttachedToChildEntity)
+	{
+		// 攻撃範囲は子エンティティにアタッチされるため、ここでは特に設定しない
+	}
+	ecs.addComponent(attack, lifetime); // 攻撃範囲にライフタイムコンポーネントを追加
+	// Fixme : 関数として切り出したい
+	// Fixme : 関数として切り出したい
+	// Fixme : 関数として切り出したい
 
 	instance.spawnedHitAreas.push_back(attack);// 生成された攻撃範囲をSkillInstanceに追加
 
@@ -99,6 +126,7 @@ gNsCollComp::CollisionMaskComponent Game::Combat::Skill::System::generateSkillCo
 	return mask;
 }
 
+
 // (廃止 (呼び出し型をグローバルではなく，ローカルに変更))攻撃判定計上を生成(ECSグローバルリソース(スキル定義のデータベース)を使用した実装) 
 void Game::Combat::Skill::System::SpawnSkillHitArea(eNsECS::EntityMgr& ecs)
 {
@@ -113,7 +141,7 @@ void Game::Combat::Skill::System::SpawnSkillHitArea(eNsECS::EntityMgr& ecs)
 		if (skillInstance.timeSinceCast > 0.0f)
 			continue;
 
-		
+
 		std::cout << "[SkillCastingSystem] Checking if SkillID " << skillInstance.skillId << " exists..." << std::endl;
 		if (!skillDB.Has(skillInstance.skillId)) {
 			std::cout << "[SkillCastingSystem] SkillID not found, skipping." << std::endl;
@@ -182,7 +210,7 @@ void Game::Combat::Skill::System::SpawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsS
 		glm::vec2 worldCenter = logic.positionXZ;
 		gNsSkillComp::Attack2DShape shape = def.shape;
 
-	
+
 		// ローカル形状情報とワールド変換情報を分離したためこの部分の分岐は不要
 		// Since the local shape information and the world transformation information have been separated, 
 		// this branch is no longer necessary.

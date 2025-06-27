@@ -1,4 +1,4 @@
-// Skillのライフタイム情報，Caster，IDを保持．
+// キャラクターのスキル実行状況を保持するコンポーネント．
 // 
 
 #pragma once 
@@ -23,6 +23,14 @@ namespace Game::Combat::Skill::Component
 		Interrupted // スキルの中断段階(スタンや死亡など)
 	};
 
+	// スキルのライフタイム状態
+	enum class SkillLifeStatus
+	{
+		Active, // スキルがアクティブな状態
+		Completed, // スキルが完了した状態
+		Interrupted // スキルが中断された状態
+	};
+
 	struct PhaseTiming
 	{
 		float duration = 0.0f;
@@ -37,16 +45,18 @@ namespace Game::Combat::Skill::Component
 	};
 
 	// Active Skill 使用時に付与されるデータ
-	// Data granted when using Active Skill
+// Data granted when using Active Skill
 	struct SkillInstanceComponent
 	{
 		eNsECS::Entity caster;
 
+		// 
 		float timeSinceCast = 0.0f;
 
 		// 将来的には，フラグではなく，**段階制御**を導入する(1スキル複数形状に対応するため)
 		bool hasSpawned = false;
 
+		// スキルのID
 		uint16_t skillId;
 
 		SkillPhase phase = SkillPhase::Casting;// スキルの状態段階
@@ -60,5 +70,39 @@ namespace Game::Combat::Skill::Component
 		// スタンや死亡などによる中断フラグ
 		bool isInterrupted = false;
 	};
+
+
+	// 現在未使用：削除予定 (スキルインスタンスをキャラクターのスキル実行状況を保持するコンポーネントと再定義したため)
+	//// Active Skill 使用時に付与されるデータ
+	//// Data granted when using Active Skill
+	//struct SkillInstanceComponent
+	//{
+	//	eNsECS::Entity caster;
+
+	//	// 
+	//	float timeSinceCast = 0.0f;
+
+	//	// 将来的には，フラグではなく，**段階制御**を導入する(1スキル複数形状に対応するため)
+	//	bool hasSpawned = false;
+
+	//	// スキルのID
+	//	uint16_t skillId;
+
+	//	SkillPhase phase = SkillPhase::Casting;// スキルの状態段階
+	//	std::vector<eNsECS::Entity> spawnedHitAreas; // 生成されたAttack2DAreaへの参照
+
+	//	std::unordered_map<SkillPhase, PhaseTiming> timings;
+
+	//	// スキルのライフタイム
+	//	bool isSkillCompleted = false;
+
+	//	// スタンや死亡などによる中断フラグ
+	//	bool isInterrupted = false;
+
+
+	//	// スキルのライフタイム状態
+	//	gNsSkillData::AttackLifeTimeMode attackLifeTimeMode = gNsSkillData::AttackLifeTimeMode::SyncWithSkillPhase;
+	//	float timeToLive = 0.0f; // スキルのライフタイム（秒）
+	//};
 }
 

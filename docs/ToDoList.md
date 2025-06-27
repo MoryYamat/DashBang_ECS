@@ -169,6 +169,7 @@
 
 
 ## ↓↓↓ now ↓↓↓
+* `HitAreaLifetimeSystem`の実装：
 * ~~処理フロー変更：`SkillIntent`=>`SkillTrigger`を廃止し，`CharacterIntent`->`CharacterState`へ改善するリファクタリングの実施~~
 * リファクタリング:
     * `SkillInstance`の`Phase`に基づいた`CharacterSkillExecutionState`の`currentPhase`の更新は順序関係が逆なのではないか
@@ -262,6 +263,10 @@
 
 * 3DアニメーションのImportと描画機能の実装
 
+
+* スキル攻撃判定生成および管理システムの高度化
+    * スキルタイムライン概念の導入による，多段階スキル攻撃判定生成について柔軟に実装できる構造・実装
+    * より抽象的な整理による実装最適化
 
 * UIエンジンの実装
 

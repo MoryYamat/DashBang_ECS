@@ -31,7 +31,7 @@ namespace Game::Combat::Skill::Data
 	// スキルの攻撃判定ライフタイムの管理方法を定義する列挙型
 	enum class AttackLifeTimeMode
 	{
-		SyncWithSkillPhase, // meleeなど
+		SyncWithSkillPhase, // (= duration )meleeなど
 		IndependentEntityLifetime, // Projectile
 		AttachedToChildEntity// 設置型など
 	};
@@ -110,8 +110,7 @@ namespace Game::Combat::Skill::Data
 	{
 		float castTime = 0.3f; // キャストタイム(発生までの時間)
 		float recoveryTime = 0.4f; // リカバリータイム(スキル終了後の待機時間)
-		float duration = 1.0f; // スキル本体の持続時間
-		float cooldown = 1.0f; // スキルの再使用待機時間
+		float duration = 1.0f; // キャラが技を繰り出している時間(モーションの長さなど)
 	};
 
 	// スキルのアーマー情報を定義する構造体
@@ -135,6 +134,13 @@ namespace Game::Combat::Skill::Data
 		float chargeTime = 0.0f; // チャージ時間（チャージ式スキルの場合）
 	};
 
+	// 攻撃判定の持続時間やトリガータイミングを定義する構造体
+	struct SkillAttackTiming
+	{
+		AttackLifeTimeMode attackLifeTimeMode = AttackLifeTimeMode::SyncWithSkillPhase; // 攻撃判定ライフタイムの管理方法
+		gNsSkillData::SkillTriggerTiming triggerTiming = gNsSkillData::SkillTriggerTiming::OnCastingEnd; // スキルのトリガータイミング
+		float attackDuration = 1.0f; // 攻撃判定の生存時間（秒） (Projectile寿命，Dotの継続時間など)
+	};
 }
 
 // スキル情報定義
@@ -150,6 +156,16 @@ namespace Game::Combat::Skill::Data
 		SkillHitEffect hitEffect; // ヒット効果
 		SkillChargeInfo chargeInfo; // チャージ情報
 
+		// スキルのライフタイム状態
+		//AttackLifeTimeMode attackLifeTimeMode = AttackLifeTimeMode::SyncWithSkillPhase; // 攻撃判定ライフタイムの管理方法
+		//float attackDuration = 1.0f; // 攻撃判定の生存時間（秒） (Projectile寿命，Dotの継続時間など)
+		//SkillTriggerTiming triggerTiming = SkillTriggerTiming::OnCastingEnd; // スキルのトリガータイミング
+		SkillAttackTiming attackTiming; // 攻撃判定の持続時間やトリガータイミング
+
+		// スキルの再使用待機時間
+		float cooldown = 1.0f; // スキルの再使用待機時間
+
+
 		SkillCancelPhase cancelBehavior = SkillCancelPhase::None; // スキルの途中キャンセル可否
 		std::vector<int> cancelableSkillIds = {}; // このスキル中にキャンセルして発動可能なスキルID
 
@@ -159,6 +175,7 @@ namespace Game::Combat::Skill::Data
 
 		SkillCastSyncType castSyncType = SkillCastSyncType::Synchronous; // スキルのキャスト状態と攻撃判定の同期／非同期
 		SkillMovementLockType movementLockType = SkillMovementLockType::Free; // スキルの移動ロックタイプ
+		bool lockFacingDirection = false; // 詠唱中の向き固定
 
 	};
 

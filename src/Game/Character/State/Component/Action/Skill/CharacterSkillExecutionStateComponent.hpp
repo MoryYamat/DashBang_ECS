@@ -1,3 +1,5 @@
+// SkillInstanceComponentの状態をキャラクターように反映したビュー用のコンポーネント
+
 #pragma once
 
 
