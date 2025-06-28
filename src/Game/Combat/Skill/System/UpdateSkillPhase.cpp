@@ -54,7 +54,7 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 			// «««ŒÃ‚ÌŠÖ”(íœ—\’è)«««
 			// SkillSystem::Lifetime::CleanUpCompletedSkills(ecs);
 			
-			if (!instance.isSkillCompleted && AllAttacksDestroyed(ecs, instance) && !IsSkillInterrupted(instance, ecs))
+			if (!instance.isSkillCompleted && !IsSkillInterrupted(instance, ecs))
 			{
 				std::cout << "[UpdateSkillPhase.cpp(Completed Skill)] entity id " << instance.skillId << std::endl;
 				instance.isSkillCompleted = true; // ƒtƒ‰ƒO‚ğ—§‚Ä‚Äd•¡íœ–h~

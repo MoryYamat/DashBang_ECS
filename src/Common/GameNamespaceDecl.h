@@ -10,6 +10,8 @@ namespace Game
 		namespace Character {}
 		namespace Combat {}
 		namespace Setting {}
+
+		namespace ECS {}
 	}
 
 	namespace Layer {}
@@ -32,6 +34,8 @@ namespace Game
 		}
 
 		namespace Tags {}
+
+		namespace System {}
 	}
 
 	// character
@@ -126,6 +130,7 @@ namespace gNsLayer = Game::Layer;
 // ECS
 namespace gNsTags = Game::ECS::Tags;
 namespace gNsECSComp = Game::ECS::Component;
+namespace gNsECSSystem = Game::ECS::System;
 
 // Game::Actor::
 namespace gNsActor = Game::Actor;

@@ -12,7 +12,7 @@ std::function<eNsLogic2DComp::Transform2DComponent(float)> Game::Combat::Skill::
 	const eNsLogic2DComp::Transform2DComponent& origin)
 {
 	auto& params = def.trajectoryParams;
-	float duration = def.phaseTiming.duration;
+	float duration = def.attackTiming.attackDuration;
 
 	// 関数を返す
 	return std::visit([=](auto&& p) -> std::function<eNsLogic2DComp::Transform2DComponent(float)>

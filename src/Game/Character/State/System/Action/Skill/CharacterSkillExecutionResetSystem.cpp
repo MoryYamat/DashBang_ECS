@@ -9,6 +9,8 @@
 
 #include <string>
 
+
+// Fixme: このlifetimeComponentによって時間経過およびリセット機構を再実装する必要あり
 void Game::Character::State::Action::CharacterSkillExecutionResetSystem::ResetSkillExecutionState
 (
 	eNsECS::EntityMgr& ecs,
@@ -21,15 +23,21 @@ void Game::Character::State::Action::CharacterSkillExecutionResetSystem::ResetSk
 
 		if (skillExec.currentPhase == gNsCharaActionState::CharacterSkillExecutionPhase::Completed)
 		{
-			skillExec.elapsedTime += deltaTime;
-			if (skillExec.elapsedTime > 0.2f) // 0.2秒以上経過したらリセット (このタイムラグは不要かもしれない)
-			{
-				skillExec.currentPhase = gNsCharaActionState::CharacterSkillExecutionPhase::None;
-				skillExec.previousPhase = gNsCharaActionState::CharacterSkillExecutionPhase::None;
-				skillExec.elapsedTime = 0.0f; // 経過時間をリセット
-				// デバッグログ
-				eNsDebugLog::GeneralLog("CharacterSkillExecutionResetSystem", "Skill execution state reset for entity: " + std::to_string(ePlayer.id));
-			}
+			skillExec.currentPhase = gNsCharaActionState::CharacterSkillExecutionPhase::None;
+			skillExec.previousPhase = gNsCharaActionState::CharacterSkillExecutionPhase::None;
+			skillExec.elapsedTime = 0.0f; // 経過時間をリセット
+			// デバッグログ
+			eNsDebugLog::GeneralLog("CharacterSkillExecutionResetSystem", "Skill execution state reset for entity: " + std::to_string(ePlayer.id));
+
+			//skillExec.elapsedTime += deltaTime;
+			//if (skillExec.elapsedTime > 0.2f) // 0.2秒以上経過したらリセット (このタイムラグは不要かもしれない)
+			//{
+			//	skillExec.currentPhase = gNsCharaActionState::CharacterSkillExecutionPhase::None;
+			//	skillExec.previousPhase = gNsCharaActionState::CharacterSkillExecutionPhase::None;
+			//	skillExec.elapsedTime = 0.0f; // 経過時間をリセット
+			//	// デバッグログ
+			//	eNsDebugLog::GeneralLog("CharacterSkillExecutionResetSystem", "Skill execution state reset for entity: " + std::to_string(ePlayer.id));
+			//}
 		}
 
 		// Interrupted状態もリセットする処理を追加予定

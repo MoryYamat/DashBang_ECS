@@ -9,7 +9,14 @@
 #include "Game/Combat/Skill/System/SkillTrajectorySystem.h"
 
 #include "Game/Combat/Skill/System/InitializeSkills.h"
+
+// lifetime
+#include "Game/Combat/Skill/System/HitArea/Attack2DAreaLifetimeSystem.hpp"
+
+// lifetimeComponent導入後未使用：削除予定
 #include "Game/Combat/Skill/System/Phase/AttackLifetimeSystem.hpp"
+
+
 
 // Initialize Database
 void Game::Feature::Combat::SkillFeature::InitializeSkillDatabase(eNsECS::EntityMgr& ecs)
@@ -44,9 +51,13 @@ void Game::Feature::Combat::SkillFeature::UpdateSkillTrajectorySystem(eNsECS::En
 }
 
 
+
 void Game::Feature::Combat::SkillFeature::UpdateSkillPhaseSystem(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 	gNsSkillSystem::UpdateSkillPhase(ecs, deltaTime);// スキルの段階を更新
-	gNsSkillSystem::AttackLifetimeSystem::Update(ecs, deltaTime);// 攻撃判定のライフタイムを更新
+	// gNsSkillSystem::UpdateAttack2DAreaLifetimeSystem(ecs, deltaTime);// 攻撃判定のライフタイムを更新
+
+	// lifetimeComponent導入後未使用：削除予定
+	// gNsSkillSystem::AttackLifetimeSystem::Update(ecs, deltaTime);// 攻撃判定のライフタイムを更新
 }
 
