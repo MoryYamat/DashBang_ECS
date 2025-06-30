@@ -100,6 +100,8 @@ namespace Game
 			namespace Utils {}
 
 			namespace Intent {}
+
+			namespace Context {}
 		}
 	}
 
@@ -184,5 +186,7 @@ namespace gNsSkillSystem = Game::Combat::Skill::System;
 namespace gNsSkillData = Game::Combat::Skill::Data;
 namespace gNsSkillTrigger = Game::Combat::Skill::Trigger;
 namespace gNsSkillUtils = Game::Combat::Skill::Utils;
+namespace gNsSkillContext = Game::Combat::Skill::Context;
+
 // Intent
 namespace gNsSkillIntent = Game::Combat::Skill::Intent;

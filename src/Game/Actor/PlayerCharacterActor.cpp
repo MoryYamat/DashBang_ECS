@@ -44,6 +44,8 @@
 
 #include "Game/Combat/Skill/Component/SkillInputBindingComponent.h"
 
+#include "Game/Combat/Skill/Context/Component/SkillExecutionContextComponent.hpp"
+
 // intent
 #include "Game/Character/Control/Skill/Intent/SkillIntentComponent.hpp"
 
@@ -198,6 +200,12 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	ActiveSkillCasterComponent ascc;
 	ecs.addComponent(entity, ascc);
 
+	// Skill Context
+	ecs.addComponent(entity,
+		gNsSkillContext::SkillExecutionContextComponent{
+			.caster = entity,// caster entity
+		});
+
 	// std::cout << "[[PlayerCharacterActor.cpp(radius)] : radius. " << radius << std::endl;
 
 	//std::cout << "[PlayerCharacterActor.cpp]: Logic Position: x. " << logic.positionXZ.x << " z. " << logic.positionXZ.y << std::endl;
@@ -245,6 +253,8 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 
 	// skill execution state
 	ecs.addComponent(entity, gNsCharaActionState::CharacterSkillExecutionStateComponent{});
+
+
 
 	// std::cout << "[PlayerCharacterActor.cpp] Created Player Entity: " << entity.id << std::endl;
 	//if (ecs.hasComponent<gNsCharacterState::CharacterStateComponent>(entity)) {

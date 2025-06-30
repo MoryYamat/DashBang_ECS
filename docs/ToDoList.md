@@ -168,26 +168,32 @@
 * ~~`スキル状態`と`キャラクター状態`の分離と同期(非同期)処理実装~~
 
 
-## ↓↓↓ now ↓↓↓
 * `HitAreaLifetimeSystem`の実装：
 * ~~処理フロー変更：`SkillIntent`=>`SkillTrigger`を廃止し，`CharacterIntent`->`CharacterState`へ改善するリファクタリングの実施~~
 * リファクタリング:
-    * `SkillInstance`の`Phase`に基づいた`CharacterSkillExecutionState`の`currentPhase`の更新は順序関係が逆なのではないか
+    * ~~`SkillInstance`の`Phase`に基づいた`CharacterSkillExecutionState`の`currentPhase`の更新は順序関係が逆なのではないか~~
         * 非同期性を確保する場合，`SkillInstance`を独立のドライバとして，`Charcter`は`Phase`を参照するだけのほうが，安全性が高い
         * `SkillInstance`が無効なら`reset()`を行うような，購読型構造に移行するとより柔軟になる
-    * `CharacterSkillExecutionState`の`Reset`に遅延を設けると，スムーズなアクションに影響を及ぼすことが考えられる
+    * ~~`CharacterSkillExecutionState`の`Reset`に遅延を設けると，スムーズなアクションに影響を及ぼすことが考えられる~~
         * `Completed`になっても`SkillInstance`が残っているケースがあるなら，`SkillInstance`の`Phase`が`Completed`かつ，`isFinished`で`true`ならResetなどにする．-> そもそもキャラクター状態と`SkillInstance`の寿命は同期しないことがあるような設計を想定しているため，`CharacterSkillExecutionState`のリセットは，`SkillInstance`の`Phase`と同期するか非同期かを明確にしてから設計しなおす
-    * `UPdateCharacterSkillExecutionState`の実行レイヤーの場所は`logicLayer`で行ってはダメなのではないか
+    * ~~`UPdateCharacterSkillExecutionState`の実行レイヤーの場所は`logicLayer`で行ってはダメなのではないか~~
         * ~~フローを`input`->`intent`->`resolver`->`state`->`logic`->...に変更することで解決~~
     * **スキルボタンを同時押しすると，同時に複数のスキルを発動できてしまう問題**
         * `Skillintentcomp`を`vector`にしないほうが良いと思われる 
-    * **スキルの攻撃判定寿命とキャラクターのスキル実行状態フェーズが同期している問題**-> **同期する場合(近距離攻撃など)と同期しない場合(遠距離攻撃など)の分離か適切な実装を行う必要がある**
+    * ~~**スキルの攻撃判定寿命とキャラクターのスキル実行状態フェーズが同期している問題**-> **同期する場合(近距離攻撃など)と同期しない場合(遠距離攻撃など)の分離か適切な実装を行う必要がある**~~
         * スキル種別ごとに処理システムを分けるのはどうか
         * `Melee(近接)`，`Ranged Projectile`，`設置型`など，`攻撃判定生成`／ `消滅タイミング`／などの場合分けに応じてシステムを分けるということが必要か 
         * `SkillPhase`の責務分離：`キャラクター実行フェーズ`と`スキル効果の存続フェーズ`の**明確な分離**が必要
             * `SkillPhase`をキャラクター側の制御に
             * `SkillInstance`に`SkillLifeStatus`を追加し，**生存状態**を管理する
 
+## ↓↓↓ now ↓↓↓
+* スキル実行コンテキストシステムによるより複雑な制御および制御要因の追加実装
+    * 今までの実行を最低限の基礎実装として，ほかの制御要因による制御システムをコンテキストシステムの追加によって行う(責務分離・可読性・拡張性など，構造的メリットが多い)
+
+
+* スキルシステムリファクタリング
+    * 定義ドリブンな処理フロー実装
 
 * **フォルダ構造整理**     
 

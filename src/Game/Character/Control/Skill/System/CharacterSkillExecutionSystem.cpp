@@ -1,7 +1,6 @@
 #include "CharacterSkillExecutionSystem.hpp"
 
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
-#include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 #include "Engine/ECS/Component/Logic2D/Transform2DComponent.h"
 
 #include "Engine/ECS/Component/Tags/PlayerCharacterTag.h"
@@ -93,3 +92,33 @@ void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::Enti
 		}
 	}
 }
+
+//eNsECS::Entity Game::Character::Control::Skill::CreateSkillInstanceWithContext
+//(
+//	eNsECS::EntityMgr& ecs,
+//	eNsECS::Entity caster,
+//	int skillId,
+//	const eNsLogic2DComp::Logic2DTransformComponent& casterTransform
+//)
+//{
+//	// skillInstanceを生成
+//	eNsECS::Entity skillEntity = ecs.createEntity();
+//
+//	gNsSkillComp::SkillInstanceComponent skillInstance;
+//	skillInstance.caster = caster;
+//	skillInstance.skillId = skillId;
+//	skillInstance.timeSinceCast = 0.0f;
+//	ecs.addComponent(skillEntity, skillInstance);
+//
+//	// Transform2DComponentを設定
+//	eNsLogic2DComp::Transform2DComponent transform2DComp;
+//	transform2DComp.positionXZ = casterTransform.positionXZ;
+//	transform2DComp.rotationY = casterTransform.GetRotationYFromFrontVector();
+//	transform2DComp.front = casterTransform.front;
+//	transform2DComp.right = casterTransform.right;
+//	transform2DComp.scale = 1.0f; // スケールは1.0fで初期化
+//	ecs.addComponent(skillEntity, transform2DComp);
+//
+//	// コンテキストへの書き込み
+//
+//}

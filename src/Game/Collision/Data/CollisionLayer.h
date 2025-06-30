@@ -9,7 +9,10 @@ namespace Game::Collision::Data
 	// bit flag
 	enum class Layer : uint32_t
 	{
+		// レイヤーなし
 		None = 0,
+
+		// 相対的なレイヤー定義
 		// Player
 		Player = 1 << 0,
 		// 敵
@@ -19,6 +22,8 @@ namespace Game::Collision::Data
 		// 中立
 		Neutral = 1 << 3,
 
+
+		// 
 		// 相殺されないスキル
 		Skill = 1 << 4,
 		// 相殺対象になりうるスキル
