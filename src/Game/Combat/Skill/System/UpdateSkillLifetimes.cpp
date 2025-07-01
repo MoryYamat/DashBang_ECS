@@ -93,7 +93,7 @@ void Game::Combat::Skill::System::updateSkillInstanceCompLifetimes(eNsECS::Entit
 
 		const gNsSkillData::SkillDefinition& def = skillDB.Get(skillInstance.skillId);
 
-		if (skillInstance.timeSinceCast >= def.phaseTiming.duration)
+		if (skillInstance.timeSinceCast >= def.attackSpec.lifetime.duration)
 		{
 			toDestroy.push_back(e);
 		}

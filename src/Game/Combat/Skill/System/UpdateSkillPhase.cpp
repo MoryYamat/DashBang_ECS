@@ -3,7 +3,10 @@
 #include "Game/Combat/Skill/System/SkillCastingSystem.h"
 #include "Game/Combat/Skill/System/UpdateSkillLifetimes.h"
 
+// 削除予定
 #include "Game/Combat/Skill/Component/SkillInstanceComponent.h"
+
+#include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
 
 #include "Engine/ECS/Component/Tags/PendingDestroyComponent.h"
 
@@ -11,55 +14,58 @@
 
 #include "Engine/ECS/EntityUtils/EntityUtils.h"
 
+
 // Fixme: スキルの種類によってSkillPhaseの更新処理を分ける必要があるかもしれない
 void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 	gNsSkillData::SkillDatabase& skillDB = ecs.getResource<gNsSkillData::SkillDatabase>();
 
-	for (eNsECS::Entity e : ecs.view<gNsSkillComp::SkillInstanceComponent>())
+	for (eNsECS::Entity e : ecs.view<gNsSkillComp::SkillExecutionComponent>())
 	{
-		auto& instance = ecs.get<gNsSkillComp::SkillInstanceComponent>(e);
-		const auto& def = skillDB.Get(instance.skillId);
+		auto& execution = ecs.get<gNsSkillComp::SkillExecutionComponent>(e);
+		const auto& def = skillDB.Get(execution.skillId);
 
-		instance.timeSinceCast += deltaTime;
+		execution.timeSinceCast += deltaTime;
+		execution.phaseElapsedTime += deltaTime;
 
-		switch (instance.phase)
+		switch (execution.currentPhase)
 		{
-		case gNsSkillComp::SkillPhase::Casting:
-			if (instance.timeSinceCast >= def.phaseTiming.castTime && !instance.hasSpawned)
+		case gNsSkillComp::SkillExecutionPhase::Casting:
+			// 中間計算式の導入によるキャラクターステータスの反映も検討
+			if (execution.phaseElapsedTime >= def.execution.timing.castTime)
 			{
-				instance.phase = gNsSkillComp::SkillPhase::Active;
-				instance.timeSinceCast = 0.0f;// リセット
-				gNsSkillSystem::spawnSkillHitArea(ecs, skillDB, e);// 攻撃範囲生成
-				instance.hasSpawned = true;
+				execution.currentPhase = gNsSkillComp::SkillExecutionPhase::Active;
+				execution.phaseElapsedTime = 0.0f;// リセット
+				// gNsSkillSystem::spawnSkillHitArea(ecs, skillDB, e);// 攻撃範囲生成
 			}
 			break;
 
-		case gNsSkillComp::SkillPhase::Active:
-			if (instance.timeSinceCast >= def.phaseTiming.duration)
+		case gNsSkillComp::SkillExecutionPhase::Active:
+			if (execution.phaseElapsedTime >= def.execution.timing.duration)
 			{
-				instance.phase = gNsSkillComp::SkillPhase::Recovery;
-				instance.timeSinceCast = 0.0f;
+				execution.currentPhase = gNsSkillComp::SkillExecutionPhase::Recovery;
+				execution.phaseElapsedTime = 0.0f;
 			}
 			break;
 
-		case gNsSkillComp::SkillPhase::Recovery:
-			if (instance.timeSinceCast >= def.phaseTiming.recoveryTime)
+		case gNsSkillComp::SkillExecutionPhase::Recovery:
+			if (execution.phaseElapsedTime >= def.execution.timing.recoveryTime)
 			{
-				instance.phase = gNsSkillComp::SkillPhase::Completed;
+				execution.currentPhase = gNsSkillComp::SkillExecutionPhase::Completed;
 			}
 			break;
 
-		case gNsSkillComp::SkillPhase::Completed:
+		case gNsSkillComp::SkillExecutionPhase::Completed:
+		case gNsSkillComp::SkillExecutionPhase::Canceled:
+		case gNsSkillComp::SkillExecutionPhase::Interrupted:
 			// ↓↓↓古の関数(削除予定)↓↓↓
 			// SkillSystem::Lifetime::CleanUpCompletedSkills(ecs);
+
+			std::cout << "[UpdateSkillPhase.cpp(Completed Skill)] entity id " << execution.skillId << std::endl;
 			
-			if (!instance.isSkillCompleted && !IsSkillInterrupted(instance, ecs))
-			{
-				std::cout << "[UpdateSkillPhase.cpp(Completed Skill)] entity id " << instance.skillId << std::endl;
-				instance.isSkillCompleted = true; // フラグを立てて重複削除防止
-				eNsECS::EntityUtils::MarkForPendingDestroy(ecs, e); // スキルインスタンスを削除
-			}
+			// FixMe: このMarkも別のシステムから行えばいいと思う．つまりここはPhaseを更新するだけのシステムにすればいい
+			//eNsECS::EntityUtils::MarkForPendingDestroy(ecs, e); // スキルインスタンスを削除
+
 
 
 			// eNsECS::EntityUtils::MarkForPendingDestroyWithChildren(ecs, e, instance.spawnedHitAreas);
@@ -73,6 +79,70 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 
 	}
 }
+
+// 廃止予定：SkillInstanceComponentの廃止に伴う
+// Fixme: スキルの種類によってSkillPhaseの更新処理を分ける必要があるかもしれない
+//void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float deltaTime)
+//{
+//	gNsSkillData::SkillDatabase& skillDB = ecs.getResource<gNsSkillData::SkillDatabase>();
+//
+//	for (eNsECS::Entity e : ecs.view<gNsSkillComp::SkillInstanceComponent>())
+//	{
+//		auto& instance = ecs.get<gNsSkillComp::SkillInstanceComponent>(e);
+//		const auto& def = skillDB.Get(instance.skillId);
+//
+//		instance.timeSinceCast += deltaTime;
+//
+//		switch (instance.phase)
+//		{
+//		case gNsSkillComp::SkillPhase::Casting:
+//			if (instance.timeSinceCast >= def.execution.timing.castTime && !instance.hasSpawned)
+//			{
+//				instance.phase = gNsSkillComp::SkillPhase::Active;
+//				instance.timeSinceCast = 0.0f;// リセット
+//				gNsSkillSystem::spawnSkillHitArea(ecs, skillDB, e);// 攻撃範囲生成
+//				instance.hasSpawned = true;
+//			}
+//			break;
+//
+//		case gNsSkillComp::SkillPhase::Active:
+//			if (instance.timeSinceCast >= def.execution.timing.duration)
+//			{
+//				instance.phase = gNsSkillComp::SkillPhase::Recovery;
+//				instance.timeSinceCast = 0.0f;
+//			}
+//			break;
+//
+//		case gNsSkillComp::SkillPhase::Recovery:
+//			if (instance.timeSinceCast >= def.execution.timing.recoveryTime)
+//			{
+//				instance.phase = gNsSkillComp::SkillPhase::Completed;
+//			}
+//			break;
+//
+//		case gNsSkillComp::SkillPhase::Completed:
+//			// ↓↓↓古の関数(削除予定)↓↓↓
+//			// SkillSystem::Lifetime::CleanUpCompletedSkills(ecs);
+//			
+//			if (!instance.isSkillCompleted && !IsSkillInterrupted(instance, ecs))
+//			{
+//				std::cout << "[UpdateSkillPhase.cpp(Completed Skill)] entity id " << instance.skillId << std::endl;
+//				instance.isSkillCompleted = true; // フラグを立てて重複削除防止
+//				eNsECS::EntityUtils::MarkForPendingDestroy(ecs, e); // スキルインスタンスを削除
+//			}
+//
+//
+//			// eNsECS::EntityUtils::MarkForPendingDestroyWithChildren(ecs, e, instance.spawnedHitAreas);
+//
+//
+//			// addPendingDestroyComp(ecs, e, instance);
+//
+//			break;
+//		}
+//
+//
+//	}
+//}
 
 // 
 bool Game::Combat::Skill::System::AllAttacksDestroyed(eNsECS::EntityMgr& ecs, const gNsSkillComp::SkillInstanceComponent& instance)
@@ -117,7 +187,7 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 		switch (instance.phase)
 		{
 		case gNsSkillComp::SkillPhase::Casting:
-			if (instance.timeSinceCast >= def.phaseTiming.castTime)
+			if (instance.timeSinceCast >= def.execution.timing.castTime)
 			{
 				instance.phase = gNsSkillComp::SkillPhase::Active;
 				instance.timeSinceCast = 0.0f;// リセット
@@ -126,7 +196,7 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 			break;
 
 		case gNsSkillComp::SkillPhase::Active:
-			if (instance.timeSinceCast >= def.phaseTiming.duration)
+			if (instance.timeSinceCast >= def.execution.timing.duration)
 			{
 				instance.phase = gNsSkillComp::SkillPhase::Recovery;
 				instance.timeSinceCast = 0.0f;
@@ -134,7 +204,7 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 			break;
 
 		case gNsSkillComp::SkillPhase::Recovery:
-			if (instance.timeSinceCast >= def.phaseTiming.recoveryTime)
+			if (instance.timeSinceCast >= def.execution.timing.recoveryTime)
 			{
 				instance.phase = gNsSkillComp::SkillPhase::Completed;
 			}

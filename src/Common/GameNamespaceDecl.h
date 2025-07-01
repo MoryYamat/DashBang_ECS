@@ -93,7 +93,10 @@ namespace Game
 		namespace Skill
 		{
 			namespace Component {}
-			namespace System {}
+			namespace System 
+			{
+				namespace Trigger {}
+			}
 			namespace Factory {}
 			namespace Trigger {}
 			namespace Data {}

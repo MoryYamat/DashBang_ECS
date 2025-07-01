@@ -230,7 +230,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 
 	// stats
 	ecs.addComponent(entity, gNsCharacter::Stats::CharacterStatsComponent{
-		.moveSpeed = 5.0f
+		.moveSpeed = 10.0f
 		});
 
 	// Tag

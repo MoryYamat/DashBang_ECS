@@ -1,0 +1,35 @@
+// 「スキル定義に基づいた状態遷移の進行」
+
+#pragma once 
+
+#include "Engine/ECS/Entity.h"
+
+#include "Common/EngineNamespaceDecl.h"
+
+#include <vector>
+#include <unordered_map>
+
+namespace Game::Combat::Skill::Component
+{
+	enum class SkillExecutionPhase
+	{
+		Casting,// スキルのキャスト段階
+		Active,// スキルのアクティブ段階(攻撃など)
+		Recovery,// スキルの硬直
+		Completed, // スキルの完了段階(終了状態)
+		Interrupted, // スキルの中断段階(スタンや死亡など)
+		Canceled, // スキルキャンセル
+	};
+
+	struct SkillExecutionComponent
+	{
+		eNsECS::Entity caster = eNsECS::Entity::INVALID;
+		int skillId = 0;
+
+		SkillExecutionPhase currentPhase = SkillExecutionPhase::Casting;
+		float timeSinceCast = 0.0f;
+		float phaseElapsedTime = 0.0f;
+
+		bool isInterrupted = false;
+	};
+}

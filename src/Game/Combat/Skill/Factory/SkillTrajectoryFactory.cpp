@@ -11,8 +11,8 @@ std::function<eNsLogic2DComp::Transform2DComponent(float)> Game::Combat::Skill::
 	const gNsSkillData::SkillDefinition& def,
 	const eNsLogic2DComp::Transform2DComponent& origin)
 {
-	auto& params = def.trajectoryParams;
-	float duration = def.attackTiming.attackDuration;
+	auto& params = def.attackSpec.trajectoryParams;
+	float duration = def.attackSpec.lifetime.duration.value_or(0.0f);
 
 	// 関数を返す
 	return std::visit([=](auto&& p) -> std::function<eNsLogic2DComp::Transform2DComponent(float)>

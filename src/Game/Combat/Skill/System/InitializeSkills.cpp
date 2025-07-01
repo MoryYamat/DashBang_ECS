@@ -97,7 +97,7 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 		.timing = SkillPhaseTiming{
 			.castTime = 0.3f, // キャストタイム(発生までの時間)
 			.recoveryTime = 0.3f, // リカバリータイム(スキル終了後の待機時間)
-			.duration = 2.0f // actionの持続時間
+			.duration = 1.0f // actionの持続時間
 		},
 		.castSyncPolicy = SkillCastSyncPolicy::Asynchronous, // キャスト状態と攻撃判定の非同期
 		.cancelMask = SkillCancelPhase::All, // 全てのフェーズでキャンセル可能
@@ -115,7 +115,7 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 		.triggerTiming = SkillTriggerTiming::OnCastingEnd, // スキルのトリガータイミング
 		.lifetime = SkillLifetimeSpecDef{
 			.hitBoxlifetimePolicy = AttackLifeTimeMode::IndependentEntityLifetime, // フェーズと同期
-			.duration = 5.0f, // スキルの持続時間
+			.duration = 3.0f, // スキルの持続時間
 			.despawnFlags = SkillDespawnCondition::DefaultProjectile // 時間経過で消滅
 		},
 		.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Circle2DAttack
