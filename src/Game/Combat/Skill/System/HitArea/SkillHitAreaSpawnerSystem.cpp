@@ -4,6 +4,7 @@
 
 #include "Common/GameNamespaceDecl.h"
 
+//
 void Game::Combat::Skill::System::SpawnSkillHitAreas(eNsECS::EntityMgr& ecs)
 {
 	auto& db = ecs.getResource<gNsSkillData::SkillDatabase>();

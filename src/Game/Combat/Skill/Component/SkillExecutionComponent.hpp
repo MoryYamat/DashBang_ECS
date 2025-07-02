@@ -11,14 +11,29 @@
 
 namespace Game::Combat::Skill::Component
 {
+	// スキルの実行フェーズを定義する列挙型
 	enum class SkillExecutionPhase
 	{
 		Casting,// スキルのキャスト段階
-		Active,// スキルのアクティブ段階(攻撃など)
+		Active, // スキルのアクティブ段階(攻撃など)
 		Recovery,// スキルの硬直
 		Completed, // スキルの完了段階(終了状態)
 		Interrupted, // スキルの中断段階(スタンや死亡など)
 		Canceled, // スキルキャンセル
+	};
+
+	// スキルの実行フェーズイベントを定義する列挙型
+	enum class SkillExecutionEvent
+	{
+		OnEneterCasting, // スキルのキャスト開始
+		OnExitCasting, // スキルのキャスト終了
+		OnEnterActive, // スキルのアクティブ開始
+		OnExitActive, // スキルのアクティブ終了
+		OnEnterRecovery, // スキルのリカバリー開始
+		OnExitRecovery, // スキルのリカバリー終了
+		OnCompleted, // スキルの完了
+		OnInterrupted, // スキルの中断
+		OnCanceled, // スキルのキャンセル
 	};
 
 	struct SkillExecutionComponent

@@ -5,6 +5,14 @@
 // Game Namespace (gNs)
 namespace Game
 {
+	namespace Common
+	{
+		namespace Logic
+		{
+			namespace Condition {}
+		}
+	}
+
 	namespace Feature 
 	{
 		namespace Character {}
@@ -100,6 +108,7 @@ namespace Game
 			namespace Factory {}
 			namespace Trigger {}
 			namespace Data {}
+			namespace MasterData {}
 			namespace Utils {}
 
 			namespace Intent {}
@@ -125,6 +134,11 @@ namespace Game
 }
 
 // ======================= Alias =======================
+
+// Game::Common
+namespace gNsCommon = Game::Common;
+namespace gNsCommonLogic = Game::Common::Logic;
+namespace gNsCommonLogicCondition = Game::Common::Logic::Condition;
 
 // Game::Feature
 namespace gNsFeature = Game::Feature;
@@ -187,6 +201,7 @@ namespace gNsSkillComp = Game::Combat::Skill::Component;
 namespace gNsSkillFactory = Game::Combat::Skill::Factory;
 namespace gNsSkillSystem = Game::Combat::Skill::System;
 namespace gNsSkillData = Game::Combat::Skill::Data;
+namespace gNsSkillMasterData = Game::Combat::Skill::MasterData;
 namespace gNsSkillTrigger = Game::Combat::Skill::Trigger;
 namespace gNsSkillUtils = Game::Combat::Skill::Utils;
 namespace gNsSkillContext = Game::Combat::Skill::Context;

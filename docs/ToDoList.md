@@ -195,6 +195,7 @@
 * スキルシステムリファクタリング
     * 定義ドリブンな処理フロー実装
         * `SkillExecutionPhase`と`SkillTriggerTiming`を一致させる：冗長な条件分岐を削減
+        * 抽象化，DSL化：`Phase`/`Event`/`Action`/`Condition`/`Data`によるスキル定義の構築
 
 * **フォルダ構造整理**     
 

@@ -7,7 +7,18 @@
 #include "Game/Combat/Skill/MasterData/SkillDefinition.h"
 #include "Game/Combat/Skill/MasterData/SkillTrajectoryData.h"
 
+#include "Game/Combat/Skill/MasterData/SkillDefinitionDataset.hpp"
+
 #include <iostream>
+
+//void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
+//{
+//	using namespace Game::Combat::Skill::MasterData;
+//
+//	auto& db = ecs.createResource<gNsSkillData::SkillDatabase>();
+//
+//	SkillDefinition slash;
+//}
 
 void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 {
@@ -17,6 +28,8 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 
 	// ECSのリソースとしてスキルデータベースを作成
 	auto& db = ecs.createResource<gNsSkillData::SkillDatabase>();
+
+	
 
 	SkillDefinition slash;
 	slash.id = 1;
@@ -43,7 +56,7 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 
 	// スキルの攻撃仕様を定義
 	slash.attackSpec = SkillAttackSpecDef{
-		.triggerTiming = SkillTriggerTiming::OnCastingEnd, // スキルのトリガータイミング
+		.triggerTiming = gNsSkillComp::SkillExecutionEvent::OnEnterActive, // スキルのトリガータイミング
 		.lifetime = SkillLifetimeSpecDef{
 			.hitBoxlifetimePolicy = AttackLifeTimeMode::SyncWithSkillPhase, // フェーズと同期
 			.duration = 1.0f, // スキルの持続時間
@@ -112,7 +125,7 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 
 	// スキルの攻撃仕様を定義
 	projectile.attackSpec = SkillAttackSpecDef{
-		.triggerTiming = SkillTriggerTiming::OnCastingEnd, // スキルのトリガータイミング
+		.triggerTiming = gNsSkillComp::SkillExecutionEvent::OnEnterActive, // スキルのトリガータイミング
 		.lifetime = SkillLifetimeSpecDef{
 			.hitBoxlifetimePolicy = AttackLifeTimeMode::IndependentEntityLifetime, // フェーズと同期
 			.duration = 3.0f, // スキルの持続時間
@@ -181,7 +194,7 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 
 	// スキルの攻撃仕様を定義
 	testMagic.attackSpec = SkillAttackSpecDef{
-		.triggerTiming = SkillTriggerTiming::OnCastingEnd, // スキルのトリガータイミング
+		.triggerTiming = gNsSkillComp::SkillExecutionEvent::OnEnterActive, // スキルのトリガータイミング
 		.lifetime = SkillLifetimeSpecDef{
 			.hitBoxlifetimePolicy = AttackLifeTimeMode::IndependentEntityLifetime, // フェーズと同期
 			.duration = 5.0f, // スキルの持続時間
@@ -246,7 +259,7 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 
 	// スキルの攻撃仕様を定義
 	testBuffSkill.attackSpec = SkillAttackSpecDef{
-		.triggerTiming = SkillTriggerTiming::OnCastingEnd, // スキルのトリガータイミング
+		.triggerTiming = gNsSkillComp::SkillExecutionEvent::OnEnterActive, // スキルのトリガータイミング
 		.lifetime = SkillLifetimeSpecDef{
 			.hitBoxlifetimePolicy = AttackLifeTimeMode::IndependentEntityLifetime, // フェーズと同期
 			.duration = 10.0f, // スキルの持続時間

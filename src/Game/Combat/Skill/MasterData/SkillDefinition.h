@@ -7,6 +7,8 @@
 
 #include "Game/Combat/Skill/MasterData/SkillCancelPhase.hpp" // SkillCancelBehavior
 
+#include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
+
 #include "Game/Collision/Data/CollisionLayer.h"
 
 #include <string>
@@ -19,6 +21,39 @@
 
 #include "Common/GameNamespaceDecl.h"
 
+namespace Game::Combat::Skill::Data
+{
+	// スキルの実行フェーズを定義する列挙型
+	enum class SkillExecutionPhase
+	{
+		Casting,// スキルのキャスト段階
+		Active, // スキルのアクティブ段階(攻撃など)
+		Recovery,// スキルの硬直
+		Completed, // スキルの完了段階(終了状態)
+		Interrupted, // スキルの中断段階(スタンや死亡など)
+		Canceled, // スキルキャンセル
+	};
+
+	// スキルの実行フェーズイベントを定義する列挙型
+	enum class SkillExecutionEvent
+	{
+		OnEneterCasting, // スキルのキャスト開始
+		OnExitCasting, // スキルのキャスト終了
+		OnEnterActive, // スキルのアクティブ開始
+		OnExitActive, // スキルのアクティブ終了
+		OnEnterRecovery, // スキルのリカバリー開始
+		OnExitRecovery, // スキルのリカバリー終了
+		OnCompleted, // スキルの完了
+		OnInterrupted, // スキルの中断
+		OnCanceled, // スキルのキャンセル
+	};
+
+	enum class SkillActionType
+	{
+		None, // スキルアクションなし
+		SpawnHitbox, // 攻撃判定を生成
+	};
+}
 
 namespace Game::Combat::Skill::Data
 {
@@ -91,15 +126,6 @@ namespace Game::Combat::Skill::Data
 {
 	// ------------------------攻撃仕様-------------------------
 
-	// スキルのトリガータイミングを定義する列挙型
-	enum class SkillTriggerTiming
-	{
-		OnCastingStart,// スキルのキャスト開始時
-		OnCastingEnd,// スキルのキャスト終了時
-		OnActiveStart,// スキルがアクティブになったとき
-		OnActiveEnd,// スキルがアクティブを終了したとき
-		OnRecoveryStart,// スキルのリカバリー開始時
-	};
 
 	// スキルの攻撃判定ライフタイムの管理方法を定義する列挙型
 	enum class AttackLifeTimeMode
@@ -148,8 +174,8 @@ namespace Game::Combat::Skill::Data
 	// スキルの攻撃仕様を定義する構造体
 	struct SkillAttackSpecDef
 	{
-		SkillTriggerTiming triggerTiming = SkillTriggerTiming::OnCastingEnd; // スキルのトリガータイミング
-	
+		gNsSkillComp::SkillExecutionEvent triggerTiming = gNsSkillComp::SkillExecutionEvent::OnEnterActive; // スキルのトリガータイミング
+
 		SkillLifetimeSpecDef lifetime; // ライフタイム仕様
 
 		gNsSkillComp::Attack2DShape shape; // 形状定義
