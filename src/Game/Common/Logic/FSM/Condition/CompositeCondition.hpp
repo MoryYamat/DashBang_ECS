@@ -1,14 +1,14 @@
-// conditions that are composed of other conditions
+ï»¿// conditions that are composed of other conditions
 
 #pragma once
 
 #include "Game/Common/Logic/Condition/Condition.hpp"
 #include <memory>
-#inlcude <vector>
+#include <vector>
 
 namespace Game::Common::Logic::Condition
 {
-	// ANDğŒ‚ğ•]‰¿‚·‚éƒNƒ‰ƒX
+	// ANDæ¡ä»¶ã‚’è©•ä¾¡ã™ã‚‹ã‚¯ãƒ©ã‚¹
 	struct AndCondition : ICondiition
 	{
 		std::vector<std::unique_ptr<ICondition>> children;
@@ -18,13 +18,13 @@ namespace Game::Common::Logic::Condition
 			for (const auto& cond : children)
 			{
 				if (!cond->evaluate(ctx))
-					return false; // ‚¢‚¸‚ê‚©‚ÌğŒ‚ªfalse‚È‚ç‘S‘Ì‚àfalse
+					return false; // ã„ãšã‚Œã‹ã®æ¡ä»¶ãŒfalseãªã‚‰å…¨ä½“ã‚‚false
 			}
-			return true; // ‘S‚Ä‚ÌğŒ‚ªtrue‚È‚ç‘S‘Ì‚àtrue
+			return true; // å…¨ã¦ã®æ¡ä»¶ãŒtrueãªã‚‰å…¨ä½“ã‚‚true
 		}
 	};
 
-	// ORğŒ‚ğ•]‰¿‚·‚éƒNƒ‰ƒX
+	// ORæ¡ä»¶ã‚’è©•ä¾¡ã™ã‚‹ã‚¯ãƒ©ã‚¹
 	struct OrCondition : ICondition
 	{
 		std::vector<std::unique_ptr<ICondition>> children;
@@ -33,19 +33,19 @@ namespace Game::Common::Logic::Condition
 			for (const auto& cond : children)
 			{
 				if (cond->evaluate(ctx))
-					return true; // ‚¢‚¸‚ê‚©‚ÌğŒ‚ªtrue‚È‚ç‘S‘Ì‚àtrue
+					return true; // ã„ãšã‚Œã‹ã®æ¡ä»¶ãŒtrueãªã‚‰å…¨ä½“ã‚‚true
 			}
-			return false; // ‘S‚Ä‚ÌğŒ‚ªfalse‚È‚ç‘S‘Ì‚àfalse
+			return false; // å…¨ã¦ã®æ¡ä»¶ãŒfalseãªã‚‰å…¨ä½“ã‚‚false
 		}
 	};
 
-	// NOTğŒ‚ğ•]‰¿‚·‚éƒNƒ‰ƒX
+	// NOTæ¡ä»¶ã‚’è©•ä¾¡ã™ã‚‹ã‚¯ãƒ©ã‚¹
 	struct NotCondition : ICondition
 	{
 		std::unique_ptr<ICondition> child;
 		bool evaluate(const RuntimeContext& ctx) const override
 		{
-			return !child->evaluate(ctx); // qğŒ‚Ì•]‰¿Œ‹‰Ê‚ğ”½“]
+			return !child->evaluate(ctx); // å­æ¡ä»¶ã®è©•ä¾¡çµæœã‚’åè»¢
 		}
 	};
 }

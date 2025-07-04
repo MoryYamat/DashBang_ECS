@@ -9,7 +9,10 @@ namespace Game
 	{
 		namespace Logic
 		{
-			namespace Condition {}
+			namespace FSM
+			{
+				namespace Condition {}
+			}
 		}
 	}
 
@@ -138,7 +141,8 @@ namespace Game
 // Game::Common
 namespace gNsCommon = Game::Common;
 namespace gNsCommonLogic = Game::Common::Logic;
-namespace gNsCommonLogicCondition = Game::Common::Logic::Condition;
+namespace gNsCommonLogicFSM = Game::Common::Logic::FSM;
+namespace gNsCommonLogicFSMCondition = Game::Common::Logic::FSM::Condition;
 
 // Game::Feature
 namespace gNsFeature = Game::Feature;
