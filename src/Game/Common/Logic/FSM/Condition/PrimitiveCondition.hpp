@@ -4,11 +4,14 @@
 
 #include "RuntimeContext.hpp"
 
+#include <utility>
 #include <variant>
 #include <functional>
 
-namespace Game::Common::Logic::Condition
+namespace Game::Common::Logic::FSM::Condition
 {
+
+
 	// プリミティブな比較演算子を定義する列挙型
 	enum class CompareOperator
 	{
@@ -20,82 +23,61 @@ namespace Game::Common::Logic::Condition
 		GreaterEqual // 以上
 	};
 
-	// 
-	//struct CompareCondition : ICondition
-	//{
-	//	RuntimeKey key;
-	//	CompareOperator op; // 比較演算子
-	//	RuntimeValue rhs;
-
-	//	bool evaluate(const RuntimeContext& ctx) const override
-	//	{
-	//		auto it = ctx.values.find(key);
-	//		if (it == ctx.values.end()) return false; // キーが存在しない場合はfalse
-
-	//		return std::visit([&](auto&& lhs) -> bool
-	//			{
-	//				using T = std::decay_t<decltype(lhs)>;// 左辺の型を取得
-	//				if (auto* r = std::get_if<T>(&rhs))// 右辺の型が左辺と一致する場合
-	//				{
-	//					switch (op)
-	//					{
-	//					case CompareOperator::Equal: return lhs == *r;
-	//					case CompareOperator::NotEqual: return lhs != *r;
-	//					case CompareOperator::Less: return lhs < *r;
-	//					case CompareOperator::LessEqual: return lhs <= *r;
-	//					case CompareOperator::Greater: return lhs > *r;
-	//					case CompareOperator::GreaterEqual: return lhs >= *r;
-	//					}
-	//				}
-	//				return false; // rhsの型が一致しない場合はfalse
-	//			}, it->second);
-	//	}
-	//}
 
 
-	// std::unique_ptr<ICondition> makeHPConditionGE(int threshold) {
-	// 	return std::make_unique<CompareCondition>(CompareCondition{
-	// 		.key = RuntimeKey::CurrentHP,
-	// 		.op = CompareOperator::GreaterEqual,
-	// 		.rhs = threshold
-	// 		});
-	// }
-
-	//// lhs [] rhs の比較を行う条件クラス
-	template<typename T>
-	struct CompareCondition: ICondition
-	{ 
-		std::function<T(const RuntimeContext&)> lhsGetter;// 左辺の値を取得する関数`[](const RuntimeContext& ctx){return ctx.value}`
+	// プリミティブな比較条件を表すテンプレートクラス
+	template<typename T, typename Context>
+	struct CompareCondition : ICondition
+	{
+		std::function<T(const Context&)> lhs; // 左辺の値を取得する関数
+		std::function<T(const Context&)> rhs; // 右辺の値を取得する関数
 		CompareOperator op; // 比較演算子
-		std::function<T(const RuntimeContext&)> rhsGetter;// 右辺の値を取得する関数(定数の場合`[](){return 1.0f etc.}`)
 
+		CompareCondition(
+			std::function<T(const Context&)> l,
+			std::function<T(const Context&)> r,
+			CompareOperator op)
+			: lhs(std::move(l)), rhs(std::move(r)), op(op)) {}
 
-		bool evaluate(const RuntimeContext& ctx) const override
+		bool evaluate(const Context& ctx) const override
 		{
-			T lhs = lhsGetter(ctx);
-			T rhs = rhsGetter(ctx);
+			T l = lhs(ctx); // 左辺の値を取得
+			T r = rhs(ctx); // 右辺の値を取得
+
 			switch (op)
 			{
-			case CompareOperator::Equal: return lhs == rhs;
-			case CompareOperator::NotEqual: return lhs != rhs;
-			case CompareOperator::Less: return lhs < rhs;
-			case CompareOperator::LessEqual: return lhs <= rhs;
-			case CompareOperator::Greater: return lhs > rhs;
-			case CompareOperator::GreaterEqual: return lhs >= rhs;
+			case CompareOperator::Equal: return l == r; // 等しい
+			case CompareOperator::NotEqual: return l != r; // 等しくない
+			case CompareOperator::Less: return l < r; // より小さい
+			case CompareOperator::LessEqual: return l <= r; // 以下
+			case CompareOperator::Greater: return l > r; // より大きい
+			case CompareOperator::GreaterEqual: return l >= r; // 以上
 			}
-			return false; // デフォルトはfalse
-		}
-
-	};
-
-	// 他の比較条件を定義する場合，IConditionを継承して式を定義することができる．
-
-	// ランダムな確率で条件を満たすかどうかを評価するクラス
-	struct RandomChanceCondition : ICondition {
-		float chance = 0.0f; // 0.0〜1.0
-		bool evaluate(const RuntimeContext& ctx) const override {
-			return static_cast<float>(rand()) / RAND_MAX < chance;
+			return false; // デフォルトはfalse（未定義の演算子の場合）
 		}
 	};
 
+
+	// 使用例:
+	// using Ctx = MyGameRuntimeContext;
+	// auto cond = std::make_shared<CompareCondition<float, Ctx>>(
+	// 	[](const Ctx& ctx) { return ctx.getHP(); },
+	// 	CompareOperator::LessEqual,
+	// 	[](const Ctx&) { return 0.3f; }
+	// );
+
+
+	// TimerConditionは、特定の時間が経過したかどうかを評価する条件
+	template<typename Context>
+	struct TimerCondition : ICondition<Context>
+	{
+		float threshold; // タイマーの閾値（秒単位）
+
+		TimeCondition(float time) : threshold(time) {}
+
+		bool evaluate(const Context& ctx) const override
+		{
+			return ctx.getElapsedTime() >= threshold; // ctxから経過時間を取得し、閾値と比較
+		}
+	};
 }

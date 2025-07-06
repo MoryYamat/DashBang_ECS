@@ -6,14 +6,18 @@
 #include <memory>
 #include <vector>
 
-namespace Game::Common::Logic::Condition
+namespace Game::Common::Logic::FSM::Condition
 {
 	// AND条件を評価するクラス
-	struct AndCondition : ICondiition
+	template<typename Context>
+	struct AndCondition : ICondiition<Context>
 	{
-		std::vector<std::unique_ptr<ICondition>> children;
+		std::vector<std::shared_ptr<ICondition<Context>>> children;
 
-		bool evaluate(const RuntimeContext& ctx) const override
+		explicit AndCondition(std::vector<std::shared_ptr<ICondition<Context>>> conds)
+			: children(std::move(conds)) {}
+
+		bool evaluate(const Context& ctx) const override
 		{
 			for (const auto& cond : children)
 			{
@@ -25,10 +29,15 @@ namespace Game::Common::Logic::Condition
 	};
 
 	// OR条件を評価するクラス
-	struct OrCondition : ICondition
+	template<typename Context>
+	struct OrCondition : ICondition<Context>
 	{
-		std::vector<std::unique_ptr<ICondition>> children;
-		bool evaluate(const RuntimeContext& ctx) const override
+		std::vector<std::shared_ptr<ICondition<Context>>> children;
+
+		explicit OrCondition(std::vector<std::shared_ptr<ICondition<Context>>> conds)
+			: children(std::move(conds)) {}
+
+		bool evaluate(const Context& ctx) const override
 		{
 			for (const auto& cond : children)
 			{
@@ -40,9 +49,15 @@ namespace Game::Common::Logic::Condition
 	};
 
 	// NOT条件を評価するクラス
-	struct NotCondition : ICondition
+	template<typename Context>
+	struct NotCondition : ICondition<Context>
 	{
-		std::unique_ptr<ICondition> child;
+		std::shared_ptr<ICondition<Context>> child;
+
+		explicit NotCondition(std::shared_ptr<ICondition<Context>> cond)
+			: child(std::move(cond)) {}
+
+
 		bool evaluate(const RuntimeContext& ctx) const override
 		{
 			return !child->evaluate(ctx); // 子条件の評価結果を反転

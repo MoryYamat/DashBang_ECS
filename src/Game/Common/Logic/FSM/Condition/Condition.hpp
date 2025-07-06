@@ -2,12 +2,20 @@
 
 #pragma once
 
-namespace Game::Common::Logic::Condition
+namespace Game::Common::Logic::FSM::Condition
 {
-	// 基底クラス 
+	//
+	template<typename Context>
 	struct ICondition
 	{
 		virtual ~ICondition() = default;
-		virtual bool evaluate(const RuntimeContext& ctx) const = 0;
+		virtual bool evaluate(const Context& ctx) const = 0;
 	};
+
+	//// 基底クラス 
+	//struct ICondition
+	//{
+	//	virtual ~ICondition() = default;
+	//	virtual bool evaluate(const RuntimeContext& ctx) const = 0;
+	//};
 }

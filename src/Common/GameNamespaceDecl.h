@@ -11,8 +11,11 @@ namespace Game
 		{
 			namespace FSM
 			{
-				namespace Condition {}
+				namespace Runtime {}
+				namespace Definition {}
 			}
+
+			namespace Condition {}
 		}
 	}
 
@@ -142,7 +145,9 @@ namespace Game
 namespace gNsCommon = Game::Common;
 namespace gNsCommonLogic = Game::Common::Logic;
 namespace gNsCommonLogicFSM = Game::Common::Logic::FSM;
-namespace gNsCommonLogicFSMCondition = Game::Common::Logic::FSM::Condition;
+namespace gNsCommonLogicFSMRuntime = Game::Common::Logic::FSM::Runtime;
+namespace gNsCommonLogicFSMDefinition = Game::Common::Logic::FSM::Definition;
+namespace gNsCommonLogicCondition = Game::Common::Logic::Condition;
 
 // Game::Feature
 namespace gNsFeature = Game::Feature;
