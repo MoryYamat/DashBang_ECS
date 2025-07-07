@@ -1,9 +1,10 @@
 // FSMの基盤の定義
 
+// 基本的発想：(静的：状態・遷移／動的：条件)
+
 // TODO:
-// RuntimeContextの類が必要かどうか設計を見直す必要がある。
-// 
-// 
+// RuntimeTransitionの定義．
+// ConditionReistryの定義．
 
 #pragma once
 
@@ -14,24 +15,24 @@
 #include <variant>
 #include <string>
 
+#include <string_view>
+
 #include <tuple>
 
 namespace Game::Common::Logic::FSM::Definition
 {
-	// FSM状態リスト
-	template<typename... States>
-	struct StateList
-	{
-		using Types = std::tuple<States...>;
-	};
+	// template<typename AxisTag>
+	// struct FSMStateComponent {
+	// 	std::type_index current;
+	// };// type_indexと，typeid()によってランタイム中の型を変数的に扱えることを保証する
 
 	// 遷移定義
-	template<typename From, typename To, typename Condition>
+	template<typename From, typename To, std::string_view ConditionId>
 	struct Transition
 	{
 		using FromState = From; // 遷移元の状態
 		using ToState = To;     // 遷移先の状態
-		using ConditionType = Condition; // 遷移条件
+		static constexpr std::string_view conditionId = ConditionId; // 遷移条件の識別子(所有権を持たない文字列)
 	};
 
 	// 遷移リスト

@@ -8,6 +8,8 @@
 
 #include "Game/00_Feature/Character/State/CharacterStateFeature.hpp"
 
+#include "Game/00_Feature/Character/FSM/Movement/MovementFSMFeature.hpp"
+
 #include "Common/GameNamespaceDecl.h"
 
 void Game::Layer::InitializeLayerFeature::DelayedInitialzation(eNsECS::EntityMgr& ecs)
@@ -28,4 +30,7 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialzation(eNsECS::EntityMgr
 
 	// CharacterStateTransitionデータベース初期化
 	gNsFeature::Character::StateFeature::InitTransitionDatabase(ecs);
+
+	// MovementFSMの定義を初期化
+	gNsFeature::Character::FSM::MovementFSMFeature::InitializeMovementFSMDefinition(ecs);
 }

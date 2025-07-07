@@ -13,9 +13,9 @@ namespace Game
 			{
 				namespace Runtime {}
 				namespace Definition {}
+				namespace Condition {}
 			}
 
-			namespace Condition {}
 		}
 	}
 
@@ -69,6 +69,11 @@ namespace Game
 			namespace Action {}
 		}
 		namespace Stats {}
+
+		namespace FSM
+		{
+			namespace Movement {}
+		}
 	}
 
 	// input
@@ -147,7 +152,7 @@ namespace gNsCommonLogic = Game::Common::Logic;
 namespace gNsCommonLogicFSM = Game::Common::Logic::FSM;
 namespace gNsCommonLogicFSMRuntime = Game::Common::Logic::FSM::Runtime;
 namespace gNsCommonLogicFSMDefinition = Game::Common::Logic::FSM::Definition;
-namespace gNsCommonLogicCondition = Game::Common::Logic::Condition;
+namespace gNsCommonLogicFSMCondition = Game::Common::Logic::FSM::Condition;
 
 // Game::Feature
 namespace gNsFeature = Game::Feature;
@@ -181,6 +186,10 @@ namespace gNsCharacterStats = Game::Character::Stats;
 // Character control
 namespace gNsCharacterControl = Game::Character::Control;// Character control
 namespace gNsCharacterControlSkill = Game::Character::Control::Skill;// Character control skill
+
+// FSM
+namespace gNsCharaFSM = Game::Character::FSM;// Character FSM
+namespace gNsCharaFSMMovement = Game::Character::FSM::Movement;// Character FSM Movement
 
 // Game::Input:: 
 namespace gNsInput = Game::Input;

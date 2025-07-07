@@ -66,6 +66,9 @@
 // action
 #include "Game/Character/State/Component/Action/ActionStateComponent.hpp"
 
+// FSM
+#include "Game/Character/FSM/Movement/MovementStateComponent.hpp"
+
 // Game ECS
 #include "Game/ECS/Tags/CharacterAttribTags.h"
 #include "Game/ECS/Component/TeamComponent.h"
@@ -247,6 +250,9 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 
 	// movenet
 	ecs.addComponent(entity, gNsCharaMoveState::CharacterMovementStateComponent{});
+
+	// movement FSM
+	ecs.addComponent(entity, gNsCharaFSMMovement::MovementStateComponent{});
 
 	// action
 	ecs.addComponent(entity, gNsCharaActionState::CharacterActionStateComponent{});
