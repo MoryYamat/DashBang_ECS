@@ -17,7 +17,7 @@ void Game::Character::FSM::Movement::UpdateMovementFSMSystem(eNsECS::EntityMgr& 
 		const auto& velocity = ecs.get<Engine::ECS::Component::Logic2D::Velocity2DComponent>(entity).velocity;
 
 		MovementContext ctx;
-		ctx.velocity = velocity;
+		ctx.velocity = velocity;// コンテキストを更新
 
 		for (auto& trans : transitions)
 		{
@@ -29,7 +29,7 @@ void Game::Character::FSM::Movement::UpdateMovementFSMSystem(eNsECS::EntityMgr& 
 				state.current = trans.to; // 状態遷移を実行
 				break;
 
-
+				// fsm.requestTransition<Movement::Moving>();
 			}
 		}
 	}

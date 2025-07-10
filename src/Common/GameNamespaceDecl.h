@@ -1,6 +1,7 @@
-// Game 系の名前空間の前方宣言＋alias定義のみに特化したヘッ
+// Game 系の名前空間の前方宣言＋alias定義のみに特化したヘッダ
 
 #pragma once
+
 
 // Game Namespace (gNs)
 namespace Game
@@ -125,6 +126,8 @@ namespace Game
 			namespace Intent {}
 
 			namespace Context {}
+
+			namespace FSM {}
 		}
 	}
 
@@ -215,6 +218,7 @@ namespace gNsCollConvert = Game::Collision::Convert;
 namespace gNsCollIntersect = Game::Collision::Intersect;
 
 // Game::Combat::
+namespace gNsSkill = Game::Combat::Skill;
 namespace gNsSkillComp = Game::Combat::Skill::Component;
 namespace gNsSkillFactory = Game::Combat::Skill::Factory;
 namespace gNsSkillSystem = Game::Combat::Skill::System;
@@ -223,6 +227,9 @@ namespace gNsSkillMasterData = Game::Combat::Skill::MasterData;
 namespace gNsSkillTrigger = Game::Combat::Skill::Trigger;
 namespace gNsSkillUtils = Game::Combat::Skill::Utils;
 namespace gNsSkillContext = Game::Combat::Skill::Context;
+
+// skill fsm
+namespace gNsSkillFSM = Game::Combat::Skill::FSM;
 
 // Intent
 namespace gNsSkillIntent = Game::Combat::Skill::Intent;

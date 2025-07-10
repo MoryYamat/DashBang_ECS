@@ -66,8 +66,11 @@
 // action
 #include "Game/Character/State/Component/Action/ActionStateComponent.hpp"
 
-// FSM
+// =========== FSM ===========
+// movement
 #include "Game/Character/FSM/Movement/MovementStateComponent.hpp"
+// skill
+#include "Game/Combat/Skill/FSM/Definition/SkillStateComponent.hpp"
 
 // Game ECS
 #include "Game/ECS/Tags/CharacterAttribTags.h"
@@ -251,9 +254,6 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	// movenet
 	ecs.addComponent(entity, gNsCharaMoveState::CharacterMovementStateComponent{});
 
-	// movement FSM
-	ecs.addComponent(entity, gNsCharaFSMMovement::MovementStateComponent{});
-
 	// action
 	ecs.addComponent(entity, gNsCharaActionState::CharacterActionStateComponent{});
 
@@ -261,6 +261,11 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	ecs.addComponent(entity, gNsCharaActionState::CharacterSkillExecutionStateComponent{});
 
 
+	// =========== FSM ===========
+	// movement FSM
+	ecs.addComponent(entity, gNsCharaFSMMovement::MovementStateComponent{});
+	// skill FSM
+	ecs.addComponent(entity, gNsSkillFSM::SkillStateComponent{});
 
 	// std::cout << "[PlayerCharacterActor.cpp] Created Player Entity: " << entity.id << std::endl;
 	//if (ecs.hasComponent<gNsCharacterState::CharacterStateComponent>(entity)) {

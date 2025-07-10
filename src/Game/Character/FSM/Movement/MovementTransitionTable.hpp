@@ -24,4 +24,5 @@ namespace Game::Character::FSM::Movement
 
 	std::vector<MovementTransition> BuildMovementTransitionTable();
 
+
 }
