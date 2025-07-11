@@ -8,6 +8,8 @@
 
 #include "Engine/Debug/DebugUtils.h"
 
+
+// ”p~—\’èFSkillSystem‚ğ”²–{“I‰ü‘PFŒ^‹ì“®FSM‚ğ“±“ü
 void Game::Character::State::Action::UpdateCharacterSkillExecutionStateFromInstance
 (
 	eNsECS::EntityMgr& ecs,

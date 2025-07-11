@@ -69,6 +69,7 @@ void Game::Combat::Skill::FSM::SkillFSMInitialization(eNsECS::EntityMgr& ecs)
 	db.AddSkill(gNsSkillData::SkillEntry{ .def = testSkill, .fsm = testSkillFSM });
 
 	// TODO :
+	// SkillTriggerSystemの改良：`SkillFSM`を条件としてTriggerをコントロールする構造へ
 	// FSMSystem実装
 	// トリガー機構のリファクタリング
 	// 

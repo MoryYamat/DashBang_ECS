@@ -1,50 +1,47 @@
 #pragma once
 
 #include "Game/Combat/Skill/FSM/Definition/SkillFSMContext.hpp"
-
+#include "Game/Combat/Skill/Def/SkillDef.hpp"
 
 namespace Game::Combat::Skill::FSM
 {
+	using namespace Game::Combat::Skill::Def;
 
 	// スキルの状態遷移条件を定義するインターフェース
 	struct ISkillFSMCondition
 	{
 		virtual ~ISkillFSMCondition() = default;// デフォルト
-		virtual bool evaluate(const SkillFSMContext& ctx) const = 0;// 純粋仮想関数
+		virtual bool evaluate(const SkillFSMContext& ctx, const SkillDef& def) const = 0;// 純粋仮想関数
 	};
 
 	struct CastTimeElapsed : ISkillFSMCondition
 	{
-		bool evaluate(const SkillFSMContext& ctx) const override
+		bool evaluate(const SkillFSMContext& ctx, const SkillDef& def) const override
 		{
-			if (!ctx.skillDef) return false;
-			return ctx.elapsedTime >= ctx.skillDef->castDuration;
+			return ctx.elapsedTime >= def.castDuration;
 		}
 	};
 
 	struct ActiveTimeElapsed : ISkillFSMCondition
 	{
-		bool evaluate(const SkillFSMContext& ctx) const override
+		bool evaluate(const SkillFSMContext& ctx, const SkillDef& def) const override
 		{
-			if (!ctx.skillDef) return false;
-			return ctx.elapsedTime >= ctx.skillDef->activeDuration;
+			return ctx.elapsedTime >= def.activeDuration;
 		}
 	};
 
 	struct RecoveryTimeElapsed : ISkillFSMCondition
 	{
-		bool evaluate(const SkillFSMContext& ctx) const override
+		bool evaluate(const SkillFSMContext& ctx, const SkillDef& def) const override
 		{
-			if (!ctx.skillDef) return false;
-			return ctx.elapsedTime >= ctx.skillDef->recoveryDuration;
+			return ctx.elapsedTime >= def.recoveryDuration;
 		}
 	};
 
 	struct IsInterrupted : ISkillFSMCondition
 	{
-		bool evaluate(const SkillFSMContext& ctx) const override
+		bool evaluate(const SkillFSMContext& ctx, const SkillDef& def) const override
 		{
-			if (!ctx.skillDef) return false;
 			return ctx.isInterrupted;
 		}
 	};
@@ -52,6 +49,6 @@ namespace Game::Combat::Skill::FSM
 	// 
 	struct Always : ISkillFSMCondition
 	{
-		bool evaluate(const SkillFSMContext&) const override { return true; }
+		bool evaluate(const SkillFSMContext&, const SkillDef&) const override { return true; }
 	};
 }

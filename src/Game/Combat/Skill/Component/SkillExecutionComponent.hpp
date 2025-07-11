@@ -42,6 +42,7 @@ namespace Game::Combat::Skill::Component
 		int skillId = 0;
 
 		SkillExecutionPhase currentPhase = SkillExecutionPhase::Casting;
+		float elapsedTime = 0.0f;
 		float timeSinceCast = 0.0f;
 		float phaseElapsedTime = 0.0f;
 
