@@ -15,69 +15,70 @@
 #include "Engine/ECS/EntityUtils/EntityUtils.h"
 
 
+// 削除予定：FSM実装後廃止予定
 // Fixme: スキルの種類によってSkillPhaseの更新処理を分ける必要があるかもしれない
 void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float deltaTime)
 {
-	gNsSkillData::SkillDatabase& skillDB = ecs.getResource<gNsSkillData::SkillDatabase>();
+	//gNsSkillData::SkillDatabase& skillDB = ecs.getResource<gNsSkillData::SkillDatabase>();
 
-	for (eNsECS::Entity e : ecs.view<gNsSkillComp::SkillExecutionComponent>())
-	{
-		auto& execution = ecs.get<gNsSkillComp::SkillExecutionComponent>(e);
-		const auto& def = skillDB.Get(execution.skillId);
+	//for (eNsECS::Entity e : ecs.view<gNsSkillComp::SkillExecutionComponent>())
+	//{
+	//	auto& execution = ecs.get<gNsSkillComp::SkillExecutionComponent>(e);
+	//	const auto& def = skillDB.Get(execution.skillId);
 
-		execution.timeSinceCast += deltaTime;
-		execution.phaseElapsedTime += deltaTime;
+	//	execution.timeSinceCast += deltaTime;
+	//	execution.phaseElapsedTime += deltaTime;
 
-		switch (execution.currentPhase)
-		{
-		case gNsSkillComp::SkillExecutionPhase::Casting:
-			// 中間計算式の導入によるキャラクターステータスの反映も検討
-			if (execution.phaseElapsedTime >= def.execution.timing.castTime)
-			{
-				execution.currentPhase = gNsSkillComp::SkillExecutionPhase::Active;
-				execution.phaseElapsedTime = 0.0f;// リセット
-				// gNsSkillSystem::spawnSkillHitArea(ecs, skillDB, e);// 攻撃範囲生成
-			}
-			break;
+	//	switch (execution.currentPhase)
+	//	{
+	//	case gNsSkillComp::SkillExecutionPhase::Casting:
+	//		// 中間計算式の導入によるキャラクターステータスの反映も検討
+	//		if (execution.phaseElapsedTime >= def.execution.timing.castTime)
+	//		{
+	//			execution.currentPhase = gNsSkillComp::SkillExecutionPhase::Active;
+	//			execution.phaseElapsedTime = 0.0f;// リセット
+	//			// gNsSkillSystem::spawnSkillHitArea(ecs, skillDB, e);// 攻撃範囲生成
+	//		}
+	//		break;
 
-		case gNsSkillComp::SkillExecutionPhase::Active:
-			if (execution.phaseElapsedTime >= def.execution.timing.duration)
-			{
-				execution.currentPhase = gNsSkillComp::SkillExecutionPhase::Recovery;
-				execution.phaseElapsedTime = 0.0f;
-			}
-			break;
+	//	case gNsSkillComp::SkillExecutionPhase::Active:
+	//		if (execution.phaseElapsedTime >= def.execution.timing.duration)
+	//		{
+	//			execution.currentPhase = gNsSkillComp::SkillExecutionPhase::Recovery;
+	//			execution.phaseElapsedTime = 0.0f;
+	//		}
+	//		break;
 
-		case gNsSkillComp::SkillExecutionPhase::Recovery:
-			if (execution.phaseElapsedTime >= def.execution.timing.recoveryTime)
-			{
-				execution.currentPhase = gNsSkillComp::SkillExecutionPhase::Completed;
-			}
-			break;
+	//	case gNsSkillComp::SkillExecutionPhase::Recovery:
+	//		if (execution.phaseElapsedTime >= def.execution.timing.recoveryTime)
+	//		{
+	//			execution.currentPhase = gNsSkillComp::SkillExecutionPhase::Completed;
+	//		}
+	//		break;
 
-		case gNsSkillComp::SkillExecutionPhase::Completed:
-		case gNsSkillComp::SkillExecutionPhase::Canceled:
-		case gNsSkillComp::SkillExecutionPhase::Interrupted:
-			// ↓↓↓古の関数(削除予定)↓↓↓
-			// SkillSystem::Lifetime::CleanUpCompletedSkills(ecs);
+	//	case gNsSkillComp::SkillExecutionPhase::Completed:
+	//	case gNsSkillComp::SkillExecutionPhase::Canceled:
+	//	case gNsSkillComp::SkillExecutionPhase::Interrupted:
+	//		// ↓↓↓古の関数(削除予定)↓↓↓
+	//		// SkillSystem::Lifetime::CleanUpCompletedSkills(ecs);
 
-			std::cout << "[UpdateSkillPhase.cpp(Completed Skill)] entity id " << execution.skillId << std::endl;
-			
-			// FixMe: このMarkも別のシステムから行えばいいと思う．つまりここはPhaseを更新するだけのシステムにすればいい
-			//eNsECS::EntityUtils::MarkForPendingDestroy(ecs, e); // スキルインスタンスを削除
-
-
-
-			// eNsECS::EntityUtils::MarkForPendingDestroyWithChildren(ecs, e, instance.spawnedHitAreas);
+	//		std::cout << "[UpdateSkillPhase.cpp(Completed Skill)] entity id " << execution.skillId << std::endl;
+	//		
+	//		// FixMe: このMarkも別のシステムから行えばいいと思う．つまりここはPhaseを更新するだけのシステムにすればいい
+	//		//eNsECS::EntityUtils::MarkForPendingDestroy(ecs, e); // スキルインスタンスを削除
 
 
-			// addPendingDestroyComp(ecs, e, instance);
 
-			break;
-		}
+	//		// eNsECS::EntityUtils::MarkForPendingDestroyWithChildren(ecs, e, instance.spawnedHitAreas);
 
 
-	}
+	//		// addPendingDestroyComp(ecs, e, instance);
+
+	//		break;
+	//	}
+
+
+	//}
 }
 
 // 廃止予定：SkillInstanceComponentの廃止に伴う

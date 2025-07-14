@@ -20,83 +20,84 @@
 
 #include "Common/GameNamespaceDecl.h"
 
+// 削除予定：FSM実装後廃止予定
 // FIXME:Intentに基づいてキャラクターのスキルを実行する．※本来はこのExecutionの前にResolverによる実行可否判定が必要
 // Intent -> Resolver -> Logic : IntentとStateに基づいてスキルの実行可否を判定する
 void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 
-	for (eNsECS::Entity ePlayer : ecs.view<
-		gNsCharacterControlSkill::SkillIntentComponent,
-		gNsSkillComp::SkillSlotAssignmentComponent,
-		eNsLogic2DComp::Logic2DTransformComponent,
-		gNsTags::PlayerCharacterTag>())
-	{
-		const auto& intent = ecs.get<gNsCharacterControlSkill::SkillIntentComponent>(ePlayer);
-		const auto& slotAssign = ecs.get<gNsSkillComp::SkillSlotAssignmentComponent>(ePlayer);
-		const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(ePlayer);
+	//for (eNsECS::Entity ePlayer : ecs.view<
+	//	gNsCharacterControlSkill::SkillIntentComponent,
+	//	gNsSkillComp::SkillSlotAssignmentComponent,
+	//	eNsLogic2DComp::Logic2DTransformComponent,
+	//	gNsTags::PlayerCharacterTag>())
+	//{
+	//	const auto& intent = ecs.get<gNsCharacterControlSkill::SkillIntentComponent>(ePlayer);
+	//	const auto& slotAssign = ecs.get<gNsSkillComp::SkillSlotAssignmentComponent>(ePlayer);
+	//	const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(ePlayer);
 
-		// ボタンが押されていない場合はスルー
-		if (!intent.isActive) continue;
+	//	// ボタンが押されていない場合はスルー
+	//	if (!intent.isActive) continue;
 
-		// 値の参照の正統性を改善する(将来的に)
-		// スキルIDはいつも`スキル定義(SkillDefinition)`と等しいほうが正統的だと思われる????
-		for (auto slot : intent.requestedSlots)
-		{
-			//// contains に変更可能？
-			auto it = slotAssign.slotToSkillId.find(slot);
-			if (it == slotAssign.slotToSkillId.end()) continue;
-			// if (!slotAssign.slotToSkillId.contains(slot)) continue;
+	//	// 値の参照の正統性を改善する(将来的に)
+	//	// スキルIDはいつも`スキル定義(SkillDefinition)`と等しいほうが正統的だと思われる????
+	//	for (auto slot : intent.requestedSlots)
+	//	{
+	//		//// contains に変更可能？
+	//		auto it = slotAssign.slotToSkillId.find(slot);
+	//		if (it == slotAssign.slotToSkillId.end()) continue;
+	//		// if (!slotAssign.slotToSkillId.contains(slot)) continue;
 
-			int skillId = it->second;
-			//int skillId = slotAssign.slotToSkillId.at(slot);
+	//		int skillId = it->second;
+	//		//int skillId = slotAssign.slotToSkillId.at(slot);
 
-			// すでに該当スキルが発動中かどうかチェック
-			bool alreadyCasting = false;
+	//		// すでに該当スキルが発動中かどうかチェック
+	//		bool alreadyCasting = false;
 
-			// 効率問題 キャッシュ
-			// Fixme: 同じスキルを短時間で複数回発動(連射みたいな感じ)できるようにする場合は、ここを変更する必要がある
-			for (eNsECS::Entity eSkill : ecs.view<gNsSkillComp::SkillInstanceComponent>())
-			{
-				const auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(eSkill);
-				if (skillInstance.caster == ePlayer && skillInstance.skillId == skillId)
-				{
-					// すでにスキルが発動中
-					alreadyCasting = true;
-					break;
-				}
-			}
+	//		// 効率問題 キャッシュ
+	//		// Fixme: 同じスキルを短時間で複数回発動(連射みたいな感じ)できるようにする場合は、ここを変更する必要がある
+	//		for (eNsECS::Entity eSkill : ecs.view<gNsSkillComp::SkillInstanceComponent>())
+	//		{
+	//			const auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(eSkill);
+	//			if (skillInstance.caster == ePlayer && skillInstance.skillId == skillId)
+	//			{
+	//				// すでにスキルが発動中
+	//				alreadyCasting = true;
+	//				break;
+	//			}
+	//		}
 
-			// Fixme: このフラグでは同じスキルを重複発動できないので，別の方法を検討する必要がある
-			if (!alreadyCasting)
-			{
-				// SkillInstance を生成
-				eNsECS::Entity skillEntity = ecs.createEntity();
+	//		// Fixme: このフラグでは同じスキルを重複発動できないので，別の方法を検討する必要がある
+	//		if (!alreadyCasting)
+	//		{
+	//			// SkillInstance を生成
+	//			eNsECS::Entity skillEntity = ecs.createEntity();
 
-				gNsSkillComp::SkillExecutionComponent execution;
-				execution.caster = ePlayer;
-				execution.skillId = skillId;
-				execution.currentPhase = gNsSkillComp::SkillExecutionPhase::Casting;
-				execution.timeSinceCast = 0.0f;
-				execution.phaseElapsedTime = 0.0f;
-				execution.isInterrupted = false;
-				ecs.addComponent(skillEntity, execution);
+	//			gNsSkillComp::SkillExecutionComponent execution;
+	//			execution.caster = ePlayer;
+	//			execution.skillId = skillId;
+	//			execution.currentPhase = gNsSkillComp::SkillExecutionPhase::Casting;
+	//			execution.timeSinceCast = 0.0f;
+	//			execution.phaseElapsedTime = 0.0f;
+	//			execution.isInterrupted = false;
+	//			ecs.addComponent(skillEntity, execution);
 
-				eNsLogic2DComp::Transform2DComponent transform2DComp;
-				transform2DComp.positionXZ = logic.positionXZ;
-				transform2DComp.rotationY = logic.GetRotationYFromFrontVector();
-				transform2DComp.front = logic.front;
-				transform2DComp.right = logic.right;
-				transform2DComp.scale = 1.0f;
-				ecs.addComponent(skillEntity, transform2DComp);
+	//			eNsLogic2DComp::Transform2DComponent transform2DComp;
+	//			transform2DComp.positionXZ = logic.positionXZ;
+	//			transform2DComp.rotationY = logic.GetRotationYFromFrontVector();
+	//			transform2DComp.front = logic.front;
+	//			transform2DComp.right = logic.right;
+	//			transform2DComp.scale = 1.0f;
+	//			ecs.addComponent(skillEntity, transform2DComp);
 
-				std::cout << "[SkillTrigger] Entity " << ePlayer.id
-					<< " triggered skill " << skillId
-					<< " via slot " << static_cast<int>(slot)
-					<< std::endl;
-			}
+	//			std::cout << "[SkillTrigger] Entity " << ePlayer.id
+	//				<< " triggered skill " << skillId
+	//				<< " via slot " << static_cast<int>(slot)
+	//				<< std::endl;
+	//		}
 
-		}
-	}
+	//	}
+	//}
 }
 
 

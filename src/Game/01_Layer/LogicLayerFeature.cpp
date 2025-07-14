@@ -22,13 +22,13 @@ void Game::Layer::LogicLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 	// ------------------------- スキル関連処理 -------------------------
 	// Intentに応じてスキルインスタンスを生成
 	// gNsFeature::Combat::SkillFeature::TriggerSkillsFromIntent(ecs);
-	Game::Feature::Character::CharacterSkillFeature::UpdateCharacterSkillExecution(ecs, deltaTime);
+	// Game::Feature::Character::CharacterSkillFeature::UpdateCharacterSkillExecution(ecs, deltaTime);
 
 	// lifetime
-	gNsFeature::ECS::GameGeneralSytem::UpdateLifetimeSystem(ecs, deltaTime); // ECSのライフタイムシステムを更新
+	// gNsFeature::ECS::GameGeneralSytem::UpdateLifetimeSystem(ecs, deltaTime); // ECSのライフタイムシステムを更新
 
 	// スキルフェーズ(寿命管理と判定生成)
-	gNsFeature::Combat::SkillFeature::UpdateSkillPhaseSystem(ecs, deltaTime);
+	// gNsFeature::Combat::SkillFeature::UpdateSkillPhaseSystem(ecs, deltaTime);
 	// 検討必要：ここでキャラクターのスキル実行状態を更新するかどうか
 	// 検討必要：ここでキャラクターのスキル実行状態を更新するかどうか
 	// 検討必要：ここでキャラクターのスキル実行状態を更新するかどうか
@@ -37,7 +37,7 @@ void Game::Layer::LogicLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 
 
 	// スキル軌跡更新
-	gNsFeature::Combat::SkillFeature::UpdateSkillTrajectorySystem(ecs, deltaTime);
+	// gNsFeature::Combat::SkillFeature::UpdateSkillTrajectorySystem(ecs, deltaTime);
 
 
 	// ------------------------- コリジョン関連処理 -------------------------

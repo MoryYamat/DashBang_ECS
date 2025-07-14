@@ -7,6 +7,8 @@
 
 #include "Common/GameNamespaceDecl.h"
 
+#include <iostream>
+
 // TODO: 将来的に直交FSMを統合管理するシステムを実装し，各FSMUpdateSystemからはstate更新リクエストを発信するという形にする
 void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, float deltaTime)
 {
@@ -53,6 +55,11 @@ void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, floa
 			{
 				// 遷移を適用
 				state.current = transition.to;
+
+				// ログ
+				std::cout << "[SkillFSMSystem.cpp]: Skill " << skillId << " transitioned to " << state.current.name() << "\n";
+
+
 				break; // 1ステップで1遷移だけ行う
 			}
 		}

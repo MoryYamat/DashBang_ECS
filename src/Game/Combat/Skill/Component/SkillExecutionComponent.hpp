@@ -41,10 +41,10 @@ namespace Game::Combat::Skill::Component
 		eNsECS::Entity caster = eNsECS::Entity::INVALID;
 		int skillId = 0;
 
-		SkillExecutionPhase currentPhase = SkillExecutionPhase::Casting;
+		// SkillExecutionPhase currentPhase = SkillExecutionPhase::Casting;// 不要
 		float elapsedTime = 0.0f;
-		float timeSinceCast = 0.0f;
-		float phaseElapsedTime = 0.0f;
+		// float timeSinceCast = 0.0f;// 不要
+		// float phaseElapsedTime = 0.0f;// 不要
 
 		bool isInterrupted = false;
 	};

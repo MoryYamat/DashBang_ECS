@@ -4,8 +4,81 @@
 #include "Game/Combat/Skill/Component/SkillSlotAssignmentComponent.h"
 #include "Game/Character/State/Component/Action/ActionStateComponent.hpp"
 
+#include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
+#include "Engine/ECS/Component/Logic2D/Transform2DComponent.h"
+
+#include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
+
+// FSM
+#include "Game/Combat/Skill/FSM/Definition/SkillStateComponent.hpp"
+#include "Game/Combat/Skill/FSM/Definition/SkillFSMStates.hpp"
+
 #include "Common/GameNamespaceDecl.h"
 
+void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMgr& ecs)
+{
+	using namespace Game::Character::Control::Skill;
+	using namespace Game::Combat::Skill::Component;
+	using namespace Game::Combat::Skill::FSM;
+	using namespace Engine::ECS::Component::Logic2D;
+	for (eNsECS::Entity e : ecs.view<
+		Logic2DTransformComponent,
+		SkillIntentComponent,
+		SkillSlotAssignmentComponent,
+		SkillStateComponent>()
+		)
+	{
+		auto& intent = ecs.get<SkillIntentComponent>(e);
+		auto& slotAssign = ecs.get<SkillSlotAssignmentComponent>(e);
+		auto& state = ecs.get<SkillStateComponent>(e);
+		auto& logic = ecs.get<Logic2DTransformComponent>(e);
+
+		// intentがない場合：スキップ
+		if (!intent.isActive) continue;
+
+		// 仮の状態判定: より複雑な判定ができるような実装を考える
+		// スキル定義から条件を展開する関数を実装する方式にする
+		// 抽象条件評価関数を導入して、SkillDef を軸に判定できるようにするのが理想
+		if (state.current != typeid(SkillPhase::None)) continue;
+
+		for (auto slot : intent.requestedSlots)
+		{
+			auto it = slotAssign.slotToSkillId.find(slot);
+			if (it == slotAssign.slotToSkillId.end()) continue;
+
+			uint32_t skillId = it->second;
+
+			
+			using namespace Game::Combat::Skill::Component;
+
+			// skillExecutionComponent生成
+			eNsECS::Entity eSkill = ecs.createEntity();
+
+			SkillExecutionComponent exec;
+			exec.caster = e;
+			exec.skillId = skillId;
+			exec.elapsedTime = 0.0f;
+			exec.isInterrupted = false;
+			ecs.addComponent(eSkill, exec);
+
+			// 位置・方向を初期化（発動時のキャラのロジック座標をコピー）
+			Transform2DComponent transform;
+			transform.positionXZ = logic.positionXZ;
+			transform.rotationY = logic.GetRotationYFromFrontVector();
+			transform.front = logic.front;
+			transform.right = logic.right;
+			transform.scale = 1.0f;
+			ecs.addComponent(eSkill, transform);
+
+			std::cout << "[SkillTrigger] Entity " << e.id
+				<< " triggered skill " << skillId
+				<< " via slot " << static_cast<int>(slot)
+				<< std::endl;
+		}
+	}
+}
+
+// 廃止予定：型ベースFSM実装後
 // 効率問題：すぐには問題にならないが、将来的にキャッシュを検討する
 // キャラクターのスキルの意図を反映するかしないか判定するシステム
 void Game::Character::Control::Skill::UpdateCharacterSkillIntentResovlver(eNsECS::EntityMgr& ecs)

@@ -11,10 +11,10 @@
 void Game::Layer::StateLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 	// Update Character Skill Execution State
-	gNsFeature::Character::StateFeature::UPdateCharacterSkillExecutionState(ecs, deltaTime);
+	// gNsFeature::Character::StateFeature::UPdateCharacterSkillExecutionState(ecs, deltaTime);
 
 	// Update Character State
-	gNsFeature::Character::StateFeature::UpdateCharacterState(ecs, deltaTime);
+	// gNsFeature::Character::StateFeature::UpdateCharacterState(ecs, deltaTime);
 
 	// update Movement FSM
 	gNsFeature::Character::FSM::MovementFSMFeature::UpdateMovementFSMSystem(ecs);
