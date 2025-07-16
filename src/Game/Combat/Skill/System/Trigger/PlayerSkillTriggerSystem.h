@@ -1,4 +1,4 @@
-//
+// íœ—\’èF”p~DIntentResolver‚É‚æ‚éTrigger”»’è‚Ì•¡G‰»‚É”º‚¤Ó–±‚Ì”p~
 
 #pragma once
 

@@ -5,6 +5,8 @@
 #include "Game/Character/State/System/Action/Skill/CharacterSkillExecutionStateUpdater.hpp"
 
 #include "Game/00_Feature/Character/FSM/Movement/MovementFSMFeature.hpp"
+#include "Game/00_Feature/Character/FSM/Skill/SkillFSMFeature.hpp"
+
 
 #include "Common/GameNamespaceDecl.h"
 
@@ -18,4 +20,7 @@ void Game::Layer::StateLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 
 	// update Movement FSM
 	gNsFeature::Character::FSM::MovementFSMFeature::UpdateMovementFSMSystem(ecs);
+
+	// update Skill FSM
+	gNsFeature::Skill::FSM::SkillFSMFeature::UpdateSkillFSMSystem(ecs, deltaTime);
 }

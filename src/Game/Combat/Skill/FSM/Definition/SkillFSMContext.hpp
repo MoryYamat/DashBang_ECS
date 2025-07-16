@@ -15,6 +15,7 @@ namespace Game::Combat::Skill::FSM
 	{
 		uint32_t id = 0;
 		float elapsedTime = 0.0f;// スキルの経過時間
+		float phaseElapsedTime = 0.0f;
 		bool isInterrupted = false; // スキルが中断されたかどうか
 	};
 }

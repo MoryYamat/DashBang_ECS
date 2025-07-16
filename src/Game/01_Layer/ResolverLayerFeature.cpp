@@ -8,5 +8,5 @@
 void Game::Layer::ResolverLayerFeature::Update(eNsECS::EntityMgr& ecs)
 {
 	// Update Character Skill Intent Resolver
-	// gNsFeature::Character::CharacterSkillFeature::UpdateCharacterSkillIntentResolver(ecs);
+	gNsFeature::Character::CharacterSkillFeature::UpdateCharacterSkillIntentResolver(ecs);
 }

@@ -34,10 +34,12 @@ void Game::Layer::LogicLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 	// 検討必要：ここでキャラクターのスキル実行状態を更新するかどうか
 	// stateへ移設
 	// gNsFeature::Character::StateFeature::UPdateCharacterSkillExecutionState(ecs, deltaTime);
-
-
 	// スキル軌跡更新
 	// gNsFeature::Combat::SkillFeature::UpdateSkillTrajectorySystem(ecs, deltaTime);
+	// ===========================上：削除予定：FSM導入後廃止================
+	
+	// 最新：SkillExecutionLifetime
+	gNsFeature::Combat::SkillFeature::UpdateSkillExecutionLifetimeSystem(ecs);
 
 
 	// ------------------------- コリジョン関連処理 -------------------------
@@ -45,6 +47,7 @@ void Game::Layer::LogicLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 	// コリジョンの位置情報などを更新する(CollisionComp.center etc.) (コリジョンはローカル形状情報に責務分離したためSyncCollは不要)
 	// コリジョンの位置情報などを更新する(CollisionComp.center etc.) (コリジョンはローカル形状情報に責務分離したためSyncCollは不要)
 	// gNsFeature::CollisionFeature::SyncLogicCollision(ecs);
+	// ===========================上：削除予定：FSM導入後廃止================
 
 	gNsFeature::CollisionFeature::UpdateCollisionBuffer(ecs);
 }

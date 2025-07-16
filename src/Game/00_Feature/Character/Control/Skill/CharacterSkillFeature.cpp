@@ -9,11 +9,12 @@
 // キャラクターのスキル実行を更新する
 void Game::Feature::Character::CharacterSkillFeature::UpdateCharacterSkillExecution(eNsECS::EntityMgr& ecs, float deltaTime)
 {
-	gNsCharacterControlSkill::UpdateCharacterSkillExecution(ecs, deltaTime);
+	// gNsCharacterControlSkill::UpdateCharacterSkillExecution(ecs, deltaTime);// 削除予定：FSM導入後廃止
 }
 
 // キャラクターのスキル意図を反映可能かどうか判定し，更新する
 void Game::Feature::Character::CharacterSkillFeature::UpdateCharacterSkillIntentResolver(eNsECS::EntityMgr& ecs)
 {
-	gNsCharacterControlSkill::UpdateCharacterSkillIntentResovlver(ecs);
+	// gNsCharacterControlSkill::UpdateCharacterSkillIntentResovlver(ecs);// 削除予定：FSM導入後廃止
+	gNsCharacterControlSkill::UpdateSkillResolverSystem(ecs);
 }

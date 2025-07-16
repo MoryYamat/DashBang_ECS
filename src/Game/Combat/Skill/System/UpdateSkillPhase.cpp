@@ -1,3 +1,5 @@
+// 削除予定：FSMシステム実装後廃止
+
 #include "UpdateSkillPhase.h"
 
 #include "Game/Combat/Skill/System/SkillCastingSystem.h"

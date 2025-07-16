@@ -1,3 +1,5 @@
+// 
+
 // Attack2DAreaComponent（などスキルの効果として生成されたエンティティ） の lifetime を管理・終了させる処理
 
 #pragma once

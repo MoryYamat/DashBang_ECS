@@ -48,33 +48,4 @@ void Game::Input::Intent::SkillIntentMappingSystem::UpdatePlayerSkillIntent(eNsE
 			}
 		}
 	}
-
-	//// std::cout << "Here\n";
-	//for (eNsECS::Entity e : ecs.view<
-	//	gNsInput::InputActionComponent,
-	//	gNsSkillComp::SkillInputBindingComponent,
-	//	gNsSkillIntent::SkillIntentComponent,
-	//	gNsTags::PlayerCharacterTag>())
-	//{
-	//	// ‚±‚±‚Ü‚Å—ˆ‚Ä‚È‚¢
-	//	const auto& input = ecs.get<gNsInput::InputActionComponent>(e);
-	//	const auto& binding = ecs.get<gNsSkillComp::SkillInputBindingComponent>(e);
-	//	auto& intent = ecs.get<gNsSkillIntent::SkillIntentComponent>(e);
-
-	//	intent.isActive = false;
-	//	intent.requestedSlots.clear();
-
-
-	//	for (const auto& [action, slot] : binding.actionToSlot)
-	//	{
-	//		if (input.isJustPressed(action))
-	//		{
-	//			// ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚éê‡Ctrue‚É
-	//			intent.isActive = true;
-	//			intent.requestedSlots.push_back(slot);
-	//			// std::cout << "[SkillIntent] Intent triggered." << std::endl;
-	//			// std::cout << "[SkillIntent] Slot triggered: " << static_cast<int>(slot) << std::endl;
-	//		}
-	//	}
-	//}
 }

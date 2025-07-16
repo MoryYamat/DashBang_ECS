@@ -18,7 +18,7 @@ namespace Game::Combat::Skill::FSM
 	{
 		bool evaluate(const SkillFSMContext& ctx, const SkillDef& def) const override
 		{
-			return ctx.elapsedTime >= def.castDuration;
+			return ctx.phaseElapsedTime >= def.castDuration;
 		}
 	};
 
@@ -26,7 +26,7 @@ namespace Game::Combat::Skill::FSM
 	{
 		bool evaluate(const SkillFSMContext& ctx, const SkillDef& def) const override
 		{
-			return ctx.elapsedTime >= def.activeDuration;
+			return ctx.phaseElapsedTime >= def.activeDuration;
 		}
 	};
 
@@ -34,7 +34,7 @@ namespace Game::Combat::Skill::FSM
 	{
 		bool evaluate(const SkillFSMContext& ctx, const SkillDef& def) const override
 		{
-			return ctx.elapsedTime >= def.recoveryDuration;
+			return ctx.phaseElapsedTime >= def.recoveryDuration;
 		}
 	};
 

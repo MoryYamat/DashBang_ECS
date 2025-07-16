@@ -1,8 +1,11 @@
-#include "InitSkillFSM.hpp"
+#include "InitSkillDatabase.hpp"
 
 #include "Game/Combat/Skill/FSM/Definition/SkillFSMStates.hpp"
 
 #include "Game/Combat/Skill/Def/SkillDef.hpp"
+
+#include "Game/Combat/Skill/FSM/Condition/ISkillTriggerCondition.hpp"
+#include "Game/Combat/Skill/FSM/Condition/SkillTriggerConditions.hpp"
 
 #include "Game/Combat/Skill/FSM/Definition/SkillFSMDefinition.hpp"
 #include "Game/Combat/Skill/FSM/Definition/SkillTransitionTable.hpp"
@@ -17,23 +20,25 @@
 
 #include "Common/GameNamespaceDecl.h"
 
-void Game::Combat::Skill::FSM::SkillFSMInitialization(eNsECS::EntityMgr& ecs)
+void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMgr& ecs)
 {
 	using namespace Game::Combat::Skill::Database;
 	using namespace gNsSkillFSM;
 	using namespace gNsSkillFSM::SkillPhase;
+	using namespace Game::Combat::Skill::Data;
+	using namespace Game::Combat::Skill::FSM::Condition;
 
-	auto& db = ecs.createResource<SkillDatabase>();
+	auto& db = ecs.createResource<Game::Combat::Skill::Database::SkillDatabase>();
 
-	Game::Combat::Skill::Def::SkillDef testSkill;
-	testSkill.id = 1;
-	testSkill.name = "TestSkill";
+	SkillEntry testSkill;
+	testSkill.def.id = 1;
+	testSkill.def.name = "TestSkill";
 
-	testSkill.castDuration = 0.3f;
-	testSkill.activeDuration = 1.0f;
-	testSkill.recoveryDuration = 0.3f;
+	testSkill.def.castDuration = 0.3f;
+	testSkill.def.activeDuration = 1.0f;
+	testSkill.def.recoveryDuration = 0.3f;
 
-	testSkill.spawnHitArea = gNsSkill::Def::SpawnHitArea{
+	testSkill.def.spawnHitArea = gNsSkill::Def::SpawnHitArea{
 		.duration = 2.0f,
 		.shape = gNsSkillComp::Attack2DShape {
 			gNsSkillComp::Circle2DAttack {
@@ -46,12 +51,11 @@ void Game::Combat::Skill::FSM::SkillFSMInitialization(eNsECS::EntityMgr& ecs)
 		}
 	};
 
-	testSkill.cooldown = 1.0f;
+	testSkill.def.cooldown = 1.0f;
 
-	Game::Combat::Skill::FSM::SkillFSMDefinition testSkillFSM;
-	testSkillFSM.id = testSkill.id;
-
-	testSkillFSM.transitions = {
+	
+	
+	testSkill.fsm.transitions = {
 		{typeid(Casting), typeid(Active), std::make_shared<CastTimeElapsed>()},
 		{typeid(Active), typeid(Recovery), std::make_shared<ActiveTimeElapsed>()},
 		{typeid(Recovery), typeid(Completed), std::make_shared<RecoveryTimeElapsed>()},
@@ -63,16 +67,20 @@ void Game::Combat::Skill::FSM::SkillFSMInitialization(eNsECS::EntityMgr& ecs)
 		{typeid(Completed), typeid(None), std::make_shared<Always>()},
 		{typeid(Interrupted), typeid(None), std::make_shared<Always>()},
 	};
-
+	testSkill.fsm.initialState = typeid(Casting);
 	
+	testSkill.triggerCondition = std::make_shared<SkillTriggerCondition_PhaseEquals>(typeid(None));
 
-	db.AddSkill(gNsSkillData::SkillEntry{ .def = testSkill, .fsm = testSkillFSM });
+	db.AddSkill(testSkill);
 
 	// TODO :
-	// SkillTriggerSystemの改良：`SkillFSM`を条件としてTriggerをコントロールする構造へ
-	// FSMSystem実装
-	// トリガー機構のリファクタリング
 	// 
-
-	// db.AddSkill(testSkill);
+	// `SkillStateTags.hpp`を適用し，typeidのハードコードを修正する
+	// 
+	// **副作用のイベントフック．および自動解決構造の実装**
+	// 
+	// **直交FSMのテスト**: スキル詠唱中->MovementSpeedを任意%低下させる．それを定義ドリブンで実装する．
+	// 
+	// **これらの知見を踏まえて，汎用テンプレートインターフェースを実装する**
+	// 
 }

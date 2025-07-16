@@ -15,4 +15,7 @@ namespace Game::Combat::Skill::FSM
 		struct Completed {};
 		struct Interrupted {};
 	}
+
+
 }
+

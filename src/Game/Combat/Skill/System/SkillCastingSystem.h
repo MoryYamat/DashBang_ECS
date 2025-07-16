@@ -1,3 +1,5 @@
+// 削除予定：FSM導入後廃止(同機能をもつ別ファイルを作成・)
+
 // Actually process the SKillInstance based on the existing SkillInstance and the SkillDefinition of the corresponding SkillID
 // 存在するSkillInstanceと該当のSkillIDのSkillDefinitionに基づいてSKillInstanceを実際に処理する
 

@@ -112,6 +112,7 @@ namespace Game
 	{
 		namespace Skill
 		{
+			// FIXME: ìùçáÅEêÆóùÇµÇƒÇÌÇ©ÇËÇ‚Ç∑Ç≠Ç∑ÇÈ
 			namespace Component {}
 			namespace System 
 			{
@@ -127,7 +128,13 @@ namespace Game
 
 			namespace Context {}
 
-			namespace FSM {}
+			namespace FSM 
+			{
+				namespace Condition {}
+				namespace StateTag {}
+			}
+			namespace Def {}
+			namespace Database {}
 		}
 	}
 
@@ -227,6 +234,8 @@ namespace gNsSkillMasterData = Game::Combat::Skill::MasterData;
 namespace gNsSkillTrigger = Game::Combat::Skill::Trigger;
 namespace gNsSkillUtils = Game::Combat::Skill::Utils;
 namespace gNsSkillContext = Game::Combat::Skill::Context;
+namespace gNsSkillDatabase = Game::Combat::Skill::Database;
+namespace gNsSkillFSMStateTag = Game::Combat::Skill::FSM::StateTag;
 
 // skill fsm
 namespace gNsSkillFSM = Game::Combat::Skill::FSM;
