@@ -1,37 +1,134 @@
-# **自作3Dゲームエンジン**
+# **自作3Dゲーム~~エンジン~~**
 
 ## **開発環境**
 * C++20
 * CMake()
 
-## **2025/05/13**
-
-## **基本機能**
-
-### **ゲーム基盤**
-
-#### **描画空間(3D)と論理(2D)の連携**(Linking Drawing Space (3D) and Logical (2D))
-* 3Dモデルをインポートし，その`Transform(描画用)情報(3D)`から`論理情報(2D)`を自動初期化する機能
-    * 見た目をもとにゲーム用ロジックを整合的に自動初期化できる
+## ****
 
 
-#### **コリジョン検出**(Collision Detection)
-* 3Dモデルをインポートし，その`最大軸`or`最小軸`を選択し，円形の`2Dコリジョン形状`を自動作成する機能
-* `BaseTerrainMesh`となる3Dモデルをインポートし，それを完全に覆う`2D論理タイルマップ`を自動作成する機能
-* `2D論理タイルマップ`と(プレイヤー)キャラクターの`2Dコリジョン形状`の重なりを検出し，`Debug用の描画`を実行する機能
-* `論理タイルマップ`の`Walkable属性`の自動初期化機能.`障害物オブジェクト`と`空中にあるタイルマップ`を判定し`Walkable属性`を初期化
 
-==============
+## **ゲーム基盤**
 
-### **ゲーム操作(入出力)**
-* マウスポインタのウィンドウ上の座標から`論理空間の位置`を計算し，**view行列／projection行列**を考慮して描画する機能
-* マウスポインタの位置の方向へキャラクターの`Frontベクトル`を回転させる機能
-* 
+### **ECS**
 
-## **Game(App)固有システム**
-* 2D攻撃判定処理の処理およびデータフローの構築(入力マッピング，トリガー管理，ライフタイム管理)
-* デバッグ描画の実装(画像半透明の赤)
 
-## **イメージ**
-* 進捗イメージ
-![進捗画像](images/progress04.jpg)
+### **Architecture Overview**
+This game engine is based on a layered input-intent-resolution pipeline designed for maximum flexibility, testability, and separation of concerns.
+
+```nginx
+PlayerInput
+   ↓
+IntentMappingSystem
+   ↓
+IntentResolverSystem
+   ↓
+CharacterFSM
+   ↓
+GameLogicExecution
+```
+
+---
+
+🔹 Purpose and Benefits
+* Decoupling input devices from gameplay logic
+
+* Unifying player, AI, and scripted behavior under a single "Intent" model
+
+* Empowering modularity in skills, state transitions, and interaction resolution
+
+---
+
+🔸 Layer Details
+1. Input → Intent
+> Maps raw physical input (keys, controller) to high-level gameplay intents (e.g. "MoveForward", "UseSkill1")
+
+* Allows flexible remapping and multi-device support
+
+* Cleanly separates input from meaning
+
+2. Intent → Resolver
+> Resolves whether an intent can be accepted, based on current state (e.g. "Can't cast while stunned")
+
+* Makes command validation explicit
+
+* Clean point for cancel, interrupt, or rejection logic
+
+3. Resolver → FSM
+> Accepts validated intent and applies state transition (e.g. Idle → Casting)
+
+* Based on orthogonal FSM, allowing concurrent and independent control domains
+
+* Fully data-driven and reusable across actors
+
+4. FSM → Logic
+> Triggers gameplay consequences: animation, skill hitbox generation, cooldowns, etc.
+
+* Logic is derived from state, not hardcoded
+
+* Enables timing-based logic (e.g. ActiveTimeElapsed → Recovery)
+
+---
+
+🔹 Example Flow: Skill Casting
+```pgsql
+Player presses [Q]
+→ Mapped to `Intent::CastSkill<SkillID>`
+→ Resolver checks if current state allows casting
+→ FSM transitions: None → Casting
+→ Logic: Skill wind-up animation + damage hitbox created
+→ After duration, FSM: Casting → Active → Recovery → None
+```
+
+---
+
+### 🧠 Design Philosophy
+
+This architecture reflects a belief that gameplay logic should be **state-driven, not input-driven**, and that actor behaviors should be unified regardless of source (player, AI, or script).  
+It aims to maximize:
+
+- **Modularity**: systems can evolve independently
+- **Scalability**: logic grows without becoming entangled
+- **Clarity**: debug and testing is simpler when intent is explicit
+
+---  
+### 🧩 Why This Matters
+
+In traditional input systems, logic often becomes tightly coupled to control flow.  
+This leads to problems such as:
+
+- Hard-to-test behavior (input must be simulated)
+- Unclear rejection rules (why did this action fail?)
+- Inflexible control schemes (can’t rebind or re-use for AI)
+
+By inserting `Intent` and `Resolver` layers, all behavior becomes explicit and state-aware.  
+This is crucial for complex games with skills, cooldowns, interruptions, or AI decision making.
+
+---
+
+#### 🧠 Philosophical Foundation
+This input-intent architecture is based on a philosophical view:
+
+> Humans are capable of any will (at least that’s the assumption our society has),
+but they can only act within the constraints of their current state and the environment.
+
+In this model:
+
+* 🧠 Intentions represent pure will — what the agent wants to do.
+
+* 🌍 Resolvers act as reality — evaluating what is currently possible.
+
+* 🕹️ FSM & Logic Systems are the embodiment of that will — its physical manifestation (if allowed).
+
+This structure provides a clear separation between:
+
+* Wanting (intent),
+
+* Being able to (resolvability),
+
+* and Doing (state transitions and logic execution),
+
+...mirroring real-world interaction patterns and enabling modular, explainable behavior control.
+
+---
+

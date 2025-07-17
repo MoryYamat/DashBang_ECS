@@ -60,7 +60,7 @@ void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, floa
 
 			// std::cout << "here :" << exec.elapsedTime << std::endl;
 
-			// ðŒ‚ð•]‰¿
+
 			if (transition.condition->evaluate(ctx, def))
 			{
 				// ‘JˆÚ‚ð“K—p

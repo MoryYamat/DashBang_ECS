@@ -36,6 +36,7 @@ namespace Game::Combat::Skill::Component
 		OnCanceled, // スキルのキャンセル
 	};
 
+	// スキル実行状態メタ情報
 	struct SkillExecutionComponent
 	{
 		eNsECS::Entity caster = eNsECS::Entity::INVALID;
