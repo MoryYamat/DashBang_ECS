@@ -1,10 +1,11 @@
+// SkillPhaseíËã`Ç‚FSMç\ë¢ÅCèÛë‘å^
 #pragma once
 
 
 #include <cstdint>
 
-#include "Game/Combat/Skill/FSM/Definition/SkillTransitionTable.hpp"
-#include "Game/Combat/Skill/FSM/Definition/SkillFSMStates.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillTransitionTable.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMStates.hpp"
 
 #include <typeindex>
 

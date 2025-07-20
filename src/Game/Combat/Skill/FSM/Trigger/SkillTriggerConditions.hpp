@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Game/Combat/Skill/FSM/Definition/SkillStateComponent.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 #include "Game/Combat/Skill/MasterData/SkillEntry.hpp"
 #include "ISkillTriggerCondition.hpp"
 

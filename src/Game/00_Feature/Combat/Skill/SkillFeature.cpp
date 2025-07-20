@@ -10,7 +10,7 @@
 
 #include "Game/Combat/Skill/System/InitializeSkills.h"// íœ—\’èFFSM“±“üŒã”p~
 
-#include "Game/Combat/Skill/FSM/InitSkillDatabase.hpp"// ÅV
+#include "Game/Combat/Skill/FSM/Init/InitSkillDatabase.hpp"// ÅV
 
 #include "Game/Combat/Skill/System/SkillExecutionLifetimeSystem.hpp"// ÅV
 

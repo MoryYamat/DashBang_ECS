@@ -3,7 +3,7 @@
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
 
 #include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
-#include "Game/Combat/Skill/FSM/Definition/SkillStateComponent.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 
 #include "Common/GameNamespaceDecl.h"
 

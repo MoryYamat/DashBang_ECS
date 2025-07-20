@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Game/Combat/Skill/FSM/Definition/SkillFSMContext.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMContext.hpp"
 #include "Game/Combat/Skill/Def/SkillDef.hpp"
 
 namespace Game::Combat::Skill::FSM

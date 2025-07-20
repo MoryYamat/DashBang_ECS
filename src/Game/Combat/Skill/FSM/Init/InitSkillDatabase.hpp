@@ -1,3 +1,5 @@
+// SkillDatabase ‰Šú‰»
+
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"

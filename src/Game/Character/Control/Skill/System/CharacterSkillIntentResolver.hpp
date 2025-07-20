@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Game/Combat/Skill/MasterData/SkillEntry.hpp"
-#include "Game/Combat/Skill/FSM/Definition/SkillStateComponent.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 
-#include "Game/Combat/Skill/FSM/Condition/ISkillTriggerCondition.hpp"
+#include "Game/Combat/Skill/FSM/Trigger/ISkillTriggerCondition.hpp"
 
 #include "Engine/ECS/EntityManager.h"	
 #include "Common/EngineNamespaceDecl.h"

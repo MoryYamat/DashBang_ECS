@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Game/Combat/Skill/FSM/Definition/SkillFSMConditions.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMConditions.hpp"
 
 #include <typeindex>
 

@@ -70,7 +70,7 @@
 // movement
 #include "Game/Character/FSM/Movement/MovementStateComponent.hpp"
 // skill
-#include "Game/Combat/Skill/FSM/Definition/SkillStateComponent.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 
 // Game ECS
 #include "Game/ECS/Tags/CharacterAttribTags.h"

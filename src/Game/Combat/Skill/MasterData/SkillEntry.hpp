@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Game/Combat/Skill/Def/SkillDef.hpp"
-#include "Game/Combat/Skill/FSM/Definition/SkillFSMDefinition.hpp"
-#include "Game/Combat/Skill/FSM/Condition/ISkillTriggerCondition.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMDefinition.hpp"
+#include "Game/Combat/Skill/FSM/Trigger/ISkillTriggerCondition.hpp"
 
 namespace Game::Combat::Skill::Data
 {

@@ -1,8 +1,10 @@
+// SkillŠJn(None->Casting)‚Ì‹N“®ğŒ
+
 #pragma once
 
-#include "Game/Combat/Skill/FSM/Definition/SkillStateComponent.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 #include "Game/Combat/Skill/Def/SkillDef.hpp"
-#include "Game/Combat/Skill/FSM/Definition/SkillFSMContext.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMContext.hpp"
 
 namespace Game::Combat::Skill::FSM::Condition
 {

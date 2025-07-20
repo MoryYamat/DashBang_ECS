@@ -10,25 +10,26 @@
 
 #include <iostream>
 
+// çÌèúó\íËÅFå^ÉxÅ[ÉXFSMì±ì¸å„îpé~
 void Game::Combat::Skill::System::SkillTrajectorySystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 {
-	for (eNsECS::Entity e : ecs.view<
-		gNsSkillComp::Attack2DAreaComponent,
-		gNsSkillComp::SkillTrajectoryComponent,
-		eNsLogic2DComp::Transform2DComponent,
-		gNsECSComp::LifetimeComponent>())
-	{
-		auto& trajComp = ecs.get<gNsSkillComp::SkillTrajectoryComponent>(e);
-		auto& transform = ecs.get<eNsLogic2DComp::Transform2DComponent>(e);
-		auto& lifetimeComp = ecs.get<gNsECSComp::LifetimeComponent>(e);
+	//for (eNsECS::Entity e : ecs.view<
+	//	gNsSkillComp::Attack2DAreaComponent,
+	//	gNsSkillComp::SkillTrajectoryComponent,
+	//	eNsLogic2DComp::Transform2DComponent,
+	//	gNsECSComp::LifetimeComponent>())
+	//{
+	//	auto& trajComp = ecs.get<gNsSkillComp::SkillTrajectoryComponent>(e);
+	//	auto& transform = ecs.get<eNsLogic2DComp::Transform2DComponent>(e);
+	//	auto& lifetimeComp = ecs.get<gNsECSComp::LifetimeComponent>(e);
 
-		trajComp.elapsedTime = lifetimeComp.elapsedTime;
+	//	trajComp.elapsedTime = lifetimeComp.elapsedTime;
 
 
-		transform = trajComp.trajectoryFunc(trajComp.elapsedTime);
+	//	transform = trajComp.trajectoryFunc(trajComp.elapsedTime);
 
-		// std::cout << "entity" << e.id << "\n";
+	//	// std::cout << "entity" << e.id << "\n";
 
-		// eNsDebugLog::LogVector_string("SkillTrajectorySystem.cpp: transform ", transform.positionXZ);
-	}
+	//	// eNsDebugLog::LogVector_string("SkillTrajectorySystem.cpp: transform ", transform.positionXZ);
+	//}
 }

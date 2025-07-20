@@ -1,8 +1,8 @@
 #include "SkillExecutionLifetimeSystem.hpp"
 
-#include "Game/Combat/Skill/FSM/Definition/SkillFSMStates.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMStates.hpp"
 #include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
-#include "Game/Combat/Skill/FSM/Definition/SkillStateComponent.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 
 #include "Game/Combat/Skill/FSM/SkillStateTags.hpp"
 

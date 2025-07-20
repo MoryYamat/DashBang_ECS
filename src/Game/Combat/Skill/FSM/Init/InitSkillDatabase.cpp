@@ -1,15 +1,15 @@
 #include "InitSkillDatabase.hpp"
 
-#include "Game/Combat/Skill/FSM/Definition/SkillFSMStates.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMStates.hpp"
 
 #include "Game/Combat/Skill/Def/SkillDef.hpp"
 
-#include "Game/Combat/Skill/FSM/Condition/ISkillTriggerCondition.hpp"
-#include "Game/Combat/Skill/FSM/Condition/SkillTriggerConditions.hpp"
+#include "Game/Combat/Skill/FSM/Trigger/ISkillTriggerCondition.hpp"
+#include "Game/Combat/Skill/FSM/Trigger/SkillTriggerConditions.hpp"
 
-#include "Game/Combat/Skill/FSM/Definition/SkillFSMDefinition.hpp"
-#include "Game/Combat/Skill/FSM/Definition/SkillTransitionTable.hpp"
-#include "Game/Combat/Skill/FSM/Definition/SkillFSMConditions.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMDefinition.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillTransitionTable.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMConditions.hpp"
 #include "Game/Combat/Skill/MasterData/SkillTrajectoryData.h"
 
 #include "Game/Combat/Skill/Component/Attack2DAreaComponent.h"

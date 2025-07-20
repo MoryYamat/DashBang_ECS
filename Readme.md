@@ -106,29 +106,6 @@ This is crucial for complex games with skills, cooldowns, interruptions, or AI d
 
 ---
 
-#### 🧠 Philosophical Foundation
-This input-intent architecture is based on a philosophical view:
-
-> Humans are capable of any will (at least that’s the assumption our society has),
-but they can only act within the constraints of their current state and the environment.
-
-In this model:
-
-* 🧠 Intentions represent pure will — what the agent wants to do.
-
-* 🌍 Resolvers act as reality — evaluating what is currently possible.
-
-* 🕹️ FSM & Logic Systems are the embodiment of that will — its physical manifestation (if allowed).
-
-This structure provides a clear separation between:
-
-* Wanting (intent),
-
-* Being able to (resolvability),
-
-* and Doing (state transitions and logic execution),
-
-...mirroring real-world interaction patterns and enabling modular, explainable behavior control.
+(Side note: this hierarchy reflects human behavior in the real world. Even though we want to do something, we can only act within the confines of our current state and environment. This led to a clear separation of intent, resolution, and execution in our systems.)
 
 ---
-

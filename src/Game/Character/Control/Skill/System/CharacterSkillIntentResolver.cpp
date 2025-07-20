@@ -12,7 +12,7 @@
 #include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
 
 // FSM
-#include "Game/Combat/Skill/FSM/Definition/SkillFSMStates.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMStates.hpp"
 
 
 void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMgr& ecs)

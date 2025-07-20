@@ -17,14 +17,14 @@ namespace Game::Combat::Skill::Component
 {
 	// 攻撃判定形状
 // Attack Judgment Shape 
-	enum class Attack2DShapeType
-	{
-		None,
-		Circle2D,// 2D円
-		Sector2D,// 2D扇形
-		Rectangl2D,// 2D長方形
-		Beam2D
-	};
+	//enum class Attack2DShapeType
+	//{
+	//	None,
+	//	Circle2D,// 2D円
+	//	Sector2D,// 2D扇形
+	//	Rectangl2D,// 2D長方形
+	//	Beam2D
+	//};
 
 	// 2D円
 	struct Circle2DAttack
@@ -76,8 +76,8 @@ namespace Game::Combat::Skill::Component
 	struct Attack2DAreaComponent
 	{
 		Attack2DShape shape;
-		float lifetime = 1.0f;
-		eNsECS::Entity owner = eNsECS::Entity::INVALID;// 攻撃者(キャラクター)
-		eNsECS::Entity skillEntity = eNsECS::Entity::INVALID;// この判定が属するスキルインスタンス
+		//float lifetime = 1.0f;
+		//eNsECS::Entity owner = eNsECS::Entity::INVALID;// 攻撃者(キャラクター)
+		//eNsECS::Entity skillEntity = eNsECS::Entity::INVALID;// この判定が属するスキルインスタンス
 	};
 }

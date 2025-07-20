@@ -9,9 +9,8 @@
 #pragma once
 
 #include "Game/Combat/Skill/Component/Attack2DAreaComponent.h"
-
 #include "Game/Combat/Skill/MasterData/SkillTrajectoryData.h"
-
+#include "Game/ECS/Component/LifetimeComponent.hpp"
 
 #include <vector>
 

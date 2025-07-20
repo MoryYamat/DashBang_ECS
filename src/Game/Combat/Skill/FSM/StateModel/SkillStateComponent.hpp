@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "Game/Combat/Skill/FSM/Definition/SkillFSMStates.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMStates.hpp"
 
 #include <typeindex>
 
