@@ -6,8 +6,11 @@
 
 #include "Common/EngineNamespaceDecl.h"
 
+#include "Game/Combat/Skill/FSM/SkillStateTags.hpp"
+
 #include <vector>
 #include <unordered_map>
+#include <typeindex>
 
 namespace Game::Combat::Skill::Component
 {
@@ -36,6 +39,8 @@ namespace Game::Combat::Skill::Component
 		OnCanceled, // スキルのキャンセル
 	};
 
+	using namespace Game::Combat::Skill::FSM;
+
 	// スキル実行状態メタ情報
 	struct SkillExecutionComponent
 	{
@@ -47,5 +52,7 @@ namespace Game::Combat::Skill::Component
 		// float timeSinceCast = 0.0f;// 不要
 		float phaseElapsedTime = 0.0f;
 		bool isInterrupted = false;
+
+		std::type_index previousState = StateTag::NONE;
 	};
 }

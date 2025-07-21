@@ -42,7 +42,6 @@ namespace Game::Combat::Skill::FSM::Effect
 
 			// 軌跡形状
 			ecs.addComponent(eHitbox, SkillTrajectoryComponent{
-				.elapsedTime = 0.0f,
 				.trajectory = spawn.trajectoryParams
 				});
 
@@ -51,6 +50,8 @@ namespace Game::Combat::Skill::FSM::Effect
 				.totalLifetime = spawn.duration.value_or(0.0f),
 				.elapsedTime = 0.0f,
 				});
+
+			std::cout << "[SpawnHitboxEffect.hpp]: Spawned Hitbox Entity" << eHitbox.id << " for SkillID = " << def.id << "by Caster = " << caster.id << "\n";
 
 			// TODO:
 			// 定義ドリブンの厳密化

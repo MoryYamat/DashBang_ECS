@@ -85,7 +85,7 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 
 			// skillFSMstate を 定義された初期状態にセット
 			state.current = entry.fsm.initialState;
-
+			std::cout << "[SkillIntentResolverSystem.cpp]: Skill " << skillId << " transitioned to " << state.current.name() << "\n";
 
 			std::cout << "[SkillTrigger] Entity " << e.id
 				<< " triggered skill " << skillId

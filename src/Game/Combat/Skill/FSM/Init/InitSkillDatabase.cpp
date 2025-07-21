@@ -4,6 +4,10 @@
 
 #include "Game/Combat/Skill/Def/SkillDef.hpp"
 
+#include "Game/Combat/Skill/FSM/Effect/Hook/SkillEffectHook.hpp"
+#include "Game/Combat/Skill/FSM/Effect/TriggerCondition/OnTransition.hpp"
+#include "Game/Combat/Skill/FSM/Effect/Template/SpawnHitBoxEffect.hpp"
+
 #include "Game/Combat/Skill/FSM/Trigger/ISkillTriggerCondition.hpp"
 #include "Game/Combat/Skill/FSM/Trigger/SkillTriggerConditions.hpp"
 
@@ -17,6 +21,7 @@
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
 #include "Game/Combat/Skill/MasterData/SkillEntry.hpp"
 
+#include "Game/Combat/Skill/FSM/SkillStateTags.hpp"
 
 #include "Common/GameNamespaceDecl.h"
 
@@ -27,6 +32,7 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 	using namespace gNsSkillFSM::SkillPhase;
 	using namespace Game::Combat::Skill::Data;
 	using namespace Game::Combat::Skill::FSM::Condition;
+	using namespace Game::Combat::Skill::FSM::Effect;
 
 	auto& db = ecs.createResource<Game::Combat::Skill::Database::SkillDatabase>();
 
@@ -68,8 +74,17 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 		{typeid(Interrupted), typeid(None), std::make_shared<Always>()},
 	};
 	testSkill.fsm.initialState = typeid(Casting);
-	
+
+	testSkill.fsm.effectHooks =
+	{
+		SkillEffectHook { 
+			std::make_shared<OnTransition>(StateTag::CASTING, StateTag::ACTIVE), 
+			std::make_shared<SpawnHitboxEffect>()
+		},
+	};
+
 	testSkill.triggerCondition = std::make_shared<SkillTriggerCondition_PhaseEquals>(typeid(None));
+
 
 	db.AddSkill(testSkill);
 

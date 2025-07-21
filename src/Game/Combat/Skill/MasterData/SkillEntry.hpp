@@ -12,7 +12,7 @@ namespace Game::Combat::Skill::Data
 	{
 		Game::Combat::Skill::Def::SkillDef def;
 		Game::Combat::Skill::FSM::SkillFSMDefinition fsm;
-		std::shared_ptr<ISkillTriggerCondition> triggerCondition = nullptr;
+		std::shared_ptr<ISkillTriggerCondition> triggerCondition = nullptr;// (None->Casting‚É“ü‚éğŒ)
 	};
 
 }

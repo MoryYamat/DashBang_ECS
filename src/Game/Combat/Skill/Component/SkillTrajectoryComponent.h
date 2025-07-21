@@ -21,8 +21,8 @@ namespace Game::Combat::Skill::Component
 
 	struct SkillTrajectoryComponent
 	{
-		// 進行中の経過時間
-		float elapsedTime = 0.0f;
+		//// 進行中の経過時間
+		//float elapsedTime = 0.0f;
 
 		//// 軌跡の定義(型情報，動作の種類)
 		//gNsSkillData::TrajectoryType type = gNsSkillData::TrajectoryType::None;

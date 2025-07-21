@@ -15,7 +15,7 @@ namespace Game::Combat::Skill::FSM::Effect
 {
 	struct SkillEffectHook
 	{
-		std::shared_ptr<IEffectTriggerConditrion> trigger;
+		std::shared_ptr<IEffectTriggerCondition> trigger;
 		std::shared_ptr<IEffectTemplate> effect;
 	};
 }

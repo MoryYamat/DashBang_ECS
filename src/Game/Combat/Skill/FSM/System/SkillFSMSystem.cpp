@@ -3,7 +3,12 @@
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
 
 #include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
+#include "Game/Combat/Skill/Component/SkillEffectExecutionRecordComponent.hpp"
+
+
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
+
+#include "Game/Combat/Skill/FSM/SkillStateTags.hpp"
 
 #include "Common/GameNamespaceDecl.h"
 
@@ -18,11 +23,13 @@ void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, floa
 	auto& db = ecs.getResource<Game::Combat::Skill::Database::SkillDatabase>();
 
 
-	for (eNsECS::Entity eExec : ecs.view<SkillExecutionComponent>())
+	for (eNsECS::Entity eExec : ecs.view<
+		SkillExecutionComponent
+	>())
 	{
 		auto& exec = ecs.get<SkillExecutionComponent>(eExec);
 		const auto caster = exec.caster;
-		
+
 		exec.elapsedTime += deltaTime;
 		exec.phaseElapsedTime += deltaTime;
 
@@ -50,7 +57,9 @@ void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, floa
 		ctx.phaseElapsedTime = exec.phaseElapsedTime;
 		ctx.isInterrupted = exec.isInterrupted;
 
-		// ëJà⁄ÇÃíÜÇ≈àÍívÇ∑ÇÈÇ‡ÇÃÇíTÇ∑
+		exec.previousState = state.current;
+
+		// ==== èÛë‘ëJà⁄èàóù ====
 		for (const auto& transition : fsmDef.transitions)
 		{
 			
@@ -63,16 +72,35 @@ void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, floa
 
 			if (transition.condition->evaluate(ctx, def))
 			{
+
 				// ëJà⁄ÇìKóp
 				state.current = transition.to;
-
 				exec.phaseElapsedTime = 0.0f;
 
 				// ÉçÉO
 				std::cout << "[SkillFSMSystem.cpp]: Skill " << skillId << " transitioned to " << state.current.name() << "\n";
 
-
 				break; // 1ÉXÉeÉbÉvÇ≈1ëJà⁄ÇæÇØçsÇ§
+			}
+		}
+
+		if (!ecs.hasComponent<SkillEffectExecutionRecordComponent>(eExec))
+		{
+			ecs.addComponent(eExec, SkillEffectExecutionRecordComponent{});
+		}
+			
+		auto& record = ecs.get<SkillEffectExecutionRecordComponent>(eExec);
+
+		// ===== ïõçÏóp =====
+		for (const auto& hook : fsmDef.effectHooks)
+		{
+			std::size_t hash = std::type_index(typeid(*hook.effect)).hash_code();
+
+			if (hook.trigger->evaluate(ctx, def, state.current, exec.previousState) &&
+				!record.hasExecuted(hash))
+			{
+				hook.effect->execute(ecs, caster, def, ctx);
+				record.markExecuted(hash);
 			}
 		}
 	}
