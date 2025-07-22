@@ -7,6 +7,8 @@
 
 #include <variant>
 
+
+// 削除予定：FSM導入後廃止(関数オブジェクトをSkillTrajectoryComponentに持たせるのではなく，System側で計算を行う方式に変更)
 std::function<eNsLogic2DComp::Transform2DComponent(float)> Game::Combat::Skill::Factory::SkillTrajectoryFactory::Create(
 	const gNsSkillData::SkillDefinition& def,
 	const eNsLogic2DComp::Transform2DComponent& origin)

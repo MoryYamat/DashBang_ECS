@@ -12,10 +12,12 @@
 
 #include "Game/Combat/Skill/FSM/Init/InitSkillDatabase.hpp"// 最新
 
-#include "Game/Combat/Skill/System/SkillExecutionLifetimeSystem.hpp"// 最新
+#include "Game/Combat/Skill/System/Lifetime/SkillExecutionLifetimeSystem.hpp"// 最新
 
 // lifetime
 #include "Game/Combat/Skill/System/HitArea/Attack2DAreaLifetimeSystem.hpp"
+
+#include "Game/Combat/Skill/System/Lifetime/HitboxLifetimeControlSystem.hpp"
 
 // lifetimeComponent導入後未使用：削除予定
 #include "Game/Combat/Skill/System/Phase/AttackLifetimeSystem.hpp"
@@ -71,3 +73,7 @@ void Game::Feature::Combat::SkillFeature::UpdateSkillPhaseSystem(eNsECS::EntityM
 	// gNsSkillSystem::AttackLifetimeSystem::Update(ecs, deltaTime);// 攻撃判定のライフタイムを更新
 }
 
+void Game::Feature::Combat::SkillFeature::UpdateHitoboxLifetimeSystem(eNsECS::EntityMgr& ecs, float deltaTime)
+{
+	gNsSkillSystem::HitboxLifetimeControlSystem::Update(ecs, deltaTime);
+}

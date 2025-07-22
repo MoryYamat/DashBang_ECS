@@ -31,5 +31,7 @@ namespace Game::Feature::Combat
 
 		// static void UpdateSkillAttackLifetimeSystem(eNsECS::EntityMgr& ecs, float deltaTime);
 
+
+		static void UpdateHitoboxLifetimeSystem(eNsECS::EntityMgr& ecs, float deltaTime);
 	};
 }

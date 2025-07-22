@@ -6,13 +6,17 @@
 #include "Game/Combat/Skill/Component/Attack2DAreaComponent.h"
 #include "Game/Combat/Skill/Component/SkillTrajectoryComponent.h"
 
+#include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
+#include "Engine/ECS/Component/Logic2D/Transform2DComponent.h"
+
 #include "Game/ECS/Component/LifetimeComponent.hpp"
 
 namespace Game::Combat::Skill::FSM::Effect
 {
 	using namespace Game::Combat::Skill::Component;
 	using namespace Game::ECS::Component;
-
+	using namespace Engine::ECS::Component::Logic2D;
+	
 	struct SpawnHitboxEffect : IEffectTemplate
 	{
 		void execute(
@@ -51,11 +55,31 @@ namespace Game::Combat::Skill::FSM::Effect
 				.elapsedTime = 0.0f,
 				});
 
-			std::cout << "[SpawnHitboxEffect.hpp]: Spawned Hitbox Entity" << eHitbox.id << " for SkillID = " << def.id << "by Caster = " << caster.id << "\n";
+			if (ecs.hasComponent<Logic2DTransformComponent>(caster))
+			{
+				const auto& casterTransform = ecs.get<Logic2DTransformComponent>(caster);
+
+				// FixMe：scaleは1.0fに固定しているがスキル定義などにより拡大したり縮小したりできるようにしたほうがいい
+				Transform2DComponent initialHitboxTransform;
+				initialHitboxTransform.positionXZ = casterTransform.positionXZ;
+				initialHitboxTransform.rotationY = casterTransform.GetRotationYFromFrontVector();
+				initialHitboxTransform.front = casterTransform.front;
+				initialHitboxTransform.right = casterTransform.right;
+				initialHitboxTransform.scale = 1.0f;
+
+				ecs.addComponent(eHitbox, initialHitboxTransform);
+			}
+
+			std::cout << "[SpawnHitboxEffect.hpp]: Spawned Hitbox Entity" << eHitbox.id 
+				<< " for SkillID = " << def.id 
+				<< "by Caster = " << caster.id << "\n";
+
+
 
 			// TODO:
 			// 定義ドリブンの厳密化
 			// lifetime管理の高度化
+			// コリジョンマスクの作成システム実装
 			// システム実装
 			// 最適化
 			//

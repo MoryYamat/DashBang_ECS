@@ -53,8 +53,9 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 			}},
 		.trajectoryParams = gNsSkillData::SkillTrajectory::LinearTrajectoryParams
 		{
-			.speed = 3.0f
-		}
+			.speed = 10.0f
+		},
+		.syncWithActivePhase = true,
 	};
 
 	testSkill.def.cooldown = 1.0f;

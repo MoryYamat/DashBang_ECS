@@ -24,9 +24,6 @@ void Game::Layer::LogicLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 	// gNsFeature::Combat::SkillFeature::TriggerSkillsFromIntent(ecs);
 	// Game::Feature::Character::CharacterSkillFeature::UpdateCharacterSkillExecution(ecs, deltaTime);
 
-	// lifetime
-	// gNsFeature::ECS::GameGeneralSytem::UpdateLifetimeSystem(ecs, deltaTime); // ECSのライフタイムシステムを更新
-
 	// スキルフェーズ(寿命管理と判定生成)
 	// gNsFeature::Combat::SkillFeature::UpdateSkillPhaseSystem(ecs, deltaTime);
 	// 検討必要：ここでキャラクターのスキル実行状態を更新するかどうか
@@ -34,13 +31,20 @@ void Game::Layer::LogicLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 	// 検討必要：ここでキャラクターのスキル実行状態を更新するかどうか
 	// stateへ移設
 	// gNsFeature::Character::StateFeature::UPdateCharacterSkillExecutionState(ecs, deltaTime);
-	// スキル軌跡更新
-	// gNsFeature::Combat::SkillFeature::UpdateSkillTrajectorySystem(ecs, deltaTime);
+
 	// ===========================上：削除予定：FSM導入後廃止================
 	
+	// スキル軌跡更新
+	gNsFeature::Combat::SkillFeature::UpdateSkillTrajectorySystem(ecs, deltaTime);
+	// hitbox lifetime 
+	gNsFeature::Combat::SkillFeature::UpdateHitoboxLifetimeSystem(ecs, deltaTime);
+
 	// 最新：SkillExecutionLifetime
 	gNsFeature::Combat::SkillFeature::UpdateSkillExecutionLifetimeSystem(ecs);
 
+
+	// lifetime
+	gNsFeature::ECS::GameGeneralSytem::UpdateLifetimeSystem(ecs, deltaTime); // ECSのライフタイムシステムを更新
 
 	// ------------------------- コリジョン関連処理 -------------------------
 	// コリジョンの位置情報などを更新する(CollisionComp.center etc.) (コリジョンはローカル形状情報に責務分離したためSyncCollは不要)

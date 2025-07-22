@@ -33,6 +33,9 @@ namespace Game::Combat::Skill::Def
 		std::optional<float> duration = std::nullopt; // 必要なら明示
 		gNsSkillComp::Attack2DShape shape;// 攻撃判定の形状
 		gNsSkillData::SkillTrajectory::TrajectoryParamsVariant trajectoryParams; // 軌跡パラメータ
+
+		// Activeフェーズに同期して寿命終了するか
+		bool syncWithActivePhase = false;
 	};
 	
 	// スキル定義

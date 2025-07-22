@@ -8,11 +8,13 @@
 
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 
+
 #include "Game/Combat/Skill/FSM/SkillStateTags.hpp"
 
 #include "Common/GameNamespaceDecl.h"
 
 #include <iostream>
+#include <functional>
 
 // TODO: 将来的に直交FSMを統合管理するシステムを実装し，各FSMUpdateSystemからはstate更新リクエストを発信するという形にする
 void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, float deltaTime)
@@ -84,24 +86,42 @@ void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, floa
 			}
 		}
 
-		if (!ecs.hasComponent<SkillEffectExecutionRecordComponent>(eExec))
-		{
-			ecs.addComponent(eExec, SkillEffectExecutionRecordComponent{});
-		}
-			
-		auto& record = ecs.get<SkillEffectExecutionRecordComponent>(eExec);
 
 		// ===== 副作用 =====
 		for (const auto& hook : fsmDef.effectHooks)
 		{
-			std::size_t hash = std::type_index(typeid(*hook.effect)).hash_code();
-
-			if (hook.trigger->evaluate(ctx, def, state.current, exec.previousState) &&
-				!record.hasExecuted(hash))
-			{
-				hook.effect->execute(ecs, caster, def, ctx);
-				record.markExecuted(hash);
-			}
+			tryTriggerEffect(hook, ecs, eExec, caster, def, ctx, state.current, exec.previousState);
 		}
+	}
+}
+
+void Game::Combat::Skill::FSM::tryTriggerEffect(
+	const SkillEffectHook& hook,
+	eNsECS::EntityMgr& ecs,
+	eNsECS::Entity eExec,
+	eNsECS::Entity caster,
+	const SkillDef& def,
+	const SkillFSMContext& ctx,
+	std::type_index current,
+	std::type_index previous
+)
+{
+	using namespace Game::Combat::Skill::Component;
+
+	if (!ecs.hasComponent<SkillEffectExecutionRecordComponent>(eExec))
+	{
+		ecs.addComponent(eExec, SkillEffectExecutionRecordComponent{});
+	}
+
+	auto& record = ecs.get<SkillEffectExecutionRecordComponent>(eExec);
+
+	std::size_t hash = std::type_index(typeid(*hook.effect)).hash_code();// ハッシュ値作成
+
+
+	if (hook.trigger->evaluate(ctx, def, current, previous) &&
+		!record.hasExecuted(hash))
+	{
+		hook.effect->execute(ecs, caster, def, ctx);
+		record.markExecuted(hash);
 	}
 }
