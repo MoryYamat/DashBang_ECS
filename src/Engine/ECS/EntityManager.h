@@ -258,6 +258,7 @@ namespace Engine::ECS
 				//{
 				//	std::cout << "[EntityManager(destroy)] Deletion of Component """ << type.name() << " for " << e.id << " completed successfully\n";
 				//}
+				
 				entityMap.erase(e.id);
 			}
 			mLivingEntities.erase(e.id);

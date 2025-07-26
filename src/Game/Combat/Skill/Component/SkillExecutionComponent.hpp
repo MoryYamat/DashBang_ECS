@@ -9,6 +9,7 @@
 #include "Game/Combat/Skill/FSM/SkillStateTags.hpp"
 
 #include <vector>
+#include <cstdint>
 #include <unordered_map>
 #include <typeindex>
 
@@ -45,7 +46,7 @@ namespace Game::Combat::Skill::Component
 	struct SkillExecutionComponent
 	{
 		eNsECS::Entity caster = eNsECS::Entity::INVALID;
-		int skillId = 0;
+		uint32_t skillId = 0;
 
 		// SkillExecutionPhase currentPhase = SkillExecutionPhase::Casting;// •s—v
 		float elapsedTime = 0.0f;

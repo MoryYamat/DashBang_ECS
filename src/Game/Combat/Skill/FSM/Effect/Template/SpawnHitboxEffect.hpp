@@ -11,6 +11,10 @@
 
 #include "Game/ECS/Component/LifetimeComponent.hpp"
 
+
+// TODO: spawnHitAreaに scale / spawnOffset などを拡張して Transform2DComponent の初期化を定義ドリブン化する
+// TODO: Lifetime の type を定義に持たせて FSM同期や衝突制御と連携できるようにする
+// TODO: CollisionMaskComponentの初期化
 namespace Game::Combat::Skill::FSM::Effect
 {
 	using namespace Game::Combat::Skill::Component;
@@ -76,11 +80,9 @@ namespace Game::Combat::Skill::FSM::Effect
 
 
 
+
 			// TODO:
-			// 定義ドリブンの厳密化
-			// lifetime管理の高度化
-			// コリジョンマスクの作成システム実装
-			// システム実装
+			// コリジョンマスクの作成システム実装 
 			// 最適化
 			//
 		}

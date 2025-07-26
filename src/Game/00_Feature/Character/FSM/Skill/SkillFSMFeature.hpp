@@ -9,5 +9,7 @@ namespace Game::Feature::Skill::FSM
 	{
 	public:
 		static void UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, float deltaTime);
+
+		static void UpdateSkillFSMResolverSystem(eNsECS::EntityMgr& ecs, float deltaTime);
 	};
 }

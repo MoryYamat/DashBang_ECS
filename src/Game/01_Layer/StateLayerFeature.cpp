@@ -23,4 +23,10 @@ void Game::Layer::StateLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 
 	// update Skill FSM
 	gNsFeature::Skill::FSM::SkillFSMFeature::UpdateSkillFSMSystem(ecs, deltaTime);
+
+
+
+	// =========== Resolver ==========
+
+	gNsFeature::Skill::FSM::SkillFSMFeature::UpdateSkillFSMResolverSystem(ecs, deltaTime);
 }

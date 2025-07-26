@@ -55,7 +55,7 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 		{
 			.speed = 10.0f
 		},
-		.syncWithActivePhase = true,
+		.syncWithActivePhase = false,
 	};
 
 	testSkill.def.cooldown = 1.0f;

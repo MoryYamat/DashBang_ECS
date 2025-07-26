@@ -5,9 +5,9 @@
 #include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
 #include "Game/Combat/Skill/Component/SkillEffectExecutionRecordComponent.hpp"
 
-
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMTransitionRequestComponent.hpp"
 
 #include "Game/Combat/Skill/FSM/SkillStateTags.hpp"
 
@@ -16,14 +16,16 @@
 #include <iostream>
 #include <functional>
 
-// TODO: 将来的に直交FSMを統合管理するシステムを実装し，各FSMUpdateSystemからはstate更新リクエストを発信するという形にする
+// TODO: 遷移評価だけなので `break`を消すために，遷移priorityのいい初期化，定義方法を考える
+// TODO: 多段遷移を考える
 void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 	using namespace Game::Combat::Skill::Database;
 	using namespace Game::Combat::Skill::Component;
 	using namespace Game::Combat::Skill::FSM;
-	auto& db = ecs.getResource<Game::Combat::Skill::Database::SkillDatabase>();
+	using namespace Game::Combat::Skill::FSM::StateModel;
 
+	auto& db = ecs.getResource<Game::Combat::Skill::Database::SkillDatabase>();
 
 	for (eNsECS::Entity eExec : ecs.view<
 		SkillExecutionComponent
@@ -59,8 +61,6 @@ void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, floa
 		ctx.phaseElapsedTime = exec.phaseElapsedTime;
 		ctx.isInterrupted = exec.isInterrupted;
 
-		exec.previousState = state.current;
-
 		// ==== 状態遷移処理 ====
 		for (const auto& transition : fsmDef.transitions)
 		{
@@ -74,54 +74,21 @@ void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, floa
 
 			if (transition.condition->evaluate(ctx, def))
 			{
+				auto& reqComp = ecs.get<SkillFSMTransitionRequestComponent>(caster);
+				reqComp.requests.push_back(SkillFSMTransitionRequest{
+					.requestedTo = transition.to,
+					.priority = 0// 現在は固定値（将来は自動化）
+					});
 
 				// 遷移を適用
-				state.current = transition.to;
+				// state.current = transition.to;
 				exec.phaseElapsedTime = 0.0f;
 
 				// ログ
-				std::cout << "[SkillFSMSystem.cpp]: Skill " << skillId << " transitioned to " << state.current.name() << "\n";
+				//std::cout << "[SkillFSMSystem.cpp]: Skill " << skillId << " transitioned to " << state.current.name() << "\n";
 
 				break; // 1ステップで1遷移だけ行う
 			}
 		}
-
-
-		// ===== 副作用 =====
-		for (const auto& hook : fsmDef.effectHooks)
-		{
-			tryTriggerEffect(hook, ecs, eExec, caster, def, ctx, state.current, exec.previousState);
-		}
-	}
-}
-
-void Game::Combat::Skill::FSM::tryTriggerEffect(
-	const SkillEffectHook& hook,
-	eNsECS::EntityMgr& ecs,
-	eNsECS::Entity eExec,
-	eNsECS::Entity caster,
-	const SkillDef& def,
-	const SkillFSMContext& ctx,
-	std::type_index current,
-	std::type_index previous
-)
-{
-	using namespace Game::Combat::Skill::Component;
-
-	if (!ecs.hasComponent<SkillEffectExecutionRecordComponent>(eExec))
-	{
-		ecs.addComponent(eExec, SkillEffectExecutionRecordComponent{});
-	}
-
-	auto& record = ecs.get<SkillEffectExecutionRecordComponent>(eExec);
-
-	std::size_t hash = std::type_index(typeid(*hook.effect)).hash_code();// ハッシュ値作成
-
-
-	if (hook.trigger->evaluate(ctx, def, current, previous) &&
-		!record.hasExecuted(hash))
-	{
-		hook.effect->execute(ecs, caster, def, ctx);
-		record.markExecuted(hash);
 	}
 }

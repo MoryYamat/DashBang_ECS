@@ -71,6 +71,7 @@
 #include "Game/Character/FSM/Movement/MovementStateComponent.hpp"
 // skill
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMTransitionRequestComponent.hpp"
 
 // Game ECS
 #include "Game/ECS/Tags/CharacterAttribTags.h"
@@ -266,6 +267,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	ecs.addComponent(entity, gNsCharaFSMMovement::MovementStateComponent{});
 	// skill FSM
 	ecs.addComponent(entity, gNsSkillFSM::SkillStateComponent{});
+	ecs.addComponent(entity, gNsSkillFSM::StateModel::SkillFSMTransitionRequestComponent{});
 
 	// std::cout << "[PlayerCharacterActor.cpp] Created Player Entity: " << entity.id << std::endl;
 	//if (ecs.hasComponent<gNsCharacterState::CharacterStateComponent>(entity)) {

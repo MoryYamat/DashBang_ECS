@@ -12,6 +12,7 @@ namespace Game::Combat::Skill::FSM::Effect
 	using namespace Game::Combat::Skill::Def;
 	using namespace Game::Combat::Skill::FSM;
 
+	// ç≈ìKâªñ‚ëË
 	struct IEffectTemplate
 	{
 		virtual ~IEffectTemplate() = default;

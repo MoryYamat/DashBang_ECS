@@ -13,6 +13,7 @@
 
 namespace Game::Combat::Skill::FSM::Effect
 {
+	// Å“K‰»–â‘è
 	struct SkillEffectHook
 	{
 		std::shared_ptr<IEffectTriggerCondition> trigger;

@@ -22,8 +22,10 @@
 <summary id="skillfsm"> <strong>🚧SkillFSMの実装 </strong> </summary>
 
 #### **タスク**
-* `FSM`側で生成された`Entity`の振る舞いを実装する`ECS`側の`Sysmtem`を実装(`SpawnHitbox`/`LifetimeSystem`/`SkillTrajectorySystem`)
-* より複雑な`Lifetime`定義・管理方法の実装(`State::Active`と**同期/非同期**を選択可能に)
+* ~~`FSM`側で生成された`Entity`の振る舞いを実装する`ECS`側の`Sysmtem`を実装(`SpawnHitbox`/`LifetimeSystem`/`SkillTrajectorySystem`)~~
+* ~~より複雑な`Lifetime`定義・管理方法の実装(`State::Active`と**同期/非同期**を選択可能に)~~
+* `request-resolver`方式への移行
+   * 状態遷移`priority`の定義方法の検討
 * `Cancel`動作の実装のための設計
 
 #### **背景・判断理由**
@@ -32,7 +34,7 @@
 * FSM側では定義から`Entity`の**依存(Component)**/**寿命** などを初期化して生成=>ECS側で管理
 
 #### **課題・迷い**
-* 多段遷移時に副作用が発火しないケースの考慮が必要
+* 多段遷移を考える必要がある場合，どうすれば多段遷移リクエストを送るような実装ができるか(自動リクエストチェーン(ステップドライブ))
 * 削除条件が`State::None`に依存してよいのか検討中
 * `EffectExecutionRecord`が単純なレコードになっているため，**同じ副作用の繰り返し**を処理できない問題
 * `SpawnHitboxEffect.cpp`で`Transfrom2DComponent`の`scale`をハードコードしている点
@@ -47,8 +49,14 @@
 <summary id="直交fsm"> <strong> 🔜直交FSMの相互作用の実装 </strong> </summary>
 
 #### **タスク**
- * 
+* 分析を深める
+
 #### **背景・判断理由**
+> 2つの要素がある
+ * ① 状態への干渉：他FSMの状態によって，自FSMの状態遷移を誘発する(`FSMStateTransitionMediator`/`FSMTransitionRequestComponent`)
+    * 例：`CCFSM`の状態により，`SkillFSM`の状態を変化させる(**副作用的に？**)
+ * ② 振る舞いへの干渉：他FSMの状態に応じて，制御対象データに影響を与える(`CrossFSMEffectSystem`/`ModifierComponent`)
+    * 例：`skillFSM`の状態により（Skill定義に基づいて），`movementFSM`の速度を変える
 
 #### **課題・迷い**
 
@@ -67,6 +75,23 @@
 
 
 #### **メモ・備考**
+</details>
+
+<details>
+<summary id="GeneralizationofFSMsystems"> <strong>📝テンプレートを用いたFSMSystemの汎用インターフェース化 </strong> </summary>
+
+#### タスク
+* 
+
+#### 背景・判断理由
+* 
+
+#### 課題・迷い
+* 
+
+#### メモ・備考
+* 
+
 </details>
 
 
