@@ -16,7 +16,10 @@
 * 🚧[SkillFSMの実装](#skillfsm)
 * 🔜[直交FSMの相互作用の実装](#直交fsm)
 * 📝[直交FSMの統合管理機構の実装](#直交fsm管理)
+* 📝[SkillSystemの完成](#skillSystem)
 * ❓[hitboxEffectのFSM化](#hitboxEffect)
+* ❗[FSM分析・設計・実装](#FSMDesign)
+* ❗[ECSアーキテクチャの問題・課題](#GeneralProblem)
 
 <details>
 <summary id="skillfsm"> <strong>🚧SkillFSMの実装 </strong> </summary>
@@ -24,7 +27,7 @@
 #### **タスク**
 * ~~`FSM`側で生成された`Entity`の振る舞いを実装する`ECS`側の`Sysmtem`を実装(`SpawnHitbox`/`LifetimeSystem`/`SkillTrajectorySystem`)~~
 * ~~より複雑な`Lifetime`定義・管理方法の実装(`State::Active`と**同期/非同期**を選択可能に)~~
-* `request-resolver`方式への移行
+* ~~`request-resolver`方式への移行~~
    * 状態遷移`priority`の定義方法の検討
 * `Cancel`動作の実装のための設計
 
@@ -94,6 +97,26 @@
 
 </details>
 
+<details>
+<summary id="SkillSystem"> <strong>📝SkillSystemの完成 </strong> </summary>
+
+#### タスク
+* `HitboxEffect`の`CollisionMask`作成処理の実装
+* `SkillExecutionComponent`の副作用化(`ExecutionSetUpHook`ヘ分離)
+   * `SkillExecutionComponent`を`StateComponent`を保持するActorへ持たせることを検討(現在は中間エンティティとして存在)
+* FSM構造の型 (常駐型 / トリガー型)の切り分け
+* リクエストを一定時間キューに保持しておきたい場合や，リクエストに「有効期間」や「依存関係」がある場合`.requests.clear()`では不可
+
+#### 背景・判断理由
+* 
+
+#### 課題・迷い
+* 
+
+#### メモ・備考
+* 
+
+</details>
 
 <details>
 <summary id="hitboxEffect"> <strong>❓HitboxEffectのFSM化 </strong> </summary>
@@ -111,5 +134,69 @@
 
 #### メモ・備考
 * 後回しでもよい．(**YAGNI**)
+
+</details>
+
+<details>
+<summary id="FSMDesign"> <strong> ❗FSM 分析・設計・実装 </strong> </summary>
+
+#### タスク
+* `FSMResolver`と`Effect`の共通実行システムの分離
+* `FSM`の`Activation`状態を示すフラグの導入/`FSMDefinition`でその条件を定義ドリブンで扱えるようにする
+* 各`ScopedSystem`の設計・実装
+
+#### 背景・判断理由
+* 定義ドリブンなFSMの汎用インターフェース設計・実装のために分析を進め仕様詳細を詰める
+
+
+#### 課題・迷い
+* **状態の粒度設計における判断基準**：「制御ロジック」「処理の構造・副作用」「遷移イベントの有無」「状態数の爆発」「代替手段の有無」
+* 
+
+#### メモ・備考
+* ⚠️`FSM`はあくまでも**状態変化の単位**を扱う．状態内の微細な違いはFSMの責務ではない
+* 
+
+</details>
+
+<details>
+<summary id="GeneralProblem"> <strong>❗ECSアーキテクチャの課題・問題 </strong> </summary>
+
+#### タスク
+* 大規模化・複雑化に伴うデバッグ困難性について：
+* システム間の依存の明示管理(実行順，アクセス権，意図伝播)： ドキュメント化による対応
+* ECSの基盤実装が変わればすべての実装に影響が波及する問題の検討
+* フォルダ構造／ファイル名の一貫性の向上と構造化（そのシステマチックな命名手法の検討）
+* `EntityManager`クラスの名前変更->`World`クラスへ変更
+* `ArcheType`の導入
+
+#### 背景・判断理由
+* ECSアーキテクチャの採用によってOOPよりも責務分離や柔軟性が向上した
+* 一方でうまくいっているからこそ，ECSに特有の課題も検討しておく必要があると考えられる
+* そこで事前に検討事項を列挙しておく
+
+#### 課題・迷い
+* 
+
+#### メモ・備考
+* ECSSystem向けヘッダコメントテンプレートの案
+```cpp
+// ============================================================================
+// [SystemName] : SkillEffectApplySystem
+// ----------------------------------------------------------------------------
+// Purpose    : Apply skill effects to valid targets after hit detection.
+// Execution  : After SkillCollisionSystem
+// ----------------------------------------------------------------------------
+// Reads      : SkillEffectComponent, TargetComponent, EffectDefinitionComponent
+// Writes     : StatusEffectComponent, HPComponent
+// Creates    : (none)
+// Destroys   : (none)
+// ----------------------------------------------------------------------------
+// Notes      : This system assumes that hit detection has already been resolved.
+//              Only applies effects, does not handle execution order of skills.
+//
+// ============================================================================
+```
+* 
 
 </details>

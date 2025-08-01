@@ -12,7 +12,7 @@
 
 #include <typeindex>
 
-// TODO: 最適化
+// TODO: リクエストを一定時間キューに保持しておきたい場合や，リクエストに「有効期間」や「依存関係」がある場合.requests.clear()では不可
 // TODO: 優先度が同じ場合のルールが未定義(先に来たほうを採用している)
 void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 {
@@ -57,6 +57,7 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::En
 			exec.previousState = fromState;
 			// 状態更新
 			state.current = toState;
+			exec.phaseElapsedTime = 0.0f;
 
 			std::cout << "[SkillFSMResolverSystem] Resolved transition: "
 				<< fromState.name() << " -> " << toState.name()
@@ -111,7 +112,7 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerEffect(
 	// 最適化検討：他の方法がないか
 	std::size_t hash = std::type_index(typeid(*hook.effect)).hash_code();// ハッシュ値作成
 
-
+	// すでにTriggerしたEffectはスキップする
 	if (hook.trigger->evaluate(ctx, def, current, previous) &&
 		!record.hasExecuted(hash))
 	{

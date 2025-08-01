@@ -5,13 +5,13 @@
 
 #include "Game/Character/Stats/Component/CharacterStatsComponent.h"
 
-#include "Game/Character/Movement/Component/Intent/MovementIntentComponent.h"
-#include "Game/Character/Movement/Component/Intent/FacingIntentComponent.h"
+#include "Game/Character/Control/Movement/Component/Intent/MovementIntentComponent.h"
+#include "Game/Character/Control/Movement/Component/Intent/FacingIntentComponent.h"
 
 
 #include "Common/GameNamespaceDecl.h"
 
-
+// 
 void Game::Character::Movement::CharacterMovementSystem(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 	for (eNsECS::Entity e : ecs.view<

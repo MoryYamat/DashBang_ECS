@@ -2,7 +2,7 @@
 
 #include "Engine/ECS/Component/Logic2D/Velocity2DComponent.h"
 
-#include "Game/Character/Movement/Component/Intent/MovementIntentComponent.h"
+#include "Game/Character/Control/Movement/Component/Intent/MovementIntentComponent.h"
 
 #include "Game/Character/Stats/Component/CharacterStatsComponent.h"
 
@@ -10,12 +10,14 @@
 
 #include <GLM/glm.hpp>
 
+// íœ—\’èFFSMResolver“±“üŒã”p~
 void Game::Character::Movement::UpdateCharacterVelocity(eNsECS::EntityMgr& ecs)
 {
+
 	for (eNsECS::Entity e : ecs.view<
-		eNsLogic2DComp::Velocity2DComponent
-		, gNsCharacterIntent::MovementIntentComponent
-		, gNsCharacterStats::CharacterStatsComponent
+		eNsLogic2DComp::Velocity2DComponent,
+		gNsCharacterIntent::MovementIntentComponent,
+		gNsCharacterStats::CharacterStatsComponent
 	>())
 	{
 		auto& vel = ecs.get< eNsLogic2DComp::Velocity2DComponent>(e);

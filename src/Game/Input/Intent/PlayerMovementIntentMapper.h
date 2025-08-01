@@ -9,8 +9,8 @@
 #include "Engine/ECS/Component/Input/InputBindingComponent.h"
 
 
-#include "Game/Character/Movement/Component/Intent/MovementIntentComponent.h"
-#include "Game/Character/Movement/Component/Intent/FacingIntentComponent.h"
+#include "Game/Character/Control/Movement/Component/Intent/MovementIntentComponent.h"
+#include "Game/Character/Control/Movement/Component/Intent/FacingIntentComponent.h"
 
 
 #include "Engine/InputManager/RawInputState.h"

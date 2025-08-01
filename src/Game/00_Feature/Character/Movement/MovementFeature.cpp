@@ -1,9 +1,9 @@
 #include "MovementFeature.h"
 
-#include "Game/Character/Movement/System/CharacterMovementSystem.h"
-#include "Game/Character/Movement/System/CharacterFacingSystem.h"
+#include "Game/Character/Control/Movement/System/CharacterMovementSystem.h"
+#include "Game/Character/Control/Movement/System/CharacterFacingSystem.h"
 
-#include "Game/Character/Movement/System/UpdateCharacterVelocity.h"
+#include "Game/Character/Control/Movement/System/UpdateCharacterVelocity.h"
 
 #include "Game/Input/Intent/PlayerMovementIntentMapper.h"
 

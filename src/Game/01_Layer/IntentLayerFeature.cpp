@@ -13,7 +13,7 @@ void Game::Layer::IntentLayerFeature::Update(eNsECS::EntityMgr& ecs)
 	// Movement Intent
 	gNsFeature::Character::MovementFeature::UpdateMovementIntent(ecs);
 	// Intentに応じて各Intentコンポーネントのデータを更新
-	gNsFeature::Character::MovementFeature::UpdateVelocity(ecs);
+	// gNsFeature::Character::MovementFeature::UpdateVelocity(ecs);
 
 	// std::cout<<"hello\n";
 

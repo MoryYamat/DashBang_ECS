@@ -82,7 +82,7 @@ void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, floa
 
 				// ‘JˆÚ‚ğ“K—p
 				// state.current = transition.to;
-				exec.phaseElapsedTime = 0.0f;
+				// exec.phaseElapsedTime = 0.0f;
 
 				// ƒƒO
 				//std::cout << "[SkillFSMSystem.cpp]: Skill " << skillId << " transitioned to " << state.current.name() << "\n";

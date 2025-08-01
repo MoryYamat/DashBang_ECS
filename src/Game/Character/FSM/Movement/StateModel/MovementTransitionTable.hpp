@@ -1,7 +1,8 @@
 #pragma once
 
-#include "MovementFSMDefinition.hpp"
-#include "MovementConditions.hpp"
+
+#include "Game/Character/FSM/Movement/Effect/StateScoped/Hook/MovementEffectHook.hpp"
+#include "Game/Character/FSM/Movement/StateModel/MovementConditions.hpp"
 
 #include <typeindex>
 #include <vector>

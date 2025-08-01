@@ -3,7 +3,7 @@
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 
-#include "Game/Character/Movement/Component/Intent/FacingIntentComponent.h"
+#include "Game/Character/Control/Movement/Component/Intent/FacingIntentComponent.h"
 
 #include "Game/Utils/SpatialTransformUtils.h"
 

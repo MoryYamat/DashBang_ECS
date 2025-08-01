@@ -7,6 +7,7 @@
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 #include "Engine/ECS/Component/Logic2D/Transform2DComponent.h"
 
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMTransitionRequestComponent.hpp"
 
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
 #include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
@@ -14,13 +15,16 @@
 // FSM
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMStates.hpp"
 
-
+// TODO: `SkillExecutionComponent`をアクターが保持する情報にする
+// TODO: `SkillExecutionComponent`の生成をFSMHook化する(SkillExecutionSetUpHookなど)
+// TODO: TransitionRequestの`Priority`制御の実装
 void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMgr& ecs)
 {
 	using namespace Game::Character::Control::Skill;
 	using namespace Game::Combat::Skill::Component;
 	using namespace Game::Combat::Skill::Database;
 	using namespace Game::Combat::Skill::FSM;
+	using namespace Game::Combat::Skill::FSM::StateModel;
 	using namespace Engine::ECS::Component::Logic2D;
 	using namespace Game::Combat::Skill::Component;
 
@@ -31,7 +35,8 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 		Logic2DTransformComponent,
 		SkillIntentComponent,
 		SkillSlotAssignmentComponent,
-		SkillStateComponent>()
+		SkillStateComponent
+		>()
 		)
 	{
 		auto& intent = ecs.get<SkillIntentComponent>(e);
@@ -83,8 +88,17 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 			transform.scale = 1.0f;
 			ecs.addComponent(eSkill, transform);
 
-			// skillFSMstate を 定義された初期状態にセット
-			state.current = entry.fsm.initialState;
+
+			// skillFSMstate を 定義された初期状態にリクエストする
+			if (!ecs.hasComponent<SkillFSMTransitionRequestComponent>(e)) {
+				ecs.addComponent(e, SkillFSMTransitionRequestComponent{});
+			}
+			auto& reqComp = ecs.get<SkillFSMTransitionRequestComponent>(e);
+			reqComp.requests.push_back(SkillFSMTransitionRequest{
+				.requestedTo = entry.fsm.initialState,
+				.priority = 100 // 高めでも良い、起動直後なので
+			});
+
 			std::cout << "[SkillIntentResolverSystem.cpp]: Skill " << skillId << " transitioned to " << state.current.name() << "\n";
 
 			std::cout << "[SkillTrigger] Entity " << e.id

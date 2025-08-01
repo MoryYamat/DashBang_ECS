@@ -18,6 +18,7 @@ void Game::Layer::StateLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 	// Update Character State
 	// gNsFeature::Character::StateFeature::UpdateCharacterState(ecs, deltaTime);
 
+	// Create FSM Transition Requests
 	// update Movement FSM
 	gNsFeature::Character::FSM::MovementFSMFeature::UpdateMovementFSMSystem(ecs);
 
@@ -26,7 +27,14 @@ void Game::Layer::StateLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 
 
 
+
 	// =========== Resolver ==========
 
 	gNsFeature::Skill::FSM::SkillFSMFeature::UpdateSkillFSMResolverSystem(ecs, deltaTime);
+	gNsFeature::Character::FSM::MovementFSMFeature::UpdateMovementFSMResolverSystem(ecs, deltaTime);
+
+
+	// =========== FSM Scoped System =========
+
+	gNsFeature::Character::FSM::MovementFSMFeature::UpdateMovementFSMScopedSystem(ecs, deltaTime);
 }

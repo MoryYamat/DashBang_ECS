@@ -19,6 +19,7 @@ void Game::Layer::LogicLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 	gNsFeature::Character::MovementFeature::UpdateLogicFacing(ecs);
 	Game::Feature::Character::MovementFeature::UpdateLogicPosition(ecs, deltaTime);
 
+
 	// ------------------------- スキル関連処理 -------------------------
 	// Intentに応じてスキルインスタンスを生成
 	// gNsFeature::Combat::SkillFeature::TriggerSkillsFromIntent(ecs);

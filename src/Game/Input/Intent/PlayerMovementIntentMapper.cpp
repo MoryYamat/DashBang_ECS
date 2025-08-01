@@ -82,6 +82,9 @@ void Game::Input::Intent::MovementIntentMappingSystem::updatePlayerMovementInten
 	if (input.isPressed(InputAction::MoveRight))	moveDir.x += 1.0f;
 	if (input.isPressed(InputAction::MoveLeft))		moveDir.x -= 1.0f;
 
+	//std::cout << "[MovementIntentMappingSystem] moveDir = ("
+	//	<< moveDir.x << ", " << moveDir.y << ")\n";
+
 
 	if (glm::length(moveDir) > 0.001f)
 	{

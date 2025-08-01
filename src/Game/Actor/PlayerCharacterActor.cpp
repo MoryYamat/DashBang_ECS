@@ -17,8 +17,8 @@
 #include "Game/Input/InputActionComponent.h"
 
 // Intent
-#include "Game/Character/Movement/Component/Intent/MovementIntentComponent.h"
-#include "Game/Character/Movement/Component/Intent/FacingIntentComponent.h"
+#include "Game/Character/Control/Movement/Component/Intent/MovementIntentComponent.h"
+#include "Game/Character/Control/Movement/Component/Intent/FacingIntentComponent.h"
 #include "Game/Character/Stats/Component/CharacterStatsComponent.h"
 
 // test color
@@ -68,7 +68,8 @@
 
 // =========== FSM ===========
 // movement
-#include "Game/Character/FSM/Movement/MovementStateComponent.hpp"
+#include "Game/Character/FSM/Movement/StateModel/MovementStateComponent.hpp"
+#include "Game/Character/FSM/Movement/StateModel/MovementFSMTransitionRequestComponent.hpp"
 // skill
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMTransitionRequestComponent.hpp"
@@ -265,6 +266,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	// =========== FSM ===========
 	// movement FSM
 	ecs.addComponent(entity, gNsCharaFSMMovement::MovementStateComponent{});
+	ecs.addComponent(entity, gNsCharaFSMMovement::MovementFSMTransitionRequestComponent{});
 	// skill FSM
 	ecs.addComponent(entity, gNsSkillFSM::SkillStateComponent{});
 	ecs.addComponent(entity, gNsSkillFSM::StateModel::SkillFSMTransitionRequestComponent{});
