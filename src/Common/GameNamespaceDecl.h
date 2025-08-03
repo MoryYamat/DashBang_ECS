@@ -12,6 +12,7 @@ namespace Game
 		{
 			namespace FSM
 			{
+				namespace Query {}
 				namespace Runtime {}
 				namespace Definition {}
 				namespace Condition {}

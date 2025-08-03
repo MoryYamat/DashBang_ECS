@@ -17,7 +17,7 @@
 #include "Common/EngineNamespaceDecl.h"
 
 
-
+// TODO: ç≈ìKâª
 namespace Engine::ECS
 {
 	// Entity Manager
