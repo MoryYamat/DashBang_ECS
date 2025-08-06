@@ -7,6 +7,7 @@
 #include "Game/Combat/Skill/FSM/Effect/Hook/SkillEffectHook.hpp"
 #include "Game/Combat/Skill/FSM/Effect/TriggerCondition/OnTransition.hpp"
 #include "Game/Combat/Skill/FSM/Effect/Template/SpawnHitBoxEffect.hpp"
+#include "Game/Combat/Skill/FSM/Effect/Template/ResetExecutionStateEffect.hpp"
 
 #include "Game/Combat/Skill/FSM/Trigger/ISkillTriggerCondition.hpp"
 #include "Game/Combat/Skill/FSM/Trigger/SkillTriggerConditions.hpp"
@@ -40,9 +41,9 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 	testSkill.def.id = 1;
 	testSkill.def.name = "TestSkill";
 
-	testSkill.def.castDuration = 0.3f;
+	testSkill.def.castDuration = 0.6f;
 	testSkill.def.activeDuration = 1.0f;
-	testSkill.def.recoveryDuration = 0.3f;
+	testSkill.def.recoveryDuration = 1.0f;
 
 	testSkill.def.spawnHitArea = gNsSkill::Def::SpawnHitArea{
 		.duration = 2.0f,
@@ -70,9 +71,10 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 		// Interrupted(中断フラグが立ったらどこからでも)
 		{std::nullopt, typeid(Interrupted), std::make_shared<IsInterrupted>()},
 
-		// === 終了状態 から None に戻す ===
-		{typeid(Completed), typeid(None), std::make_shared<Always>()},
-		{typeid(Interrupted), typeid(None), std::make_shared<Always>()},
+		// === 終了状態 から None に戻す === (すべてのリセットは`Completed`/`Interrupted`から行われることを前提とする)
+		{typeid(Completed), typeid(None), std::make_shared<AlwaysTrue>()},
+		{typeid(Interrupted), typeid(None), std::make_shared<AlwaysTrue>()},
+
 	};
 	testSkill.fsm.initialState = typeid(Casting);
 
@@ -82,10 +84,29 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 			std::make_shared<OnTransition>(StateTag::CASTING, StateTag::ACTIVE), 
 			std::make_shared<SpawnHitboxEffect>()
 		},
+
+		SkillEffectHook {
+			std::make_shared<OnTransition>(StateTag::COMPLETED, StateTag::NONE),
+			std::make_shared<ResetExecutionStateEffect>()
+		},
+
+		SkillEffectHook {
+			std::make_shared<OnTransition>(StateTag::INTERRUPTED, StateTag::NONE),
+			std::make_shared<ResetExecutionStateEffect>()
+		},
 	};
 
 	testSkill.triggerCondition = std::make_shared<SkillTriggerCondition_PhaseEquals>(typeid(None));
 
+	// Modifier
+	// MovementFSMModifier
+	testSkill.def.movementModifiers =
+		MovementModifierPerPhase{
+			.movementSpeedMultiplier{
+				{StateTag::CASTING, 0.3f},
+				{StateTag::ACTIVE, 0.0f},
+				{StateTag::RECOVERY, 0.7f}
+	}};
 
 	db.AddSkill(testSkill);
 

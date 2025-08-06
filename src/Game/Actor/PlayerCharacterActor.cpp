@@ -46,6 +46,8 @@
 
 #include "Game/Combat/Skill/Context/Component/SkillExecutionContextComponent.hpp"
 
+#include "Game/Combat/Skill/Component/SkillEffectExecutionRecordComponent.hpp"
+
 // intent
 #include "Game/Character/Control/Skill/Intent/SkillIntentComponent.hpp"
 
@@ -73,6 +75,7 @@
 // skill
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMTransitionRequestComponent.hpp"
+#include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
 
 // Game ECS
 #include "Game/ECS/Tags/CharacterAttribTags.h"
@@ -270,7 +273,10 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	// skill FSM
 	ecs.addComponent(entity, gNsSkillFSM::SkillStateComponent{});
 	ecs.addComponent(entity, gNsSkillFSM::StateModel::SkillFSMTransitionRequestComponent{});
-
+	ecs.addComponent(entity, gNsSkillComp::SkillExecutionComponent{
+		.caster = entity,
+		});
+	ecs.addComponent(entity, gNsSkillComp::SkillEffectExecutionRecordComponent{});
 	// std::cout << "[PlayerCharacterActor.cpp] Created Player Entity: " << entity.id << std::endl;
 	//if (ecs.hasComponent<gNsCharacterState::CharacterStateComponent>(entity)) {
 	//	std::cout << "[Šm”F] CharacterStateComponent ‚Í Entity " << entity.id << " ‚É‘¶Ý‚µ‚Ä‚¢‚Ü‚·" << std::endl;

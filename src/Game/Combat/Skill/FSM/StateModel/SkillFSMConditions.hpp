@@ -11,12 +11,15 @@ namespace Game::Combat::Skill::FSM
 	struct ISkillFSMCondition
 	{
 		virtual ~ISkillFSMCondition() = default;// デフォルト
-		virtual bool evaluate(const SkillFSMContext& ctx, const SkillDef& def) const = 0;// 純粋仮想関数
+		virtual bool evaluate(
+			const SkillFSMContext& ctx, 
+			const SkillDef& def) const = 0;// 純粋仮想関数
 	};
 
 	struct CastTimeElapsed : ISkillFSMCondition
 	{
-		bool evaluate(const SkillFSMContext& ctx, const SkillDef& def) const override
+		bool evaluate(
+			const SkillFSMContext& ctx, const SkillDef& def) const override
 		{
 			return ctx.phaseElapsedTime >= def.castDuration;
 		}
@@ -47,8 +50,17 @@ namespace Game::Combat::Skill::FSM
 	};
 
 	// 
-	struct Always : ISkillFSMCondition
+	struct AlwaysTrue : ISkillFSMCondition
 	{
 		bool evaluate(const SkillFSMContext&, const SkillDef&) const override { return true; }
+	};
+
+	// Noneにリセットする
+	struct ResetToNoneCondition : ISkillFSMCondition
+	{
+		bool evaluate(const SkillFSMContext&, const SkillDef&) const override
+		{
+			return true;// "to = None"に限定されて使われる前提
+		}
 	};
 }

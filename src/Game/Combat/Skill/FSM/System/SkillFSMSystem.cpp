@@ -16,6 +16,7 @@
 #include <iostream>
 #include <functional>
 
+// TODO: ExecutionComponentの内部情報をリセットする機構を実装する必要あり
 // TODO: 遷移評価だけなので `break`を消すために，遷移priorityのいい初期化，定義方法を考える
 // TODO: 多段遷移を考える
 void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, float deltaTime)
@@ -31,7 +32,10 @@ void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, floa
 		SkillExecutionComponent
 	>())
 	{
+
 		auto& exec = ecs.get<SkillExecutionComponent>(eExec);
+		
+		// もはや不要
 		const auto caster = exec.caster;
 
 		exec.elapsedTime += deltaTime;

@@ -8,6 +8,8 @@
 
 #include "Engine/ECS/EntityUtils/EntityUtils.h"
 
+
+// 削除予定：SkillExecutionをcharacterアクターへ付与する方式に変更したため
 void Game::Combat::Skill::System::UpdateSkillExecutionLifetimeSystem(eNsECS::EntityMgr& ecs)
 {
 	using namespace Game::Combat::Skill::Component;

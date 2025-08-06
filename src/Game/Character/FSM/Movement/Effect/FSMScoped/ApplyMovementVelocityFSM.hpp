@@ -13,6 +13,10 @@
 
 #include "Game/Character/FSM/Movement/MovementStateTags.hpp"
 
+// modifier
+#include "Game/Combat/Skill/FSM/Modifier/Movement/MovementSpeedModifier.hpp"
+
+
 #include "Common/EngineNamespaceDecl.h"
 
 #include <iostream>
@@ -24,6 +28,9 @@ namespace Game::Character::FSM::Movement::Effect::FSMScoped
 	using namespace Engine::ECS::Component::Logic2D;
 	using namespace Game::Character::Stats;
 	using namespace Game::Character::FSM::Movement;
+	using namespace Game::Common::Logic::FSM::Query;
+
+	using namespace Game::Combat::Skill::FSM;
 
 	struct ApplyMovementVelocityFSM : IFSMScopedEffect
 	{
@@ -33,6 +40,7 @@ namespace Game::Character::FSM::Movement::Effect::FSMScoped
 			if (!ecs.hasComponent<CharacterStatsComponent>(entity)) return;
 			if (!ecs.hasComponent<MovementStateComponent>(entity)) return;
 
+			
 			auto& vel = ecs.get<Velocity2DComponent>(entity);
 			const auto& stats = ecs.get<CharacterStatsComponent>(entity);
 			const auto& state = ecs.get<MovementStateComponent>(entity);
@@ -44,8 +52,8 @@ namespace Game::Character::FSM::Movement::Effect::FSMScoped
 			// ‚±‚Ì•ªŠò‚ª‚±‚±‚Å•K—v‚©‚Í—vŒŸ“¢
 			if (state.current == StateTag::MOVING)
 			{
-				std::cout << "here\n";
-				vel.velocity = glm::normalize(ctx.direction) * stats.moveSpeed;
+				const float multiplier = Game::Combat::Skill::FSM::Modifier::Movement::CalcMovementSpeedMultiplierFromSkillFSM(ecs, entity);
+				vel.velocity = glm::normalize(ctx.direction) * stats.moveSpeed * multiplier;
 
 			}
 			else

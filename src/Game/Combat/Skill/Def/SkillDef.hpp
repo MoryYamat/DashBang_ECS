@@ -37,6 +37,12 @@ namespace Game::Combat::Skill::Def
 		// Activeフェーズに同期して寿命終了するか
 		bool syncWithActivePhase = false;
 	};
+
+	// SkillPhase ごとにMovementFSMへの作用を定義する
+	struct MovementModifierPerPhase
+	{
+		std::unordered_map<std::type_index, float> movementSpeedMultiplier;// デフォルト移動速度の補正倍率(0.5f->半分に)
+	};
 	
 	// スキル定義
 	struct SkillDef
@@ -53,6 +59,9 @@ namespace Game::Combat::Skill::Def
 
 		// Event
 		std::optional<SpawnHitArea> spawnHitArea; // スキル発動時に生成される攻撃判定の形状と軌跡
+
+		// MovementFSM Modifier
+		std::optional<MovementModifierPerPhase> movementModifiers;
 
 		// クールダウン(アクター固有Componentで制御)(FSM側で制御しない(トリガーを抑える))
 		float cooldown = 0.0f;

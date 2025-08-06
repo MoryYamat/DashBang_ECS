@@ -58,9 +58,11 @@ void Game::Feature::Combat::SkillFeature::UpdateSkillTrajectorySystem(eNsECS::En
 	gNsSkillSystem::SkillTrajectorySystem::Update(ecs, deltaTime);
 }
 
+
+// 削除予定：SkillExecutionをcharacterアクターへ付与する方式に変更したため
 void Game::Feature::Combat::SkillFeature::UpdateSkillExecutionLifetimeSystem(eNsECS::EntityMgr& ecs)
 {
-	gNsSkillSystem::UpdateSkillExecutionLifetimeSystem(ecs);
+	//gNsSkillSystem::UpdateSkillExecutionLifetimeSystem(ecs);
 }
 
 void Game::Feature::Combat::SkillFeature::UpdateSkillPhaseSystem(eNsECS::EntityMgr& ecs, float deltaTime)

@@ -52,7 +52,10 @@
 <summary id="直交fsm"> <strong> 🔜直交FSMの相互作用の実装 </strong> </summary>
 
 #### **タスク**
-* 分析を深める
+* ~~`FSMQuery`の実装~~
+* ~~`SkillDef`に`MovementSpeedModifier`を実装~~
+* `SkillExecutionComponent`を独立`Entity`に付与する方式からCharacterに付与する`Component`に変更
+* 
 
 #### **背景・判断理由**
 > 2つの要素がある

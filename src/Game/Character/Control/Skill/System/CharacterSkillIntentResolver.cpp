@@ -69,24 +69,28 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 
 
 			// skillExecutionComponent生成
-			eNsECS::Entity eSkill = ecs.createEntity();
+			// eNsECS::Entity eSkill = ecs.createEntity();
+			if (!ecs.hasComponent<SkillExecutionComponent>(e))
+			{
+				ecs.addComponent(e, SkillExecutionComponent{});
+			}
+			auto& exec = ecs.get<SkillExecutionComponent>(e);
 
-			SkillExecutionComponent exec;
 			exec.caster = e;
 			exec.skillId = skillId;
 			exec.elapsedTime = 0.0f;
 			exec.phaseElapsedTime = 0.0f;
 			exec.isInterrupted = false;
-			ecs.addComponent(eSkill, exec);
+			// ecs.addComponent(eSkill, exec);
 
 			// 位置・方向を初期化（発動時のキャラのロジック座標をコピー）
-			Transform2DComponent transform;
-			transform.positionXZ = logic.positionXZ;
-			transform.rotationY = logic.GetRotationYFromFrontVector();
-			transform.front = logic.front;
-			transform.right = logic.right;
-			transform.scale = 1.0f;
-			ecs.addComponent(eSkill, transform);
+			//Transform2DComponent transform;
+			//transform.positionXZ = logic.positionXZ;
+			//transform.rotationY = logic.GetRotationYFromFrontVector();
+			//transform.front = logic.front;
+			//transform.right = logic.right;
+			//transform.scale = 1.0f;
+			// ecs.addComponent(eSkill, transform);
 
 
 			// skillFSMstate を 定義された初期状態にリクエストする

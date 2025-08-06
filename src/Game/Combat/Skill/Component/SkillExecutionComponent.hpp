@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <typeindex>
 
+// TODO: マジックナンバーをすべて修正する
 namespace Game::Combat::Skill::Component
 {
 	// スキルの実行フェーズを定義する列挙型

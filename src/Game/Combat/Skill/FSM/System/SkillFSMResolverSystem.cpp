@@ -12,6 +12,7 @@
 
 #include <typeindex>
 
+// TODO: eExecとeCasterは同じになったので不要な処理あり，改善してもよいが後回し
 // TODO: リクエストを一定時間キューに保持しておきたい場合や，リクエストに「有効期間」や「依存関係」がある場合.requests.clear()では不可
 // TODO: 優先度が同じ場合のルールが未定義(先に来たほうを採用している)
 void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)

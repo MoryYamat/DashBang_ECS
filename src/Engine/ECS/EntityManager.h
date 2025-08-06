@@ -303,6 +303,25 @@ namespace Engine::ECS
 		{
 			return mResources.count(std::type_index(typeid(T))) > 0;
 		}
+
+		// ”CˆÓ‚ÌComponent‚ğíœ‚·‚éAPI
+		template<typename T>
+		void removeComponent(Entity e)
+		{
+			std::type_index type = std::type_index(typeid(T));
+
+			auto poolIt = mComponentPools.find(type);
+			if (poolIt == mComponentPools.end()) return;
+
+			auto& entityMap = poolIt->second;
+			entityMap.erase(e.id);
+
+			// entityMap‚ª‹ó‚È‚çtype©‘Ì‚Ì“o˜^‚ğíœ‚µ‚Ä‚à‚æ‚¢iÅ“K‰»j
+			if (entityMap.empty())
+			{
+				mComponentPools.erase(type);
+			}
+		}
 	};
 }
 

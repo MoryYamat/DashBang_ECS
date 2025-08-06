@@ -40,8 +40,9 @@ void Game::Layer::LogicLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 	// hitbox lifetime 
 	gNsFeature::Combat::SkillFeature::UpdateHitoboxLifetimeSystem(ecs, deltaTime);
 
+	// 削除予定：SkillExecutionをcharacterアクターへ付与する方式に変更したため
 	// 最新：SkillExecutionLifetime
-	gNsFeature::Combat::SkillFeature::UpdateSkillExecutionLifetimeSystem(ecs);
+	//gNsFeature::Combat::SkillFeature::UpdateSkillExecutionLifetimeSystem(ecs);
 
 
 	// lifetime
