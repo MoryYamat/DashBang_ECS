@@ -8,7 +8,7 @@
 // ”p~—\’èFSkillExecutionComponent‚ÉˆÚs
 #include "Game/Combat/Skill/Component/SkillInstanceComponent.h"
 
-#include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
+#include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
 
 #include "Game/Character/Control/Skill/Intent/SkillIntentComponent.hpp"
 

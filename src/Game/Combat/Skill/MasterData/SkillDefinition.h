@@ -7,7 +7,7 @@
 
 #include "Game/Combat/Skill/MasterData/SkillCancelPhase.hpp" // SkillCancelBehavior
 
-#include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
+#include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
 
 #include "Game/Collision/Data/CollisionLayer.h"
 

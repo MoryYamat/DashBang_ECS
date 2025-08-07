@@ -1,6 +1,6 @@
 #include "MovementSpeedModifier.hpp"
 
-#include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
+#include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
 
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMStates.hpp"
@@ -29,10 +29,10 @@ float Game::Combat::Skill::FSM::Modifier::Movement::CalcMovementSpeedMultiplierF
 
 	if (!phaseOpt.has_value()) return 1.0f;
 
-	if (!ecs.hasComponent<SkillExecutionComponent>(entity)) return 1.0f;// 現時点ではSkillExecutionComponentはスキル専用のEntityに付与されている
+	if (!ecs.hasComponent<SkillExecutionContextComponent>(entity)) return 1.0f;// 現時点ではSkillExecutionComponentはスキル専用のEntityに付与されている
 
 	// std::cout << "here\n";
-	const auto& exec = ecs.get<SkillExecutionComponent>(entity);
+	const auto& exec = ecs.get<SkillExecutionContextComponent>(entity);
 	const auto& db = ecs.getResource<SkillDatabase>();
 	if (!db.Has(exec.skillId)) return 1.0f;
 

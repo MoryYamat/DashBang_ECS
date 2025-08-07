@@ -10,7 +10,7 @@
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMTransitionRequestComponent.hpp"
 
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
-#include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
+#include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
 
 // FSM
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMStates.hpp"
@@ -70,11 +70,11 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 
 			// skillExecutionComponentê∂ê¨
 			// eNsECS::Entity eSkill = ecs.createEntity();
-			if (!ecs.hasComponent<SkillExecutionComponent>(e))
+			if (!ecs.hasComponent<SkillExecutionContextComponent>(e))
 			{
-				ecs.addComponent(e, SkillExecutionComponent{});
+				ecs.addComponent(e, SkillExecutionContextComponent{});
 			}
-			auto& exec = ecs.get<SkillExecutionComponent>(e);
+			auto& exec = ecs.get<SkillExecutionContextComponent>(e);
 
 			exec.caster = e;
 			exec.skillId = skillId;

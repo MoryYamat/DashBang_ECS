@@ -18,5 +18,10 @@ namespace Game::Combat::Skill::Component
 		{
 			return executedEffectHashed.count(effectHash) > 0;
 		};
+
+		void clear()
+		{
+			executedEffectHashed.clear();
+		}
 	};
 }

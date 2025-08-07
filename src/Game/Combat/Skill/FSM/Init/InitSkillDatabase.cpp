@@ -22,6 +22,13 @@
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
 #include "Game/Combat/Skill/MasterData/SkillEntry.hpp"
 
+// Reset
+#include "Game/Combat/Skill/FSM/Reset/ResetHookDefinition.hpp"
+#include "Game/Combat/Skill/FSM/Reset/Handler/ResetSkillExecutionContext.hpp"
+#include "Game/Combat/Skill/FSM/Reset/Handler/ClearEffectExecutionLog.hpp"
+
+#include "Game/Combat/Skill/FSM/Reset/Trigger/OnResetTransition.hpp"
+
 #include "Game/Combat/Skill/FSM/SkillStateTags.hpp"
 
 #include "Common/GameNamespaceDecl.h"
@@ -34,6 +41,7 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 	using namespace Game::Combat::Skill::Data;
 	using namespace Game::Combat::Skill::FSM::Condition;
 	using namespace Game::Combat::Skill::FSM::Effect;
+	using namespace Game::Combat::Skill::FSM::Reset;
 
 	auto& db = ecs.createResource<Game::Combat::Skill::Database::SkillDatabase>();
 
@@ -84,16 +92,6 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 			std::make_shared<OnTransition>(StateTag::CASTING, StateTag::ACTIVE), 
 			std::make_shared<SpawnHitboxEffect>()
 		},
-
-		SkillEffectHook {
-			std::make_shared<OnTransition>(StateTag::COMPLETED, StateTag::NONE),
-			std::make_shared<ResetExecutionStateEffect>()
-		},
-
-		SkillEffectHook {
-			std::make_shared<OnTransition>(StateTag::INTERRUPTED, StateTag::NONE),
-			std::make_shared<ResetExecutionStateEffect>()
-		},
 	};
 
 	testSkill.triggerCondition = std::make_shared<SkillTriggerCondition_PhaseEquals>(typeid(None));
@@ -107,6 +105,29 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 				{StateTag::ACTIVE, 0.0f},
 				{StateTag::RECOVERY, 0.7f}
 	}};
+
+	testSkill.fsm.resetHooks =
+	{
+		SkillFSMResetHook
+		{
+			.handlers = 
+			{
+				std::make_shared<ClearEffectExecutionLog>(),
+				std::make_shared<ResetSkillExecutionContext>()
+			},
+			.trigger = std::make_shared<OnResetTransition>(StateTag::COMPLETED, StateTag::NONE)
+		},
+		
+		SkillFSMResetHook
+		{
+			.handlers =
+			{
+				std::make_shared<ClearEffectExecutionLog>(),
+				std::make_shared<ResetSkillExecutionContext>()
+			},
+			.trigger = std::make_shared<OnResetTransition>(StateTag::INTERRUPTED, StateTag::NONE)
+		},
+	};
 
 	db.AddSkill(testSkill);
 

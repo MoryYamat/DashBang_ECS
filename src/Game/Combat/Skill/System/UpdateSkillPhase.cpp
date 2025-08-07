@@ -8,7 +8,7 @@
 // íœ—\’è
 #include "Game/Combat/Skill/Component/SkillInstanceComponent.h"
 
-#include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
+#include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
 
 #include "Engine/ECS/Component/Tags/PendingDestroyComponent.h"
 

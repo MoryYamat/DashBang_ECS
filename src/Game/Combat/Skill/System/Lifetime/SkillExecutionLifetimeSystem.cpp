@@ -1,7 +1,7 @@
 #include "SkillExecutionLifetimeSystem.hpp"
 
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMStates.hpp"
-#include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
+#include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 
 #include "Game/Combat/Skill/FSM/SkillStateTags.hpp"
@@ -15,9 +15,9 @@ void Game::Combat::Skill::System::UpdateSkillExecutionLifetimeSystem(eNsECS::Ent
 	using namespace Game::Combat::Skill::Component;
 	using namespace Game::Combat::Skill::FSM;
 
-	for (eNsECS::Entity eSkill : ecs.view<SkillExecutionComponent>())
+	for (eNsECS::Entity eSkill : ecs.view<SkillExecutionContextComponent>())
 	{
-		const auto& exec = ecs.get<SkillExecutionComponent>(eSkill);
+		const auto& exec = ecs.get<SkillExecutionContextComponent>(eSkill);
 		const auto& caster = exec.caster;
 
 		if (!ecs.isAlive(caster))
@@ -29,7 +29,7 @@ void Game::Combat::Skill::System::UpdateSkillExecutionLifetimeSystem(eNsECS::Ent
 		if (!ecs.hasComponent<SkillStateComponent>(caster)) continue;
 		const auto& state = ecs.get<SkillStateComponent>(caster);
 
-		// FSM が Noneに遷移したら削除
+		// FSM が Noneに遷移 かつ SkillExecutionComponentを持つエンティティが存在するならば削除
 		if (state.current == StateTag::NONE)
 		{
 			eNsECS::EntityUtils::MarkForPendingDestroy(ecs, eSkill);

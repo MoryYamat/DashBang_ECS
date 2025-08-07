@@ -9,11 +9,15 @@
 
 #include "Game/Combat/Skill/FSM/Effect/Hook/SkillEffectHook.hpp"
 
+#include "Game/Combat/Skill/FSM/Reset/ResetHookDefinition.hpp"
+
 #include <typeindex>
 
 namespace Game::Combat::Skill::FSM
 {
 	using namespace Game::Combat::Skill::FSM::Effect;
+
+	using namespace Game::Combat::Skill::FSM::Reset;
 
 	struct SkillFSMDefinition
 	{
@@ -22,5 +26,6 @@ namespace Game::Combat::Skill::FSM
 		std::type_index initialState = typeid(SkillPhase::Casting);// –¾¦“I‚É‰Šúó‘Ô‚ğ’è‹`
 
 		std::vector<SkillEffectHook> effectHooks;
+		std::vector<SkillFSMResetHook> resetHooks;
 	};
 }

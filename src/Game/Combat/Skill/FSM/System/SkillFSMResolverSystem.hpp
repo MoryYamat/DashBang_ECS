@@ -6,12 +6,16 @@
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMContext.hpp"
 #include "Game/Combat/Skill/FSM/Effect/Hook/SkillEffectHook.hpp"
 
+// Reset
+#include "Game/Combat/Skill/FSM/Statemodel/SkillFSMDefinition.hpp"
+
 #include "Common/EngineNamespaceDecl.h"
 
 namespace Game::Combat::Skill::FSM::System
 {
 	using namespace Game::Combat::Skill::FSM::Effect;
 	using namespace Game::Combat::Skill::Def;
+	using namespace Game::Combat::Skill::FSM;
 
 	class SkillFSMResolverSystem
 	{
@@ -24,6 +28,27 @@ namespace Game::Combat::Skill::FSM::System
 			eNsECS::Entity eExec,
 			eNsECS::Entity caster,
 			const SkillDef& def,
+			const SkillFSMContext& ctx,
+			std::type_index current,
+			std::type_index previous
+		);
+
+		static void tryTriggerEffect(
+			const SkillEffectHook& hook,
+			eNsECS::EntityMgr& ecs,
+			eNsECS::Entity caster,
+			const SkillDef& def,
+			const SkillFSMContext& ctx,
+			std::type_index current,
+			std::type_index previous
+		);
+		
+		static void tryTriggerReset
+		(
+			const SkillFSMDefinition& fsm,
+			const SkillDef& def,
+			eNsECS::EntityMgr& ecs,
+			eNsECS::Entity caster,
 			const SkillFSMContext& ctx,
 			std::type_index current,
 			std::type_index previous

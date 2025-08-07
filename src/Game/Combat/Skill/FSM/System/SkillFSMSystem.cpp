@@ -2,7 +2,7 @@
 
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
 
-#include "Game/Combat/Skill/Component/SkillExecutionComponent.hpp"
+#include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
 #include "Game/Combat/Skill/Component/SkillEffectExecutionRecordComponent.hpp"
 
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
@@ -29,12 +29,14 @@ void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, floa
 	auto& db = ecs.getResource<Game::Combat::Skill::Database::SkillDatabase>();
 
 	for (eNsECS::Entity eExec : ecs.view<
-		SkillExecutionComponent
+		SkillExecutionContextComponent
 	>())
 	{
 
-		auto& exec = ecs.get<SkillExecutionComponent>(eExec);
+		auto& exec = ecs.get<SkillExecutionContextComponent>(eExec);
 		
+		if (exec.skillId == 0) continue;// スキル未実行なのでスキップ
+
 		// もはや不要
 		const auto caster = exec.caster;
 
