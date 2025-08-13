@@ -12,8 +12,45 @@
 
 #include "Common/GameNamespaceDecl.h"
 
+#include <glm/glm.hpp>
+#include <cstdint>
+
 namespace Game::Collision::Data
 {
+	enum class ContactChannel : uint8_t
+	{
+		Solid,
+		Hitbox
+	};// 物理 or ヒット
+
+	enum class ContactPhase : uint8_t
+	{
+		Begin,
+		Stay,
+		End
+	};//
+
+	struct ContactPayload
+	{
+		glm::vec2 normal{ 0,0 };
+		float depth = 0.0f;
+
+		int skillId = -1;
+		int hitboxId = -1;
+		glm::vec2 impactDir{ 0,0 };
+		float impactMag = 0.0f;
+	};
+
+	struct Contact
+	{
+		eNsECS::Entity a;
+		eNsECS::Entity b;
+		ContactChannel channel;
+		ContactPhase phase;
+		ContactPayload payload;
+		uint64_t key; // (a,b,channel) ハッシュ
+	};
+
 	// 衝突の詳細情報(法線方向など)
 	struct ContactInfo
 	{
@@ -27,6 +64,27 @@ namespace Game::Collision::Data
 		eNsECS::Entity entityA;// 衝突体A
 		eNsECS::Entity entityB;// 衝突体B
 		ContactInfo contact;// 衝突の詳細情報(法線方向など)
+	};
+
+	struct ContactBus
+	{
+		std::vector<Contact> begin, stay, end;
+		void clear() { begin.clear(); stay.clear(); end.clear(); }
+		void push(const Contact& c)
+		{
+			if (c.phase == ContactPhase::Begin)
+			{
+				begin.push_back(c);
+			}
+			else if (c.phase == ContactPhase::Stay)
+			{
+				stay.push_back(c);
+			}
+			else
+			{
+				end.push_back(c);
+			}
+		}
 	};
 
 	// Bufferデータ(毎フレーム更新)

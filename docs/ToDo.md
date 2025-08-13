@@ -16,7 +16,7 @@
 * 🚧[SkillFSMの実装](#skillfsm)
 * 🔜[直交FSMの相互作用の実装](#直交fsm)
 * 📝[直交FSMの統合管理機構の実装](#直交fsm管理)
-* 📝[SkillSystemの完成](#skillSystem)
+* 📝[SkillSystemの完成](#CCFSM)
 * ❓[hitboxEffectのFSM化](#hitboxEffect)
 * ❗[FSM分析・設計・実装](#FSMDesign)
 * ❗[ECSアーキテクチャの問題・課題](#GeneralProblem)
@@ -54,8 +54,10 @@
 #### **タスク**
 * ~~`FSMQuery`の実装~~
 * ~~`SkillDef`に`MovementSpeedModifier`を実装~~
-* `SkillExecutionComponent`を独立`Entity`に付与する方式からCharacterに付与する`Component`に変更
-* 
+* ~~`SkillExecutionComponent`を独立`Entity`に付与する方式からCharacterに付与する`Component`に変更~~
+* ~~`SkillFSM`による`MovementFSM`の移動速度への干渉~~
+* `CCFSM`による`SkillFSM`の状態への干渉
+
 
 #### **背景・判断理由**
 > 2つの要素がある
@@ -101,13 +103,10 @@
 </details>
 
 <details>
-<summary id="SkillSystem"> <strong>📝SkillSystemの完成 </strong> </summary>
+<summary id="CCFSM"> <strong>📝`HitEvent`と`CCFSM`の設計・実装 </strong> </summary>
 
 #### タスク
 * `HitboxEffect`の`CollisionMask`作成処理の実装
-* `SkillExecutionComponent`の副作用化(`ExecutionSetUpHook`ヘ分離)
-   * `SkillExecutionComponent`を`StateComponent`を保持するActorへ持たせることを検討(現在は中間エンティティとして存在)
-* FSM構造の型 (常駐型 / トリガー型)の切り分け
 * リクエストを一定時間キューに保持しておきたい場合や，リクエストに「有効期間」や「依存関係」がある場合`.requests.clear()`では不可
 
 #### 背景・判断理由

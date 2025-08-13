@@ -21,7 +21,7 @@ namespace Game::Character::FSM::Movement::Database
 				return;
 			}
 			definitions[id] = def;
-			std::cout << "[SkillDatabase.h(AddSkill): Skill id ] added" << id << "\"" << std::endl;
+			std::cout << "[MovementFSMDatabase.hpp(AddMovementDef): MovementDef id ] added" << id << "\"" << std::endl;
 		}
 
 		bool Has(const std::string& id) const

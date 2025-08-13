@@ -30,12 +30,15 @@
 
 void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs)
 {
-	assert(ecs.hasResource<gNsCollData::CollisionResultBuffer>() && "CollisionResultBuffer not initialized");
+	using namespace Game::Collision::Data;
+	// assert(ecs.hasResource<gNsCollData::CollisionResultBuffer>() && "CollisionResultBuffer not initialized");
 	auto& buffer = ecs.getResource<gNsCollData::CollisionResultBuffer>();
+	// auto& bus = ecs.getResource<ContactBus>();
 	// std::cout << "[CollisionDetectionSystem.cpp()]Collision Count: " << buffer.results.size() << std::endl;
 
 	// バッファクリア
 	buffer.clear();
+	// bus.clear();
 
 	//auto entities = ecs.view <
 	//	eNsLogic2DComp::CollisionComponent,
@@ -81,7 +84,8 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 
 			auto shapeA = gNsCollConvert::MakeGenericShape2D(eA, ecs);
 			auto shapeB = gNsCollConvert::MakeGenericShape2D(eB, ecs);
-
+			if(!gNsCollIntersect::Intersects(shapeA, shapeB)) continue;
+			
 			//std::visit([](auto&& s) {
 			//	std::cout << "[shapeA] type: " << typeid(s).name() << std::endl;
 			//	}, shapeA);

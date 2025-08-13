@@ -15,7 +15,6 @@
 
 namespace Game::Character::FSM::Movement
 {
-
 	using namespace Game::Character::FSM::Movement::Effect;
 	using namespace Game::Character::FSM::Movement::Effect::FSMScoped;
 	struct MovementFSMDefinition

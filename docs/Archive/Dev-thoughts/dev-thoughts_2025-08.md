@@ -72,3 +72,59 @@
 - **`priority`は遷移選択の「評価関数」となる**
     - $priority = f(context, transition)$　という評価関数を設計していくことで，多様で知的なシステムを実現できる
 
+
+---
+
+## 🧠 前処理コンパイルについて （2025/08/08）
+
+### 話題・気づき
+- 
+
+### 背景・文脈
+- ポートフォリオは抽象化をたくさん使って責務分離と柔軟性の向上を実現している
+- `virtual`や`shared_ptr`はホットパスで多用すると処理のボトルネックになる可能性がある
+- そこで`前処理コンパイル`という手法で`ロード`することによって抽象性と効率を両立できるということがある
+- 調べてやってみたい
+
+### 試したこと・考えたこと
+- 
+
+### TODOとの関係（あれば）
+- 
+
+
+---
+
+## 🧠 HitEventとCCFSM(2025/08/11)
+
+### 背景・文脈
+- `CCFSM`の導入
+- `HitEvent`のシステム導入
+- その連携
+
+### 話題・気づき
+- コリジョンイベントの実装のためそれぞれシステムを実装する
+
+
+### 試したこと・考えたこと
+- 
+
+### フレーム内の時系列
+```cpp
+Hitbox ──► HitDetectionSystem ──► HitEvent  ───────┐
+                                                    ▼
+                                         StimulusMappingSystem
+                                                    ▼
+             ┌───────────────Requests───────────────┴───────────────┐
+             ▼                                                      ▼
+     StatusEffectSystem                                      Damage/Impulse Systems
+ (ActiveStatusEffects 更新)                                   (HP/物理 反映)
+             ▼
+     CCAggregationSystem ──► DesiredCCTag
+             ▼
+     CCFSMResolverSystem ──► CCFSM.state 確定 + OnEnter/OnExit
+             ▼
+     InterferenceResolverSystem ──► SkillFSM 強制/抑制
+             ▼
+     Movement/Skill Scoped Effects（読取合成・演出）
+```
