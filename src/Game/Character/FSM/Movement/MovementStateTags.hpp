@@ -5,6 +5,12 @@
 
 #include <typeindex>
 
+namespace Game::Character::FSM::Movement::AxisTag
+{
+	using namespace Game::Character::FSM::Movement;
+	inline const std::type_index MovementAxis = typeid(MovementAxis);
+}
+
 namespace Game::Character::FSM::Movement::StateTag
 {
 	using namespace Game::Character::FSM::Movement;

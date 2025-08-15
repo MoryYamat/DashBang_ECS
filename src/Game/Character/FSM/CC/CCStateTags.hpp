@@ -4,6 +4,12 @@
 
 #include <typeindex>
 
+namespace Game::Character::FSM::CC::AxisTag
+{
+	using namespace Game::Character::FSM::CC::StateModel;
+	inline const std::type_index CCAxis = typeid(CCAxis);
+}
+
 namespace Game::Character::FSM::CC::StateTag
 {
 	using namespace Game::Character::FSM::CC::StateModel;

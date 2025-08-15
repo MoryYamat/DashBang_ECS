@@ -19,7 +19,6 @@ namespace Game::Character::FSM::Movement
 	using namespace Game::Character::FSM::Movement::Effect::FSMScoped;
 	struct MovementFSMDefinition
 	{
-		std::type_index initialState = StateTag::IDLE;
 		std::vector<MovementTransition> transitions;
 		std::vector<MovementEffectHook> effectHooks;// stateScoped Effect
 		std::vector<std::shared_ptr<IFSMScopedEffect>> fsmScopedEffects;// fsm scoped effect
