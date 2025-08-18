@@ -97,8 +97,7 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::En
 	}
 }
 
-// FIXME: リセット系のEffectはこのtyrTriggerで処理すると二度とリセットされない．(処理順のせい)
-// TODO: 設計を変えるかフラグを使うか
+
 void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerEffect(
 	const SkillEffectHook& hook,
 	eNsECS::EntityMgr& ecs,

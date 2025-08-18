@@ -202,3 +202,22 @@
 * 
 
 </details>
+
+
+<details>
+<summary id="specification"> <strong>🚧要求仕様策定 </strong> </summary>
+
+#### タスク
+* p95フレーム時間測定
+* 
+
+#### 背景・判断理由
+* 
+
+#### 課題・迷い
+* 
+
+#### メモ・備考
+* 
+
+</details>

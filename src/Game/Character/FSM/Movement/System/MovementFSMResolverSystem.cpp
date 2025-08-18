@@ -34,6 +34,7 @@ void Game::Character::FSM::Movement::System::MovementFSMResolverSystem::Update(e
 
 		// std::cout << "here\n";
 
+		// ”’l‚ª‘å‚«‚¢‚Ù‚Ç—Dæ“x‚ª‚‚¢
 		std::sort(reqs.requests.begin(), reqs.requests.end(),
 			[](const auto& a, const auto& b) { return a.priority < b.priority; });
 
