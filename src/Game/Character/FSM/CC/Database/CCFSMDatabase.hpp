@@ -31,7 +31,7 @@ namespace Game::Character::FSM::CC::Database
 			return definitions.find(id) != definitions.end();
 		}
 
-		const CCFSMDefinition& Get(const std::string& id)
+		const CCFSMDefinition& Get(const std::string& id) const
 		{
 			return definitions.at(id);
 		}
