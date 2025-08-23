@@ -23,9 +23,9 @@ namespace Game::Character::FSM::Movement::Interference
 		static void resolveMovementFSMInterference(
 			EntityMgr& ecs,
 			Entity e, 
-			FSMInterferenceRequestComponent requestComp,
-			MovementStateComponent state,
-			MovementFSMLeaseComponent lease
+			const FSMInterferenceRequestComponent& requestComp,
+			MovementStateComponent& state,
+			MovementFSMLeaseComponent& lease
 			);
 	};
 
