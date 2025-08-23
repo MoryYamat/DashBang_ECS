@@ -53,7 +53,7 @@ void Game::Character::FSM::Movement::UpdateMovementFSMSystem(eNsECS::EntityMgr& 
 			std::cout << "[MovementFSMResolverSystem] Requesting transition: "
 				<< trans.from.name() << " -> " << trans.to.name() << std::endl;
 
-			break; // ˆê“x‚É•¡”‘JˆÚ‚µ‚È‚¢
+			// break; // ˆê“x‚É•¡”‘JˆÚ‚µ‚È‚¢
 		}
 	}
 
