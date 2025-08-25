@@ -22,36 +22,36 @@ namespace Game::Combat::Skill::FSM::System
 	public:
 		static void Update(eNsECS::EntityMgr& ecs, float deltaTime);
 
-		static void tryTriggerEffect(
-			const SkillEffectHook& hook,
-			eNsECS::EntityMgr& ecs,
-			eNsECS::Entity eExec,
-			eNsECS::Entity caster,
-			const SkillDef& def,
-			const SkillFSMContext& ctx,
-			std::type_index current,
-			std::type_index previous
-		);
+		//static void tryTriggerEffect(
+		//	const SkillEffectHook& hook,
+		//	eNsECS::EntityMgr& ecs,
+		//	eNsECS::Entity eExec,
+		//	eNsECS::Entity caster,
+		//	const SkillDef& def,
+		//	const SkillFSMContext& ctx,
+		//	std::type_index current,
+		//	std::type_index previous
+		//);
 
 		static void tryTriggerEffect(
-			const SkillEffectHook& hook,
 			eNsECS::EntityMgr& ecs,
-			eNsECS::Entity caster,
+			const SkillEffectHook& hook,
+			const eNsECS::Entity caster,
 			const SkillDef& def,
 			const SkillFSMContext& ctx,
-			std::type_index current,
-			std::type_index previous
+			const std::type_index& current,
+			const std::type_index& previous
 		);
 		
 		static void tryTriggerReset
 		(
+			eNsECS::EntityMgr& ecs,
+			const eNsECS::Entity caster,
 			const SkillFSMDefinition& fsm,
 			const SkillDef& def,
-			eNsECS::EntityMgr& ecs,
-			eNsECS::Entity caster,
 			const SkillFSMContext& ctx,
-			std::type_index current,
-			std::type_index previous
+			const std::type_index& current,
+			const std::type_index& previous
 		);
 	};
 }

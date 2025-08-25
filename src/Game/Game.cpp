@@ -227,7 +227,7 @@ void GameApp::GameApp::updateGameLogics()
 	// mDeltaTime = currentFrame - mLastFrame;
 	float deltaTime = currentFrame - mLastFrame;
 	mLastFrame = currentFrame;
-	// std::cout << "[Game.cpp(DeltaTime)]: deltaTime: " << mDeltaTime << "\n";
+	// std::cout << "[Game.cpp(DeltaTime)]: deltaTime: " << deltaTime << "\n";
 
 	// delete PendingDestroyComponent
 	eNsECS::GrobalSystem::RunCleanup(mECS);

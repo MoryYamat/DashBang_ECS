@@ -83,11 +83,11 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::En
 
 			for (const auto& hook : entry.fsm.effectHooks)
 			{
-				tryTriggerEffect(hook, ecs, eCaster, entry.def, ctx, state.current, fromState);
+				tryTriggerEffect(ecs, hook, eCaster, entry.def, ctx, state.current, fromState);
 			}
 
 			// リセット処理
-			tryTriggerReset(entry.fsm, entry.def, ecs, eCaster, ctx, state.current, fromState);
+			tryTriggerReset(ecs, eCaster, entry.fsm, entry.def,  ctx, state.current, fromState);
 		}
 
 		// リクエストを消費
@@ -99,13 +99,13 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::En
 
 
 void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerEffect(
-	const SkillEffectHook& hook,
 	eNsECS::EntityMgr& ecs,
-	eNsECS::Entity caster,
+	const SkillEffectHook& hook,
+	const eNsECS::Entity caster,
 	const SkillDef& def,
 	const SkillFSMContext& ctx,
-	std::type_index current,
-	std::type_index previous
+	const std::type_index& current,
+	const std::type_index& previous
 )
 {
 	using namespace Game::Combat::Skill::Component;
@@ -132,15 +132,19 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerEffect(
 
 }
 
+
+// FIXME:この汎用構造の中で`EffectExecutionRecordComponent`のリセットを他関数の定義によって実行するのは気持ちが悪い
+// FIXME:デフォルトのリセット関数としての機能で`EffectExecutionRecordComponent`をリセットすることにするならよいかも？
+// FIXME:ともかく情報の構造から実装の依存関係を整理する必要がある
 void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerReset
 (
+	eNsECS::EntityMgr& ecs,
+	const eNsECS::Entity caster,
 	const SkillFSMDefinition& fsm,
 	const SkillDef& def,
-	eNsECS::EntityMgr& ecs,
-	eNsECS::Entity caster,
 	const SkillFSMContext& ctx,
-	std::type_index current,
-	std::type_index previous
+	const std::type_index& current,
+	const std::type_index& previous
 )
 {
 	for (const auto& hook : fsm.resetHooks)
@@ -157,34 +161,34 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerReset
 
 // 
 // FIXME: SkillExecutionComponentの常駐化にともなう設計変更が必要
-void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerEffect(
-	const SkillEffectHook& hook,
-	eNsECS::EntityMgr& ecs,
-	eNsECS::Entity eExec,
-	eNsECS::Entity caster,
-	const SkillDef& def,
-	const SkillFSMContext& ctx,
-	std::type_index current,
-	std::type_index previous
-)
-{
-	using namespace Game::Combat::Skill::Component;
-
-	if (!ecs.hasComponent<SkillEffectExecutionRecordComponent>(eExec))
-	{
-		ecs.addComponent(eExec, SkillEffectExecutionRecordComponent{});
-	}
-
-	auto& record = ecs.get<SkillEffectExecutionRecordComponent>(eExec);
-
-	// 最適化検討：他の方法がないか
-	std::size_t hash = std::type_index(typeid(*hook.effect)).hash_code();// ハッシュ値作成
-
-	// すでにTriggerしたEffectはスキップする
-	if (hook.trigger->evaluate(ctx, def, current, previous) &&
-		!record.hasExecuted(hash))
-	{
-		hook.effect->execute(ecs, caster, def, ctx);
-		record.markExecuted(hash);
-	}
-}
+//void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerEffect(
+//	const SkillEffectHook& hook,
+//	eNsECS::EntityMgr& ecs,
+//	eNsECS::Entity eExec,
+//	eNsECS::Entity caster,
+//	const SkillDef& def,
+//	const SkillFSMContext& ctx,
+//	std::type_index current,
+//	std::type_index previous
+//)
+//{
+//	using namespace Game::Combat::Skill::Component;
+//
+//	if (!ecs.hasComponent<SkillEffectExecutionRecordComponent>(eExec))
+//	{
+//		ecs.addComponent(eExec, SkillEffectExecutionRecordComponent{});
+//	}
+//
+//	auto& record = ecs.get<SkillEffectExecutionRecordComponent>(eExec);
+//
+//	// 最適化検討：他の方法がないか
+//	std::size_t hash = std::type_index(typeid(*hook.effect)).hash_code();// ハッシュ値作成
+//
+//	// すでにTriggerしたEffectはスキップする
+//	if (hook.trigger->evaluate(ctx, def, current, previous) &&
+//		!record.hasExecuted(hash))
+//	{
+//		hook.effect->execute(ecs, caster, def, ctx);
+//		record.markExecuted(hash);
+//	}
+// }

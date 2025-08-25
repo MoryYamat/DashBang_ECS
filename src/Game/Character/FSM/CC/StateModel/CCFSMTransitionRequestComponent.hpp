@@ -2,6 +2,7 @@
 
 #include "Game/Character/FSM/CC/CCStateTags.hpp"
 
+#include <optional>
 #include <typeindex>
 #include <vector>
 #include <algorithm>
@@ -11,7 +12,7 @@ namespace Game::Character::FSM::CC::StateModel
 
 	struct CCFSMTransitionRequest
 	{
-		std::type_index requestedTo = StateTag::NONE;
+		std::optional<std::type_index> requestedTo = StateTag::NONE;
 		uint32_t priority = 0;
 	};
 
