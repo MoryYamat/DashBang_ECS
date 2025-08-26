@@ -16,4 +16,6 @@ namespace Game::Character::FSM::CC::StateEffect
 			Entity e, 
 			const CCFSMContext& ctx) = 0;
 	};
+
+
 }

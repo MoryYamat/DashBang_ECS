@@ -21,4 +21,6 @@ namespace Game::Combat::Skill::FSM::Effect
 			const std::type_index& previousState
 		) const = 0;
 	};
+
+
 }

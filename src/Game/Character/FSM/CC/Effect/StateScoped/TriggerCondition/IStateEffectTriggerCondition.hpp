@@ -2,6 +2,7 @@
 
 #include "Game/Character/FSM/CC/StateModel/CCFSMContext.hpp"
 
+#include <optional>
 #include <typeindex>
 
 namespace Game::Character::FSM::CC::StateEffect
@@ -17,5 +18,26 @@ namespace Game::Character::FSM::CC::StateEffect
 			const std::type_index& currentState,
 			const std::type_index& previousState
 		) const = 0;
+	};
+
+	struct OnTransition : IStateEffectTriggerCondition
+	{
+		std::optional<std::type_index> from;
+		std::type_index to;
+
+		explicit OnTransition(std::optional<std::type_index> from, std::type_index to)
+			: from(from), to(to) {
+		}
+
+		bool evaluate(
+			const CCFSMContext& ctx,
+			const std::type_index& currentState,
+			const std::type_index& previousState
+		) const override
+		{
+			// std::nullptr => any state 
+			if (from.has_value() && previousState != from.value()) return false;
+			return currentState == to;
+		}
 	};
 }

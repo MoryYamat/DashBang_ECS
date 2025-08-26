@@ -18,7 +18,7 @@ namespace Game::Character::FSM::CC::System
 	void CCFSMResolverSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 	{
 		auto& db = ecs.getResource<CCFSMDatabase>();
-		if (db.Has("basic")) return;
+		if (!db.Has("basic")) return;
 		auto& def = db.Get("basic");
 
 		for (auto e : ecs.view<

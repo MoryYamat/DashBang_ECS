@@ -26,7 +26,8 @@ namespace Game::Character::FSM::CC::System
 
 			for (auto trans : def.transitions)
 			{
-				if (state.current != trans.from) continue;
+				// from条件があるならチェック(nullopt = すべての状態から許容)
+				if (trans.from.has_value() && state.current != trans.from.value()) continue;
 				if (!trans.condition->evaluate(ctx)) continue;
 
 				if (reqs.hasExactRequest(trans.to, 0)) continue;
@@ -34,7 +35,7 @@ namespace Game::Character::FSM::CC::System
 				reqs.requests.push_back(
 					{
 						.requestedTo = trans.to,
-						.priority = 0
+						.priority = 0// 現在は固定・テスト用
 					});
 
 				std::cout << "[MovementFSMResolverSystem] Requesting transition: "
