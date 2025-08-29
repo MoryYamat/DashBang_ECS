@@ -17,4 +17,5 @@ namespace Game::Character::FSM::CC::StateTag
 	inline const std::type_index NONE = typeid(CCState::None);
 	inline const std::type_index STUNNED = typeid(CCState::Stunned);
 	inline const std::type_index KNOCKDOWNED = typeid(CCState::Knockdowned);
+	inline const std::type_index IMMUNE = typeid(CCState::Immune);
 }

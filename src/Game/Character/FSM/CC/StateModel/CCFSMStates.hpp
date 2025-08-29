@@ -11,5 +11,6 @@ namespace Game::Character::FSM::CC::StateModel
 		struct None {};
 		struct Stunned {};
 		struct Knockdowned {};
+		struct Immune {};
 	}
 }
