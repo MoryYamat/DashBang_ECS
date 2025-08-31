@@ -14,6 +14,8 @@
 #include <cstddef>
 #include <iostream>
 
+#include <cassert>
+
 #include "Common/EngineNamespaceDecl.h"
 
 
@@ -279,21 +281,40 @@ namespace Engine::ECS
 		//}
 
 		// Resourceを登録
+		//template<typename T, typename... Args>
+		//T& createResource(Args&&... args)
+		//{
+		//	// インスタンス生成
+		//	auto res = std::make_shared<T>(std::forward<Args>(args)...);
+		//	// 新規作成
+		//	mResources[std::type_index(typeid(T))] = res;
+		//	// shared_ptr<T>を返す
+		//	return *res;
+		//}
+
 		template<typename T, typename... Args>
 		T& createResource(Args&&... args)
 		{
-			// インスタンス生成
-			auto res = std::make_shared<T>(std::forward<Args>(args)...);
-			// 新規作成
-			mResources[std::type_index(typeid(T))] = res;
-			// shared_ptr<T>を返す
-			return *res;
+			const auto key = std::type_index(typeid(T));
+			auto it = mResources.find(key);
+			if (it != mResources.end())
+			{
+				return *std::static_pointer_cast<T>(it->second);
+			}
+			auto sp = std::make_shared<T>(std::forward<Args>(args)...);
+			mResources.emplace(key, sp);
+			return *sp;
 		}
+
 
 		// mResourceを取得
 		template<typename T>
 		T& getResource()
 		{
+			const auto key = std::type_index(typeid(T));
+			auto it = mResources.find(key);
+
+			assert(it != mResources.end());
 			return *std::static_pointer_cast<T>(mResources[std::type_index(typeid(T))]);
 		}
 
@@ -302,6 +323,20 @@ namespace Engine::ECS
 		bool hasResource() const
 		{
 			return mResources.count(std::type_index(typeid(T))) > 0;
+		}
+
+		template<typename T, typename... Args>// パラメータパック
+		T& getOrCreateResource(Args&&... args)
+		{
+			const auto key = std::type_index(typeid(T));
+			auto it = mResources.find(key);
+			if (it != mResources.end())
+			{
+				return *std::static_pointer_cast<T>(it->second);
+			}
+			auto sp = std::make_shared<T>(std::forward<Args>(args)...);// 完全転送=> {std::forward<int>(value1), std::forward<hoge>(value2),..} //forward:値カテゴリ(右辺値／左辺値)をそのまま次に渡す
+			auto [insIt, _] = mResources.emplace(key, sp);// 構造化束縛
+			return *std::static_pointer_cast<T>(insIt->second);
 		}
 
 		// 任意のComponentを削除するAPI
