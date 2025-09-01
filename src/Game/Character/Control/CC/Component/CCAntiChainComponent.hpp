@@ -5,6 +5,10 @@ namespace Game::Character::Control::CC::Component
 {
 	/// <summary>
 	/// 1. 各（キャラクタ）アクタのEntityに付与される
+	/// 2. 動作
+	/// 時間軸: ----|----|----|----|----|----|
+	///				^windowStart
+	///				<-------6 sec ------->
 	/// </summary>
 	struct CCAntiChainComponent
 	{
@@ -15,10 +19,10 @@ namespace Game::Character::Control::CC::Component
 
 
 		bool   immune = false;        // IMMUNE状態をUI等に見せたい場合に参照
-		double immuneUntil = 0.0;     // ApplyImmune の期限（参考値）
+		float immuneUntil = 0.0;     // ApplyImmune の期限（参考値）
 
 		// ヘルパ（System側から使う）
-		void resetWindow(double now) { count = 0; windowStart = now; }
+		void resetWindow(float now) { count = 0; windowStart = now; }
 		void clearImmune() { immune = false; immuneUntil = 0.0; }
 	};
 }

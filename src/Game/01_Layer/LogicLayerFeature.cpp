@@ -14,6 +14,8 @@
 
 #include "Game/00_Feature/System/WorldClockFeature.hpp"
 
+// FIXME: LogicはWorldClockのScaledTimeを使うように変更する
+// FIXME: 物理は固定ステップ(fixedStep = 1/60), FSM/AI/アニメ補完/AntiChain/UI切替/演出(ScaledTime)
 void Game::Layer::LogicLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 	using namespace Game::Feature;

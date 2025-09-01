@@ -10,8 +10,7 @@ namespace Game::Character::FSM::CC::StateModel
 	// 
 	struct CCFSMContext
 	{
-		// std::type_index dominantTag = StateTag::NONE;
-
+		
 		std::optional<std::type_index> currentCC;
 		float ccStart = 0.0f;
 		float ccDuration = 0.0f;
@@ -21,7 +20,9 @@ namespace Game::Character::FSM::CC::StateModel
 
 		int chainCount = 0;
 		float chainWindowStart = 0.0f;
-
-		// bool hasActiveCC = false;
+		
+		// íœ—\’è
+		std::type_index dominantTag = StateTag::NONE;
+		bool hasActiveCC = false;
 	};
 }

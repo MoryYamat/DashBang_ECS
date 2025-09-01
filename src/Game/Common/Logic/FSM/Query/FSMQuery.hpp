@@ -64,5 +64,21 @@ namespace Game::Common::Logic::FSM::Query
 
 		// inAnyof / notInState etc.
 
+		template<FSMStateComponent StateComponent>
+		std::optional<std::type_index>  getPreviousState() const
+		{
+			if (!ecs.hasComponent<StateComponent>(entity)) return std::nullopt;
+			const auto& comp = ecs.get<StateComponent>(entity);
+			return comp.previous;
+		}
+
+		template<FSMStateComponent StateComponent>
+		bool entered(std::type_index s) const
+		{
+			auto p = getPreviousState<StateComponent>();
+			auto c = getCurrentState<StateComponent>();
+
+			return p && c && *p != s && *c == s;
+		}
 	};
 }
