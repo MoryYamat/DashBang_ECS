@@ -12,8 +12,14 @@
 
 #include "Game/00_Feature/ECS/ECSGeneral.hpp"
 
+#include "Game/00_Feature/System/WorldClockFeature.hpp"
+
 void Game::Layer::LogicLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 {
+	using namespace Game::Feature;
+	// world clock
+	System::WorldClockFeature::Update(ecs, deltaTime);
+
 	// ------------------------- キャラクター関連処理 -------------------------
 	// キャラクターの向きと位置を更新する
 	gNsFeature::Character::MovementFeature::UpdateLogicFacing(ecs);

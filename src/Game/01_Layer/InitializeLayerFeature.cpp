@@ -10,12 +10,16 @@
 
 #include "Game/00_Feature/Character/FSM/Movement/MovementFSMFeature.hpp"
 
+#include "Game/00_Feature/System/WorldClockFeature.hpp"
+
 #include "Common/GameNamespaceDecl.h"
 
 void Game::Layer::InitializeLayerFeature::DelayedInitialzation(eNsECS::EntityMgr& ecs)
 {
 	// --------------------- ‰Šú‰»‡‚É’ˆÓ --------------------- 
 	
+	gNsFeature::System::WorldClockFeature::Init(ecs);
+
 	// InputAction(’ŠÛ“ü—Í)‚ÌŠ„‚è“–‚Ä‰Šú‰»
 	gNsFeature::Setting::InputFeature::InitInputMapping(ecs);
 
