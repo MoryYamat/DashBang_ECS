@@ -39,7 +39,7 @@ namespace Game::Character::Control::CC
 			auto& antiChain = ecs.get<CCAntiChainComponent>(e);
 			auto& reqs = ecs.get<CCFSMTransitionRequestComponent>(e);
 
-			// IMMUNNE 満了チェック
+			// IMMUNE 満了チェック
 			if (state.current == StateTag::IMMUNE)
 			{
 				if (now >= antiChain.immuneUntil)
@@ -63,42 +63,66 @@ namespace Game::Character::Control::CC
 				antiChain.resetWindow(now);
 			}
 
-			// 中立(NONE/IMMUNE)->CCに入った瞬間を検出
-			const bool fromNeutral = (state.previous == StateTag::NONE) || (state.previous == StateTag::IMMUNE);
-			const bool toCC = (state.current != StateTag::NONE) && (state.current != StateTag::IMMUNE);
+			// CCが終わってNONEに戻った瞬間に,count>thresholdなら IMMUNE 適用
+			{
+				const bool fromCC = (state.previous != StateTag::NONE) && (state.previous != StateTag::IMMUNE);
+				const bool toNONE = (state.current == StateTag::NONE);
 
-			if (fromNeutral && toCC)
-			{            
-				// 同フレーム二重計上ガード（必要なら ε 比較にする）
-				if (antiChain.count > 0 && antiChain.lastStrikeAt == now)
-				{
-					continue;
-				}
-				antiChain.lastStrikeAt = now;
-
-				// 連鎖ウィンドウ外ならリセット
-				if ((now - antiChain.windowStart) > policy.windowSec)
-				{
-					antiChain.resetWindow(now);
-				}
-
-				// CC種ごとの重みで加算
-				antiChain.count += policy.weightOf(state.current);
-
-				// 閾値到達 -> IMMUNEをリクエストして期限セット
-				if (antiChain.count >= policy.threshold)
+				if (fromCC && toNONE && antiChain.immuneArmed)
 				{
 					if (!reqs.hasExactRequest(StateTag::IMMUNE, 0))
 					{
 						reqs.requests.push_back({ .requestedTo = StateTag::IMMUNE, .priority = 0 });
-						// std::cout << "[AntiChain] threshold hit -> request IMMUNE (" << policy.immunitySec << "s)\n";
 					}
 					antiChain.immune = true;
 					antiChain.immuneUntil = now + policy.immunitySec;
 					antiChain.resetWindow(now);
+					antiChain.disarmImmune();
 				}
+			}
+			
+			// 中立(NONE/IMMUNE)->CCに入った瞬間を検出しストライク計上
+			{            
+				const bool fromNeutral = (state.previous == StateTag::NONE) || (state.previous == StateTag::IMMUNE);
+				const bool toCC = (state.current != StateTag::NONE) && (state.current != StateTag::IMMUNE);
 
+				if (fromNeutral && toCC)
+				{
+					// 同フレーム二重計上ガード（必要なら ε 比較にする）
+					if (antiChain.count > 0 && antiChain.lastStrikeAt == now)
+					{
+						continue;
+					}
+					antiChain.lastStrikeAt = now;
+
+					// 連鎖ウィンドウ外ならリセット
+					if ((now - antiChain.windowStart) > policy.windowSec)
+					{
+						antiChain.resetWindow(now);
+					}
+
+					// CC種ごとの重みで加算
+					antiChain.count += policy.weightOf(state.current);
+
+					// 閾値到達 -> IMMUNEをリクエストして期限セット
+					if (antiChain.count >= policy.threshold)
+					{
+						////
+						//if (!reqs.hasExactRequest(StateTag::IMMUNE, 0))
+						//{
+						//	reqs.requests.push_back({ .requestedTo = StateTag::IMMUNE, .priority = 0 });
+						//	// std::cout << "[AntiChain] threshold hit -> request IMMUNE (" << policy.immunitySec << "s)\n";
+						//}
+
+						//antiChain.immune = true;
+						//antiChain.immuneUntil = now + policy.immunitySec;
+
+						antiChain.immuneArmed = true;
+						// antiChain.resetWindow(now);
+					}
+				}
 			}
 		}
 	}
 }
+

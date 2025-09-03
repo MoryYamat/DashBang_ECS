@@ -21,8 +21,12 @@ namespace Game::Character::Control::CC::Component
 		bool   immune = false;        // IMMUNE状態をUI等に見せたい場合に参照
 		float immuneUntil = 0.0;     // ApplyImmune の期限（参考値）
 
+		// 閾値到達でIMMUNEを後で適用するためのフラグ
+		bool immuneArmed = false;
+
 		// ヘルパ（System側から使う）
 		void resetWindow(float now) { count = 0; windowStart = now; }
 		void clearImmune() { immune = false; immuneUntil = 0.0; }
+		void disarmImmune() { immuneArmed = false; }
 	};
 }
