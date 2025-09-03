@@ -1,5 +1,8 @@
 #include "CCFSMResolverSystem.hpp"
 
+
+#include "Game/Character/Control/CC/Component/CCAntiChainComponent.hpp"
+
 #include "Game/Character/FSM/CC/StateModel/CCStateComponent.hpp"
 #include "Game/Character/FSM/CC/StateModel/CCFSMTransitionRequestComponent.hpp"
 
@@ -7,73 +10,93 @@
 
 #include "Game/Character/FSM/CC/Database/CCFSMDatabase.hpp"
 
+// clock
+#include "Engine/Time/WorldClock.hpp"
+
 #include <iostream>
 
 // FIXME: ResolverとStateScopedの副作用は分離したほうがよい
 namespace Game::Character::FSM::CC::System
 {
+	using namespace Engine::Time;
 	using namespace Game::Character::FSM::CC::Database;
 	using namespace Game::Character::FSM::CC::StateModel;
 
+	using namespace Game::Character::Control::CC::Component;
+
 	void CCFSMResolverSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 	{
-		auto& db = ecs.getResource<CCFSMDatabase>();
+		const auto& clock = ecs.getResource<WorldClockData>();
+		
+		const auto& db = ecs.getResource<CCFSMDatabase>();
 		if (!db.Has("basic")) return;
-		auto& def = db.Get("basic");
+		const auto& def = db.Get("basic");// 現在固定
 
 		for (auto e : ecs.view<
 			CCStateComponent,
-			CCFSMTransitionRequestComponent
+			CCFSMTransitionRequestComponent,
+			CCAntiChainComponent
 		>())
 		{
 			auto& state = ecs.get<CCStateComponent>(e);
 			auto& reqs = ecs.get<CCFSMTransitionRequestComponent>(e);
-
+			auto& anti = ecs.get<CCAntiChainComponent>(e);
 
 			if (reqs.requests.empty()) continue;
 
-			const CCFSMTransitionRequest* bestRequest = nullptr;
+			// このフレームで適用してよいリクエストか判定
+			auto admissible = [&](const CCFSMTransitionRequest& r) -> bool {
+				if (!r.requestedTo) return false;
+				const auto& to = r.requestedTo.value();
+				// IMMUNE 中は NONE 以外を拒否
+				if (state.current == StateTag::IMMUNE && to != StateTag::NONE) return false;
+				return true;
+				};
 
-			for (const auto& req : reqs.requests)
-			{
-				if (!req.requestedTo.has_value()) continue;
-				if (!bestRequest || req.priority > bestRequest->priority)
-				{
-					bestRequest = &req;
-				}
+			// 一発で最優先を選ぶ（同 priority は挿入順優先＝安定）
+			const CCFSMTransitionRequest* best = nullptr;
+			for (const auto& r : reqs.requests) {
+				if (!admissible(r)) continue;
+				if (!best || r.priority > best->priority) best = &r;
 			}
 
-			if (bestRequest)
+			if (!best) { reqs.requests.clear(); continue; }
+
+			// 状態の更新
+			const std::type_index fromState = state.current;
+			const std::type_index toState = best->requestedTo.value();
+
+			state.previous = fromState;
+			state.current = toState;
+
+			if (state.current != StateTag::NONE && state.current != StateTag::IMMUNE)
 			{
-				//auto best = std::max_element(
-				//	reqs.requests.begin(),
-				//	reqs.requests.end(),
-				//	[](const auto& a, const auto& b) {
-				//		return a.priority < b.priority;
-				//	}
-				//);
-
-				// 状態の更新
-				const std::type_index fromState = state.current;
-				const std::type_index toState = bestRequest->requestedTo.value();
-
-				state.previous = fromState;
-				state.current = toState;
-
-				std::cout << "[CCFSMResolverSystem] Transition applied: "
-					<< fromState.name() << " -> "
-					<< toState.name() << std::endl;
-
-				CCFSMContext ctx;
-
-				for (const auto& hook : def.hooks)
-				{
-					tryTriggerEffect(ecs, hook, e, def, ctx, state.current, state.previous);
-				}
+				state.enteredAt = clock.now;
 			}
 
+			std::cout << "[CCFSMResolverSystem] Transition applied: "
+				<< fromState.name() << " -> " << toState.name() << std::endl;
 
-			// リクエストクリア
+
+			// TODO: antiChain以外のIMMUNE源からのctx更新もできるように拡張
+			CCFSMContext ctx{};
+			if (state.current != StateTag::NONE && state.current != StateTag::IMMUNE)
+			{
+				ctx.currentCC = state.current;
+				ctx.ccEnteredAt = state.enteredAt;
+				ctx.ccDuration = clock.now - state.enteredAt;
+			}
+			ctx.chainCount = anti.count;
+			ctx.immune = anti.immune;
+			ctx.immuneEndsAt = anti.immuneUntil;
+			ctx.chainWindowStart = anti.windowStart;
+			// TODO: antiChain以外のIMMUNE源からのctx更新もできるように拡張
+
+			for (const auto& hook : def.hooks)
+			{
+				tryTriggerEffect(ecs, hook, e, def, ctx, state.current, state.previous);
+			}
+
 			reqs.requests.clear();
 		}
 

@@ -13,7 +13,9 @@ namespace Game::Character::FSM::CC::StateModel
 
 		std::type_index issuerId;// typeid(SkillFSMAxis), typeid(CCAxis), etc.
 
-		CCStateComponent() : current(StateTag::NONE), previous(StateTag::NONE) , issuerId(AxisTag::CCAxis){} // –³Œøó‘Ô‚ÍvoidŒ^
+		float enteredAt = 0.0f;
+
+		CCStateComponent() : current(StateTag::NONE), previous(StateTag::NONE) , issuerId(AxisTag::CCAxis), enteredAt(0.0f){} // –³Œøó‘Ô‚ÍvoidŒ^
 
 		explicit CCStateComponent(std::type_index iniState, std::type_index mainAxis)
 			: current(iniState), previous(iniState) , issuerId(mainAxis) {
