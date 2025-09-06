@@ -1,4 +1,4 @@
-#include "InitializeLayerFeature.h"
+ï»¿#include "InitializeLayerFeature.h"
 
 #include "Game/00_Feature/Combat/Skill/SkillFeature.h"
 
@@ -12,29 +12,34 @@
 
 #include "Game/00_Feature/System/WorldClockFeature.hpp"
 
+#include "Game/00_Feature/Combat/HitEvent/HitEventFeature.hpp"
+
 #include "Common/GameNamespaceDecl.h"
 
 void Game::Layer::InitializeLayerFeature::DelayedInitialzation(eNsECS::EntityMgr& ecs)
 {
-	// --------------------- ‰Šú‰»‡‚É’ˆÓ --------------------- 
+	// --------------------- åˆæœŸåŒ–é †ã«æ³¨æ„ --------------------- 
 	
 	gNsFeature::System::WorldClockFeature::Init(ecs);
 
-	// InputAction(’ŠÛ“ü—Í)‚ÌŠ„‚è“–‚Ä‰Šú‰»
+	// InputAction(æŠ½è±¡å…¥åŠ›)ã®å‰²ã‚Šå½“ã¦åˆæœŸåŒ–
 	gNsFeature::Setting::InputFeature::InitInputMapping(ecs);
 
-	// ƒXƒLƒ‹ƒXƒƒbƒg(gNsSkillData::SkillSlot)‚ÆInputAction(’ŠÛ“ü—Í)‚ÌŠ„‚è“–‚Ä‰Šú‰»
+	// ã‚¹ã‚­ãƒ«ã‚¹ãƒ­ãƒƒãƒˆ(gNsSkillData::SkillSlot)ã¨InputAction(æŠ½è±¡å…¥åŠ›)ã®å‰²ã‚Šå½“ã¦åˆæœŸåŒ–
 	gNsFeature::Setting::InputFeature::InitSkillInputMapping(ecs);
 
-	// ƒXƒLƒ‹ƒf[ƒ^ƒx[ƒX/’è‹`‰Šú‰»
+	// ã‚¹ã‚­ãƒ«ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹/å®šç¾©åˆæœŸåŒ–
 	gNsFeature::Combat::SkillFeature::InitializeSkillDatabase(ecs);
+
+	// HitEvent
+	gNsFeature::Combat::HitEventFeature::InitializeHitEventDatabase(ecs);
 
 	// Collision Result Buffer
 	gNsFeature::CollisionFeature::InitCollisionBuffer(ecs);
 
-	// CharacterStateTransitionƒf[ƒ^ƒx[ƒX‰Šú‰»
+	// CharacterStateTransitionãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹åˆæœŸåŒ–
 	gNsFeature::Character::StateFeature::InitTransitionDatabase(ecs);
 
-	// MovementFSM‚Ì’è‹`‚ğ‰Šú‰»
+	// MovementFSMã®å®šç¾©ã‚’åˆæœŸåŒ–
 	gNsFeature::Character::FSM::MovementFSMFeature::InitializeMovementFSMDefinition(ecs);
 }

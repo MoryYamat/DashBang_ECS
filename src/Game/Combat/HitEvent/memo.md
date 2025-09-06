@@ -33,6 +33,9 @@
     - `CC execution flag`
     - `Hit event digestion completion flag`
 
+* `HitEventDatabase`:
+    - `std::vector<HitEvent>`
+
 ## `System`
 * `Collision Detection System`: (Core features)
     1. Detecting collisions between skill hitbox shapes and character hitboxes
@@ -45,6 +48,10 @@
 * `CC(Effect) execution System`: 
     1. if `hit event` has `CC effect` then `Create CC Transition Request` on the `character Entity`
     2. Change the `CC execution flag = true` of the `hit event`
+
+
+* `Init Hit Event Database`: 
+    1. Create a "HitEventDatabase" resource in the ECS global resource.
 
 
 ### System model

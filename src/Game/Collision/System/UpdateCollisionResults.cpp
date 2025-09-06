@@ -1,16 +1,18 @@
+ï»¿// ç¾åœ¨æœªä½¿ç”¨ å‰Šé™¤äºˆå®š
+
 #include "UpdateCollisionResults.h"
 
 #include "Common/GameNamespaceDecl.h"
 
 #include "Game/Collision/Data/CollisionResultStorage.h"
 
-// ECSƒOƒ[ƒoƒ‹ƒŠƒ\[ƒX‚Éƒoƒbƒtƒ@î•ñ‚ğì¬
+// ECSã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒªã‚½ãƒ¼ã‚¹ã«ãƒãƒƒãƒ•ã‚¡æƒ…å ±ã‚’ä½œæˆ
 void Game::Collision::System::InitCollisionResultStorage(eNsECS::EntityMgr ecs)
 {
 	auto& buffer = ecs.createResource <gNsCollData::CollisionResultStorage>();
 }
 
-// ƒoƒbƒtƒ@‚ğƒNƒŠƒA
+// ãƒãƒƒãƒ•ã‚¡ã‚’ã‚¯ãƒªã‚¢
 void Game::Collision::System::ClearCollisionResultStorage(eNsECS::EntityMgr& ecs)
 {
 	auto& buffer = ecs.getResource<gNsCollData::CollisionResultStorage>();
@@ -18,12 +20,12 @@ void Game::Collision::System::ClearCollisionResultStorage(eNsECS::EntityMgr& ecs
 	buffer.Clear();
 }
 
-// ƒoƒbƒtƒ@‚ğXV
+// ãƒãƒƒãƒ•ã‚¡ã‚’æ›´æ–°
 void Game::Collision::System::UpdateCollisionResultStorage(eNsECS::EntityMgr& ecs)
 {
 	auto& buffer = ecs.getResource<gNsCollData::CollisionResultStorage>();
 
-	// ŒvZŠÖ”‚ğ‘‚­
+	// è¨ˆç®—é–¢æ•°ã‚’æ›¸ã
 
 
 	// buffer.add

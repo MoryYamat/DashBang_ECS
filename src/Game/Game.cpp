@@ -1,4 +1,4 @@
-#include "Game.h"
+ï»¿#include "Game.h"
 
 // std system
 #include <iostream>
@@ -100,7 +100,7 @@
 //#include "Test/TriangleActor.h"
 //#include "Test/Test3DModel.h"
 
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 GameApp::GameApp::GameApp()
 	: mIsRunning(true)
 	, mShader(nullptr)
@@ -113,7 +113,7 @@ GameApp::GameApp::GameApp()
 
 }
 
-// I—¹ˆ—
+// çµ‚äº†å‡¦ç†
 void GameApp::GameApp::Shutdown()
 {
 	unloadData();
@@ -133,7 +133,7 @@ void GameApp::GameApp::Shutdown()
 	std::cout << "\n[Game.cpp (Shutdown)]: The application shut down successfully." << std::endl;
 }
 
-// ‰Šú‰»
+// åˆæœŸåŒ–
 bool GameApp::GameApp::Initialize()
 {
 	//if (!glfwInit())
@@ -191,7 +191,7 @@ bool GameApp::GameApp::Initialize()
 	// Initialize Skill database
 	// InitializeSkills();
 
-	// ’x‚ç‚¹‰Šú‰»
+	// é…ã‚‰ã›åˆæœŸåŒ–
 	gNsLayer::InitializeLayerFeature::DelayedInitialzation(mECS);
 
 
@@ -232,8 +232,8 @@ void GameApp::GameApp::updateGameLogics()
 	// delete PendingDestroyComponent
 	eNsECS::GrobalSystem::RunCleanup(mECS);
 
-	// ECS‚ÌƒOƒ[ƒoƒ‹ƒŠƒ\[ƒX‚ÖˆÈ~—\’è(ˆÚsŒãíœ—\’è)
-	// ƒRƒŠƒWƒ‡ƒ“ƒRƒ“ƒeƒLƒXƒg: 1ƒtƒŒ[ƒ€‚²‚Æ‚É‰Šú‰»
+	// ECSã®ã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒªã‚½ãƒ¼ã‚¹ã¸ä»¥é™äºˆå®š(ç§»è¡Œå¾Œå‰Šé™¤äºˆå®š)
+	// ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ: 1ãƒ•ãƒ¬ãƒ¼ãƒ ã”ã¨ã«åˆæœŸåŒ–
 	mCollisionResults.Clear();
 
 	// Input
@@ -244,25 +244,25 @@ void GameApp::GameApp::updateGameLogics()
 		mIsRunning = false;
 	}
 
-	// ECS‚ÌƒOƒ[ƒoƒ‹ƒŠƒ\[ƒX‚©‚çMapping‚ğæ“¾‚µ‚ÄCInputActionComponent‚ğ•ÏX‚·‚é‚æ‚¤‚ÉC³‚·‚é
-	// C³Ï‚İ‚Ì‚½‚ßíœ—\’è
+	// ECSã®ã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒªã‚½ãƒ¼ã‚¹ã‹ã‚‰Mappingã‚’å–å¾—ã—ã¦ï¼ŒInputActionComponentã‚’å¤‰æ›´ã™ã‚‹ã‚ˆã†ã«ä¿®æ­£ã™ã‚‹
+	// ä¿®æ­£æ¸ˆã¿ã®ãŸã‚å‰Šé™¤äºˆå®š
 	// gNsInput::InputRouterSystem(mECS, mInputManager->GetRawInput(), mInputMapping);
 	// InputRouter
 	gNsInput::InputRouterSystem(mECS, mInputManager->GetRawInput());
 	gNsInput::Analog::RouteAnalogInput(mECS, mInputManager->GetRawInput(), mRenderContext);
-	// “ü—Íó‘Ôƒ}ƒbƒv‚ÌXV
+	// å…¥åŠ›çŠ¶æ…‹ãƒãƒƒãƒ—ã®æ›´æ–°
 	//mInputMapping.update(mWindow.GetGLFWWindow(), mInputState);
 
 	// ====INTENT====
 	// gNsInputIntent::IntentMappingSystem::UpdatePlayerMovementIntent(mECS);
 
 	
-	// character‚ÌˆÚ“® (íœ—\’è(IntentƒŒƒCƒ„[“±“ü‚Ì‚½‚ß))
+	// characterã®ç§»å‹• (å‰Šé™¤äºˆå®š(Intentãƒ¬ã‚¤ãƒ¤ãƒ¼å°å…¥ã®ãŸã‚))
 	// gNsInput::Player::Update(mECS, mInputManager->GetRawInput(), mRenderContext, mDeltaTime);
 	//PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime, mRenderContext);
 	// PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime);
 
-	// skill system (íœ—\’è(ƒŒƒCƒ„[\‘¢“±“ü‚Ì‚½‚ß))
+	// skill system (å‰Šé™¤äºˆå®š(ãƒ¬ã‚¤ãƒ¤ãƒ¼æ§‹é€ å°å…¥ã®ãŸã‚))
 	// gNsSkillTrigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(mECS, mSkillInputMap);
 	// SkillSystem::Casting::SpawnSkillHitArea(mEcs, mSkillDatabase);
 	// gNsSkillSystem::UpdateSkillPhase(mECS, mDeltaTime, mSkillDatabase);
@@ -274,20 +274,20 @@ void GameApp::GameApp::updateGameLogics()
 	// 2D (Logic)-> 3D (Drawing)
 	eNsSyncL2T::Apply2DToTransform(mECS, deltaTime);
 
-	// ƒJƒƒ‰
+	// ã‚«ãƒ¡ãƒ©
 	gNsCam::Update(mECS, deltaTime);
 	// GameSystemInput::UpdateCamera(mEcs, mInputState, mDeltaTime);
 
 
 	GameApp::updateContext();
 
-	// Update Mouse Cursor Logic data (íœ—\’è(Intent ƒŒƒCƒ„[“±“ü‚Ì‚½‚ß))
+	// Update Mouse Cursor Logic data (å‰Šé™¤äºˆå®š(Intent ãƒ¬ã‚¤ãƒ¤ãƒ¼å°å…¥ã®ãŸã‚))
 	// gNsInput::Analog::Update(mECS, mInputManager->GetRawInput(), mRenderContext);
 	//MouseCursorUpdateSystem::Update(mEcs, mInputState, mRenderContext);
 
 
 
-	// ECS‚ÌƒOƒ[ƒoƒ‹ƒŠƒ\[ƒX‚ÖˆÈ~—\’è(ˆÚsŒãíœ—\’è)
+	// ECSã®ã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒªã‚½ãƒ¼ã‚¹ã¸ä»¥é™äºˆå®š(ç§»è¡Œå¾Œå‰Šé™¤äºˆå®š)
 	gNsCollSystem::UpdateCollisionResultStorage(mECS, mCollisionResults);
 
 	// Update from the top layer	
@@ -318,9 +318,9 @@ void GameApp::GameApp::generateOutputs()
 
 
 	// draw for debugging
-	// (ECSƒOƒ[ƒoƒ‹ƒŠƒ\[ƒX“±“üŒã•ÏX•K—v)
-	// (ECSƒOƒ[ƒoƒ‹ƒŠƒ\[ƒX“±“üŒã•ÏX•K—v)
-	// (ECSƒOƒ[ƒoƒ‹ƒŠƒ\[ƒX“±“üŒã•ÏX•K—v)
+	// (ECSã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒªã‚½ãƒ¼ã‚¹å°å…¥å¾Œå¤‰æ›´å¿…è¦)
+	// (ECSã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒªã‚½ãƒ¼ã‚¹å°å…¥å¾Œå¤‰æ›´å¿…è¦)
+	// (ECSã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒªã‚½ãƒ¼ã‚¹å°å…¥å¾Œå¤‰æ›´å¿…è¦)
 	eNsDebugDraw::Logic2D::Draw(mECS, mRenderContext, mCollisionResults);
 
 
@@ -395,7 +395,7 @@ void GameApp::GameApp::RunInitializationPhase()
 	eNsECSInitComp::ApplyAllDeferredInitializations<
 		eNsLogic2DComp::TileMapComponent,
 		eNsCamComp::FollowCameraComponent
-	// ƒRƒ“ƒeƒLƒXƒgî•ñ‚ğ“n‚·D
+	// ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆæƒ…å ±ã‚’æ¸¡ã™ï¼
 	>(mECS, mWindow);
 
 	gNsInit::Input::InputBindingInitializationSystem(mECS);
@@ -407,8 +407,8 @@ void GameApp::GameApp::updateContext()
 	mRenderContext.viewport = glm::vec4(0, 0, mWindow.GetWidth(), mWindow.GetHeight());
 }
 
-// •Êˆ—‚©•Êƒtƒ@ƒCƒ‹‚Ö•ª—£—\’è(JSON‚à‚µ‚­‚ÍCSV‚È‚Ç‚Å—^‚¦‚é‚æ‚¤‚É‚·‚é‚×‚«)
-// ƒQ[ƒ€’†‚Éİ’è‚Å•ÏX‚Å‚«‚é‚æ‚¤‚É‚·‚é‚×‚«
+// åˆ¥å‡¦ç†ã‹åˆ¥ãƒ•ã‚¡ã‚¤ãƒ«ã¸åˆ†é›¢äºˆå®š(JSONã‚‚ã—ãã¯CSVãªã©ã§ä¸ãˆã‚‹ã‚ˆã†ã«ã™ã‚‹ã¹ã)
+// ã‚²ãƒ¼ãƒ ä¸­ã«è¨­å®šã§å¤‰æ›´ã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹ã¹ã
 void GameApp::GameApp::InitializeInputMapping()
 {
 	//mInputMapping.bindKey(GLFW_KEY_W, gNsInput::InputAction::MoveForward);
@@ -421,9 +421,9 @@ void GameApp::GameApp::InitializeInputMapping()
 
 }
 
-// •Êˆ—‚©•Êƒtƒ@ƒCƒ‹‚Ö•ª—£—\’è(ƒXƒLƒ‹’è‹`‚ÍJSON‚à‚µ‚­‚ÍCSV‚È‚Ç‚Å—^‚¦‚é‚æ‚¤‚É‚·‚é‚×‚«)
-// Combat/Skill/System/InitializeSkills.h ‚ÖÓ–±ˆÈ~ => Feature‚ğƒCƒ“ƒ^[ƒtƒF[ƒX‚Æ‚µ‚ÄCInitializeLayerFeature‚ÅŒÄ‚Ño‚·\‘¢‚Ö
-// íœ—\’è( •Êƒtƒ@ƒCƒ‹‚Ö•ª—£‚µ‚½‚½‚ß )
+// åˆ¥å‡¦ç†ã‹åˆ¥ãƒ•ã‚¡ã‚¤ãƒ«ã¸åˆ†é›¢äºˆå®š(ã‚¹ã‚­ãƒ«å®šç¾©ã¯JSONã‚‚ã—ãã¯CSVãªã©ã§ä¸ãˆã‚‹ã‚ˆã†ã«ã™ã‚‹ã¹ã)
+// Combat/Skill/System/InitializeSkills.h ã¸è²¬å‹™ä»¥é™ => Featureã‚’ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ã¨ã—ã¦ï¼ŒInitializeLayerFeatureã§å‘¼ã³å‡ºã™æ§‹é€ ã¸
+// å‰Šé™¤äºˆå®š( åˆ¥ãƒ•ã‚¡ã‚¤ãƒ«ã¸åˆ†é›¢ã—ãŸãŸã‚ )
 void GameApp::GameApp::InitializeSkills()
 {
 	//gNsSkillData::SkillDefinition slash;
@@ -441,7 +441,7 @@ void GameApp::GameApp::InitializeSkills()
 	//gNsSkillData::SkillDefinition slash2;
 	//slash2.id = 2;
 	//slash2.name = "Power Slash";
-	//slash2.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Sector2DAttack{CanonicalDefaults::kLocalCenterXZ, CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f} };// -Z•ûŒü‚ª‘O•û
+	//slash2.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Sector2DAttack{CanonicalDefaults::kLocalCenterXZ, CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f} };// -Zæ–¹å‘ãŒå‰æ–¹
 	//slash2.duration = 1.0f;
 
 	//mSkillDatabase.AddSkill(slash2);
@@ -451,21 +451,21 @@ void GameApp::GameApp::InitializeSkills()
 	//blade.name = "Blade";
 	//blade.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Rectangle2DAttack{glm::vec2(0.0f, 5.0f), CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f}};
 	//blade.duration = 1.0f;
-	//// ƒXƒLƒ‹ŠïÕ‚Ì’ŠÛ’è‹`‚Ì‘I‘ğ
+	//// ã‚¹ã‚­ãƒ«å¥‡è·¡ã®æŠ½è±¡å®šç¾©ã®é¸æŠ
 	//blade.trajectoryType = gNsSkillData::TrajectoryType::RotateAroundSelf;
 	//blade.trajectoryParams = gNsSkillData::SkillTrajectory::RotateTrajectoryParams
-	//{// ŠÖ”’è‹`
+	//{// é–¢æ•°å®šç¾©
 	//	.startAngle = 60.0f,
 	//	.endAngle = -60.0f
 	//};
 	//mSkillDatabase.AddSkill(blade);
 }
 
-// •Êˆ—‚©•Êƒtƒ@ƒCƒ‹‚Ö•ª—£—\’è(JSON‚à‚µ‚­‚ÍCSV‚È‚Ç‚Å—^‚¦‚é‚æ‚¤‚É‚·‚é‚×‚«)
-// ƒQ[ƒ€’†‚Éİ’è‚Å•ÏX‚Å‚«‚é‚æ‚¤‚É‚·‚é‚×‚«
+// åˆ¥å‡¦ç†ã‹åˆ¥ãƒ•ã‚¡ã‚¤ãƒ«ã¸åˆ†é›¢äºˆå®š(JSONã‚‚ã—ãã¯CSVãªã©ã§ä¸ãˆã‚‹ã‚ˆã†ã«ã™ã‚‹ã¹ã)
+// ã‚²ãƒ¼ãƒ ä¸­ã«è¨­å®šã§å¤‰æ›´ã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹ã¹ã
 void GameApp::GameApp::InitializeSkillMappings()
 {
-	//mSkillInputMap.bind(gNsInput::InputAction::CastSkill1, gNsSkillData::SkillSlot::Primary);// ƒXƒLƒ‹ID 1
-	//mSkillInputMap.bind(gNsInput::InputAction::CastSkill2, gNsSkillData::SkillSlot::Secondary);// ƒXƒLƒ‹ID 2
-	//mSkillInputMap.bind(gNsInput::InputAction::CastSkill3, gNsSkillData::SkillSlot::Utility1);// ƒXƒLƒ‹ID 3
+	//mSkillInputMap.bind(gNsInput::InputAction::CastSkill1, gNsSkillData::SkillSlot::Primary);// ã‚¹ã‚­ãƒ«ID 1
+	//mSkillInputMap.bind(gNsInput::InputAction::CastSkill2, gNsSkillData::SkillSlot::Secondary);// ã‚¹ã‚­ãƒ«ID 2
+	//mSkillInputMap.bind(gNsInput::InputAction::CastSkill3, gNsSkillData::SkillSlot::Utility1);// ã‚¹ã‚­ãƒ«ID 3
 }

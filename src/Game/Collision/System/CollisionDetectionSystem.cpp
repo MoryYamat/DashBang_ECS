@@ -1,4 +1,6 @@
-#include "CollisionDetectionSystem.h"
+ï»¿#include "CollisionDetectionSystem.h"
+
+#include "Engine/Time/WorldClock.hpp"
 
 #include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
@@ -22,21 +24,41 @@
 #include "Game/Collision/Data/CollisionContextData.h"
 #include "Game/Collision/Data/CollisionResultStorage.h"
 
+#include "Game/Combat/HitEvent/Database/HitEventDatabase.hpp"
+
+
+// Skill
+#include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
+
+// HitEvent
+#include "Game/Combat/HitEvent/Data/HitEvent.hpp"
+
 #include "Engine/Debug/DebugUtils.h"
 
 #include <glm/glm.hpp>
 
 #include <iostream>
 
+// ç¾å½¹
 void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs)
 {
+	using namespace Engine::Time;
 	using namespace Game::Collision::Data;
+
+	using namespace Game::Combat::Skill::Component;
+
+	using namespace Game::Combat::HitEvent::Database;
+	using namespace Game::Combat::HitEvent::Data;
+
 	// assert(ecs.hasResource<gNsCollData::CollisionResultBuffer>() && "CollisionResultBuffer not initialized");
+	// if(!ecs.hasResource< gNsCollData::CollisionResultBuffer>()) return;
+	const auto& clock = ecs.getResource<WorldClockData>();
+	auto& hitDb = ecs.getResource<HitEventDatabase>();
 	auto& buffer = ecs.getResource<gNsCollData::CollisionResultBuffer>();
 	// auto& bus = ecs.getResource<ContactBus>();
 	// std::cout << "[CollisionDetectionSystem.cpp()]Collision Count: " << buffer.results.size() << std::endl;
 
-	// ƒoƒbƒtƒ@ƒNƒŠƒA
+	// ãƒãƒƒãƒ•ã‚¡ã‚¯ãƒªã‚¢
 	buffer.clear();
 	// bus.clear();
 
@@ -48,15 +70,15 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 	// Must=>And , Any=>OR
 	// using Must = std::tuple<gNsCollComp::CollisionMaskComponent, eNsLogic2DComp::CollisionComponent>;
 	using Must = std::tuple<gNsCollComp::CollisionMaskComponent>;
-	// CollisionComponent‚ğMust‚É‚·‚é‚ÆCSkill‚É‘Î‰‚Å‚«‚È‚¢–â‘è
-	// CollisionComponent‚ğMust‚É‚·‚é‚ÆCSkill‚É‘Î‰‚Å‚«‚È‚¢–â‘è
-	// CollisionComponent‚ğMust‚É‚·‚é‚ÆCSkill‚É‘Î‰‚Å‚«‚È‚¢–â‘è
+	// CollisionComponentã‚’Mustã«ã™ã‚‹ã¨ï¼ŒSkillã«å¯¾å¿œã§ããªã„å•é¡Œ
+	// CollisionComponentã‚’Mustã«ã™ã‚‹ã¨ï¼ŒSkillã«å¯¾å¿œã§ããªã„å•é¡Œ
+	// CollisionComponentã‚’Mustã«ã™ã‚‹ã¨ï¼ŒSkillã«å¯¾å¿œã§ããªã„å•é¡Œ
 	
 	using Any = std::tuple<eNsLogic2DComp::Logic2DTransformComponent, eNsLogic2DComp::Transform2DComponent>;
 
 	auto entities = ecs.view(eNsECS::EntityMgr::FilterSpec<Must, Any>{});
 
-	// ƒXƒLƒ‹”­¶‚ÉTransform2DComponent‚ğŒŸõ‚Å‚«‚Ä‚¢‚È‚¢
+	// ã‚¹ã‚­ãƒ«ç™ºç”Ÿæ™‚ã«Transform2DComponentã‚’æ¤œç´¢ã§ãã¦ã„ãªã„
 	//for (auto e : entities)
 	//{
 	//	std::cout << "Entity: " << e.id << std::endl;
@@ -96,15 +118,56 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 
 			if (gNsCollIntersect::Intersects(shapeA, shapeB))
 			{
-				// ‰¼‚ÌContactInfoiŒã‚Å¸–§‚È–@üE[“x‚ª•K—v‚É‚È‚ê‚ÎŠg’£j
+				// ä»®ã®ContactInfoï¼ˆå¾Œã§ç²¾å¯†ãªæ³•ç·šãƒ»æ·±åº¦ãŒå¿…è¦ã«ãªã‚Œã°æ‹¡å¼µï¼‰
 				gNsCollData::ContactInfo info{ //.contactNormal = glm::normalize(transB.positionXZ - transA.positionXZ), 
 					.penetrationDepth = 0.0f };
 
 				// std::cout << "[CollisionDetectionSystem]: collider detcted" << std::endl;
-				// ƒoƒbƒtƒ@’Ç‰Á
+				// ãƒãƒƒãƒ•ã‚¡è¿½åŠ 
 				buffer.add(gNsCollData::CollisionResult{ eA, eB, info });
+
+				// =================================================================
+				// Skill & target ã«ã¤ã„ã¦
+				eNsECS::Entity skillEnt{}, targetEnt{};
+				SkillExecutionContextComponent meta{};
+				if (isSkillEntity(ecs, eA) && !isSkillEntity(ecs, eB))
+				{
+					skillEnt = eA; targetEnt = eB;
+					meta = ecs.get<SkillExecutionContextComponent>(eA);
+
+				}
+				else if (isSkillEntity(ecs, eB) && !isSkillEntity(ecs, eA))
+				{
+					skillEnt = eB; targetEnt = eA;
+					meta = ecs.get<SkillExecutionContextComponent>(eB);
+
+				}
+				else
+				{
+					continue;
+				}
+
+				// ä»¥ä¸‹ã« HitEventç”Ÿæˆå‡¦ç†ã‚’è¿½åŠ 
+				HitEvent ev{};
+				ev.skill = skillEnt;
+				ev.target = targetEnt;
+				ev.skillId = meta.skillId;
+				ev.SpawnTime = clock.now;
+
+				hitDb.push(std::move(ev));
 			}
 		}
+	}
+}
+
+namespace Game::Collision::System
+{
+	using namespace Game::Combat::Skill::Component;
+
+	// TODO: é–¢æ•°ã®å ´æ‰€æ•´ç†
+	bool isSkillEntity(eNsECS::EntityMgr& ecs, eNsECS::Entity entity)
+	{
+		return ecs.hasComponent<SkillExecutionContextComponent>(entity);
 	}
 }
 
@@ -117,7 +180,7 @@ void Game::Collision::System::UpdateCollisionResultStorage(eNsECS::EntityMgr& ec
 	//	const auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
 	//	const auto& logic2DComp = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
 
-	//	// XV (–¼cCŒ`óî•ñ^•ÏŠ·î•ñ‚Ì–¾Šm‚ÈÓ–±•ª—£Œã–¢g—p)
+	//	// æ›´æ–° (åæ®‹ï¼Œå½¢çŠ¶æƒ…å ±ï¼å¤‰æ›æƒ…å ±ã®æ˜ç¢ºãªè²¬å‹™åˆ†é›¢å¾Œæœªä½¿ç”¨)
 	//	playerCollisionCtx.center = logic2DComp.positionXZ;
 	//	// playerCollisionCtx.radius = collisionComp.collider.circle2D.radius;
 	////	playerCollisionCtx.playerEntity = e;

@@ -1,9 +1,10 @@
-#include "CollisionSyncSystem.h"
+﻿#include "CollisionSyncSystem.h"
 
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 
 #include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
 
+// おそらく 未使用，削除予定
 void Game::Collision::System::CollisionSyncSystem(eNsECS::EntityMgr& ecs)
 {
 	for (eNsECS::Entity e : ecs.view<

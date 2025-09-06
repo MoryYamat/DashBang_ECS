@@ -1,4 +1,4 @@
-#include "CollisionFeature.h"
+ï»¿#include "CollisionFeature.h"
 
 #include "Game/Collision/System/CollisionDetectionSystem.h"
 
@@ -9,21 +9,22 @@
 #include "Common/GameNamespaceDecl.h"
 
 
-// Collision ƒoƒbƒtƒ@‚Ì‰Šú‰»
+// Collision ãƒãƒƒãƒ•ã‚¡ã®åˆæœŸåŒ–
 void Game::Feature::CollisionFeature::InitCollisionBuffer(eNsECS::EntityMgr& ecs)
 {
 	gNsCollInit::InitCollisionResultBuffer(ecs);
 }
 
-// Collision ƒoƒbƒtƒ@‚ÌXV
+// Collision ãƒãƒƒãƒ•ã‚¡ã®æ›´æ–°
 void Game::Feature::CollisionFeature::UpdateCollisionBuffer(eNsECS::EntityMgr& ecs)
 {
 	gNsCollSystem::UpdateCollisionResultBuffer(ecs);
 }
 
-// ˜_—ƒŒƒCƒ„[“à‚ÅƒIƒuƒWƒFƒNƒgˆÊ’uî•ñ‚È‚Ç‚ÆCƒRƒŠƒWƒ‡ƒ“Œ`ó‚ÌˆÊ’uî•ñ‚È‚Ç‚ğ“¯Šú‚³‚¹‚éˆ—
+// ãŠãã‚‰ãæœªä½¿ç”¨ï¼šå‰Šé™¤äºˆå®š
+// è«–ç†ãƒ¬ã‚¤ãƒ¤ãƒ¼å†…ã§ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆä½ç½®æƒ…å ±ãªã©ã¨ï¼Œã‚³ãƒªã‚¸ãƒ§ãƒ³å½¢çŠ¶ã®ä½ç½®æƒ…å ±ãªã©ã‚’åŒæœŸã•ã›ã‚‹å‡¦ç†
 void Game::Feature::CollisionFeature::SyncLogicCollision(eNsECS::EntityMgr& ecs)
 {
-	// ˜_—ƒŒƒCƒ„[“à‚ÅƒIƒuƒWƒFƒNƒgˆÊ’uî•ñ‚È‚Ç‚ÆCƒRƒŠƒWƒ‡ƒ“Œ`ó‚ÌˆÊ’uî•ñ‚È‚Ç‚ğ“¯Šú
+	// è«–ç†ãƒ¬ã‚¤ãƒ¤ãƒ¼å†…ã§ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆä½ç½®æƒ…å ±ãªã©ã¨ï¼Œã‚³ãƒªã‚¸ãƒ§ãƒ³å½¢çŠ¶ã®ä½ç½®æƒ…å ±ãªã©ã‚’åŒæœŸ
 	gNsCollSystem::CollisionSyncSystem(ecs);
 }

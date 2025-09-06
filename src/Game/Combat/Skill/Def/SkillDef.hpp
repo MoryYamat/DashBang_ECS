@@ -1,10 +1,10 @@
-// ƒXƒLƒ‹Ã“I’è‹`î•ñ‚ÌŠî”Õ
+ï»¿// ã‚¹ã‚­ãƒ«é™çš„å®šç¾©æƒ…å ±ã®åŸºç›¤
 
 // YAGNI
 // YAGNI
 // YAGNI
 
-// TODO: FSM‚ÆSkillDef‚Ì“‡ŠÇ—‚ğl‚¦‚é
+// TODO: FSMã¨SkillDefã®çµ±åˆç®¡ç†ã‚’è€ƒãˆã‚‹
 
 #pragma once
 
@@ -26,30 +26,32 @@
 
 namespace Game::Combat::Skill::Def
 {
-	// TODO: SkillDefinition‚ğŠ®¬‚³‚¹‚é.
+	// TODO: SkillDefinitionã‚’å®Œæˆã•ã›ã‚‹.
+
+	using SkillID = uint32_t;
 
 	struct SpawnHitArea
 	{
-		std::optional<float> duration = std::nullopt; // •K—v‚È‚ç–¾¦
-		gNsSkillComp::Attack2DShape shape;// UŒ‚”»’è‚ÌŒ`ó
-		gNsSkillData::SkillTrajectory::TrajectoryParamsVariant trajectoryParams; // ‹OÕƒpƒ‰ƒ[ƒ^
+		std::optional<float> duration = std::nullopt; // å¿…è¦ãªã‚‰æ˜ç¤º
+		gNsSkillComp::Attack2DShape shape;// æ”»æ’ƒåˆ¤å®šã®å½¢çŠ¶
+		gNsSkillData::SkillTrajectory::TrajectoryParamsVariant trajectoryParams; // è»Œè·¡ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 
-		// ActiveƒtƒF[ƒY‚É“¯Šú‚µ‚Äõ–½I—¹‚·‚é‚©
+		// Activeãƒ•ã‚§ãƒ¼ã‚ºã«åŒæœŸã—ã¦å¯¿å‘½çµ‚äº†ã™ã‚‹ã‹
 		bool syncWithActivePhase = false;
 	};
 
-	// SkillPhase ‚²‚Æ‚ÉMovementFSM‚Ö‚Ìì—p‚ğ’è‹`‚·‚é
+	// SkillPhase ã”ã¨ã«MovementFSMã¸ã®ä½œç”¨ã‚’å®šç¾©ã™ã‚‹
 	struct MovementModifierPerPhase
 	{
-		std::unordered_map<std::type_index, float> movementSpeedMultiplier;// ƒfƒtƒHƒ‹ƒgˆÚ“®‘¬“x‚Ì•â³”{—¦(0.5f->”¼•ª‚É)
+		std::unordered_map<std::type_index, float> movementSpeedMultiplier;// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆç§»å‹•é€Ÿåº¦ã®è£œæ­£å€ç‡(0.5f->åŠåˆ†ã«)
 	};
 	
-	// ƒXƒLƒ‹’è‹`
+	// ã‚¹ã‚­ãƒ«å®šç¾©
 	struct SkillDef
 	{
 		// meta data
-		uint32_t id = 0; // ˆêˆÓ‚ÌID
-		std::string name; // ƒXƒLƒ‹‚Ì–¼‘O
+		SkillID id = 0; // ä¸€æ„ã®ID
+		std::string name; // ã‚¹ã‚­ãƒ«ã®åå‰
 
 		// phase timing
 		float castDuration;
@@ -58,12 +60,12 @@ namespace Game::Combat::Skill::Def
 
 
 		// Event
-		std::optional<SpawnHitArea> spawnHitArea; // ƒXƒLƒ‹”­“®‚É¶¬‚³‚ê‚éUŒ‚”»’è‚ÌŒ`ó‚Æ‹OÕ
+		std::optional<SpawnHitArea> spawnHitArea; // ã‚¹ã‚­ãƒ«ç™ºå‹•æ™‚ã«ç”Ÿæˆã•ã‚Œã‚‹æ”»æ’ƒåˆ¤å®šã®å½¢çŠ¶ã¨è»Œè·¡
 
 		// MovementFSM Modifier
 		std::optional<MovementModifierPerPhase> movementModifiers;
 
-		// ƒN[ƒ‹ƒ_ƒEƒ“(ƒAƒNƒ^[ŒÅ—LComponent‚Å§Œä)(FSM‘¤‚Å§Œä‚µ‚È‚¢(ƒgƒŠƒK[‚ğ—}‚¦‚é))
+		// ã‚¯ãƒ¼ãƒ«ãƒ€ã‚¦ãƒ³(ã‚¢ã‚¯ã‚¿ãƒ¼å›ºæœ‰Componentã§åˆ¶å¾¡)(FSMå´ã§åˆ¶å¾¡ã—ãªã„(ãƒˆãƒªã‚¬ãƒ¼ã‚’æŠ‘ãˆã‚‹))
 		float cooldown = 0.0f;
 	};
 }
