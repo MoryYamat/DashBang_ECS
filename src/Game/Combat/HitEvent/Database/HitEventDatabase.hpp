@@ -1,21 +1,25 @@
 ﻿#pragma once
 
+#include "Engine/ECS/EntityManager.h"
+
 #include "Game/Combat/HitEvent/Data/HitEvent.hpp"
 
 #include <vector>
 
+#include <algorithm> // remove_if
+
 namespace Game::Combat::HitEvent::Database
 {
-	using namespace Game::Combat::HitEvent::Data;
 
 	struct HitEventDatabase
 	{
-		std::vector<HitEvent> items;
-		EventID nextId = 1;
+		
+		std::vector<Data::HitEvent> items;
+		Data::EventID nextId = 1;
 
-		EventID allocateId() { return nextId++; }
+		Data::EventID allocateId() { return nextId++; }
 		// 自動採番
-		void push(HitEvent e) 
+		void push(Data::HitEvent e)
 		{ 
 			if (e.eventId == 0) e.eventId = allocateId();
 			items.push_back(std::move(e));
@@ -27,4 +31,18 @@ namespace Game::Combat::HitEvent::Database
 			items.erase(std::remove_if(items.begin(), items.end(), p), items.end());
 		}
 	};
+
+	// read only
+	inline const HitEventDatabase& hitEventDatabase(const Engine::ECS::EntityMgr& ecs) noexcept
+	{
+			// ecs側でリソース存在確認(assert)
+			return ecs.getResource<HitEventDatabase>();
+	}
+
+	// writable
+	inline HitEventDatabase& hitEventDatabase(Engine::ECS::EntityMgr& ecs) noexcept
+	{
+		return ecs.getResource<HitEventDatabase>();
+	}
+
 }

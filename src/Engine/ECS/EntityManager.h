@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Entity.h"
 
@@ -19,7 +19,7 @@
 #include "Common/EngineNamespaceDecl.h"
 
 
-// TODO: Å“K‰»
+// TODO: æœ€é©åŒ–
 namespace Engine::ECS
 {
 	// Entity Manager
@@ -29,10 +29,10 @@ namespace Engine::ECS
 
 		uint32_t nextEntityID = 1;
 
-		// ¦¦Efficiency issues¦¦	
-		// ¦¦Efficiency issues¦¦
-		// ¦¦Efficiency issues¦¦
-		// ƒRƒ“ƒ|[ƒlƒ“ƒg‚²‚Æ‚ÉƒGƒ“ƒeƒBƒeƒB‚ğ•R‚Ã‚¯‚é
+		// â€»â€»Efficiency issuesâ€»â€»	
+		// â€»â€»Efficiency issuesâ€»â€»
+		// â€»â€»Efficiency issuesâ€»â€»
+		// ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã”ã¨ã«ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ã‚’ç´ã¥ã‘ã‚‹
 		std::unordered_map<std::type_index, std::unordered_map<uint32_t, std::shared_ptr<void>>> mComponentPools;
 		// {type_index(Component), unordered_map{e.id, Components.data}}
 
@@ -46,7 +46,7 @@ namespace Engine::ECS
 		// 
 		std::unordered_set<uint32_t> mLivingEntities;
 
-		// ƒOƒ[ƒoƒ‹‚É‘¶İ‚·‚éQÆ‚·‚×‚«‹¤—Lî•ñ
+		// ã‚°ãƒ­ãƒ¼ãƒãƒ«ã«å­˜åœ¨ã™ã‚‹å‚ç…§ã™ã¹ãå…±æœ‰æƒ…å ±
 		std::unordered_map<std::type_index, std::shared_ptr<void>> mResources;
 
 	public:
@@ -82,7 +82,7 @@ namespace Engine::ECS
 		}
 
 		// search and safety valve
-		// ŒŸõ‚ÆˆÀ‘S•Ù
+		// æ¤œç´¢ã¨å®‰å…¨å¼
 		template<typename... Components>
 		std::vector<Entity> view()
 		{
@@ -96,7 +96,7 @@ namespace Engine::ECS
 				return result;
 			}
 
-			//@–‘O’Tõ
+			//ã€€äº‹å‰æ¢ç´¢
 			const auto& base = mComponentPools[firstType];
 
 			for (const auto& [entityID, _] : base)
@@ -116,14 +116,14 @@ namespace Engine::ECS
 
 		}
 
-		// view‚Ég—pFFilterSpec\‘¢‘ÌF{std::taple<MustComps...>, std::tuple<AnyComps...>}
+		// viewã«ä½¿ç”¨ï¼šFilterSpecæ§‹é€ ä½“ï¼š{std::taple<MustComps...>, std::tuple<AnyComps...>}
 		template<typename MustSet, typename AnySet>
 		struct FilterSpec {};
 
 		//using Must = std::tuple<TransformComponent, LogicComponent>;
 		//using Any = std::tuple<AIComponent, PhysicsComponent>;
 		//auto result = ecs.view(FilterSpec<Must, Any>{});
-		// Must‚¾‚¯“n‚·‚ÆANDŒŸõ Any‚¾‚¯“n‚·‚ÆORŒŸõ —¼•û“n‚·‚ÆAND + ORŒŸõ@
+		// Mustã ã‘æ¸¡ã™ã¨ANDæ¤œç´¢ Anyã ã‘æ¸¡ã™ã¨ORæ¤œç´¢ ä¸¡æ–¹æ¸¡ã™ã¨AND + ORæ¤œç´¢ã€€
 		template<typename... MustComponents, typename... AnyComponents>
 		std::vector<Entity> view(FilterSpec<std::tuple<MustComponents...>, std::tuple<AnyComponents...>>)
 		{
@@ -164,7 +164,7 @@ namespace Engine::ECS
 			}
 			else
 			{
-				// Must‚ª‹ó ¨ Any‚¾‚¯‚Å‘–¸iORŒŸõj
+				// MustãŒç©º â†’ Anyã ã‘ã§èµ°æŸ»ï¼ˆORæ¤œç´¢ï¼‰
 				if (mComponentPools.empty()) return result;
 
 				const auto& basePool = mComponentPools.begin()->second;
@@ -210,9 +210,9 @@ namespace Engine::ECS
 			//}
 			//else
 			//{
-			//	// Must‚ª‹ó‚Ìê‡ -> Any‚Å‘–¸ (ORŒŸõ‚Ì‚İ)
+			//	// MustãŒç©ºã®å ´åˆ -> Anyã§èµ°æŸ» (ORæ¤œç´¢ã®ã¿)
 			//	if (mComponentPools.empty()) return result;
-			//	// ”CˆÓ‚Ìƒv[ƒ‹‚ğˆê‚Âæ“¾
+			//	// ä»»æ„ã®ãƒ—ãƒ¼ãƒ«ã‚’ä¸€ã¤å–å¾—
 			//	const auto& basePool = mComponentPools.begin()->second;
 
 			//	for (const auto& [entityID, _] : basePool)
@@ -227,30 +227,30 @@ namespace Engine::ECS
 			//}
 		}
 
-		// Entity‚ªŠY“–Component‚ğ‚Á‚Ä‚¢‚é‚©”»’è‚·‚é
+		// EntityãŒè©²å½“Componentã‚’æŒã£ã¦ã„ã‚‹ã‹åˆ¤å®šã™ã‚‹
 		template<typename T>
 		bool hasComponent(Entity e) const
 		{
 			// key
 			std::type_index type = std::type_index(typeid(T));
 
-			// ƒL[‚ÅŒŸõ
+			// ã‚­ãƒ¼ã§æ¤œç´¢
 			auto poolIt = mComponentPools.find(type);
 			if (poolIt == mComponentPools.end())
 			{
 				return false;
 			}
 
-			// ƒTƒuunordered_map‚ğæ“¾
+			// ã‚µãƒ–unordered_mapã‚’å–å¾—
 			const auto& entityMap = poolIt->second;
-			// ŒŸõ
+			// æ¤œç´¢
 			return entityMap.find(e.id) != entityMap.end();
 		}
 
-		// ‚·‚×‚Ä‚ÌComponent‚É•t‚·‚éî•ñ‚Ìíœ
+		// ã™ã¹ã¦ã®Componentã«ä»˜éšã™ã‚‹æƒ…å ±ã®å‰Šé™¤
 		void Clear();
 
-		// ”CˆÓ‚ÌEntity‚É•t‚·‚éComponent‚Ìíœ(Component‚ğ’Tõ‚µCŠY“–Entity‚ª‚ ‚ê‚Îíœ‚·‚é)
+		// ä»»æ„ã®Entityã«ä»˜éšã™ã‚‹Componentã®å‰Šé™¤(Componentã‚’æ¢ç´¢ã—ï¼Œè©²å½“EntityãŒã‚ã‚Œã°å‰Šé™¤ã™ã‚‹)
 		void destroyEntity(Entity e)
 		{
 			for (auto& [type, entityMap] : mComponentPools)
@@ -271,24 +271,24 @@ namespace Engine::ECS
 			return mLivingEntities.count(e.id) > 0;
 		}
 
-		// Resource “o˜^Eæ“¾API
+		// Resource ç™»éŒ²ãƒ»å–å¾—API
 
-		// Resource‚ğ“o˜^
+		// Resourceã‚’ç™»éŒ²
 		//template<typename T>
 		//void addResource(const T& resource)
 		//{
 		//	mResources[std::type_index(typeid(T))] = std::make_shared<T>(resource);
 		//}
 
-		// Resource‚ğ“o˜^
+		// Resourceã‚’ç™»éŒ²
 		//template<typename T, typename... Args>
 		//T& createResource(Args&&... args)
 		//{
-		//	// ƒCƒ“ƒXƒ^ƒ“ƒX¶¬
+		//	// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç”Ÿæˆ
 		//	auto res = std::make_shared<T>(std::forward<Args>(args)...);
-		//	// V‹Kì¬
+		//	// æ–°è¦ä½œæˆ
 		//	mResources[std::type_index(typeid(T))] = res;
-		//	// shared_ptr<T>‚ğ•Ô‚·
+		//	// shared_ptr<T>ã‚’è¿”ã™
 		//	return *res;
 		//}
 
@@ -307,7 +307,7 @@ namespace Engine::ECS
 		}
 
 
-		// mResource‚ğæ“¾
+		// mResourceã‚’å–å¾—
 		template<typename T>
 		T& getResource()
 		{
@@ -315,17 +315,27 @@ namespace Engine::ECS
 			auto it = mResources.find(key);
 
 			assert(it != mResources.end());
-			return *std::static_pointer_cast<T>(mResources[std::type_index(typeid(T))]);
+			return *std::static_pointer_cast<T>(it->second);
 		}
 
-		// Resouce‚ª‘¶İ‚·‚é‚©Šm”F
+		template<typename T>
+		const T& getResource() const
+		{
+			const auto key = std::type_index(typeid(T));
+			auto it = mResources.find(key);
+
+			assert(it != mResources.end());
+			return *std::static_pointer_cast<T>(it->second);
+		}
+
+		// ResouceãŒå­˜åœ¨ã™ã‚‹ã‹ç¢ºèª
 		template<typename T>
 		bool hasResource() const
 		{
 			return mResources.count(std::type_index(typeid(T))) > 0;
 		}
 
-		template<typename T, typename... Args>// ƒpƒ‰ƒ[ƒ^ƒpƒbƒN
+		template<typename T, typename... Args>// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ‘ãƒƒã‚¯
 		T& getOrCreateResource(Args&&... args)
 		{
 			const auto key = std::type_index(typeid(T));
@@ -334,12 +344,12 @@ namespace Engine::ECS
 			{
 				return *std::static_pointer_cast<T>(it->second);
 			}
-			auto sp = std::make_shared<T>(std::forward<Args>(args)...);// Š®‘S“]‘—=> {std::forward<int>(value1), std::forward<hoge>(value2),..} //forward:’lƒJƒeƒSƒŠ(‰E•Ó’l^¶•Ó’l)‚ğ‚»‚Ì‚Ü‚ÜŸ‚É“n‚·
-			auto [insIt, _] = mResources.emplace(key, sp);// \‘¢‰»‘©”›
+			auto sp = std::make_shared<T>(std::forward<Args>(args)...);// å®Œå…¨è»¢é€=> {std::forward<int>(value1), std::forward<hoge>(value2),..} //forward:å€¤ã‚«ãƒ†ã‚´ãƒª(å³è¾ºå€¤ï¼å·¦è¾ºå€¤)ã‚’ãã®ã¾ã¾æ¬¡ã«æ¸¡ã™
+			auto [insIt, _] = mResources.emplace(key, sp);// æ§‹é€ åŒ–æŸç¸›
 			return *std::static_pointer_cast<T>(insIt->second);
 		}
 
-		// ”CˆÓ‚ÌComponent‚ğíœ‚·‚éAPI
+		// ä»»æ„ã®Componentã‚’å‰Šé™¤ã™ã‚‹API
 		template<typename T>
 		void removeComponent(Entity e)
 		{
@@ -351,7 +361,7 @@ namespace Engine::ECS
 			auto& entityMap = poolIt->second;
 			entityMap.erase(e.id);
 
-			// entityMap‚ª‹ó‚È‚çtype©‘Ì‚Ì“o˜^‚ğíœ‚µ‚Ä‚à‚æ‚¢iÅ“K‰»j
+			// entityMapãŒç©ºãªã‚‰typeè‡ªä½“ã®ç™»éŒ²ã‚’å‰Šé™¤ã—ã¦ã‚‚ã‚ˆã„ï¼ˆæœ€é©åŒ–ï¼‰
 			if (entityMap.empty())
 			{
 				mComponentPools.erase(type);

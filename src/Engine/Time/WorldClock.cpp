@@ -1,7 +1,9 @@
-#include "WorldClock.hpp"
+﻿#include "WorldClock.hpp"
 
 namespace Engine::Time
 {
+	using namespace Engine::ECS;
+
 	void WorldClockSystem::InitWorldClock(EntityMgr& ecs)
 	{
 		auto& clock = ecs.createResource<WorldClockData>();

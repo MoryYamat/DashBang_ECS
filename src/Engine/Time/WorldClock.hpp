@@ -1,24 +1,33 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Engine/ECS/EntityManager.h"
 
 namespace Engine::Time
 {
-	using namespace Engine::ECS;
-
 	struct WorldClockData
 	{
-		float now = 0.0f; // ’P’²‘‰Á‚Ì¢ŠE(•b) max: 3.402823466 E + 38
-		float dt = 0.0f; // ’¼‹ßƒtƒŒ[ƒ€‚Ìƒ¢t()
-		float scale = 1.0f; // ƒXƒ[‚â”{‘¬—p
-		bool paused = false;// ƒ|[ƒY—p
+		float now = 0.0f; // å˜èª¿å¢—åŠ ã®ä¸–ç•Œæ™‚åˆ»(ç§’) max: 3.402823466 E + 38
+		float dt = 0.0f; // ç›´è¿‘ãƒ•ãƒ¬ãƒ¼ãƒ ã®Î”t()
+		float scale = 1.0f; // ã‚¹ãƒ­ãƒ¼ã‚„å€é€Ÿç”¨
+		bool paused = false;// ãƒãƒ¼ã‚ºç”¨
 	};
 
 	class WorldClockSystem
 	{
 	public:
-		static void InitWorldClock(EntityMgr& ecs);
-		static void TickWorldClock(EntityMgr& ecs, float deltaTime);
+		static void InitWorldClock(Engine::ECS::EntityMgr& ecs);
+		static void TickWorldClock(Engine::ECS::EntityMgr& ecs, float deltaTime);
 	};
 
+	// read only
+	[[nodiscard]] inline const WorldClockData& worldClock(const Engine::ECS::EntityMgr& ecs) noexcept
+	{
+		return ecs.getResource<WorldClockData>();
+	}
+
+	// writable
+	[[nodiscard]] inline WorldClockData& worldClock(Engine::ECS::EntityMgr& ecs) noexcept
+	{
+		return ecs.getResource<WorldClockData>();
+	}
 }
