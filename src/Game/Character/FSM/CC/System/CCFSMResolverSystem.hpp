@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/ECS/EntityManager.h"
 
@@ -19,12 +19,12 @@ namespace Game::Character::FSM::CC::System
 	{
 	public:
 
-		void Update(eNsECS::EntityMgr& ecs, float deltaTime);
+		static void Update(eNsECS::EntityMgr& ecs, float deltaTime);
 
 
 	private:
 
-		void tryTriggerEffect(
+		static void tryTriggerEffect(
 			eNsECS::EntityMgr& ecs,
 			const CCFSMStateEffectHook& hook,
 			const eNsECS::Entity entity,
@@ -34,7 +34,7 @@ namespace Game::Character::FSM::CC::System
 			const std::type_index& previous
 		);
 
-		void tryTriggerReset(
+		static void tryTriggerReset(
 			eNsECS::EntityMgr& ecs,
 			const CCFSMStateEffectHook& hook,
 			const eNsECS::Entity entity,

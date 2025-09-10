@@ -1,4 +1,4 @@
-#include "InitSkillDatabase.hpp"
+ï»¿#include "InitSkillDatabase.hpp"
 
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMStates.hpp"
 
@@ -31,6 +31,9 @@
 
 #include "Game/Combat/Skill/FSM/SkillStateTags.hpp"
 
+// cc
+#include "Game/Character/FSM/CC/CCStateTags.hpp"
+
 #include "Common/GameNamespaceDecl.h"
 
 void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMgr& ecs)
@@ -39,6 +42,7 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 	using namespace gNsSkillFSM;
 	using namespace gNsSkillFSM::SkillPhase;
 	using namespace Game::Combat::Skill::Data;
+	using namespace Game::Combat::Skill::Def;
 	using namespace Game::Combat::Skill::FSM::Condition;
 	using namespace Game::Combat::Skill::FSM::Effect;
 	using namespace Game::Combat::Skill::FSM::Reset;
@@ -53,12 +57,19 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 	testSkill.def.activeDuration = 1.0f;
 	testSkill.def.recoveryDuration = 1.0f;
 
+	CCSpec ccSpec{
+		.type = Game::Character::FSM::CC::StateTag::STUNNED,
+		.priority = 300
+	};
+
+	testSkill.def.cc = ccSpec;
+
 	testSkill.def.spawnHitArea = gNsSkill::Def::SpawnHitArea{
 		.duration = 2.0f,
 		.shape = gNsSkillComp::Attack2DShape {
 			gNsSkillComp::Circle2DAttack {
-				.center = CanonicalDefaults::kLocalCenterXZ, // ’†SˆÊ’u
-				.radius = 5.0f // ”¼Œa
+				.center = CanonicalDefaults::kLocalCenterXZ, // ä¸­å¿ƒä½ç½®
+				.radius = 5.0f // åŠå¾„
 			}},
 		.trajectoryParams = gNsSkillData::SkillTrajectory::LinearTrajectoryParams
 		{
@@ -76,10 +87,10 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 		{typeid(Active), typeid(Recovery), std::make_shared<ActiveTimeElapsed>()},
 		{typeid(Recovery), typeid(Completed), std::make_shared<RecoveryTimeElapsed>()},
 
-		// Interrupted(’†’fƒtƒ‰ƒO‚ª—§‚Á‚½‚ç‚Ç‚±‚©‚ç‚Å‚à)
+		// Interrupted(ä¸­æ–­ãƒ•ãƒ©ã‚°ãŒç«‹ã£ãŸã‚‰ã©ã“ã‹ã‚‰ã§ã‚‚)
 		{std::nullopt, typeid(Interrupted), std::make_shared<IsInterrupted>()},
 
-		// === I—¹ó‘Ô ‚©‚ç None ‚É–ß‚· === (‚·‚×‚Ä‚ÌƒŠƒZƒbƒg‚Í`Completed`/`Interrupted`‚©‚çs‚í‚ê‚é‚±‚Æ‚ğ‘O’ñ‚Æ‚·‚é)
+		// === çµ‚äº†çŠ¶æ…‹ ã‹ã‚‰ None ã«æˆ»ã™ === (ã™ã¹ã¦ã®ãƒªã‚»ãƒƒãƒˆã¯`Completed`/`Interrupted`ã‹ã‚‰è¡Œã‚ã‚Œã‚‹ã“ã¨ã‚’å‰æã¨ã™ã‚‹)
 		{typeid(Completed), typeid(None), std::make_shared<AlwaysTrue>()},
 		{typeid(Interrupted), typeid(None), std::make_shared<AlwaysTrue>()},
 
@@ -133,12 +144,12 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 
 	// TODO :
 	// 
-	// `SkillStateTags.hpp`‚ğ“K—p‚µCtypeid‚Ìƒn[ƒhƒR[ƒh‚ğC³‚·‚é
+	// `SkillStateTags.hpp`ã‚’é©ç”¨ã—ï¼Œtypeidã®ãƒãƒ¼ãƒ‰ã‚³ãƒ¼ãƒ‰ã‚’ä¿®æ­£ã™ã‚‹
 	// 
-	// **•›ì—p‚ÌƒCƒxƒ“ƒgƒtƒbƒND‚¨‚æ‚Ñ©“®‰ğŒˆ\‘¢‚ÌÀ‘•**
+	// **å‰¯ä½œç”¨ã®ã‚¤ãƒ™ãƒ³ãƒˆãƒ•ãƒƒã‚¯ï¼ãŠã‚ˆã³è‡ªå‹•è§£æ±ºæ§‹é€ ã®å®Ÿè£…**
 	// 
-	// **’¼ŒğFSM‚ÌƒeƒXƒg**: ƒXƒLƒ‹‰r¥’†->MovementSpeed‚ğ”CˆÓ%’á‰º‚³‚¹‚éD‚»‚ê‚ğ’è‹`ƒhƒŠƒuƒ“‚ÅÀ‘•‚·‚éD
+	// **ç›´äº¤FSMã®ãƒ†ã‚¹ãƒˆ**: ã‚¹ã‚­ãƒ«è© å”±ä¸­->MovementSpeedã‚’ä»»æ„%ä½ä¸‹ã•ã›ã‚‹ï¼ãã‚Œã‚’å®šç¾©ãƒ‰ãƒªãƒ–ãƒ³ã§å®Ÿè£…ã™ã‚‹ï¼
 	// 
-	// **‚±‚ê‚ç‚Ì’mŒ©‚ğ“¥‚Ü‚¦‚ÄC”Ä—pƒeƒ“ƒvƒŒ[ƒgƒCƒ“ƒ^[ƒtƒF[ƒX‚ğÀ‘•‚·‚é**
+	// **ã“ã‚Œã‚‰ã®çŸ¥è¦‹ã‚’è¸ã¾ãˆã¦ï¼Œæ±ç”¨ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ã‚’å®Ÿè£…ã™ã‚‹**
 	// 
 }

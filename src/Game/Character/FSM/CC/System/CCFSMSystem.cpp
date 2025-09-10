@@ -1,4 +1,4 @@
-#include "CCFSMSystem.hpp"
+ï»¿#include "CCFSMSystem.hpp"
 
 #include "Engine/Time/WorldClock.hpp"
 
@@ -23,7 +23,7 @@ namespace Game::Character::FSM::CC::System
 
 		const auto& db = ecs.getResource<CCFSMDatabase>();
 		if (!db.Has("basic")) return;
-		const auto& def = db.Get("basic"); // TODO: «—ˆentity–‚Éˆá‚¤’è‹`‚ğ‚Ä‚é‚æ‚¤‚É
+		const auto& def = db.Get("basic"); // TODO: å°†æ¥entityäº‹ã«é•ã†å®šç¾©ã‚’æŒã¦ã‚‹ã‚ˆã†ã«
 
 		for (auto e : ecs.view<
 			CCStateComponent,
@@ -32,13 +32,13 @@ namespace Game::Character::FSM::CC::System
 			auto& state = ecs.get<CCStateComponent>(e);
 			auto& reqs = ecs.get<CCFSMTransitionRequestComponent>(e);
 
-			// TODO: CCFSMContext‚Ì\’z•û–@‚ğ”Ä—p“I‚É‚·‚é(Œ»ó‚ÍAntiChain‚Ì‚İ‚É‚È‚Á‚Ä‚¢‚é)
+			// TODO: CCFSMContextã®æ§‹ç¯‰æ–¹æ³•ã‚’æ±ç”¨çš„ã«ã™ã‚‹(ç¾çŠ¶ã¯AntiChainã®ã¿ã«ãªã£ã¦ã„ã‚‹)
 			CCFSMContext ctx{};
 			const bool inCC = (state.current != StateTag::NONE) && (state.current != StateTag::IMMUNE);
 
 			if (!inCC)
 			{
-				// •K—v‚È‚ç NONE/IMMUNE —p‚Ì‘JˆÚ‚ğ•]‰¿i¡‰ñ‚Í–³‚¢‚©‚çƒXƒLƒbƒv‚ÅOKj
+				// å¿…è¦ãªã‚‰ NONE/IMMUNE ç”¨ã®é·ç§»ã‚’è©•ä¾¡ï¼ˆä»Šå›ã¯ç„¡ã„ã‹ã‚‰ã‚¹ã‚­ãƒƒãƒ—ã§OKï¼‰
 				ctx.currentCC.reset();
 				ctx.ccEnteredAt = 0.0f;
 				ctx.ccDuration = 0.0f;
@@ -54,7 +54,7 @@ namespace Game::Character::FSM::CC::System
 
 			for (const auto& trans : def.transitions)
 			{
-				// fromğŒ‚ª‚ ‚é‚È‚çƒ`ƒFƒbƒN(nullopt = ‚·‚×‚Ä‚Ìó‘Ô‚©‚ç‹–—e)
+				// fromæ¡ä»¶ãŒã‚ã‚‹ãªã‚‰ãƒã‚§ãƒƒã‚¯(nullopt = ã™ã¹ã¦ã®çŠ¶æ…‹ã‹ã‚‰è¨±å®¹)
 				if (trans.from.has_value() && state.current != trans.from.value()) continue;
 				if (!trans.condition->evaluate(ctx)) continue;
 
@@ -63,7 +63,7 @@ namespace Game::Character::FSM::CC::System
 				reqs.requests.push_back(
 					{
 						.requestedTo = trans.to,
-						.priority = 0// Œ»İ‚ÍŒÅ’èEƒeƒXƒg—p
+						.priority = 0// ç¾åœ¨ã¯å›ºå®šãƒ»ãƒ†ã‚¹ãƒˆç”¨
 					});
 
 				std::cout << "[CCFSMSystem] Requesting transition: ->  "

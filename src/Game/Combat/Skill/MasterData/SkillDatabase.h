@@ -1,4 +1,4 @@
-// ‘SƒXƒLƒ‹‚ÌuÃ“Iƒf[ƒ^v‚ğŠÇ—
+ï»¿// å…¨ã‚¹ã‚­ãƒ«ã®ã€Œé™çš„ãƒ‡ãƒ¼ã‚¿ã€ã‚’ç®¡ç†
 // Manage "static data" for all skills
 
 #pragma once
@@ -14,9 +14,11 @@
 
 #include <iostream>
 
+#include <cassert>
+
 namespace Game::Combat::Skill::Database
 {
-	// Vƒo[ƒWƒ‡ƒ“F‚±‚ê‚ğg‚¦‚é‚æ‚¤ƒŠƒtƒ@ƒNƒ^‚µ‚Ä‚¢‚­
+	// æ–°ãƒãƒ¼ã‚¸ãƒ§ãƒ³ï¼šã“ã‚Œã‚’ä½¿ãˆã‚‹ã‚ˆã†ãƒªãƒ•ã‚¡ã‚¯ã‚¿ã—ã¦ã„ã
 	class SkillDatabase
 	{
 	public:
@@ -31,9 +33,9 @@ namespace Game::Combat::Skill::Database
 			std::cout << "[SkillDatabase.h(AddSkill): Skill id ]" << entry.def.id << "is added as \"" << entry.def.name << "\"" << std::endl;
 		}
 
-		const gNsSkillData::SkillEntry& Get(uint32_t id) const
+		const gNsSkillData::SkillEntry& Get(const uint32_t id) const
 		{
-			// ~~.conatins(id)‚É•ÏX—\’è(C++20)~~ => (.contains‚Í‘¶İŠm”F‚ğ‚µ‚½‚¢‚¾‚¯‚Ì.)
+			// ~~.conatins(id)ã«å¤‰æ›´äºˆå®š(C++20)~~ => (.containsã¯å­˜åœ¨ç¢ºèªã‚’ã—ãŸã„ã ã‘ã®æ™‚.)
 			//auto it = mDefinitions.find(id);
 			//if (it == mDefinitions.end())
 			//{
@@ -41,7 +43,7 @@ namespace Game::Combat::Skill::Database
 			//}
 			//return it->second;
 
-			// —áŠO‚ğ“Š‚°‚é\‘¢‚Í‚æ‚­‚È‚¢ => ‚»‚à‚»‚à‘¶İ‚µ‚È‚¢ID‚ğGet‚µ‚È‚¢‚æ‚¤‚È\‘¢‚ª•K—v (ŒÄ‚Ño‚µ‘¤‚ÅHas‚È‚Ç‚Åif‚·‚éH)
+			// ä¾‹å¤–ã‚’æŠ•ã’ã‚‹æ§‹é€ ã¯ã‚ˆããªã„ => ãã‚‚ãã‚‚å­˜åœ¨ã—ãªã„IDã‚’Getã—ãªã„ã‚ˆã†ãªæ§‹é€ ãŒå¿…è¦ (å‘¼ã³å‡ºã—å´ã§Hasãªã©ã§ifã™ã‚‹ï¼Ÿ)
 			try {
 				return mEntries.at(id);
 			}
@@ -50,10 +52,37 @@ namespace Game::Combat::Skill::Database
 			}
 		}
 
-		// ‘¶İŠm”F => ‘¶İŠm”F(Has)‚Ææ“¾(Get)‚ğˆê‘Î‚Ìˆ—‚É‚µ‚½CtryGet‚ğì‚ê‚Î‚¢‚¢H
-		bool Has(uint32_t id) const
+		// å­˜åœ¨ç¢ºèª => å­˜åœ¨ç¢ºèª(Has)ã¨å–å¾—(Get)ã‚’ä¸€å¯¾ã®å‡¦ç†ã«ã—ãŸï¼ŒtryGetã‚’ä½œã‚Œã°ã„ã„ï¼Ÿ
+		bool Has(const uint32_t id) const
 		{
 			return mEntries.contains(id);
+		}
+
+
+		// read only
+		const gNsSkillData::SkillEntry* tryGet(uint32_t id) const noexcept
+		{
+			auto it = mEntries.find(id);
+			if (it != mEntries.end())
+			{
+				return &it->second;
+			}
+
+			assert(it != mEntries.end());
+			return nullptr;
+		}
+
+		// writable
+		gNsSkillData::SkillEntry* tryGet(uint32_t id) noexcept
+		{
+			auto it = mEntries.find(id);
+			if (it != mEntries.end())
+			{
+				return &it->second;
+			}
+
+			// assert(it != mEntries.end());
+			return nullptr;
 		}
 
 	private:
@@ -61,6 +90,19 @@ namespace Game::Combat::Skill::Database
 		// ( id, skillDefinition(class) )
 		std::unordered_map<uint32_t, gNsSkillData::SkillEntry> mEntries;
 	};
+
+
+	// read only
+	[[nodiscard]]inline const SkillDatabase& skillDatabase(const Engine::ECS::EntityMgr& ecs)
+	{
+		return ecs.getResource<SkillDatabase>();
+	}
+
+	// writable
+	[[nodiscard]] inline SkillDatabase& skillDatabase(Engine::ECS::EntityMgr& ecs)
+	{
+		return ecs.getResource<SkillDatabase>();
+	}
 }
 
 namespace Game::Combat::Skill::Data
@@ -68,7 +110,7 @@ namespace Game::Combat::Skill::Data
 
 
 
-	// ŒÃ‚¢ƒo[ƒWƒ‡ƒ“F”p~—\’è
+	// å¤ã„ãƒãƒ¼ã‚¸ãƒ§ãƒ³ï¼šå»ƒæ­¢äºˆå®š
 	class SkillDatabase
 	{
 	public:
@@ -85,7 +127,7 @@ namespace Game::Combat::Skill::Data
 
 		const gNsSkillData::SkillDefinition& Get(int id) const
 		{
-			// ~~.conatins(id)‚É•ÏX—\’è(C++20)~~ => (.contains‚Í‘¶İŠm”F‚ğ‚µ‚½‚¢‚¾‚¯‚Ì.)
+			// ~~.conatins(id)ã«å¤‰æ›´äºˆå®š(C++20)~~ => (.containsã¯å­˜åœ¨ç¢ºèªã‚’ã—ãŸã„ã ã‘ã®æ™‚.)
 			//auto it = mDefinitions.find(id);
 			//if (it == mDefinitions.end())
 			//{
@@ -93,7 +135,7 @@ namespace Game::Combat::Skill::Data
 			//}
 			//return it->second;
 
-			// —áŠO‚ğ“Š‚°‚é\‘¢‚Í‚æ‚­‚È‚¢ => ‚»‚à‚»‚à‘¶İ‚µ‚È‚¢ID‚ğGet‚µ‚È‚¢‚æ‚¤‚È\‘¢‚ª•K—v (ŒÄ‚Ño‚µ‘¤‚ÅHas‚È‚Ç‚Åif‚·‚éH)
+			// ä¾‹å¤–ã‚’æŠ•ã’ã‚‹æ§‹é€ ã¯ã‚ˆããªã„ => ãã‚‚ãã‚‚å­˜åœ¨ã—ãªã„IDã‚’Getã—ãªã„ã‚ˆã†ãªæ§‹é€ ãŒå¿…è¦ (å‘¼ã³å‡ºã—å´ã§Hasãªã©ã§ifã™ã‚‹ï¼Ÿ)
 			try {
 				return mDefinitions.at(id);
 			}
@@ -102,7 +144,7 @@ namespace Game::Combat::Skill::Data
 			}
 		}
 
-		// ‘¶İŠm”F => ‘¶İŠm”F(Has)‚Ææ“¾(Get)‚ğˆê‘Î‚Ìˆ—‚É‚µ‚½CtryGet‚ğì‚ê‚Î‚¢‚¢H
+		// å­˜åœ¨ç¢ºèª => å­˜åœ¨ç¢ºèª(Has)ã¨å–å¾—(Get)ã‚’ä¸€å¯¾ã®å‡¦ç†ã«ã—ãŸï¼ŒtryGetã‚’ä½œã‚Œã°ã„ã„ï¼Ÿ
 		bool Has(int id) const
 		{
 			return mDefinitions.contains(id);

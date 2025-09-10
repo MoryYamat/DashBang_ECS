@@ -1,4 +1,4 @@
-// entry point
+﻿// entry point
 
 
 #include <iostream>
@@ -20,7 +20,6 @@ int main()
 	{
 		game.RunLoop();
 	}
-
 
 	game.Shutdown();
 

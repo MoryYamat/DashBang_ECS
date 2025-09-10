@@ -1,4 +1,4 @@
-// Game Œn‚Ì–¼‘O‹óŠÔ‚Ì‘O•ûéŒ¾{alias’è‹`‚Ì‚İ‚É“Á‰»‚µ‚½ƒwƒbƒ_
+ï»¿// Game ç³»ã®åå‰ç©ºé–“ã®å‰æ–¹å®£è¨€ï¼‹aliaså®šç¾©ã®ã¿ã«ç‰¹åŒ–ã—ãŸãƒ˜ãƒƒãƒ€
 
 #pragma once
 
@@ -75,6 +75,7 @@ namespace Game
 		namespace FSM
 		{
 			namespace Movement {}
+			namespace CC {}
 		}
 	}
 
@@ -85,9 +86,9 @@ namespace Game
 
 		namespace Analog {}
 
-		// ”p~—\’è(Intent‚ğ‰î‚µ‚½‘€ìƒƒWƒbƒN‚ÉØ‚è‘Ö‚¦‚é‚½‚ß)
-		// ”p~—\’è(Intent‚ğ‰î‚µ‚½‘€ìƒƒWƒbƒN‚ÉØ‚è‘Ö‚¦‚é‚½‚ß)
-		// ”p~—\’è(Intent‚ğ‰î‚µ‚½‘€ìƒƒWƒbƒN‚ÉØ‚è‘Ö‚¦‚é‚½‚ß)
+		// å»ƒæ­¢äºˆå®š(Intentã‚’ä»‹ã—ãŸæ“ä½œãƒ­ã‚¸ãƒƒã‚¯ã«åˆ‡ã‚Šæ›¿ãˆã‚‹ãŸã‚)
+		// å»ƒæ­¢äºˆå®š(Intentã‚’ä»‹ã—ãŸæ“ä½œãƒ­ã‚¸ãƒƒã‚¯ã«åˆ‡ã‚Šæ›¿ãˆã‚‹ãŸã‚)
+		// å»ƒæ­¢äºˆå®š(Intentã‚’ä»‹ã—ãŸæ“ä½œãƒ­ã‚¸ãƒƒã‚¯ã«åˆ‡ã‚Šæ›¿ãˆã‚‹ãŸã‚)
 		namespace Player {}
 	}
 
@@ -113,7 +114,7 @@ namespace Game
 	{
 		namespace Skill
 		{
-			// FIXME: “‡E®—‚µ‚Ä‚í‚©‚è‚â‚·‚­‚·‚é
+			// FIXME: çµ±åˆãƒ»æ•´ç†ã—ã¦ã‚ã‹ã‚Šã‚„ã™ãã™ã‚‹
 			namespace Component {}
 			namespace System 
 			{
@@ -201,6 +202,7 @@ namespace gNsCharacterControlSkill = Game::Character::Control::Skill;// Characte
 // FSM
 namespace gNsCharaFSM = Game::Character::FSM;// Character FSM
 namespace gNsCharaFSMMovement = Game::Character::FSM::Movement;// Character FSM Movement
+namespace gNsCharaFSMCC = Game::Character::FSM::CC;
 
 // Game::Input:: 
 namespace gNsInput = Game::Input;

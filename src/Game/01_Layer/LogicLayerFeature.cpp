@@ -1,8 +1,10 @@
-#include "LogicLayerFeature.h"
+ï»¿#include "LogicLayerFeature.h"
 
 #include "Game/00_Feature/Character/Movement/MovementFeature.h"
 
 #include "Game/00_Feature/Collision/CollisionFeature.h"
+
+#include "Game/00_Feature/Combat/HitEvent/HitEventFeature.hpp"
 
 #include "Game/00_Feature/Combat/Skill/SkillFeature.h"
 
@@ -14,54 +16,56 @@
 
 #include "Game/00_Feature/System/WorldClockFeature.hpp"
 
-// FIXME: Logic‚ÍWorldClock‚ÌScaledTime‚ğg‚¤‚æ‚¤‚É•ÏX‚·‚é
-// FIXME: •¨—‚ÍŒÅ’èƒXƒeƒbƒv(fixedStep = 1/60), FSM/AI/ƒAƒjƒ•âŠ®/AntiChain/UIØ‘Ö/‰‰o(ScaledTime)
+// FIXME: Logicã¯WorldClockã®ScaledTimeã‚’ä½¿ã†ã‚ˆã†ã«å¤‰æ›´ã™ã‚‹
+// FIXME: ç‰©ç†ã¯å›ºå®šã‚¹ãƒ†ãƒƒãƒ—(fixedStep = 1/60), FSM/AI/ã‚¢ãƒ‹ãƒ¡è£œå®Œ/AntiChain/UIåˆ‡æ›¿/æ¼”å‡º(ScaledTime)
 void Game::Layer::LogicLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 	using namespace Game::Feature;
 	// world clock
 	System::WorldClockFeature::Update(ecs, deltaTime);
 
-	// ------------------------- ƒLƒƒƒ‰ƒNƒ^[ŠÖ˜Aˆ— -------------------------
-	// ƒLƒƒƒ‰ƒNƒ^[‚ÌŒü‚«‚ÆˆÊ’u‚ğXV‚·‚é
+	// ------------------------- ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼é–¢é€£å‡¦ç† -------------------------
+	// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®å‘ãã¨ä½ç½®ã‚’æ›´æ–°ã™ã‚‹
 	gNsFeature::Character::MovementFeature::UpdateLogicFacing(ecs);
 	Game::Feature::Character::MovementFeature::UpdateLogicPosition(ecs, deltaTime);
 
 
-	// ------------------------- ƒXƒLƒ‹ŠÖ˜Aˆ— -------------------------
-	// Intent‚É‰‚¶‚ÄƒXƒLƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX‚ğ¶¬
+	// ------------------------- ã‚¹ã‚­ãƒ«é–¢é€£å‡¦ç† -------------------------
+	// Intentã«å¿œã˜ã¦ã‚¹ã‚­ãƒ«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç”Ÿæˆ
 	// gNsFeature::Combat::SkillFeature::TriggerSkillsFromIntent(ecs);
 	// Game::Feature::Character::CharacterSkillFeature::UpdateCharacterSkillExecution(ecs, deltaTime);
 
-	// ƒXƒLƒ‹ƒtƒF[ƒY(õ–½ŠÇ—‚Æ”»’è¶¬)
+	// ã‚¹ã‚­ãƒ«ãƒ•ã‚§ãƒ¼ã‚º(å¯¿å‘½ç®¡ç†ã¨åˆ¤å®šç”Ÿæˆ)
 	// gNsFeature::Combat::SkillFeature::UpdateSkillPhaseSystem(ecs, deltaTime);
-	// ŒŸ“¢•K—vF‚±‚±‚ÅƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹Àsó‘Ô‚ğXV‚·‚é‚©‚Ç‚¤‚©
-	// ŒŸ“¢•K—vF‚±‚±‚ÅƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹Àsó‘Ô‚ğXV‚·‚é‚©‚Ç‚¤‚©
-	// ŒŸ“¢•K—vF‚±‚±‚ÅƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹Àsó‘Ô‚ğXV‚·‚é‚©‚Ç‚¤‚©
-	// state‚ÖˆÚİ
+	// æ¤œè¨å¿…è¦ï¼šã“ã“ã§ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«å®Ÿè¡ŒçŠ¶æ…‹ã‚’æ›´æ–°ã™ã‚‹ã‹ã©ã†ã‹
+	// æ¤œè¨å¿…è¦ï¼šã“ã“ã§ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«å®Ÿè¡ŒçŠ¶æ…‹ã‚’æ›´æ–°ã™ã‚‹ã‹ã©ã†ã‹
+	// æ¤œè¨å¿…è¦ï¼šã“ã“ã§ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«å®Ÿè¡ŒçŠ¶æ…‹ã‚’æ›´æ–°ã™ã‚‹ã‹ã©ã†ã‹
+	// stateã¸ç§»è¨­
 	// gNsFeature::Character::StateFeature::UPdateCharacterSkillExecutionState(ecs, deltaTime);
 
-	// ===========================ãFíœ—\’èFFSM“±“üŒã”p~================
+	// ===========================ä¸Šï¼šå‰Šé™¤äºˆå®šï¼šFSMå°å…¥å¾Œå»ƒæ­¢================
 	
-	// ƒXƒLƒ‹‹OÕXV
+	// ã‚¹ã‚­ãƒ«è»Œè·¡æ›´æ–°
 	gNsFeature::Combat::SkillFeature::UpdateSkillTrajectorySystem(ecs, deltaTime);
 	// hitbox lifetime 
 	gNsFeature::Combat::SkillFeature::UpdateHitoboxLifetimeSystem(ecs, deltaTime);
 
-	// íœ—\’èFSkillExecution‚ğcharacterƒAƒNƒ^[‚Ö•t—^‚·‚é•û®‚É•ÏX‚µ‚½‚½‚ß
-	// ÅVFSkillExecutionLifetime
+	// å‰Šé™¤äºˆå®šï¼šSkillExecutionã‚’characterã‚¢ã‚¯ã‚¿ãƒ¼ã¸ä»˜ä¸ã™ã‚‹æ–¹å¼ã«å¤‰æ›´ã—ãŸãŸã‚
+	// æœ€æ–°ï¼šSkillExecutionLifetime
 	//gNsFeature::Combat::SkillFeature::UpdateSkillExecutionLifetimeSystem(ecs);
 
 
 	// lifetime
-	gNsFeature::ECS::GameGeneralSytem::UpdateLifetimeSystem(ecs, deltaTime); // ECS‚Ìƒ‰ƒCƒtƒ^ƒCƒ€ƒVƒXƒeƒ€‚ğXV
+	gNsFeature::ECS::GameGeneralSytem::UpdateLifetimeSystem(ecs, deltaTime); // ECSã®ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ã‚·ã‚¹ãƒ†ãƒ ã‚’æ›´æ–°
 
-	// ------------------------- ƒRƒŠƒWƒ‡ƒ“ŠÖ˜Aˆ— -------------------------
-	// ƒRƒŠƒWƒ‡ƒ“‚ÌˆÊ’uî•ñ‚È‚Ç‚ğXV‚·‚é(CollisionComp.center etc.) (ƒRƒŠƒWƒ‡ƒ“‚Íƒ[ƒJƒ‹Œ`óî•ñ‚ÉÓ–±•ª—£‚µ‚½‚½‚ßSyncColl‚Í•s—v)
-	// ƒRƒŠƒWƒ‡ƒ“‚ÌˆÊ’uî•ñ‚È‚Ç‚ğXV‚·‚é(CollisionComp.center etc.) (ƒRƒŠƒWƒ‡ƒ“‚Íƒ[ƒJƒ‹Œ`óî•ñ‚ÉÓ–±•ª—£‚µ‚½‚½‚ßSyncColl‚Í•s—v)
-	// ƒRƒŠƒWƒ‡ƒ“‚ÌˆÊ’uî•ñ‚È‚Ç‚ğXV‚·‚é(CollisionComp.center etc.) (ƒRƒŠƒWƒ‡ƒ“‚Íƒ[ƒJƒ‹Œ`óî•ñ‚ÉÓ–±•ª—£‚µ‚½‚½‚ßSyncColl‚Í•s—v)
+	// ------------------------- ã‚³ãƒªã‚¸ãƒ§ãƒ³é–¢é€£å‡¦ç† -------------------------
+	// ã‚³ãƒªã‚¸ãƒ§ãƒ³ã®ä½ç½®æƒ…å ±ãªã©ã‚’æ›´æ–°ã™ã‚‹(CollisionComp.center etc.) (ã‚³ãƒªã‚¸ãƒ§ãƒ³ã¯ãƒ­ãƒ¼ã‚«ãƒ«å½¢çŠ¶æƒ…å ±ã«è²¬å‹™åˆ†é›¢ã—ãŸãŸã‚SyncCollã¯ä¸è¦)
+	// ã‚³ãƒªã‚¸ãƒ§ãƒ³ã®ä½ç½®æƒ…å ±ãªã©ã‚’æ›´æ–°ã™ã‚‹(CollisionComp.center etc.) (ã‚³ãƒªã‚¸ãƒ§ãƒ³ã¯ãƒ­ãƒ¼ã‚«ãƒ«å½¢çŠ¶æƒ…å ±ã«è²¬å‹™åˆ†é›¢ã—ãŸãŸã‚SyncCollã¯ä¸è¦)
+	// ã‚³ãƒªã‚¸ãƒ§ãƒ³ã®ä½ç½®æƒ…å ±ãªã©ã‚’æ›´æ–°ã™ã‚‹(CollisionComp.center etc.) (ã‚³ãƒªã‚¸ãƒ§ãƒ³ã¯ãƒ­ãƒ¼ã‚«ãƒ«å½¢çŠ¶æƒ…å ±ã«è²¬å‹™åˆ†é›¢ã—ãŸãŸã‚SyncCollã¯ä¸è¦)
 	// gNsFeature::CollisionFeature::SyncLogicCollision(ecs);
-	// ===========================ãFíœ—\’èFFSM“±“üŒã”p~================
+	// ===========================ä¸Šï¼šå‰Šé™¤äºˆå®šï¼šFSMå°å…¥å¾Œå»ƒæ­¢================
 
 	gNsFeature::CollisionFeature::UpdateCollisionBuffer(ecs);
+
+	gNsFeature::Combat::HitEventFeature::UpdateHitEventManager(ecs);
 }

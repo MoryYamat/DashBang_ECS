@@ -1,4 +1,4 @@
-#include "PlayerCharacterActor.h"
+ï»¿#include "PlayerCharacterActor.h"
 
 #include "Engine/ECS/Entity.h"
 #include "Engine/ECS/EntityUtils/EntityUtils.h"
@@ -71,6 +71,9 @@
 // movement
 #include "Game/Character/FSM/Movement/StateModel/MovementStateComponent.hpp"
 #include "Game/Character/FSM/Movement/StateModel/MovementFSMTransitionRequestComponent.hpp"
+//CC
+#include "Game/Character/FSM/CC/StateModel/CCStateComponent.hpp"
+#include "Game/Character/FSM/CC/StateModel/CCFSMTransitionRequestComponent.hpp"
 // skill
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMTransitionRequestComponent.hpp"
@@ -162,10 +165,10 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	ecs.addComponent(entity, materialComp);
 
 	// Collsion Initialization
-	// ƒRƒŠƒWƒ‡ƒ“‰Šú‰»
+	// ã‚³ãƒªã‚¸ãƒ§ãƒ³åˆæœŸåŒ–
 	eNsLogic2DComp::CollisionComponent playerCollisionComp;
 	playerCollisionComp.collider.shape = eNsLogic2DComp::Circle2D{
-		.center = glm::vec2(0.0f),// ƒ[ƒJƒ‹ƒZƒ“ƒ^[
+		.center = glm::vec2(0.0f),// ãƒ­ãƒ¼ã‚«ãƒ«ã‚»ãƒ³ã‚¿ãƒ¼
 		.radius = gNsInit::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, gNsInit::Logic2D::RadiusEstimateStrategy::MaxAxis)
 	};
 	//playerCollisionComp.collider.circle2D.center = logic.positionXZ;
@@ -174,13 +177,13 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	// playerCollisionComp.collider.circle2D.radius = radius;
 	ecs.addComponent(entity, playerCollisionComp);
 
-	// Collision Mask ‰Šú‰»
+	// Collision Mask åˆæœŸåŒ–
 	gNsCollComp::CollisionMaskComponent playerMask;
 	playerMask.selfLayer = gNsCollData::Layer::Player;
 	playerMask.collidesWithMask = static_cast<uint32_t>(gNsCollData::Layer::Neutral | gNsCollData::Layer::Enemy);
 	ecs.addComponent(entity, playerMask);
 
-	// ˆÈ‘O‚ÌİŒv
+	// ä»¥å‰ã®è¨­è¨ˆ
 	//SkillInstanceComponent activeSkill1;
 	//activeSkill1.caster = entity;
 	//activeSkill1.timeSinceCast = 0.0f;
@@ -193,7 +196,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	//activeSkill2.skillId = 2;
 	//ecs.addComponent(entity, activeSkill2);
 
-	// ƒXƒLƒ‹iIDj ‚ğ SkillSLot‚ÉŠ„‚è“–‚Ä î•ñ‚ğ•Û
+	// ã‚¹ã‚­ãƒ«ï¼ˆIDï¼‰ ã‚’ SkillSLotã«å‰²ã‚Šå½“ã¦ æƒ…å ±ã‚’ä¿æŒ
 	gNsSkillComp::SkillSlotAssignmentComponent assign;
 	assign.slotToSkillId[gNsSkillData::SkillSlot::Primary] = 1;
 	assign.slotToSkillId[gNsSkillData::SkillSlot::Secondary] = 2;
@@ -201,7 +204,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	assign.slotToSkillId[gNsSkillData::SkillSlot::Utility2] = 4;
 	ecs.addComponent(entity, assign);
 
-	// InputAction ‚Æ ƒXƒLƒ‹ƒXƒƒbƒg‚ÌŠ„‚è“–‚Ä‚ğ•Û
+	// InputAction ã¨ ã‚¹ã‚­ãƒ«ã‚¹ãƒ­ãƒƒãƒˆã®å‰²ã‚Šå½“ã¦ã‚’ä¿æŒ
 	gNsSkillComp::SkillInputBindingComponent binding;
 	binding.actionToSlot[gNsInput::InputAction::CastSkill1] = gNsSkillData::SkillSlot::Primary;
 	binding.actionToSlot[gNsInput::InputAction::CastSkill2] = gNsSkillData::SkillSlot::Secondary;
@@ -209,7 +212,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	binding.actionToSlot[gNsInput::InputAction::CastSkill4] = gNsSkillData::SkillSlot::Utility2;
 	ecs.addComponent(entity, binding);
 
-	// •K—vHi–¢g—p‚Ì‚½‚ßŒŸ“¢‚ª•K—vj‰½‚Ì‚½‚ß‚É—pˆÓ‚µ‚½‚©•s–¾
+	// å¿…è¦ï¼Ÿï¼ˆæœªä½¿ç”¨ã®ãŸã‚æ¤œè¨ãŒå¿…è¦ï¼‰ä½•ã®ãŸã‚ã«ç”¨æ„ã—ãŸã‹ä¸æ˜
 	ActiveSkillCasterComponent ascc;
 	ecs.addComponent(entity, ascc);
 
@@ -272,6 +275,9 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	// movement FSM
 	ecs.addComponent(entity, gNsCharaFSMMovement::MovementStateComponent{});
 	ecs.addComponent(entity, gNsCharaFSMMovement::MovementFSMTransitionRequestComponent{});
+	// CC FSM
+	ecs.addComponent(entity, gNsCharaFSMCC::StateModel::CCStateComponent{});
+	ecs.addComponent(entity, Game::Character::FSM::CC::StateModel::CCFSMTransitionRequestComponent{});
 	// skill FSM
 	ecs.addComponent(entity, gNsSkillFSM::SkillStateComponent{});
 	ecs.addComponent(entity, gNsSkillFSM::StateModel::SkillFSMTransitionRequestComponent{});
@@ -281,18 +287,18 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	ecs.addComponent(entity, gNsSkillComp::SkillEffectExecutionRecordComponent{});
 	// std::cout << "[PlayerCharacterActor.cpp] Created Player Entity: " << entity.id << std::endl;
 	//if (ecs.hasComponent<gNsCharacterState::CharacterStateComponent>(entity)) {
-	//	std::cout << "[Šm”F] CharacterStateComponent ‚Í Entity " << entity.id << " ‚É‘¶İ‚µ‚Ä‚¢‚Ü‚·" << std::endl;
+	//	std::cout << "[ç¢ºèª] CharacterStateComponent ã¯ Entity " << entity.id << " ã«å­˜åœ¨ã—ã¦ã„ã¾ã™" << std::endl;
 	//}
 	//else {
-	//	std::cout << "[Œx] CharacterStateComponent ‚Í Entity " << entity.id << " ‚É‘¶İ‚µ‚Ä‚¢‚Ü‚¹‚ñ" << std::endl;
+	//	std::cout << "[è­¦å‘Š] CharacterStateComponent ã¯ Entity " << entity.id << " ã«å­˜åœ¨ã—ã¦ã„ã¾ã›ã‚“" << std::endl;
 	//}
 
-	//std::cout << "addComponent ‚Ì typeid: " << typeid(gNsCharacterState::CharacterStateComponent).name() << std::endl;
+	//std::cout << "addComponent ã® typeid: " << typeid(gNsCharacterState::CharacterStateComponent).name() << std::endl;
 
 	//for (eNsECS::Entity e : ecs.view<gNsCharacterState::CharacterStateComponent>()) {
-	//	std::cout << "view ‚Ì Entity: " << e.id << std::endl;
+	//	std::cout << "view ã® Entity: " << e.id << std::endl;
 	//}
-	//std::cout << "view ‚Ì typeid: " << typeid(decltype(ecs.view<gNsCharacterState::CharacterStateComponent>())).name() << std::endl;
+	//std::cout << "view ã® typeid: " << typeid(decltype(ecs.view<gNsCharacterState::CharacterStateComponent>())).name() << std::endl;
 
 }
 

@@ -45,6 +45,13 @@ namespace Game::Combat::Skill::Def
 	{
 		std::unordered_map<std::type_index, float> movementSpeedMultiplier;// デフォルト移動速度の補正倍率(0.5f->半分に)
 	};
+
+	// cc の種類を定義
+	struct CCSpec
+	{
+		std::type_index type;
+		uint32_t priority = 0;
+	};
 	
 	// スキル定義
 	struct SkillDef
@@ -61,6 +68,9 @@ namespace Game::Combat::Skill::Def
 
 		// Event
 		std::optional<SpawnHitArea> spawnHitArea; // スキル発動時に生成される攻撃判定の形状と軌跡
+
+		// CC
+		std::optional<CCSpec> cc;
 
 		// MovementFSM Modifier
 		std::optional<MovementModifierPerPhase> movementModifiers;

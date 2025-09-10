@@ -81,6 +81,36 @@ namespace Engine::ECS
 			return *std::static_pointer_cast<T>(mComponentPools[type][e.id]);
 		}
 
+		// writable
+		template<typename T>
+		T* tryGet(Entity e) noexcept
+		{
+			const auto key = std::type_index(typeid(T));
+			auto it = mComponentPools.find(key);
+			if (it == mComponentPools.end()) return nullptr;
+
+			auto& cmap = it->second;
+			auto cit = cmap.find(e.id);
+			if (cit == cmap.end() || !cit->second) return nullptr;
+
+			return static_cast<T*>(cit->second.get());
+		}
+
+		// read only
+		template<typename T>
+		const T* tryGet(Entity e) const noexcept
+		{
+			const auto key = std::type_index(typeid(T));
+			auto it = mComponentPools.find(key);
+			if (it == mComponentPools.end()) return nullptr;
+
+			const auto& cmap = it->second;
+			auto cit = cmap.find(e.id);
+			if (cit == cmap.end() || !cit->second) return nullptr;
+
+			return static_cast<T*>(cit->second.get());
+		}
+
 		// search and safety valve
 		// 検索と安全弁
 		template<typename... Components>

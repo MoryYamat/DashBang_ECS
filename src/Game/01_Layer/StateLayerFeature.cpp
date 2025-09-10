@@ -1,4 +1,4 @@
-#include "StateLayerFeature.hpp"
+﻿#include "StateLayerFeature.hpp"
 
 #include "Game/00_Feature/Character/State/CharacterStateFeature.hpp"
 
@@ -6,7 +6,7 @@
 
 #include "Game/00_Feature/Character/FSM/Movement/MovementFSMFeature.hpp"
 #include "Game/00_Feature/Character/FSM/Skill/SkillFSMFeature.hpp"
-
+#include "Game/00_Feature/Character/FSM/CC/CCFSMFeature.hpp"
 
 #include "Common/GameNamespaceDecl.h"
 
@@ -25,7 +25,8 @@ void Game::Layer::StateLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 	// update Skill FSM
 	gNsFeature::Skill::FSM::SkillFSMFeature::UpdateSkillFSMSystem(ecs, deltaTime);
 
-
+	// update CC FSM
+	gNsFeature::Character::FSM::CCFSMFeature::UpdateCCFSMSystem(ecs);
 
 
 	// =========== Resolver ==========
@@ -33,6 +34,7 @@ void Game::Layer::StateLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 	gNsFeature::Skill::FSM::SkillFSMFeature::UpdateSkillFSMResolverSystem(ecs, deltaTime);
 	gNsFeature::Character::FSM::MovementFSMFeature::UpdateMovementFSMResolverSystem(ecs, deltaTime);
 
+	gNsFeature::Character::FSM::CCFSMFeature::UpdateCCFSMResolverSystem(ecs, deltaTime);
 
 	// =========== FSM Scoped System =========
 

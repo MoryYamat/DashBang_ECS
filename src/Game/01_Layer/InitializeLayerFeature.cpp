@@ -10,6 +10,8 @@
 
 #include "Game/00_Feature/Character/FSM/Movement/MovementFSMFeature.hpp"
 
+#include "Game/00_Feature/Character/FSM/CC/CCFSMFeature.hpp"
+
 #include "Game/00_Feature/System/WorldClockFeature.hpp"
 
 #include "Game/00_Feature/Combat/HitEvent/HitEventFeature.hpp"
@@ -30,6 +32,8 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialzation(eNsECS::EntityMgr
 
 	// スキルデータベース/定義初期化
 	gNsFeature::Combat::SkillFeature::InitializeSkillDatabase(ecs);
+
+	gNsFeature::Character::FSM::CCFSMFeature::InitCCFSMDefinitionDatabase(ecs);
 
 	// HitEvent
 	gNsFeature::Combat::HitEventFeature::InitializeHitEventDatabase(ecs);

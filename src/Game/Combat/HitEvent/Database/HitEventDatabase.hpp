@@ -33,14 +33,14 @@ namespace Game::Combat::HitEvent::Database
 	};
 
 	// read only
-	inline const HitEventDatabase& hitEventDatabase(const Engine::ECS::EntityMgr& ecs) noexcept
+	[[nodiscard]]inline const HitEventDatabase& hitEventDatabase(const Engine::ECS::EntityMgr& ecs) noexcept
 	{
 			// ecs側でリソース存在確認(assert)
 			return ecs.getResource<HitEventDatabase>();
 	}
 
 	// writable
-	inline HitEventDatabase& hitEventDatabase(Engine::ECS::EntityMgr& ecs) noexcept
+	[[nodiscard]]inline HitEventDatabase& hitEventDatabase(Engine::ECS::EntityMgr& ecs) noexcept
 	{
 		return ecs.getResource<HitEventDatabase>();
 	}
