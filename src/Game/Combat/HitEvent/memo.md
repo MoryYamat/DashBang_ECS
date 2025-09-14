@@ -6,8 +6,10 @@
 1. `SkillHitBox`と`CharacterHitBox`の衝突検知後
 `HitEvent`によって`SkillDef`から`CC有無`を抽出し`CCFSMReqComp`へ`None->CC`遷移リクエストを追加する
 
-2.``
+2.`HitEvent`の詳細設計
 
+<details>
+<summary id ="prototype"><strong> 初期設計 </strong> </summary>
 
 ## シナリオ
 0. `Collision Detection`: {`Skill Entity ID `, `Character Entity ID`, `time`, `Collision digestion complete flag`}
@@ -57,3 +59,14 @@
 ### System model
 `Collision Detection` -> `Hit Event Manager` -> `CC execution` -> `CC FSM`
 
+</details>
+
+<details>
+<summary id="section-id"> <strong>詳細設計 </strong> </summary>
+
+## 動作目的(責務)
+- 
+
+## Data Flow (model)
+
+</details>

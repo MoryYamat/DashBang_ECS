@@ -1,4 +1,4 @@
-#include "TestObject.h"
+ï»¿#include "TestObject.h"
 
 #include "Engine/ECS/Entity.h"
 #include "Engine/ECS/EntityUtils/EntityUtils.h"
@@ -93,10 +93,10 @@ Game::Actor::TestObject::TestObject(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader
 	ecs.addComponent(entity, materialComp);
 
 	// Collsion Initialization
-// ƒRƒŠƒWƒ‡ƒ“‰Šú‰»
+// ã‚³ãƒªã‚¸ãƒ§ãƒ³åˆæœŸåŒ–
 	eNsLogic2DComp::CollisionComponent playerCollisionComp;
 	playerCollisionComp.collider.shape = eNsLogic2DComp::Circle2D{
-		.center = glm::vec2(0.0f),// ƒ[ƒJƒ‹ƒZƒ“ƒ^[
+		.center = glm::vec2(0.0f),// ãƒ­ãƒ¼ã‚«ãƒ«ã‚»ãƒ³ã‚¿ãƒ¼
 		.radius = gNsInit::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, gNsInit::Logic2D::RadiusEstimateStrategy::MaxAxis)
 	};
 	//playerCollisionComp.collider.circle2D.center = logic.positionXZ;
@@ -105,11 +105,10 @@ Game::Actor::TestObject::TestObject(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader
 	// playerCollisionComp.collider.circle2D.radius = radius;
 	ecs.addComponent(entity, playerCollisionComp);
 
-	// Collision Mask ‰Šú‰»
-	gNsCollComp::CollisionMaskComponent playerMask;
-	playerMask.selfLayer = gNsCollData::Layer::Enemy;
-	playerMask.collidesWithMask = static_cast<uint32_t>(gNsCollData::Layer::Neutral | gNsCollData::Layer::Player);
-	ecs.addComponent(entity, playerMask);
+	// Collision Mask åˆæœŸåŒ–
+	gNsCollComp::CollisionMaskComponent testObjectMask;
+	testObjectMask = gNsCollComp::CollisionMaskPresets::Character();
+	ecs.addComponent(entity, testObjectMask);
 
 	ecs.addComponent(entity, gNsECSComp::TeamComponent{
 	.team = gNsECSComp::Team::EnemyTeam

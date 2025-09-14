@@ -179,9 +179,12 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 
 	// Collision Mask 初期化
 	gNsCollComp::CollisionMaskComponent playerMask;
-	playerMask.selfLayer = gNsCollData::Layer::Player;
-	playerMask.collidesWithMask = static_cast<uint32_t>(gNsCollData::Layer::Neutral | gNsCollData::Layer::Enemy);
+	playerMask = gNsCollComp::CollisionMaskPresets::Character();
 	ecs.addComponent(entity, playerMask);
+
+	ecs.addComponent(entity, gNsECSComp::TeamComponent{
+	.team = gNsECSComp::Team::PlayerTeam
+		});
 
 	// 以前の設計
 	//SkillInstanceComponent activeSkill1;
@@ -252,9 +255,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	// Tag
 	ecs.addComponent(entity, gNsTags::PlayerCharacterTag{});
 
-	ecs.addComponent(entity, gNsECSComp::TeamComponent{
-		.team = gNsECSComp::Team::PlayerTeam
-		});
+
 
 
 	// logical state comp

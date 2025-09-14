@@ -100,6 +100,9 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 			auto& maskB = ecs.get<gNsCollComp::CollisionMaskComponent>(eB);
 
 			// std::cout << "[CollisionDetectionSystem.cpp()]: before mask judge\n";
+			// 
+			
+			// FIXME: shouldCollideを早期スキップと相対フィルターによるスキップの機能に分割する必要あり？
 			if (!gNsCollUtil::shouldCollide(maskA, maskB))
 				continue;
 
@@ -126,6 +129,7 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 				// バッファ追加
 				buffer.add(gNsCollData::CollisionResult{ eA, eB, info });
 
+				// FIXME: SkillColl と TargetColl の場合 HitEventを作成するように変更
 				// =================================================================
 				// Skill & target について
 				eNsECS::Entity skillEnt{}, targetEnt{};

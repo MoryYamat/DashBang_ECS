@@ -1,4 +1,4 @@
-#include "TileMapActor.h"
+ï»¿#include "TileMapActor.h"
 
 #include "Engine/ECS/Entity.h"
 
@@ -27,35 +27,35 @@ eNsECS::Entity Game::Actor::Map::TileMapActor::Create(
 {
 	eNsECS::Entity entity = ecs.createEntity();
 
-	// ƒRƒ“ƒ|[ƒlƒ“ƒg‰Šú‰»
-	// TerrainMesh‚Ìî•ñ‚ğƒRƒs[‚·‚é
+	// ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆåˆæœŸåŒ–
+	// TerrainMeshã®æƒ…å ±ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹
 	eNsLogic2DComp::Logic2DTransformComponent tempLogic2D = 
 		gNsInit::Logic2D::InitLogic2DTransformFromModel(transform, modelData);
 	// ecs.addComponent(entity, logic2DComp);
 
-	// ƒ^ƒCƒ‹ƒ}ƒbƒvî•ñ‰Šú‰»
+	// ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—æƒ…å ±åˆæœŸåŒ–
 	eNsLogic2DComp::TileMapComponent tileMapComp;
 	tileMapComp.tileSize = tileSize;
 	tileMapComp = gNsInit::Logic2D::InitTileMapFromBounds(transform, modelData, tempLogic2D, tileSize);
 	gNsInit::Logic2D::InitTileMapTiles(tileMapComp);
 	ecs.addComponent(entity, tileMapComp);
 
-	// ˜_—transform‚ÌÄ‰Šú‰»(ƒ^ƒCƒ‹ƒ}ƒbƒv©‘Ì‚Í‰ñ“]‚ğl‚¦‚È‚¢)
+	// è«–ç†transformã®å†åˆæœŸåŒ–(ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—è‡ªä½“ã¯å›è»¢ã‚’è€ƒãˆãªã„)
 	eNsLogic2DComp::Logic2DTransformComponent fixedLogic2D;
 	fixedLogic2D.positionXZ = tempLogic2D.positionXZ;
 	fixedLogic2D.rotation = 0.0f;
 	ecs.addComponent(entity, fixedLogic2D);
 
 
-	// TileMap‚ÉCollisionComponent‚Í•s—v‚È‚Í‚¸
-	// TileMap‚ÉCollisionComponent‚Í•s—v‚È‚Í‚¸
-	// TileMap‚ÉCollisionComponent‚Í•s—v‚È‚Í‚¸
+	// TileMapã«CollisionComponentã¯ä¸è¦ãªã¯ãš
+	// TileMapã«CollisionComponentã¯ä¸è¦ãªã¯ãš
+	// TileMapã«CollisionComponentã¯ä¸è¦ãªã¯ãš
 	// Collision Component
 	//eNsLogic2DComp::CollisionComponent collisionComp;
 	//// calc world size on the xz plane
 	//glm::vec2 worldSize = gNsInit::Logic2D::GetModelXZSizeWithScale(transform, modelData);
 
-	//float rotRad = tempLogic2D.rotation;// •`‰æŠî€‚Æ˜_—Šî€‚Ì®‡«‚ğl‚¦‚é
+	//float rotRad = tempLogic2D.rotation;// æç”»åŸºæº–ã¨è«–ç†åŸºæº–ã®æ•´åˆæ€§ã‚’è€ƒãˆã‚‹
 	//// Front = Z axis basis
 	//glm::vec2 axisZ = glm::normalize(eNsLogic2DMath::CalcForwardFromYaw((rotRad)));
 	//glm::vec2 axisX = eNsLogic2DMath::CalcRightFromYaw(rotRad);
@@ -78,13 +78,13 @@ eNsECS::Entity Game::Actor::Map::TileMapActor::Create(
 
 	ecs.addComponent(entity, eNsTagComp::MainTileMapTag{});
 
-	ecs.addComponent(entity,
-		gNsCollComp::CollisionMaskComponent{
-			.selfLayer = gNsCollData::Layer::Tile,
-			.collidesWithMask = static_cast<uint32_t>(
-				gNsCollData::Layer::Player |
-				gNsCollData::Layer::Enemy
-				)});
+	//ecs.addComponent(entity,
+	//	gNsCollComp::CollisionMaskComponent{
+	//		.selfLayer = gNsCollData::Layer::Tile,
+	//		.collidesWithMask = static_cast<uint32_t>(
+	//			gNsCollData::Layer::Player |
+	//			gNsCollData::Layer::Enemy
+	//			)});
 
 	eNsDebugLog::debugLog("Tile Map Actor Created Successfully!", "TileMapActor.cpp(Create)");
 	
@@ -97,15 +97,15 @@ eNsECS::Entity Game::Actor::Map::TileMapActor::Create(
 //
 //	eNsLogic2DComp::TileMapComponent tileMapComp;
 //
-//	// ”z—ñ‚Ìî•ñİ’è
+//	// é…åˆ—ã®æƒ…å ±è¨­å®š
 //	tileMapComp.numCols = 10;
 //	tileMapComp.numRows = 10;
 //
-//	// ‚»‚Ì‘¼‚Ìî•ñ
+//	// ãã®ä»–ã®æƒ…å ±
 //	tileMapComp.tileSize = 0.5f;
 //	tileMapComp.origin = glm::vec2(tileMapComp.numCols * tileMapComp.tileSize * -0.5f, tileMapComp.numRows * tileMapComp.tileSize * -0.5f);
 //
-//	// ”z—ñì¬
+//	// é…åˆ—ä½œæˆ
 //	tileMapComp.tiles.resize(tileMapComp.numRows, std::vector<eNsLogic2DComp::Tile>(tileMapComp.numCols));
 //
 //	ecs.addComponent(entity, tileMapComp);

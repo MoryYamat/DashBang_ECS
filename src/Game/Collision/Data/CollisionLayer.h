@@ -1,4 +1,4 @@
-// collision layer attribute definition
+ï»¿// collision layer attribute definition
 
 #pragma once
 
@@ -6,29 +6,30 @@
 
 namespace Game::Collision::Data
 {
+
 	// bit flag
 	enum class Layer : uint32_t
 	{
-		// ƒŒƒCƒ„[‚È‚µ
+		// ãƒ¬ã‚¤ãƒ¤ãƒ¼ãªã—
 		None = 0,
 
-		// ‘Š‘Î“I‚ÈƒŒƒCƒ„[’è‹`
+		// ç›¸å¯¾çš„ãªãƒ¬ã‚¤ãƒ¤ãƒ¼å®šç¾©
 		// Player
 		Player = 1 << 0,
-		// “G
+		// æ•µ
 		Enemy = 1 << 1,
-		// –¡•û
+		// å‘³æ–¹
 		Friendly = 1 << 2,
-		// ’†—§
+		// ä¸­ç«‹
 		Neutral = 1 << 3,
 
 
 		// 
-		// ‘ŠE‚³‚ê‚È‚¢ƒXƒLƒ‹
+		// ç›¸æ®ºã•ã‚Œãªã„ã‚¹ã‚­ãƒ«
 		Skill = 1 << 4,
-		// ‘ŠE‘ÎÛ‚É‚È‚è‚¤‚éƒXƒLƒ‹
+		// ç›¸æ®ºå¯¾è±¡ã«ãªã‚Šã†ã‚‹ã‚¹ã‚­ãƒ«
 		SkillCounterable = 1 << 5,
-		// ‘ŠE‚³‚ê‚È‚¢‚ª“–‚½‚éƒXƒLƒ‹?
+		// ç›¸æ®ºã•ã‚Œãªã„ãŒå½“ãŸã‚‹ã‚¹ã‚­ãƒ«?
 		SkillUnblockable = 1 << 6,
 
 
@@ -39,7 +40,7 @@ namespace Game::Collision::Data
 		All = 0xFF
 	};
 
-	// ‰‰ZqƒI[ƒo[ƒ[ƒh
+	// æ¼”ç®—å­ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
 	inline Layer operator|(Layer a, Layer b)
 	{
 		return static_cast<Layer>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));

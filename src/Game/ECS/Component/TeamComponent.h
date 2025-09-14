@@ -1,4 +1,4 @@
-// Team Component
+﻿// Team Component
 
 #pragma once
 #include <cstdint>
@@ -18,4 +18,5 @@ namespace Game::ECS::Component
 	{
 		Team team;
 	};
+
 }

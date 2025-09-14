@@ -1,4 +1,4 @@
-// ECS‚âComponent‚©‚ç•K—vî•ñ‚ğ’ŠoE•ÏŠ·‚·‚é•â•ŠÖ”
+ï»¿// ECSã‚„Componentã‹ã‚‰å¿…è¦æƒ…å ±ã‚’æŠ½å‡ºãƒ»å¤‰æ›ã™ã‚‹è£œåŠ©é–¢æ•°
 // Auxiliary functions to extract and convert necessary information from ECS and Component
 
 #pragma once
@@ -12,18 +12,18 @@
 namespace Game::Collision::Utils
 {
 
-	// 2‚Â‚ÌƒGƒ“ƒeƒBƒeƒB‚ªÕ“Ë”»’è‚·‚×‚«‚©‚ğ”»’è
-	inline bool shouldCollide(
-		const gNsCollComp::CollisionMaskComponent& a,
-		const gNsCollComp::CollisionMaskComponent& b
-	)
-	{
-		// a ‚Ì selfLayer ‚É‘Î‚µ‚Ä b.collidesWithMask‚ªˆê’v‚µ‚Ä‚¢‚é‚©
-		// ‚±‚±‚ª–â‘è 
-		// OR ”»’è ‚¾‚©‚çC‚Ç‚Á‚¿‚©‚ÉŠÜ‚Ü‚ê‚Ä‚¢‚ê‚Î”»’è‚ğs‚¤‚æ‚¤‚Éİ’è‚³‚ê‚Ä‚¢‚é=> Layer‚ğ×•ª‰»‚·‚é•K—v‚ªo‚Ä‚«‚ÄCŠÇ—‚ª–â‘è‚É‚È‚é
-		// ˆê’U‰ğŒˆ => collisionMaskComponent‚ÌÓ–±–¾Šm‰» => collidesWithMask‚Å‚ÍC©•ª‚ª”\“®“I‚ÉÕ“Ë‚µ‚½‚¢‘ŠèLayer‚¾‚¯w’è‚·‚é
-		// ‚ ‚Æ‚Å\‘¢“I‚È‰ğŒˆ‚ğ}‚é
-		return (static_cast<uint32_t>(a.selfLayer) & b.collidesWithMask) ||
-			(static_cast<uint32_t>(b.selfLayer) & a.collidesWithMask);
-	}
+	//// 2ã¤ã®ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ãŒè¡çªåˆ¤å®šã™ã¹ãã‹ã‚’åˆ¤å®š
+	//inline bool shouldCollide(
+	//	const gNsCollComp::CollisionMaskComponent& a,
+	//	const gNsCollComp::CollisionMaskComponent& b
+	//)
+	//{
+	//	// a ã® selfLayer ã«å¯¾ã—ã¦ b.collidesWithMaskãŒä¸€è‡´ã—ã¦ã„ã‚‹ã‹
+	//	// ã“ã“ãŒå•é¡Œ 
+	//	// OR åˆ¤å®š ã ã‹ã‚‰ï¼Œã©ã£ã¡ã‹ã«å«ã¾ã‚Œã¦ã„ã‚Œã°åˆ¤å®šã‚’è¡Œã†ã‚ˆã†ã«è¨­å®šã•ã‚Œã¦ã„ã‚‹=> Layerã‚’ç´°åˆ†åŒ–ã™ã‚‹å¿…è¦ãŒå‡ºã¦ãã¦ï¼Œç®¡ç†ãŒå•é¡Œã«ãªã‚‹
+	//	// ä¸€æ—¦è§£æ±º => collisionMaskComponentã®è²¬å‹™æ˜ç¢ºåŒ– => collidesWithMaskã§ã¯ï¼Œè‡ªåˆ†ãŒèƒ½å‹•çš„ã«è¡çªã—ãŸã„ç›¸æ‰‹Layerã ã‘æŒ‡å®šã™ã‚‹
+	//	// ã‚ã¨ã§æ§‹é€ çš„ãªè§£æ±ºã‚’å›³ã‚‹
+	//	return (static_cast<uint32_t>(a.selfLayer) & b.collidesWithMask) ||
+	//		(static_cast<uint32_t>(b.selfLayer) & a.collidesWithMask);
+	//}
 }
