@@ -19,4 +19,5 @@ namespace Game::ECS::Component
 		Team team;
 	};
 
+
 }

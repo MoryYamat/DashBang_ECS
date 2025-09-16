@@ -29,6 +29,11 @@
 
 // Skill
 #include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
+#include "Game/Combat/Skill/Component/SkillOwnerComponent.hpp"
+
+
+// teamTag
+#include "Game/ECS/Component/TeamComponent.h"
 
 // HitEvent
 #include "Game/Combat/HitEvent/Data/HitEvent.hpp"
@@ -46,6 +51,8 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 	using namespace Game::Collision::Data;
 
 	using namespace Game::Combat::Skill::Component;
+
+	using namespace Game::ECS::Component;
 
 	using namespace Game::Combat::HitEvent::Database;
 	using namespace Game::Combat::HitEvent::Data;
@@ -73,7 +80,7 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 	// CollisionComponentをMustにすると，Skillに対応できない問題
 	// CollisionComponentをMustにすると，Skillに対応できない問題
 	// CollisionComponentをMustにすると，Skillに対応できない問題
-	
+
 	using Any = std::tuple<eNsLogic2DComp::Logic2DTransformComponent, eNsLogic2DComp::Transform2DComponent>;
 
 	auto entities = ecs.view(eNsECS::EntityMgr::FilterSpec<Must, Any>{});
@@ -101,16 +108,21 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 
 			// std::cout << "[CollisionDetectionSystem.cpp()]: before mask judge\n";
 			// 
-			
-			// FIXME: shouldCollideを早期スキップと相対フィルターによるスキップの機能に分割する必要あり？
-			if (!gNsCollUtil::shouldCollide(maskA, maskB))
+
+			// カテゴリ両想い判定
+			if (!gNsCollComp::shouldCollideWithCat(maskA, maskB))
 				continue;
 
+			// Relation 両想い
+			const auto rab = gNsCollComp::computeRelation(ecs, eA, eB);
+			const auto rba = gNsCollComp::computeRelation(ecs, eB, eA);
+			if (!gNsCollComp::shouldCollideWithRel(maskA, maskB, rab, rba)) continue;
 
+			// 判定用一般化形状変換
 			auto shapeA = gNsCollConvert::MakeGenericShape2D(eA, ecs);
 			auto shapeB = gNsCollConvert::MakeGenericShape2D(eB, ecs);
-			if(!gNsCollIntersect::Intersects(shapeA, shapeB)) continue;
-			
+			if (!gNsCollIntersect::Intersects(shapeA, shapeB)) continue;
+
 			//std::visit([](auto&& s) {
 			//	std::cout << "[shapeA] type: " << typeid(s).name() << std::endl;
 			//	}, shapeA);
@@ -119,47 +131,48 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 			//	std::cout << "[shapeB] type: " << typeid(s).name() << std::endl;
 			//	}, shapeB);
 
-			if (gNsCollIntersect::Intersects(shapeA, shapeB))
-			{
+
+			// バッファへ追加
 				// 仮のContactInfo（後で精密な法線・深度が必要になれば拡張）
-				gNsCollData::ContactInfo info{ //.contactNormal = glm::normalize(transB.positionXZ - transA.positionXZ), 
-					.penetrationDepth = 0.0f };
+			gNsCollData::ContactInfo info{ //.contactNormal = glm::normalize(transB.positionXZ - transA.positionXZ), 
+				.penetrationDepth = 0.0f };
+			// std::cout << "[CollisionDetectionSystem]: collider detcted" << std::endl;
+			// バッファ追加
+			buffer.add(gNsCollData::CollisionResult{ eA, eB, info });
 
-				// std::cout << "[CollisionDetectionSystem]: collider detcted" << std::endl;
-				// バッファ追加
-				buffer.add(gNsCollData::CollisionResult{ eA, eB, info });
 
-				// FIXME: SkillColl と TargetColl の場合 HitEventを作成するように変更
-				// =================================================================
-				// Skill & target について
-				eNsECS::Entity skillEnt{}, targetEnt{};
-				SkillExecutionContextComponent meta{};
-				if (isSkillEntity(ecs, eA) && !isSkillEntity(ecs, eB))
-				{
-					skillEnt = eA; targetEnt = eB;
-					meta = ecs.get<SkillExecutionContextComponent>(eA);
-
-				}
-				else if (isSkillEntity(ecs, eB) && !isSkillEntity(ecs, eA))
-				{
-					skillEnt = eB; targetEnt = eA;
-					meta = ecs.get<SkillExecutionContextComponent>(eB);
-
-				}
-				else
-				{
-					continue;
-				}
-
-				// 以下に HitEvent生成処理を追加
-				HitEvent ev{};
-				ev.skill = skillEnt;
-				ev.target = targetEnt;
-				ev.skillId = meta.skillId;
-				ev.SpawnTime = clock.now;
-
-				hitDb.push(std::move(ev));
+			// FIXME: SkillColl と TargetColl の場合 HitEventを作成するように変更
+			// =================================================================
+			// Skill & target について
+			eNsECS::Entity skillEnt{}, targetEnt{};
+			SkillOwnerComponent meta{};
+			if (isSkillEntity(ecs, eA) && !isSkillEntity(ecs, eB))
+			{
+				skillEnt = eA; targetEnt = eB;
+				meta = ecs.get<SkillOwnerComponent>(eA);
+				
+				// if(meta.caster == targetEnt)
+				// => skillIDに基づいて効果を適用するかどうかをキチンと判断しなければいけない
 			}
+			else if (isSkillEntity(ecs, eB) && !isSkillEntity(ecs, eA))
+			{
+				skillEnt = eB; targetEnt = eA;
+				meta = ecs.get<SkillOwnerComponent>(eB);
+
+			}
+			else
+			{
+				continue;
+			}
+
+			// 以下に HitEvent生成処理を追加
+			HitEvent ev{};
+			ev.skill = skillEnt;
+			ev.target = targetEnt;
+			ev.skillId = meta.skillId;
+			ev.SpawnTime = clock.now;
+
+			hitDb.push(std::move(ev));
 		}
 	}
 }
@@ -171,7 +184,7 @@ namespace Game::Collision::System
 	// TODO: 関数の場所整理
 	bool isSkillEntity(eNsECS::EntityMgr& ecs, eNsECS::Entity entity)
 	{
-		return ecs.hasComponent<SkillExecutionContextComponent>(entity);
+		return ecs.hasComponent<SkillOwnerComponent>(entity);
 	}
 }
 

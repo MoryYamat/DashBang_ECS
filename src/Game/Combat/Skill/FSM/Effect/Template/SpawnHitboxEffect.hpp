@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "IEffectTemplate.hpp"
 
@@ -11,16 +11,23 @@
 
 #include "Game/ECS/Component/LifetimeComponent.hpp"
 
+// collision
+#include "Game/Collision/Component/CollisionMaskComponent.h"
 
-// TODO: spawnHitArea‚É scale / spawnOffset ‚È‚Ç‚ğŠg’£‚µ‚Ä Transform2DComponent ‚Ì‰Šú‰»‚ğ’è‹`ƒhƒŠƒuƒ“‰»‚·‚é
-// TODO: Lifetime ‚Ì type ‚ğ’è‹`‚É‚½‚¹‚Ä FSM“¯Šú‚âÕ“Ë§Œä‚Æ˜AŒg‚Å‚«‚é‚æ‚¤‚É‚·‚é
-// TODO: CollisionMaskComponent‚Ì‰Šú‰»
+// Team ID
+#include "Game/ECS/Component/TeamComponent.h"
+
+// TODO: spawnHitAreaã« scale / spawnOffset ãªã©ã‚’æ‹¡å¼µã—ã¦ Transform2DComponent ã®åˆæœŸåŒ–ã‚’å®šç¾©ãƒ‰ãƒªãƒ–ãƒ³åŒ–ã™ã‚‹
+// TODO: Lifetime ã® type ã‚’å®šç¾©ã«æŒãŸã›ã¦ FSMåŒæœŸã‚„è¡çªåˆ¶å¾¡ã¨é€£æºã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹
+// TODO: CollisionMaskComponentã®åˆæœŸåŒ–
 namespace Game::Combat::Skill::FSM::Effect
 {
 	using namespace Game::Combat::Skill::Component;
 	using namespace Game::ECS::Component;
 	using namespace Engine::ECS::Component::Logic2D;
 	
+	using namespace Game::Collision::Component;
+
 	struct SpawnHitboxEffect : IEffectTemplate
 	{
 		void execute(
@@ -42,18 +49,30 @@ namespace Game::Combat::Skill::FSM::Effect
 				});
 
 
-			// “–‚½‚è”»’èŒ`ó
+			// FIXME: def ã«å®šç¾©ã•ã‚ŒãŸCollisionMaskã‚’ã‚³ãƒ”ãƒ¼ã—ï¼Œè¿½åŠ ã™ã‚‹ã‚ˆã†ã«å¤‰æ›´ã™ã‚‹
+			// CollisionMask
+			ecs.addComponent(eHitbox,
+				CollisionMaskComponent{
+					.category = Category::SkillHitbox,
+					.collideCategoryMask = bit(Category::CharacterBody),
+					.relationMask = bit(Relation::Enemy)
+				});
+
+
+
+
+			// å½“ãŸã‚Šåˆ¤å®šå½¢çŠ¶
 			ecs.addComponent(eHitbox, Attack2DAreaComponent{
 				.shape = spawn.shape
 				});
 
 
-			// ‹OÕŒ`ó
+			// è»Œè·¡å½¢çŠ¶
 			ecs.addComponent(eHitbox, SkillTrajectoryComponent{
 				.trajectory = spawn.trajectoryParams
 				});
 
-			// ƒ‰ƒCƒtƒ^ƒCƒ€(õ–½ŠÇ—)
+			// ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ (å¯¿å‘½ç®¡ç†)
 			ecs.addComponent(eHitbox, LifetimeComponent{
 				.totalLifetime = spawn.duration.value_or(0.0f),
 				.elapsedTime = 0.0f,
@@ -63,7 +82,7 @@ namespace Game::Combat::Skill::FSM::Effect
 			{
 				const auto& casterTransform = ecs.get<Logic2DTransformComponent>(caster);
 
-				// FixMeFscale‚Í1.0f‚ÉŒÅ’è‚µ‚Ä‚¢‚é‚ªƒXƒLƒ‹’è‹`‚È‚Ç‚É‚æ‚èŠg‘å‚µ‚½‚èk¬‚µ‚½‚è‚Å‚«‚é‚æ‚¤‚É‚µ‚½‚Ù‚¤‚ª‚¢‚¢
+				// FixMeï¼šscaleã¯1.0fã«å›ºå®šã—ã¦ã„ã‚‹ãŒã‚¹ã‚­ãƒ«å®šç¾©ãªã©ã«ã‚ˆã‚Šæ‹¡å¤§ã—ãŸã‚Šç¸®å°ã—ãŸã‚Šã§ãã‚‹ã‚ˆã†ã«ã—ãŸã»ã†ãŒã„ã„
 				Transform2DComponent initialHitboxTransform;
 				initialHitboxTransform.positionXZ = casterTransform.positionXZ;
 				initialHitboxTransform.rotationY = casterTransform.GetRotationYFromFrontVector();
@@ -82,8 +101,8 @@ namespace Game::Combat::Skill::FSM::Effect
 
 
 			// TODO:
-			// ƒRƒŠƒWƒ‡ƒ“ƒ}ƒXƒN‚Ìì¬ƒVƒXƒeƒ€À‘• 
-			// Å“K‰»
+			// ã‚³ãƒªã‚¸ãƒ§ãƒ³ãƒã‚¹ã‚¯ã®ä½œæˆã‚·ã‚¹ãƒ†ãƒ å®Ÿè£… 
+			// æœ€é©åŒ–
 			//
 		}
 	};

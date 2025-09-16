@@ -4,9 +4,11 @@
 
 #include "Game/Collision/Data/CollisionLayer.h"
 
+#include "Game/Combat/Skill/Component/SkillOwnerComponent.hpp"
 #include "Game/ECS/Component/TeamComponent.h"
 
 #include "Engine/ECS/Entity.h"
+#include "Engine/ECS/EntityManager.h"
 
 #include <cstdint>
 
@@ -51,12 +53,9 @@ namespace Game::Collision::Component
 		// uint32_t collidesWithMask = 0; // 自分が当たりたい対象のLayerの集合 ORしたマスク (bit mask)
 	};
 
-
-	inline bool shouldCollide(
-		const CollisionMaskComponent& A,
-		const CollisionMaskComponent& B,
-		Relation rab,
-		Relation rba
+	inline bool shouldCollideWithCat(
+		CollisionMaskComponent& A,
+		CollisionMaskComponent& B
 	)
 	{
 		const bool catOK =
@@ -64,6 +63,16 @@ namespace Game::Collision::Component
 			((B.collideCategoryMask & static_cast<uint32_t>(A.category)) != 0);
 		if (!catOK) return false;
 
+		return true;
+	}
+
+	inline bool shouldCollideWithRel(
+		const CollisionMaskComponent& A,
+		const CollisionMaskComponent& B,
+		Relation rab,
+		Relation rba
+	)
+	{
 
 		const bool relOK = has(A.relationMask, rab) && has(B.relationMask, rba);
 		if (!relOK) return false;
@@ -71,17 +80,43 @@ namespace Game::Collision::Component
 		return true;
 	};
 
-	// 相対関係計算関数
-	inline Game::Collision::Component::Relation computeRelation(Engine::ECS::Entity a, Engine::ECS::Entity b, 
-		Game::ECS::Component::TeamComponent& ta, Game::ECS::Component::TeamComponent& tb)
+	inline Game::ECS::Component::Team resolveTeam(Engine::ECS::EntityMgr& ecs, eNsECS::Entity e)
 	{
-		if (a == b)
+		using namespace Game::Combat::Skill::Component;
+		using namespace Game::ECS::Component;
+		if (ecs.hasComponent<TeamComponent>(e))
+		{
+			return ecs.get<TeamComponent>(e).team;
+		}
+		if (ecs.hasComponent<SkillOwnerComponent>(e))
+		{
+			auto owner = ecs.get<SkillOwnerComponent>(e).caster;
+			return resolveTeam(ecs, owner);
+		}
+
+		return Team::Neutral;
+	};
+
+	// 相対関係計算関数
+	inline Game::Collision::Component::Relation computeRelation(
+		Engine::ECS::EntityMgr& ecs,
+		Engine::ECS::Entity a, Engine::ECS::Entity b)
+	{
+		using namespace Game::ECS::Component;
+
+		if (a.id == b.id)
 			return Relation::Self;
 
-		if (ta.team == Game::ECS::Component::Team::Neutral || tb.team == Game::ECS::Component::Team::Neutral)
+		// FIXME: 現在，caster == a : Ally になってしまう．
+		// これは，caster == a : ならば，Selfにならなければいけない．
+		// つまり， ally: if(a is not skillEntity or b is not skillEntity) and if(ta == tb)
+		Team ta = resolveTeam(ecs, a);
+		Team tb = resolveTeam(ecs, b);
+
+		if (ta == Game::ECS::Component::Team::Neutral || tb == Game::ECS::Component::Team::Neutral)
 			return Relation::Neutral;
 
-		if (tb.team == tb.team)
+		if (ta == tb)
 			return Relation::Ally;
 
 
