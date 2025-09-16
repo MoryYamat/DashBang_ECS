@@ -5,6 +5,7 @@
 #include "Game/Combat/Skill/Component/SkillOwnerComponent.hpp"
 #include "Game/Combat/Skill/Component/Attack2DAreaComponent.h"
 #include "Game/Combat/Skill/Component/SkillTrajectoryComponent.h"
+#include "Game/Combat/Skill/Component/HitboxHitMemoComponent.hpp"
 
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 #include "Engine/ECS/Component/Logic2D/Transform2DComponent.h"
@@ -55,10 +56,15 @@ namespace Game::Combat::Skill::FSM::Effect
 				CollisionMaskComponent{
 					.category = Category::SkillHitbox,
 					.collideCategoryMask = bit(Category::CharacterBody),
-					.relationMask = bit(Relation::Enemy)
+					.relationMask = bit(Relation::Enemy),
+					.flags = 0
 				});
 
 
+			// 判定済みtarget
+			ecs.addComponent(eHitbox,
+				Game::Combat::Skill::Component::HitboxHitMemoComponent{}
+			);
 
 
 			// 当たり判定形状

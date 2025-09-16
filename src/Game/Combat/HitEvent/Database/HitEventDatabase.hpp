@@ -13,6 +13,7 @@ namespace Game::Combat::HitEvent::Database
 
 	struct HitEventDatabase
 	{
+
 		
 		std::vector<Data::HitEvent> items;
 		Data::EventID nextId = 1;
@@ -29,6 +30,12 @@ namespace Game::Combat::HitEvent::Database
 		void erase_if(Pred p)
 		{
 			items.erase(std::remove_if(items.begin(), items.end(), p), items.end());
+		}
+
+		void findEntityID(Engine::ECS::Entity a)
+		{
+			// if(items.)
+
 		}
 	};
 

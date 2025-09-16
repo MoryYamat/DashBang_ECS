@@ -8,6 +8,8 @@
 
 2.`HitEvent`の詳細設計
 
+
+
 <details>
 <summary id ="prototype"><strong> 初期設計 </strong> </summary>
 
@@ -70,3 +72,36 @@
 ## Data Flow (model)
 
 </details>
+
+---
+---
+
+<details>
+<summary id="debug"> <strong>デバッグ </strong> </summary>
+
+## デバッグ
+> [!Caution] 問題
+> 同一targetとskillhitboxの衝突を何度もpushしてしまう問題
+
+- 同一衝突を同一イベントだと識別するための仕組みが必要
+- ->HitEventに衝突判定前にその衝突をすでにイベント化済みかどうかを判定する
+- ->HitEventデータ側にそのためにデータが必要
+
+### 問題の構造
+- HitEventはDatabaseに`std::vector`で詰められている
+- 衝突検出に使われるデータは`target`の`entity`とskillhitboxの`entity`である
+- 1. つまり，`std::vector`を`entity`で検索できればいい
+- 2. もしくは，Collision側で同じ衝突についての検出処理を制限するか
+- -> 
+- しかし`std::vector`では不可能である
+- -> `hash`などを利用して別の指数を用いるか
+
+> [!note] 解決案
+> 2を採用<br>
+> `Skillhitbox`に衝突済み`target`のデータ構造`HitmemoComponent`を追加する
+>
+> 1. 衝突した`target`を`HitmemoComponent`に追加する
+> 2. `HitmemoComponent`を検索しすでに衝突した`target`との衝突計算をスキップする
+
+</details>
+

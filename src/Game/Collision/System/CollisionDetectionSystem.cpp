@@ -25,13 +25,13 @@
 #include "Game/Collision/Data/CollisionResultStorage.h"
 
 #include "Game/Combat/HitEvent/Database/HitEventDatabase.hpp"
-
+#include "Game/Combat/HitEvent/API/GenerateHitEvent.hpp"
 
 // Skill
 #include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
 #include "Game/Combat/Skill/Component/SkillOwnerComponent.hpp"
-
-
+#include "Game/Combat/Skill/Component/HitboxHitMemoComponent.hpp"
+#include "Game/Combat/Skill/API/Component/tryGetHitboxHitMemoComponent.hpp"
 // teamTag
 #include "Game/ECS/Component/TeamComponent.h"
 
@@ -57,6 +57,8 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 	using namespace Game::Combat::HitEvent::Database;
 	using namespace Game::Combat::HitEvent::Data;
 
+	using namespace Game::Combat::Skill::API;
+
 	// assert(ecs.hasResource<gNsCollData::CollisionResultBuffer>() && "CollisionResultBuffer not initialized");
 	// if(!ecs.hasResource< gNsCollData::CollisionResultBuffer>()) return;
 	const auto& clock = ecs.getResource<WorldClockData>();
@@ -77,9 +79,6 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 	// Must=>And , Any=>OR
 	// using Must = std::tuple<gNsCollComp::CollisionMaskComponent, eNsLogic2DComp::CollisionComponent>;
 	using Must = std::tuple<gNsCollComp::CollisionMaskComponent>;
-	// CollisionComponentをMustにすると，Skillに対応できない問題
-	// CollisionComponentをMustにすると，Skillに対応できない問題
-	// CollisionComponentをMustにすると，Skillに対応できない問題
 
 	using Any = std::tuple<eNsLogic2DComp::Logic2DTransformComponent, eNsLogic2DComp::Transform2DComponent>;
 
@@ -106,6 +105,7 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 			auto& maskA = ecs.get<gNsCollComp::CollisionMaskComponent>(eA);
 			auto& maskB = ecs.get<gNsCollComp::CollisionMaskComponent>(eB);
 
+
 			// std::cout << "[CollisionDetectionSystem.cpp()]: before mask judge\n";
 			// 
 
@@ -113,10 +113,21 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 			if (!gNsCollComp::shouldCollideWithCat(maskA, maskB))
 				continue;
 
-			// Relation 両想い
+			// Relation 両想い 
 			const auto rab = gNsCollComp::computeRelation(ecs, eA, eB);
 			const auto rba = gNsCollComp::computeRelation(ecs, eB, eA);
 			if (!gNsCollComp::shouldCollideWithRel(maskA, maskB, rab, rba)) continue;
+
+			// 衝突判定済みかどうかの記録(memo)を確認
+			const bool aIsSkill = isSkillEntity(ecs, eA);
+			const bool bIsSkill = isSkillEntity(ecs, eB);
+
+			HitboxHitMemoComponent* memoA = tryGetMemo(ecs, eA);
+			HitboxHitMemoComponent* memoB = tryGetMemo(ecs, eB);
+
+			if (aIsSkill && memoA && memoA->alreadyHit(eB)) continue;
+			if (bIsSkill && memoB && memoB->alreadyHit(eA))continue;
+
 
 			// 判定用一般化形状変換
 			auto shapeA = gNsCollConvert::MakeGenericShape2D(eA, ecs);
@@ -141,7 +152,7 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 			buffer.add(gNsCollData::CollisionResult{ eA, eB, info });
 
 
-			// FIXME: SkillColl と TargetColl の場合 HitEventを作成するように変更
+			// FIXME isSkillEntityの再利用
 			// =================================================================
 			// Skill & target について
 			eNsECS::Entity skillEnt{}, targetEnt{};
@@ -150,7 +161,7 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 			{
 				skillEnt = eA; targetEnt = eB;
 				meta = ecs.get<SkillOwnerComponent>(eA);
-				
+				// relによって解決済みの可能性あり．よって不要かも
 				// if(meta.caster == targetEnt)
 				// => skillIDに基づいて効果を適用するかどうかをキチンと判断しなければいけない
 			}
@@ -165,14 +176,27 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 				continue;
 			}
 
+			// FIXME: API化
 			// 以下に HitEvent生成処理を追加
-			HitEvent ev{};
-			ev.skill = skillEnt;
-			ev.target = targetEnt;
-			ev.skillId = meta.skillId;
-			ev.SpawnTime = clock.now;
+			//HitEvent ev{};
+			//ev.skill = skillEnt;
+			//ev.target = targetEnt;
+			//ev.skillId = meta.skillId;
+			//ev.SpawnTime = clock.now;
 
-			hitDb.push(std::move(ev));
+			// memo更新
+			if (aIsSkill && memoA)
+			{
+				memoA->markHit(eB);
+			}
+			if (bIsSkill && memoB)
+			{
+				memoB->markHit(eA);
+			}
+
+			Game::Combat::HitEvent::API::GenerateHitEvent(ecs, skillEnt, targetEnt, meta.skillId, clock.now, hitDb);
+
+			//hitDb.push(std::move(ev));
 		}
 	}
 }
@@ -186,7 +210,10 @@ namespace Game::Collision::System
 	{
 		return ecs.hasComponent<SkillOwnerComponent>(entity);
 	}
+
 }
+
+
 
 void Game::Collision::System::UpdateCollisionResultStorage(eNsECS::EntityMgr& ecs, gNsCollData::CollisionResultStorage& collisionResultStorage)
 {
@@ -215,6 +242,7 @@ void Game::Collision::System::UpdateCollisionResultStorage(eNsECS::EntityMgr& ec
 	//	collisionResultStorage.AddTileCollision(hitTileIndices);
 	//}
 }
+
 
 
 

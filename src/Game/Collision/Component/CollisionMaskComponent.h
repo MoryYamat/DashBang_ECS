@@ -107,6 +107,7 @@ namespace Game::Collision::Component
 		if (a.id == b.id)
 			return Relation::Self;
 
+		// TODO: 以下のFIXMEは問題にならないかもしれない．キチンとシナリオを追って完全性を証明する必要あり
 		// FIXME: 現在，caster == a : Ally になってしまう．
 		// これは，caster == a : ならば，Selfにならなければいけない．
 		// つまり， ally: if(a is not skillEntity or b is not skillEntity) and if(ta == tb)

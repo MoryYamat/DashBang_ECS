@@ -1,6 +1,6 @@
 ﻿#include "CreateCollisionMaskComponent.hpp"
 
-#include "Game/Collision/Component/CollisionMaskComponent"
+#include "Game/Collision/Component/CollisionMaskComponent.h"
 
 namespace Game::Collision::API
 {

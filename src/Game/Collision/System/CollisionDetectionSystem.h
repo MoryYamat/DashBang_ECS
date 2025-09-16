@@ -24,4 +24,5 @@ namespace Game::Collision::System
 	// player and tile map collision detection
 
 	bool isSkillEntity(eNsECS::EntityMgr& ecs, eNsECS::Entity entity);
+
 }
