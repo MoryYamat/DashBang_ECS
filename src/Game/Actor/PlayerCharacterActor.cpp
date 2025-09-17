@@ -74,6 +74,9 @@
 //CC
 #include "Game/Character/FSM/CC/StateModel/CCStateComponent.hpp"
 #include "Game/Character/FSM/CC/StateModel/CCFSMTransitionRequestComponent.hpp"
+
+#include "Game/Character/Control/CC/Component/CCAntiChainComponent.hpp"
+
 // skill
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMTransitionRequestComponent.hpp"
@@ -279,6 +282,9 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	// CC FSM
 	ecs.addComponent(entity, gNsCharaFSMCC::StateModel::CCStateComponent{});
 	ecs.addComponent(entity, Game::Character::FSM::CC::StateModel::CCFSMTransitionRequestComponent{});
+
+	ecs.addComponent(entity, Game::Character::Control::CC::Component::CCAntiChainComponent{});
+
 	// skill FSM
 	ecs.addComponent(entity, gNsSkillFSM::SkillStateComponent{});
 	ecs.addComponent(entity, gNsSkillFSM::StateModel::SkillFSMTransitionRequestComponent{});

@@ -1,4 +1,4 @@
-#include "SkillFSMResolverSystem.hpp"
+ï»¿#include "SkillFSMResolverSystem.hpp"
 
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
 
@@ -12,9 +12,9 @@
 
 #include <typeindex>
 
-// TODO: eExec‚ÆeCaster‚Í“¯‚¶‚É‚È‚Á‚½‚Ì‚Å•s—v‚Èˆ—‚ ‚èC‰ü‘P‚µ‚Ä‚à‚æ‚¢‚ªŒã‰ñ‚µ
-// TODO: ƒŠƒNƒGƒXƒg‚ğˆê’èŠÔƒLƒ…[‚É•Û‚µ‚Ä‚¨‚«‚½‚¢ê‡‚âCƒŠƒNƒGƒXƒg‚Éu—LŒøŠúŠÔv‚âuˆË‘¶ŠÖŒWv‚ª‚ ‚éê‡.requests.clear()‚Å‚Í•s‰Â
-// TODO: —Dæ“x‚ª“¯‚¶ê‡‚Ìƒ‹[ƒ‹‚ª–¢’è‹`(æ‚É—ˆ‚½‚Ù‚¤‚ğÌ—p‚µ‚Ä‚¢‚é)
+// TODO: eExecã¨eCasterã¯åŒã˜ã«ãªã£ãŸã®ã§ä¸è¦ãªå‡¦ç†ã‚ã‚Šï¼Œæ”¹å–„ã—ã¦ã‚‚ã‚ˆã„ãŒå¾Œå›ã—
+// TODO: ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’ä¸€å®šæ™‚é–“ã‚­ãƒ¥ãƒ¼ã«ä¿æŒã—ã¦ãŠããŸã„å ´åˆã‚„ï¼Œãƒªã‚¯ã‚¨ã‚¹ãƒˆã«ã€Œæœ‰åŠ¹æœŸé–“ã€ã‚„ã€Œä¾å­˜é–¢ä¿‚ã€ãŒã‚ã‚‹å ´åˆ.requests.clear()ã§ã¯ä¸å¯
+// TODO: å„ªå…ˆåº¦ãŒåŒã˜å ´åˆã®ãƒ«ãƒ¼ãƒ«ãŒæœªå®šç¾©(å…ˆã«æ¥ãŸã»ã†ã‚’æ¡ç”¨ã—ã¦ã„ã‚‹)
 void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 	using namespace Game::Combat::Skill::Component;
@@ -24,12 +24,12 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::En
 
 	auto& db = ecs.getResource<SkillDatabase>();
 
-	// ‚±‚±‚ÅC`SkillExecution`‚ğŒŸõ‚·‚é‚Ì‚Í‚Ç‚¤‚È‚Ì‚©Dí’“‚É‚È‚Á‚½‚çƒtƒ‰ƒO“I–ğŠ„‚ğ‰Ê‚½‚¹‚È‚­‚È‚é
+	// ã“ã“ã§ï¼Œ`SkillExecution`ã‚’æ¤œç´¢ã™ã‚‹ã®ã¯ã©ã†ãªã®ã‹ï¼å¸¸é§ã«ãªã£ãŸã‚‰ãƒ•ãƒ©ã‚°çš„å½¹å‰²ã‚’æœãŸã›ãªããªã‚‹
 	for (eNsECS::Entity eExec : ecs.view<SkillExecutionContextComponent>())
 	{
 		auto& exec = ecs.get<SkillExecutionContextComponent>(eExec);
 
-		if (exec.skillId == 0) continue;// ƒXƒLƒ‹–¢Às‚È‚Ì‚ÅƒXƒLƒbƒv
+		if (exec.skillId == 0) continue;// ã‚¹ã‚­ãƒ«æœªå®Ÿè¡Œãªã®ã§ã‚¹ã‚­ãƒƒãƒ—
 
 		const auto eCaster = exec.caster;
 
@@ -60,15 +60,15 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::En
 			const std::type_index toState = bestRequest->requestedTo.value();
 
 			exec.previousState = fromState;
-			// ó‘ÔXV
+			// çŠ¶æ…‹æ›´æ–°
 			state.current = toState;
 			exec.phaseElapsedTime = 0.0f;
 
-			std::cout << "[SkillFSMResolverSystem] Resolved transition: "
-				<< fromState.name() << " -> " << toState.name()
-				<< " on Entity " << eCaster.id << "\n";
+			// std::cout << "[SkillFSMResolverSystem] Resolved transition: "
+			// 	<< fromState.name() << " -> " << toState.name()
+			// 	<< " on Entity " << eCaster.id << "\n";
 
-			// •›ì—pƒtƒbƒN‚ÌÀs
+			// å‰¯ä½œç”¨ãƒ•ãƒƒã‚¯ã®å®Ÿè¡Œ
 			const auto& skillId = exec.skillId;
 			if (!db.Has(skillId)) continue;
 			const auto& entry = db.Get(skillId);
@@ -86,11 +86,11 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::En
 				tryTriggerEffect(ecs, hook, eCaster, entry.def, ctx, state.current, fromState);
 			}
 
-			// ƒŠƒZƒbƒgˆ—
+			// ãƒªã‚»ãƒƒãƒˆå‡¦ç†
 			tryTriggerReset(ecs, eCaster, entry.fsm, entry.def,  ctx, state.current, fromState);
 		}
 
-		// ƒŠƒNƒGƒXƒg‚ğÁ”ï
+		// ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’æ¶ˆè²»
 		reqComp.requests.clear();
 
 
@@ -117,25 +117,25 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerEffect(
 
 	auto& record = ecs.get<SkillEffectExecutionRecordComponent>(caster);
 
-	std::size_t hash = std::type_index(typeid(*hook.effect)).hash_code();// Œ^‚ÉŠî‚Ã‚­Às¯•Êq
+	std::size_t hash = std::type_index(typeid(*hook.effect)).hash_code();// å‹ã«åŸºã¥ãå®Ÿè¡Œè­˜åˆ¥å­
 
-	if (hook.trigger->evaluate(ctx, def, current, previous) &&// ƒgƒŠƒK[ğŒ”»’è‚Æ–¢Àsƒ`ƒFƒbƒN
+	if (hook.trigger->evaluate(ctx, def, current, previous) &&// ãƒˆãƒªã‚¬ãƒ¼æ¡ä»¶åˆ¤å®šã¨æœªå®Ÿè¡Œãƒã‚§ãƒƒã‚¯
 		!record.hasExecuted(hash))
 	{
-		hook.effect->execute(ecs, caster, def, ctx);// Às‚ÆÀsÏ‚İƒ}[ƒN
+		hook.effect->execute(ecs, caster, def, ctx);// å®Ÿè¡Œã¨å®Ÿè¡Œæ¸ˆã¿ãƒãƒ¼ã‚¯
 		record.markExecuted(hash);
 	}
 
-	std::cout << "[tryTriggerEffect] effectHash: " << hash << "\n";
-	std::cout << "[tryTriggerEffect] hasExecuted: " << record.hasExecuted(hash) << "\n";
-	std::cout << "[tryTriggerEffect] trigger.evaluate: " << hook.trigger->evaluate(ctx, def, current, previous) << "\n";
+	//std::cout << "[tryTriggerEffect] effectHash: " << hash << "\n";
+	//std::cout << "[tryTriggerEffect] hasExecuted: " << record.hasExecuted(hash) << "\n";
+	//std::cout << "[tryTriggerEffect] trigger.evaluate: " << hook.trigger->evaluate(ctx, def, current, previous) << "\n";
 
 }
 
 
-// FIXME:‚±‚Ì”Ä—p\‘¢‚Ì’†‚Å`EffectExecutionRecordComponent`‚ÌƒŠƒZƒbƒg‚ğ‘¼ŠÖ”‚Ì’è‹`‚É‚æ‚Á‚ÄÀs‚·‚é‚Ì‚Í‹C‚¿‚ªˆ«‚¢
-// FIXME:ƒfƒtƒHƒ‹ƒg‚ÌƒŠƒZƒbƒgŠÖ”‚Æ‚µ‚Ä‚Ì‹@”\‚Å`EffectExecutionRecordComponent`‚ğƒŠƒZƒbƒg‚·‚é‚±‚Æ‚É‚·‚é‚È‚ç‚æ‚¢‚©‚àH
-// FIXME:‚Æ‚à‚©‚­î•ñ‚Ì\‘¢‚©‚çÀ‘•‚ÌˆË‘¶ŠÖŒW‚ğ®—‚·‚é•K—v‚ª‚ ‚é
+// FIXME:ã“ã®æ±ç”¨æ§‹é€ ã®ä¸­ã§`EffectExecutionRecordComponent`ã®ãƒªã‚»ãƒƒãƒˆã‚’ä»–é–¢æ•°ã®å®šç¾©ã«ã‚ˆã£ã¦å®Ÿè¡Œã™ã‚‹ã®ã¯æ°—æŒã¡ãŒæ‚ªã„
+// FIXME:ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ãƒªã‚»ãƒƒãƒˆé–¢æ•°ã¨ã—ã¦ã®æ©Ÿèƒ½ã§`EffectExecutionRecordComponent`ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹ã“ã¨ã«ã™ã‚‹ãªã‚‰ã‚ˆã„ã‹ã‚‚ï¼Ÿ
+// FIXME:ã¨ã‚‚ã‹ãæƒ…å ±ã®æ§‹é€ ã‹ã‚‰å®Ÿè£…ã®ä¾å­˜é–¢ä¿‚ã‚’æ•´ç†ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
 void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerReset
 (
 	eNsECS::EntityMgr& ecs,
@@ -160,7 +160,7 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerReset
 }
 
 // 
-// FIXME: SkillExecutionComponent‚Ìí’“‰»‚É‚Æ‚à‚È‚¤İŒv•ÏX‚ª•K—v
+// FIXME: SkillExecutionComponentã®å¸¸é§åŒ–ã«ã¨ã‚‚ãªã†è¨­è¨ˆå¤‰æ›´ãŒå¿…è¦
 //void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerEffect(
 //	const SkillEffectHook& hook,
 //	eNsECS::EntityMgr& ecs,
@@ -181,10 +181,10 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerReset
 //
 //	auto& record = ecs.get<SkillEffectExecutionRecordComponent>(eExec);
 //
-//	// Å“K‰»ŒŸ“¢F‘¼‚Ì•û–@‚ª‚È‚¢‚©
-//	std::size_t hash = std::type_index(typeid(*hook.effect)).hash_code();// ƒnƒbƒVƒ…’lì¬
+//	// æœ€é©åŒ–æ¤œè¨ï¼šä»–ã®æ–¹æ³•ãŒãªã„ã‹
+//	std::size_t hash = std::type_index(typeid(*hook.effect)).hash_code();// ãƒãƒƒã‚·ãƒ¥å€¤ä½œæˆ
 //
-//	// ‚·‚Å‚ÉTrigger‚µ‚½Effect‚ÍƒXƒLƒbƒv‚·‚é
+//	// ã™ã§ã«Triggerã—ãŸEffectã¯ã‚¹ã‚­ãƒƒãƒ—ã™ã‚‹
 //	if (hook.trigger->evaluate(ctx, def, current, previous) &&
 //		!record.hasExecuted(hash))
 //	{

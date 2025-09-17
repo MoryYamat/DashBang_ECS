@@ -1,4 +1,4 @@
-#include "CCTransitionDefinitionInitialize.hpp"
+ï»¿#include "CCTransitionDefinitionInitialize.hpp"
 
 #include "Game/Character/FSM/CC/Database/CCFSMDatabase.hpp"
 
@@ -19,19 +19,19 @@ void Game::Character::FSM::CC::InitCCTransitionDefinitionDatabase(eNsECS::Entity
 
 	auto& db = ecs.createResource<CCFSMDatabase>();
 
-	float stunSec = 2.0f;
+	float stunSec = 5.0f;
 	float kdSec = 2.0f;
 
 	CCFSMDefinition def;
 	def.initialState = StateTag::NONE;
 
-	// HitEvent -> ‰ğÍ -> ƒŠƒNƒGƒXƒg‚É‚æ‚é•û®‚É•ÏX
+	// HitEvent -> è§£æ -> ãƒªã‚¯ã‚¨ã‚¹ãƒˆã«ã‚ˆã‚‹æ–¹å¼ã«å¤‰æ›´
 	//def.transitions.push_back(
 	//	{
 	//		.from = StateTag::NONE,
 	//		.to = StateTag::STUNNED,
 	//		.condition = std::make_shared<AlwaysTrue>(),
-	//		.priority = 100// ‚±‚ê‚ÍCCFSM©‘Ì‚Ì‘JˆÚ’è‹`‚È‚Ì‚Å•Ê‚É0‚Å‚à‚æ‚¢
+	//		.priority = 100// ã“ã‚Œã¯CCFSMè‡ªä½“ã®é·ç§»å®šç¾©ãªã®ã§åˆ¥ã«0ã§ã‚‚ã‚ˆã„
 	//	}
 	//);
 
@@ -40,7 +40,7 @@ void Game::Character::FSM::CC::InitCCTransitionDefinitionDatabase(eNsECS::Entity
 	//		.from = StateTag::NONE,
 	//		.to = StateTag::KNOCKDOWNED,
 	//		.condition = std::make_shared <AlwaysTrue>(),
-	//		.priority = 100// ‚±‚ê‚ÍCCFSM©‘Ì‚Ì‘JˆÚ’è‹`‚È‚Ì‚Å•Ê‚É0‚Å‚à‚æ‚¢
+	//		.priority = 100// ã“ã‚Œã¯CCFSMè‡ªä½“ã®é·ç§»å®šç¾©ãªã®ã§åˆ¥ã«0ã§ã‚‚ã‚ˆã„
 	//	}
 	//);
 
@@ -65,9 +65,9 @@ void Game::Character::FSM::CC::InitCCTransitionDefinitionDatabase(eNsECS::Entity
 	// TODO:
 	// FSMSystem
 	// FSMResolver
-	// priority‚ÌİŒvEÀ‘•
-	// CC‚©‚ç‚Ì•œ‹A’è‹`İŒvEÀ‘•
-	// Š±Â‚ÌİŒvEÀ‘•
+	// priorityã®è¨­è¨ˆãƒ»å®Ÿè£…
+	// CCã‹ã‚‰ã®å¾©å¸°å®šç¾©è¨­è¨ˆãƒ»å®Ÿè£…
+	// å¹²æ¸‰ã®è¨­è¨ˆãƒ»å®Ÿè£…
 	// 
 	//
 	

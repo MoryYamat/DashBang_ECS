@@ -1,4 +1,4 @@
-#include "CharacterSkillIntentResolver.hpp"
+ï»¿#include "CharacterSkillIntentResolver.hpp"
 
 #include "Game/Character/Control/Skill/Intent/SkillIntentComponent.hpp"
 #include "Game/Combat/Skill/Component/SkillSlotAssignmentComponent.h"
@@ -15,9 +15,9 @@
 // FSM
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMStates.hpp"
 
-// TODO: `SkillExecutionComponent`‚ğƒAƒNƒ^[‚ª•Û‚·‚éî•ñ‚É‚·‚é
-// TODO: `SkillExecutionComponent`‚Ì¶¬‚ğFSMHook‰»‚·‚é(SkillExecutionSetUpHook‚È‚Ç)
-// TODO: TransitionRequest‚Ì`Priority`§Œä‚ÌÀ‘•
+// TODO: `SkillExecutionComponent`ã‚’ã‚¢ã‚¯ã‚¿ãƒ¼ãŒä¿æŒã™ã‚‹æƒ…å ±ã«ã™ã‚‹
+// TODO: `SkillExecutionComponent`ã®ç”Ÿæˆã‚’FSMHookåŒ–ã™ã‚‹(SkillExecutionSetUpHookãªã©)
+// TODO: TransitionRequestã®`Priority`åˆ¶å¾¡ã®å®Ÿè£…
 void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMgr& ecs)
 {
 	using namespace Game::Character::Control::Skill;
@@ -44,12 +44,12 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 		auto& state = ecs.get<SkillStateComponent>(e);
 		auto& logic = ecs.get<Logic2DTransformComponent>(e);
 
-		// intent‚ª‚È‚¢ê‡FƒXƒLƒbƒv
+		// intentãŒãªã„å ´åˆï¼šã‚¹ã‚­ãƒƒãƒ—
 		if (!intent.isActive) continue;
 
-		// ‰¼‚Ìó‘Ô”»’è: ‚æ‚è•¡G‚È”»’è‚ª‚Å‚«‚é‚æ‚¤‚ÈÀ‘•‚ğl‚¦‚é
-		// ƒXƒLƒ‹’è‹`‚©‚çğŒ‚ğ“WŠJ‚·‚éŠÖ”‚ğÀ‘•‚·‚é•û®‚É‚·‚é
-		// ’ŠÛğŒ•]‰¿ŠÖ”‚ğ“±“ü‚µ‚ÄASkillDef ‚ğ²‚É”»’è‚Å‚«‚é‚æ‚¤‚É‚·‚é‚Ì‚ª—‘z
+		// ä»®ã®çŠ¶æ…‹åˆ¤å®š: ã‚ˆã‚Šè¤‡é›‘ãªåˆ¤å®šãŒã§ãã‚‹ã‚ˆã†ãªå®Ÿè£…ã‚’è€ƒãˆã‚‹
+		// ã‚¹ã‚­ãƒ«å®šç¾©ã‹ã‚‰æ¡ä»¶ã‚’å±•é–‹ã™ã‚‹é–¢æ•°ã‚’å®Ÿè£…ã™ã‚‹æ–¹å¼ã«ã™ã‚‹
+		// æŠ½è±¡æ¡ä»¶è©•ä¾¡é–¢æ•°ã‚’å°å…¥ã—ã¦ã€SkillDef ã‚’è»¸ã«åˆ¤å®šã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹ã®ãŒç†æƒ³
 
 		for (auto slot : intent.requestedSlots)
 		{
@@ -63,12 +63,12 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 			const auto& entry = db.Get(skillId);
 
 
-			// Skill‚Ìd’¼ƒLƒƒƒ“ƒZƒ‹‚âƒ`ƒF[ƒ“‚È‚Ç‚Í•ÊƒVƒXƒeƒ€‚ÅFSM‚Æintent‚Æ‘g‚İ‡‚í‚¹‚Ä”»’è
-			// state‚ÆƒXƒLƒ‹’è‹`‚ÉŠî‚Ã‚¢‚ÄCƒXƒLƒ‹‚Ì”­“®ğŒ‚ğ•]‰¿	
+			// Skillã®ç¡¬ç›´ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã‚„ãƒã‚§ãƒ¼ãƒ³ãªã©ã¯åˆ¥ã‚·ã‚¹ãƒ†ãƒ ã§FSMã¨intentã¨çµ„ã¿åˆã‚ã›ã¦åˆ¤å®š
+			// stateã¨ã‚¹ã‚­ãƒ«å®šç¾©ã«åŸºã¥ã„ã¦ï¼Œã‚¹ã‚­ãƒ«ã®ç™ºå‹•æ¡ä»¶ã‚’è©•ä¾¡	
 			if (!canTriggerSkill(state, entry)) continue;
 
 
-			// skillExecutionComponent¶¬
+			// skillExecutionComponentç”Ÿæˆ
 			// eNsECS::Entity eSkill = ecs.createEntity();
 			if (!ecs.hasComponent<SkillExecutionContextComponent>(e))
 			{
@@ -83,7 +83,7 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 			exec.isInterrupted = false;
 			// ecs.addComponent(eSkill, exec);
 
-			// ˆÊ’uE•ûŒü‚ğ‰Šú‰»i”­“®‚ÌƒLƒƒƒ‰‚ÌƒƒWƒbƒNÀ•W‚ğƒRƒs[j
+			// ä½ç½®ãƒ»æ–¹å‘ã‚’åˆæœŸåŒ–ï¼ˆç™ºå‹•æ™‚ã®ã‚­ãƒ£ãƒ©ã®ãƒ­ã‚¸ãƒƒã‚¯åº§æ¨™ã‚’ã‚³ãƒ”ãƒ¼ï¼‰
 			//Transform2DComponent transform;
 			//transform.positionXZ = logic.positionXZ;
 			//transform.rotationY = logic.GetRotationYFromFrontVector();
@@ -93,23 +93,23 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 			// ecs.addComponent(eSkill, transform);
 
 
-			// skillFSMstate ‚ğ ’è‹`‚³‚ê‚½‰Šúó‘Ô‚ÉƒŠƒNƒGƒXƒg‚·‚é
+			// skillFSMstate ã‚’ å®šç¾©ã•ã‚ŒãŸåˆæœŸçŠ¶æ…‹ã«ãƒªã‚¯ã‚¨ã‚¹ãƒˆã™ã‚‹
 			if (!ecs.hasComponent<SkillFSMTransitionRequestComponent>(e)) {
 				ecs.addComponent(e, SkillFSMTransitionRequestComponent{});
 			}
 			auto& reqComp = ecs.get<SkillFSMTransitionRequestComponent>(e);
 			reqComp.requests.push_back(SkillFSMTransitionRequest{
 				.requestedTo = entry.fsm.initialState,
-				.priority = 100 // ‚‚ß‚Å‚à—Ç‚¢A‹N“®’¼Œã‚È‚Ì‚Å
+				.priority = 100 // é«˜ã‚ã§ã‚‚è‰¯ã„ã€èµ·å‹•ç›´å¾Œãªã®ã§
 			});
 
-			std::cout << "[SkillIntentResolverSystem.cpp]: Skill " << skillId << " transitioned to " << state.current.name() << "\n";
+			// std::cout << "[SkillIntentResolverSystem.cpp]: Skill " << skillId << " transitioned to " << state.current.name() << "\n";
 
-			std::cout << "[SkillTrigger] Entity " << e.id
-				<< " triggered skill " << skillId
-				<< " named as " << entry.def.name
-				<< " via slot " << static_cast<int>(slot)
-				<< std::endl;
+			// std::cout << "[SkillTrigger] Entity " << e.id
+			// 	<< " triggered skill " << skillId
+			// 	<< " named as " << entry.def.name
+			// 	<< " via slot " << static_cast<int>(slot)
+			// 	<< std::endl;
 		}
 	}
 }
@@ -128,9 +128,9 @@ bool Game::Character::Control::Skill::canTriggerSkill(
 	return cond->evaluate(state, def);
 }
 
-// ”p~—\’èFŒ^ƒx[ƒXFSMÀ‘•Œã
-// Œø—¦–â‘èF‚·‚®‚É‚Í–â‘è‚É‚È‚ç‚È‚¢‚ªA«—ˆ“I‚ÉƒLƒƒƒbƒVƒ…‚ğŒŸ“¢‚·‚é
-// ƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹‚ÌˆÓ}‚ğ”½‰f‚·‚é‚©‚µ‚È‚¢‚©”»’è‚·‚éƒVƒXƒeƒ€
+// å»ƒæ­¢äºˆå®šï¼šå‹ãƒ™ãƒ¼ã‚¹FSMå®Ÿè£…å¾Œ
+// åŠ¹ç‡å•é¡Œï¼šã™ãã«ã¯å•é¡Œã«ãªã‚‰ãªã„ãŒã€å°†æ¥çš„ã«ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’æ¤œè¨ã™ã‚‹
+// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«ã®æ„å›³ã‚’åæ˜ ã™ã‚‹ã‹ã—ãªã„ã‹åˆ¤å®šã™ã‚‹ã‚·ã‚¹ãƒ†ãƒ 
 void Game::Character::Control::Skill::UpdateCharacterSkillIntentResovlver(eNsECS::EntityMgr& ecs)
 {
 	for (eNsECS::Entity e : ecs.view<
@@ -141,14 +141,14 @@ void Game::Character::Control::Skill::UpdateCharacterSkillIntentResovlver(eNsECS
 		auto& intent = ecs.get<gNsCharacterControlSkill::SkillIntentComponent>(e);
 		const auto& state = ecs.get<gNsCharacterState::Action::CharacterActionStateComponent>(e);
 
-		// ‰¼”»’èFƒXƒLƒ‹”­“®‚Å‚«‚éó‘Ô‚Å‚È‚¯‚ê‚Îintent ‚ğ–³Œø‚©
+		// ä»®åˆ¤å®šï¼šã‚¹ã‚­ãƒ«ç™ºå‹•ã§ãã‚‹çŠ¶æ…‹ã§ãªã‘ã‚Œã°intent ã‚’ç„¡åŠ¹ã‹
 		if (state.current == gNsCharaActionState::ActionState::None)
 		{
-			// ”­“®‰Â”\ó‘Ô‚È‚çintent‚Í‚»‚Ì‚Ü‚Ü
+			// ç™ºå‹•å¯èƒ½çŠ¶æ…‹ãªã‚‰intentã¯ãã®ã¾ã¾
 		}
 		else
 		{
-			// ƒXƒLƒ‹”­“®‰Â”\ó‘Ô‚È‚çintent ‚ğ–³Œø‰»
+			// ã‚¹ã‚­ãƒ«ç™ºå‹•å¯èƒ½çŠ¶æ…‹ãªã‚‰intent ã‚’ç„¡åŠ¹åŒ–
 			intent.isActive = false;
 			intent.requestedSlots.clear();
 		}

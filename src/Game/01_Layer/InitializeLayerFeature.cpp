@@ -16,6 +16,9 @@
 
 #include "Game/00_Feature/Combat/HitEvent/HitEventFeature.hpp"
 
+// control
+#include "Game/00_Feature/Character/Control/CC/CharacterCCFeature.hpp"
+
 #include "Common/GameNamespaceDecl.h"
 
 void Game::Layer::InitializeLayerFeature::DelayedInitialzation(eNsECS::EntityMgr& ecs)
@@ -46,4 +49,8 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialzation(eNsECS::EntityMgr
 
 	// MovementFSMの定義を初期化
 	gNsFeature::Character::FSM::MovementFSMFeature::InitializeMovementFSMDefinition(ecs);
+
+
+	// AntichainPolicy初期化
+	gNsFeature::Character::CharacterCCFeature::InitCCAntiChainPolicy(ecs);
 }

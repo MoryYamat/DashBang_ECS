@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <typeindex>
 #include <unordered_map>
@@ -7,26 +7,26 @@ namespace Game::Character::Control::CC::Policy
 {
 	//enum class AntiChainAction
 	//{
-	//	ApplyImmune,// è‡’l“’B->IMMUNE‚Ö‘JˆÚƒŠƒNƒGƒXƒg‚ğ“Š‚°‚é
-	//	DenyRequests,// è‡’l“’B->ˆê’èŠÔ None->CCƒŠƒNƒGƒXƒg‚ğ“ü‚èŒû‚Å‹‘”Û
+	//	ApplyImmune,// é–¾å€¤åˆ°é”->IMMUNEã¸é·ç§»ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’æŠ•ã’ã‚‹
+	//	DenyRequests,// é–¾å€¤åˆ°é”->ä¸€å®šæ™‚é–“ None->CCãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’å…¥ã‚Šå£ã§æ‹’å¦
 	//};
 
 	struct CCAntiChainPolicy
 	{
 		int threshold = 2;
-		float windowSec = 6.0f;
-		float immunitySec = 5.0f;
-		// ƒfƒtƒHƒ‹ƒg‚ÅApplyImmune
+		float windowSec = 6.0f;		// åˆå› CC è¢«å¼¾æ™‚ ã‹ã‚‰ 6.0sec ã®é–“ ã‚’ AntiChainå˜ä½ ã¨ã—ã¦ è¨­å®š
+		float immunitySec = 5.0f;	// CC ç„¡åŠ¹æ™‚é–“ã¯ Windowå†…ã§ Count>=2 ã«ãªã£ã¦ãã®CCãŒè§£é™¤ã•ã‚ŒãŸç¬é–“ã‹ã‚‰ 4.0sec
+		// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ApplyImmune
 		// AntiChainAction action = AntiChainAction::DenyRequests;
 
 		std::unordered_map<std::type_index, int> weightByCC;
 
 
-		// CCÄ“K—pƒ|ƒŠƒV => ƒfƒtƒHƒ‹ƒg‚ÅReplace
+		// CCå†é©ç”¨ãƒãƒªã‚· => ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§Replace
 		//enum class ReapplyPolicy { Ignore, RefreshTime, Replace, Queue };
 		//ReapplyPolicy reapply = ReapplyPolicy::Ignore;
 
-		// ƒwƒ‹ƒp
+		// ãƒ˜ãƒ«ãƒ‘
 		int weightOf(std::type_index cc) const {
 			if (auto it = weightByCC.find(cc); it != weightByCC.end()) return it->second;
 			return 1;

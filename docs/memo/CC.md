@@ -1,0 +1,71 @@
+# CC 系
+
+
+
+## 目次
+- [CCFSMSystem/Req動作確認](#debug_cc_req)
+
+
+
+<details>
+<summary id="debug_cc_req"> <strong>CCFSMSystem/Req動作確認</strong> </summary>
+
+### デバッグ
+
+
+#### ログ解析
+```
+
+// -----------------------
+// 1回目のCC 被撃 (CC解除予測 13s / window終了 14s , count=1)
+[HitEvent] eventID = 1 skillID = 1 target= 1 -> emitCC(type= struct Game::Character::FSM::CC::StateModel::CCState::Stunned, priority= 300)
+[CCFSMResolverSystem] Transition applied: struct Game::Character::FSM::CC::StateModel::CCState::None -> struct Game::Character::FSM::CC::StateModel::CCState::Stunned /clock = 8.64929
+[CCFSMSystem] Requesting transition: ->   -> struct Game::Character::FSM::CC::StateModel::CCState::None
+[CCFSMResolverSystem] Transition applied: struct Game::Character::FSM::CC::StateModel::CCState::Stunned -> struct Game::Character::FSM::CC::StateModel::CCState::None /clock = 13.6498
+[CCFSMResolverSystem] Transition applied: struct Game::Character::FSM::CC::StateModel::CCState::None -> struct Game::Character::FSM::CC::StateModel::CCState::Immune /clock = 13.6554
+// CC 解除
+
+// === 問題1 (本来はIMMUNEにはならない) ===
+[AntiChain] IMMUNE expired -> request NONE /clock = 17.6557
+[CCFSMResolverSystem] Transition applied: struct Game::Character::FSM::CC::StateModel::CCState::Immune -> struct Game::Character::FSM::CC::StateModel::CCState::None /clock = 17.6557
+// -----------------------
+
+// -----------------------
+// 1回目のCC 被撃 (CC解除予測　24s / window終了 25s , count = 1)
+[HitEvent] eventID = 2 skillID = 1 target= 1 -> emitCC(type= struct Game::Character::FSM::CC::StateModel::CCState::Stunned, priority= 300)
+[CCFSMResolverSystem] Transition applied: struct Game::Character::FSM::CC::StateModel::CCState::None -> struct Game::Character::FSM::CC::StateModel::CCState::Stunned /clock = 19.7666
+/
+
+// 2回目のCC 被撃 (CC解除予測  26s / window終了 25s , count = 2 )
+[HitEvent] eventID = 3 skillID = 1 target= 1 -> emitCC(type= struct Game::Character::FSM::CC::StateModel::CCState::Stunned, priority= 300)
+[CCFSMResolverSystem] Transition applied: struct Game::Character::FSM::CC::StateModel::CCState::Stunned -> struct Game::Character::FSM::CC::StateModel::CCState::Stunned /clock = 21.1836
+/
+
+// === 問題2 (本来は上書きされてはいけない) === 
+// 3回目のCC 被撃 (CC解除予測 28s / window終了 25s , count = 2)
+[HitEvent] eventID = 4 skillID = 1 target= 1 -> emitCC(type= struct Game::Character::FSM::CC::StateModel::CCState::Stunned, priority= 300)
+[CCFSMResolverSystem] Transition applied: struct Game::Character::FSM::CC::StateModel::CCState::Stunned -> struct Game::Character::FSM::CC::StateModel::CCState::Stunned /clock = 23.0169
+[CCFSMSystem] Requesting transition: ->   -> struct Game::Character::FSM::CC::StateModel::CCState::None
+[CCFSMResolverSystem] Transition applied: struct Game::Character::FSM::CC::StateModel::CCState::Stunned -> struct Game::Character::FSM::CC::StateModel::CCState::None /clock = 28.0175
+[CCFSMResolverSystem] Transition applied: struct Game::Character::FSM::CC::StateModel::CCState::None -> struct Game::Character::FSM::CC::StateModel::CCState::Immune /clock = 28.0229
+/
+
+// 
+// 4回目のCC 被撃 (IMMUNE状態は正常に機能している．IMMUNE状態後のCCは受け付けていない)
+[HitEvent] eventID = 5 skillID = 1 target= 1 -> emitCC(type= struct Game::Character::FSM::CC::StateModel::CCState::Stunned, priority= 300)
+[AntiChain] IMMUNE expired -> request NONE /clock = 32.0232
+[CCFSMResolverSystem] Transition applied: struct Game::Character::FSM::CC::StateModel::CCState::Immune -> struct Game::Character::FSM::CC::StateModel::CCState::None /clock = 32.0232
+// -----------------------
+```
+
+### 問題の挙動
+1. `IMMUNE`が`count`にかかわらず発動している
+    - 本来`IMMUNE`は`window`単位内で`count>=2`にならないと発動しない
+    - 
+2. count が CC の上書きに対応できていない
+  - `count >= 2`になっても，`Stunned`が上書き可能になっている現象
+  - 本来は`count>=2`になれば`Stunned`やその他の`CC`で上書きされてはいけない
+- 
+
+
+</details>

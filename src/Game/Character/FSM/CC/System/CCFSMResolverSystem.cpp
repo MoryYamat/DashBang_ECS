@@ -1,4 +1,4 @@
-#include "CCFSMResolverSystem.hpp"
+ï»¿#include "CCFSMResolverSystem.hpp"
 
 
 #include "Game/Character/Control/CC/Component/CCAntiChainComponent.hpp"
@@ -10,12 +10,16 @@
 
 #include "Game/Character/FSM/CC/Database/CCFSMDatabase.hpp"
 
+// API
+// Internal
+#include "Game/Character/FSM/CC/API/Internal/UpdateCCFSMContext.hpp"
+
 // clock
 #include "Engine/Time/WorldClock.hpp"
 
 #include <iostream>
 
-// FIXME: Resolver‚ÆStateScoped‚Ì•›ì—p‚Í•ª—£‚µ‚½‚Ù‚¤‚ª‚æ‚¢
+// FIXME: Resolverã¨StateScopedã®å‰¯ä½œç”¨ã¯åˆ†é›¢ã—ãŸã»ã†ãŒã‚ˆã„
 namespace Game::Character::FSM::CC::System
 {
 	using namespace Engine::Time;
@@ -27,10 +31,13 @@ namespace Game::Character::FSM::CC::System
 	void CCFSMResolverSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 	{
 		const auto& clock = ecs.getResource<WorldClockData>();
-		
+
+		// std::cout << "[now] clock = " << clock.now << std::endl;
+
+
 		const auto& db = ecs.getResource<CCFSMDatabase>();
 		if (!db.Has("basic")) return;
-		const auto& def = db.Get("basic");// Œ»İŒÅ’è
+		const auto& def = db.Get("basic");// ç¾åœ¨å›ºå®š
 
 		for (auto e : ecs.view<
 			CCStateComponent,
@@ -44,16 +51,18 @@ namespace Game::Character::FSM::CC::System
 
 			if (reqs.requests.empty()) continue;
 
-			// ‚±‚ÌƒtƒŒ[ƒ€‚Å“K—p‚µ‚Ä‚æ‚¢ƒŠƒNƒGƒXƒg‚©”»’è
+			// Debugï¼šæ­£å¸¸å‹•ä½œ
+			// ã“ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã§é©ç”¨ã—ã¦ã‚ˆã„ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‹åˆ¤å®š
 			auto admissible = [&](const CCFSMTransitionRequest& r) -> bool {
 				if (!r.requestedTo) return false;
 				const auto& to = r.requestedTo.value();
-				// IMMUNE ’†‚Í NONE ˆÈŠO‚ğ‹‘”Û
+				// IMMUNE ä¸­ã¯ NONE ä»¥å¤–ã‚’æ‹’å¦
 				if (state.current == StateTag::IMMUNE && to != StateTag::NONE) return false;
 				return true;
 				};
 
-			// ˆê”­‚ÅÅ—Dæ‚ğ‘I‚Ôi“¯ priority ‚Í‘}“ü‡—DæˆÀ’èj
+
+			// ä¸€ç™ºã§æœ€å„ªå…ˆã‚’é¸ã¶ï¼ˆåŒ priority ã¯æŒ¿å…¥é †å„ªå…ˆï¼å®‰å®šï¼‰
 			const CCFSMTransitionRequest* best = nullptr;
 			for (const auto& r : reqs.requests) {
 				if (!admissible(r)) continue;
@@ -62,23 +71,30 @@ namespace Game::Character::FSM::CC::System
 
 			if (!best) { reqs.requests.clear(); continue; }
 
-			// ó‘Ô‚ÌXV
+			// =============
+			// ã“ã®ã‚ãŸã‚Šã§ anti.count ã«åŸºã¥ã„ã¦count>=thresholdä»¥ä¸Šã®å ´åˆï¼ŒCCãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’ãƒ–ãƒ­ãƒƒã‚¯ã—ãªã‘ã‚Œã°ãªã‚‰ãªã„ï¼
+
+			// 
+			// ==============
+
+			// çŠ¶æ…‹ã®æ›´æ–°
 			const std::type_index fromState = state.current;
 			const std::type_index toState = best->requestedTo.value();
 
 			state.previous = fromState;
 			state.current = toState;
 
+			// ä½•ã‚‰ã‹ã®CCã‚’å—ã‘ãŸç¬é–“ã®æ™‚åˆ»ã‚’ä¿å­˜
 			if (state.current != StateTag::NONE && state.current != StateTag::IMMUNE)
 			{
 				state.enteredAt = clock.now;
 			}
 
 			std::cout << "[CCFSMResolverSystem] Transition applied: "
-				<< fromState.name() << " -> " << toState.name() << std::endl;
+				<< fromState.name() << " -> " << toState.name() << " /clock = " << clock.now << std::endl;
 
 
-			// TODO: antiChainˆÈŠO‚ÌIMMUNEŒ¹‚©‚ç‚ÌctxXV‚à‚Å‚«‚é‚æ‚¤‚ÉŠg’£
+			// TODO: antiChainä»¥å¤–ã®IMMUNEæºã‹ã‚‰ã®ctxæ›´æ–°ã‚‚ã§ãã‚‹ã‚ˆã†ã«æ‹¡å¼µ
 			CCFSMContext ctx{};
 			if (state.current != StateTag::NONE && state.current != StateTag::IMMUNE)
 			{
@@ -86,23 +102,29 @@ namespace Game::Character::FSM::CC::System
 				ctx.ccEnteredAt = state.enteredAt;
 				ctx.ccDuration = clock.now - state.enteredAt;
 			}
-			ctx.chainCount = anti.count;
-			ctx.immune = anti.immune;
-			ctx.immuneEndsAt = anti.immuneUntil;
-			ctx.chainWindowStart = anti.windowStart;
-			// TODO: antiChainˆÈŠO‚ÌIMMUNEŒ¹‚©‚ç‚ÌctxXV‚à‚Å‚«‚é‚æ‚¤‚ÉŠg’£
+
+
+			// TODO: APIåŒ– 
+			//ctx.chainCount = anti.count;
+			//ctx.immune = anti.immune;
+			//ctx.immuneEndsAt = anti.immuneUntil;
+			//ctx.chainWindowStart = anti.windowStart;
+			Game::Character::FSM::CC::API::updateContextFromAnti(ctx, anti);
+			// TODO: antiChainä»¥å¤–ã®IMMUNEæºã‹ã‚‰ã®ctxæ›´æ–°ã‚‚ã§ãã‚‹ã‚ˆã†ã«æ‹¡å¼µ
 
 			for (const auto& hook : def.hooks)
 			{
+				// TODO: Executeã®å®Ÿå‹•ä½œã®å®Ÿè£…
 				tryTriggerEffect(ecs, hook, e, def, ctx, state.current, state.previous);
 			}
+
 
 			reqs.requests.clear();
 		}
 
 	}
 
-	// record ‚Ö EffectŠÖ”ƒIƒuƒWƒFƒNƒg‚ÌŒ^‚ğhash‰»‚µ‚Ä“o˜^‚·‚é
+	// record ã¸ Effecté–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å‹ã‚’hashåŒ–ã—ã¦ç™»éŒ²ã™ã‚‹
 	void CCFSMResolverSystem::tryTriggerEffect(
 		eNsECS::EntityMgr& ecs,
 		const CCFSMStateEffectHook& hook,
@@ -134,10 +156,10 @@ namespace Game::Character::FSM::CC::System
 
 	}
 
-	// FIXME:‚±‚Ì”Ä—p\‘¢‚Ì’†‚Å`EffectExecutionRecordComponent`‚ÌƒŠƒZƒbƒg‚ğ‘¼ŠÖ”‚Ì’è‹`‚É‚æ‚Á‚ÄÀs‚·‚é‚Ì‚Í‹C‚¿‚ªˆ«‚¢
-	// FIXME:ƒfƒtƒHƒ‹ƒg‚ÌƒŠƒZƒbƒgŠÖ”‚Æ‚µ‚Ä‚Ì‹@”\‚Å`EffectExecutionRecordComponent`‚ğƒŠƒZƒbƒg‚·‚é‚±‚Æ‚É‚·‚é‚È‚ç‚æ‚¢‚©‚àH
-	// FIXME:‚Æ‚à‚©‚­î•ñ‚Ì\‘¢‚©‚çÀ‘•‚ÌˆË‘¶ŠÖŒW‚ğ®—‚·‚é•K—v‚ª‚ ‚é
-	// record ‚Ì ƒŠƒZƒbƒg
+	// FIXME:ã“ã®æ±ç”¨æ§‹é€ ã®ä¸­ã§`EffectExecutionRecordComponent`ã®ãƒªã‚»ãƒƒãƒˆã‚’ä»–é–¢æ•°ã®å®šç¾©ã«ã‚ˆã£ã¦å®Ÿè¡Œã™ã‚‹ã®ã¯æ°—æŒã¡ãŒæ‚ªã„
+	// FIXME:ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ãƒªã‚»ãƒƒãƒˆé–¢æ•°ã¨ã—ã¦ã®æ©Ÿèƒ½ã§`EffectExecutionRecordComponent`ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹ã“ã¨ã«ã™ã‚‹ãªã‚‰ã‚ˆã„ã‹ã‚‚ï¼Ÿ
+	// FIXME:ã¨ã‚‚ã‹ãæƒ…å ±ã®æ§‹é€ ã‹ã‚‰å®Ÿè£…ã®ä¾å­˜é–¢ä¿‚ã‚’æ•´ç†ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
+	// record ã® ãƒªã‚»ãƒƒãƒˆ
 	void CCFSMResolverSystem::tryTriggerReset(
 		eNsECS::EntityMgr& ecs,
 		const CCFSMStateEffectHook& hook,

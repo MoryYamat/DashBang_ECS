@@ -5,7 +5,7 @@
 #include "Game/Combat/HitEvent/Data/HitEvent.hpp"
 #include "Game/Combat/HitEvent/Database/HitEventDatabase.hpp"
 
-#include "Game/Character/FSM/CC/API/CCRequests.hpp"
+#include "Game/Character/FSM/CC/API/External/CCRequests.hpp"
 
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
 #include "Game/Combat/Skill/MasterData/SkillEntry.hpp"

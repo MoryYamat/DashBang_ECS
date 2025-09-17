@@ -1,4 +1,4 @@
-#include "CCAntiChainSystem.hpp"
+ï»¿#include "CCAntiChainSystem.hpp"
 
 #include "Engine/Time/WorldClock.hpp"
 
@@ -10,6 +10,8 @@
 
 #include "Game/Character/FSM/CC/CCStateTags.hpp"
 
+#include <iostream>
+
 namespace Game::Character::Control::CC
 {
 	using namespace Engine::Time;
@@ -20,14 +22,14 @@ namespace Game::Character::Control::CC
 	using namespace Game::Character::FSM::CC;
 	using namespace Game::Character::FSM::CC::StateModel;
 
-	void CCAntiChainSystem(EntityMgr& ecs, float deltaTime)
+	void CCAntiChainSystem(EntityMgr& ecs)
 	{
-		// ‚Æƒ|ƒŠƒV[æ“¾
+		// æ™‚åˆ»ã¨ãƒãƒªã‚·ãƒ¼å–å¾—
 		const auto& clock = ecs.getResource<WorldClockData>();
 		const float now = clock.now;
 
 		const auto& pdb = ecs.getResource<CCAntiChainPolicyDatabase>();
-		const auto& policy = pdb.ResolveForFSM("basic");// ‚Ğ‚Æ‚Ü‚¸ŒÅ’è
+		const auto& policy = pdb.ResolveForFSM("basic");// ã²ã¨ã¾ãšå›ºå®š
 
 		for (auto e : ecs.view<
 			CCStateComponent,
@@ -39,31 +41,32 @@ namespace Game::Character::Control::CC
 			auto& antiChain = ecs.get<CCAntiChainComponent>(e);
 			auto& reqs = ecs.get<CCFSMTransitionRequestComponent>(e);
 
-			// IMMUNE –—¹ƒ`ƒFƒbƒN
+
+			// IMMUNE æº€äº†ãƒã‚§ãƒƒã‚¯
 			if (state.current == StateTag::IMMUNE)
 			{
 				if (now >= antiChain.immuneUntil)
 				{
-					// ‹ï‘Ì“I‚ÈƒŠƒNƒGƒXƒg‹““®‚Í¡Œã•ÏX‚·‚é‰Â”\«‚ ‚è
+					// å…·ä½“çš„ãªãƒªã‚¯ã‚¨ã‚¹ãƒˆæŒ™å‹•ã¯ä»Šå¾Œå¤‰æ›´ã™ã‚‹å¯èƒ½æ€§ã‚ã‚Š
 					if (!reqs.hasExactRequest(StateTag::NONE, 0))
 					{
-						reqs.requests.push_back({ .requestedTo = StateTag::NONE, .priority = 0 });
-						// std::cout << "[AntiChain] IMMUNE expired -> request NONE\n";
+						reqs.requests.push_back({ .requestedTo = StateTag::NONE, .priority = 10000 });
+						std::cout << "[AntiChain] IMMUNE expired -> request NONE" << " /clock = " << now <<"\n";
 					}
-					antiChain.clearImmune();// Œµ–§‚É‚â‚é‚È‚çÀ‘JˆÚŠ®—¹‚ÉÁ‚·‰^—p‚à‰Â
+					antiChain.clearImmune();// å³å¯†ã«ã‚„ã‚‹ãªã‚‰å®Ÿé·ç§»å®Œäº†æ™‚ã«æ¶ˆã™é‹ç”¨ã‚‚å¯
 				}
-				continue;// IMMUNE ’†‚ÍƒXƒgƒ‰ƒCƒN‚ğ”‚¦‚È‚¢
+				continue;// IMMUNE ä¸­ã¯ã‚¹ãƒˆãƒ©ã‚¤ã‚¯ã‚’æ•°ãˆãªã„
 			}
 
 
-			// ˜A½ƒEƒBƒ“ƒhƒE‚ÌŠúŒÀØ‚ê‚ğ–ˆƒtƒŒ[ƒ€‚Å‘|œi‘Ó‘ÄƒŠƒZƒbƒg‚É‰Á‚¦‚Ä‘¦ƒŠƒZƒbƒg‚àj
+			// é€£é–ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®æœŸé™åˆ‡ã‚Œã‚’æ¯ãƒ•ãƒ¬ãƒ¼ãƒ ã§æƒé™¤ï¼ˆæ€ æƒ°ãƒªã‚»ãƒƒãƒˆã«åŠ ãˆã¦å³æ™‚ãƒªã‚»ãƒƒãƒˆã‚‚ï¼‰
 			if ((state.current == StateTag::NONE) &&
 				(now - antiChain.windowStart) > policy.windowSec)
 			{
 				antiChain.resetWindow(now);
 			}
 
-			// CC‚ªI‚í‚Á‚ÄNONE‚É–ß‚Á‚½uŠÔ‚É,count>threshold‚È‚ç IMMUNE “K—p
+			// CCãŒçµ‚ã‚ã£ã¦NONEã«æˆ»ã£ãŸç¬é–“ã«,count>thresholdãªã‚‰ IMMUNE é©ç”¨
 			{
 				const bool fromCC = (state.previous != StateTag::NONE) && (state.previous != StateTag::IMMUNE);
 				const bool toNONE = (state.current == StateTag::NONE);
@@ -81,30 +84,30 @@ namespace Game::Character::Control::CC
 				}
 			}
 			
-			// ’†—§(NONE/IMMUNE)->CC‚É“ü‚Á‚½uŠÔ‚ğŒŸo‚µƒXƒgƒ‰ƒCƒNŒvã
+			// ä¸­ç«‹(NONE/IMMUNE)->CCã«å…¥ã£ãŸç¬é–“ã‚’æ¤œå‡ºã—ã‚¹ãƒˆãƒ©ã‚¤ã‚¯è¨ˆä¸Š
 			{            
 				const bool fromNeutral = (state.previous == StateTag::NONE) || (state.previous == StateTag::IMMUNE);
 				const bool toCC = (state.current != StateTag::NONE) && (state.current != StateTag::IMMUNE);
 
 				if (fromNeutral && toCC)
 				{
-					// “¯ƒtƒŒ[ƒ€“ñdŒvãƒK[ƒhi•K—v‚È‚ç ƒÃ ”äŠr‚É‚·‚éj
+					// åŒãƒ•ãƒ¬ãƒ¼ãƒ äºŒé‡è¨ˆä¸Šã‚¬ãƒ¼ãƒ‰ï¼ˆå¿…è¦ãªã‚‰ Îµ æ¯”è¼ƒã«ã™ã‚‹ï¼‰
 					if (antiChain.count > 0 && antiChain.lastStrikeAt == now)
 					{
 						continue;
 					}
 					antiChain.lastStrikeAt = now;
 
-					// ˜A½ƒEƒBƒ“ƒhƒEŠO‚È‚çƒŠƒZƒbƒg
+					// é€£é–ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦å¤–ãªã‚‰ãƒªã‚»ãƒƒãƒˆ
 					if ((now - antiChain.windowStart) > policy.windowSec)
 					{
 						antiChain.resetWindow(now);
 					}
 
-					// CCí‚²‚Æ‚Ìd‚İ‚Å‰ÁZ
+					// CCç¨®ã”ã¨ã®é‡ã¿ã§åŠ ç®—
 					antiChain.count += policy.weightOf(state.current);
 
-					// è‡’l“’B -> IMMUNE‚ğƒŠƒNƒGƒXƒg‚µ‚ÄŠúŒÀƒZƒbƒg
+					// é–¾å€¤åˆ°é” -> IMMUNEã‚’ãƒªã‚¯ã‚¨ã‚¹ãƒˆã—ã¦æœŸé™ã‚»ãƒƒãƒˆ
 					if (antiChain.count >= policy.threshold)
 					{
 						////

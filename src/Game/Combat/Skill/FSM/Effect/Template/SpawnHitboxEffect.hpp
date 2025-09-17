@@ -56,7 +56,7 @@ namespace Game::Combat::Skill::FSM::Effect
 				CollisionMaskComponent{
 					.category = Category::SkillHitbox,
 					.collideCategoryMask = bit(Category::CharacterBody),
-					.relationMask = bit(Relation::Enemy),
+					.relationMask = bit(Relation::Enemy) | bit(Relation::Ally),
 					.flags = 0
 				});
 
@@ -99,9 +99,9 @@ namespace Game::Combat::Skill::FSM::Effect
 				ecs.addComponent(eHitbox, initialHitboxTransform);
 			}
 
-			std::cout << "[SpawnHitboxEffect.hpp]: Spawned Hitbox Entity" << eHitbox.id 
-				<< " for SkillID = " << def.id 
-				<< "by Caster = " << caster.id << "\n";
+			// std::cout << "[SpawnHitboxEffect.hpp]: Spawned Hitbox Entity" << eHitbox.id 
+			// 	<< " for SkillID = " << def.id 
+			// 	<< "by Caster = " << caster.id << "\n";
 
 
 

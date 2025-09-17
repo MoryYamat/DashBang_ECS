@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Game/Character/FSM/CC/StateModel/CCFSMContext.hpp"
 
@@ -44,7 +44,10 @@ namespace Game::Character::FSM::CC::StateModel
 		explicit CCElapsedAtLeast(float s) : sec(s) {}
 		bool evaluate(const CCFSMContext& ctx) const override
 		{
-			return ctx.currentCC && ctx.ccDuration >= sec;
+			// FIXME: cc.currentCCはstd::optionalの必要性があるか
+			// cc.currentCCががnulloptのことはない．(そういう設計)
+			// return ctx.currentCC && ctx.ccDuration >= sec;
+			return ctx.ccDuration >= sec;
 		}
 	};
 
