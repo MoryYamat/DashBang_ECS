@@ -31,7 +31,7 @@
 #include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
 #include "Game/Combat/Skill/Component/SkillOwnerComponent.hpp"
 #include "Game/Combat/Skill/Component/HitboxHitMemoComponent.hpp"
-#include "Game/Combat/Skill/API/Component/tryGetHitboxHitMemoComponent.hpp"
+#include "Game/Combat/Skill/API/External/tryGetHitboxHitMemoComponent.hpp"
 // teamTag
 #include "Game/ECS/Component/TeamComponent.h"
 

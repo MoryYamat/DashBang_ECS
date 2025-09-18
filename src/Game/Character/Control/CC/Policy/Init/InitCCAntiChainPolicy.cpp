@@ -1,4 +1,4 @@
-#include "InitCCAntiChainPolicy.hpp"
+ï»¿#include "InitCCAntiChainPolicy.hpp"
 
 #include "Game/Character/Control/CC/Policy/CCAntiChainPolicy.hpp"
 #include "Game/Character/Control/CC/Policy/CCAntiChainPolicyDatabase.hpp"
@@ -9,20 +9,21 @@ namespace Game::Character::Control::CC::Policy
 {
 	using namespace Game::Character::FSM::CC;
 
-	// TODO: ID‚Ì©“®ˆê’v‹@”\‚Ìì¬
+	// TODO: IDã®è‡ªå‹•ä¸€è‡´æ©Ÿèƒ½ã®ä½œæˆ
 	void InitCCAntiChainPolicy(EntityMgr& ecs)
 	{
 		auto& db = ecs.createResource<CCAntiChainPolicyDatabase>();
 		
 		CCAntiChainPolicy def = CCAntiChainPolicy::Default();
 
-		// •K—v‚ª‚ ‚ê‚ÎPolicy‚Ì•ÏX
+		// å¿…è¦ãŒã‚ã‚Œã°Policyã®å¤‰æ›´
 		def.weightByCC[StateTag::STUNNED] = 1;
 		def.weightByCC[StateTag::KNOCKDOWNED] = 1;
 
+
 		db.Add("default", def);
 
-		// Šù‘¶‚ÌFSM’è‹`ID‚É‘Î‚µ‚Ä•R‚Ã‚¯
+		// æ—¢å­˜ã®FSMå®šç¾©IDã«å¯¾ã—ã¦ç´ã¥ã‘
 		db.BindFSM("basic", "default");
 	}
 

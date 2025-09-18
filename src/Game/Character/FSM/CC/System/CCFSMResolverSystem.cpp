@@ -1,6 +1,6 @@
 ﻿#include "CCFSMResolverSystem.hpp"
 
-
+#include "Game/Character/Control/CC/Policy/CCAntiChainPolicyDatabase.hpp"
 #include "Game/Character/Control/CC/Component/CCAntiChainComponent.hpp"
 
 #include "Game/Character/FSM/CC/StateModel/CCStateComponent.hpp"
@@ -26,6 +26,7 @@ namespace Game::Character::FSM::CC::System
 	using namespace Game::Character::FSM::CC::Database;
 	using namespace Game::Character::FSM::CC::StateModel;
 
+	using namespace Game::Character::Control::CC::Policy;
 	using namespace Game::Character::Control::CC::Component;
 
 	void CCFSMResolverSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
@@ -39,6 +40,9 @@ namespace Game::Character::FSM::CC::System
 		if (!db.Has("basic")) return;
 		const auto& def = db.Get("basic");// 現在固定
 
+		const auto& pdb = ecs.getResource<CCAntiChainPolicyDatabase>();
+		const auto& policy = pdb.ResolveForFSM("basic");// ひとまず固定
+
 		for (auto e : ecs.view<
 			CCStateComponent,
 			CCFSMTransitionRequestComponent,
@@ -49,7 +53,18 @@ namespace Game::Character::FSM::CC::System
 			auto& reqs = ecs.get<CCFSMTransitionRequestComponent>(e);
 			auto& anti = ecs.get<CCAntiChainComponent>(e);
 
+			// 先頭で以前の状態を更新
+			// state.previous = state.current;
+			state.beginFrameSnapshot();
+
 			if (reqs.requests.empty()) continue;
+
+			// 現在の状態が CC中
+			const auto isCC = [&](const std::type_index& t)
+				{
+					return t != StateTag::NONE && t != StateTag::IMMUNE;
+				};
+
 
 			// Debug：正常動作
 			// このフレームで適用してよいリクエストか判定
@@ -57,9 +72,18 @@ namespace Game::Character::FSM::CC::System
 				if (!r.requestedTo) return false;
 				const auto& to = r.requestedTo.value();
 				// IMMUNE 中は NONE 以外を拒否
-				if (state.current == StateTag::IMMUNE && to != StateTag::NONE) return false;
+				// IMMUNE 中はNONEのみを通す
+				if (state.current == StateTag::IMMUNE) return to == StateTag::NONE;
+
+				// std::cout << "[CCFSMResolverSystem.cpp] anti.count = " << anti.count << "\n";
+				// 閾値到達後 CC中なら NONE || IMMUNE 以外は無視
+				if (anti.immuneArmed && isCC(state.current))
+					return to == StateTag::IMMUNE || to == StateTag::NONE;
+				
 				return true;
 				};
+
+
 
 
 			// 一発で最優先を選ぶ（同 priority は挿入順優先＝安定）
@@ -77,12 +101,18 @@ namespace Game::Character::FSM::CC::System
 			// 
 			// ==============
 
+			// 仕様: 状態が更新される瞬間しか current/ previousは更新されない
+			// 
+
 			// 状態の更新
-			const std::type_index fromState = state.current;
+			// const std::type_index fromState = state.current;
 			const std::type_index toState = best->requestedTo.value();
 
-			state.previous = fromState;
-			state.current = toState;
+			//state.previous = fromState;
+			//state.current = toState;
+
+			state.applyTransition(toState, clock.now);
+
 
 			// 何らかのCCを受けた瞬間の時刻を保存
 			if (state.current != StateTag::NONE && state.current != StateTag::IMMUNE)
@@ -91,7 +121,9 @@ namespace Game::Character::FSM::CC::System
 			}
 
 			std::cout << "[CCFSMResolverSystem] Transition applied: "
-				<< fromState.name() << " -> " << toState.name() << " /clock = " << clock.now << std::endl;
+				<< state.previous.name() << " -> " << toState.name() 
+				<< " /applied At = " << state.applied.appliedAt 
+				<< std::endl;
 
 
 			// TODO: antiChain以外のIMMUNE源からのctx更新もできるように拡張

@@ -1,32 +1,37 @@
-#pragma once
+ï»¿#pragma once
 
+#include <cstdint>
 
 namespace Game::Character::Control::CC::Component
 {
 	/// <summary>
-	/// 1. ŠeiƒLƒƒƒ‰ƒNƒ^jƒAƒNƒ^‚ÌEntity‚É•t—^‚³‚ê‚é
-	/// 2. “®ì
-	/// ŠÔ²: ----|----|----|----|----|----|
+	/// 1. å„ï¼ˆã‚­ãƒ£ãƒ©ã‚¯ã‚¿ï¼‰ã‚¢ã‚¯ã‚¿ã®Entityã«ä»˜ä¸ã•ã‚Œã‚‹
+	/// 2. å‹•ä½œ
+	/// æ™‚é–“è»¸: ----|----|----|----|----|----|
 	///				^windowStart
 	///				<-------6 sec ------->
 	/// </summary>
 	struct CCAntiChainComponent
 	{
-		// ˜A½ƒJƒEƒ“ƒg
+		// é€£é–ã‚«ã‚¦ãƒ³ãƒˆ
 		int    count = 0;
 		float windowStart = 0.0;
-		float lastStrikeAt = -1.0;   // “¯ƒtƒŒ[ƒ€“ñdŒvã‚Ì–h~‚Ég‚¦‚é
+		float lastStrikeAt = -1.0;   // åŒãƒ•ãƒ¬ãƒ¼ãƒ äºŒé‡è¨ˆä¸Šã®é˜²æ­¢ã«ä½¿ãˆã‚‹
 
 
-		bool   immune = false;        // IMMUNEó‘Ô‚ğUI“™‚ÉŒ©‚¹‚½‚¢ê‡‚ÉQÆ
-		float immuneUntil = 0.0;     // ApplyImmune ‚ÌŠúŒÀiQl’lj
+		bool   immune = false;        // IMMUNEçŠ¶æ…‹ã‚’UIç­‰ã«è¦‹ã›ãŸã„å ´åˆã«å‚ç…§
+		float immuneUntil = 0.0;     // ApplyImmune ã®æœŸé™ï¼ˆå‚è€ƒå€¤ï¼‰
 
-		// è‡’l“’B‚ÅIMMUNE‚ğŒã‚Å“K—p‚·‚é‚½‚ß‚Ìƒtƒ‰ƒO
+		// é–¾å€¤åˆ°é”ã§IMMUNEã‚’å¾Œã§é©ç”¨ã™ã‚‹ãŸã‚ã®ãƒ•ãƒ©ã‚°
 		bool immuneArmed = false;
 
-		// ƒwƒ‹ƒpiSystem‘¤‚©‚çg‚¤j
-		void resetWindow(float now) { count = 0; windowStart = now; }
-		void clearImmune() { immune = false; immuneUntil = 0.0; }
-		void disarmImmune() { immuneArmed = false; }
+		uint32_t lastHandledSerial{ 0 };
+
+		// ãƒ˜ãƒ«ãƒ‘ï¼ˆSystemå´ã‹ã‚‰ä½¿ã†ï¼‰
+		inline void resetWindow(float now) { count = 0; windowStart = now; }
+		inline void clearImmune() { immune = false; immuneUntil = 0.0; }
+		inline void disarmImmune() { immuneArmed = false; }
+
+
 	};
 }

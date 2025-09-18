@@ -1,24 +1,61 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Game/Character/FSM/CC/CCStateTags.hpp"
 #include <typeindex>
 
 namespace Game::Character::FSM::CC::StateModel
 {
-	// TODO: typeid‚ÌƒpƒtƒH[ƒ}ƒ“ƒX–â‘è
+	struct CCAppliedTransition
+	{
+		std::type_index fromState{ StateTag::NONE };
+		std::type_index toState{ StateTag::NONE };
+		float appliedAt{ 0.0f };
+		bool isValid{ false };
+	};
+
+	// TODO: typeidã®ãƒ‘ãƒ•ã‚©ãƒ¼ãƒãƒ³ã‚¹å•é¡Œ
 	struct CCStateComponent
 	{
 		std::type_index previous;
-		std::type_index current; // Œ»İ‚Ìó‘Ô‚ğ•\‚·Œ^‚ÌƒCƒ“ƒfƒbƒNƒX
+		std::type_index current; // ç¾åœ¨ã®çŠ¶æ…‹ã‚’è¡¨ã™å‹ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 
 		std::type_index issuerId;// typeid(SkillFSMAxis), typeid(CCAxis), etc.
 
 		float enteredAt = 0.0f;
 
-		CCStateComponent() : current(StateTag::NONE), previous(StateTag::NONE) , issuerId(AxisTag::CCAxis), enteredAt(0.0f){} // –³Œøó‘Ô‚ÍvoidŒ^
+		CCAppliedTransition applied{};
+		uint32_t transitionSerial{ 0 };
+
+		CCStateComponent() : current(StateTag::NONE), previous(StateTag::NONE) , issuerId(AxisTag::CCAxis), enteredAt(0.0f){} // ç„¡åŠ¹çŠ¶æ…‹ã¯voidå‹
 
 		explicit CCStateComponent(std::type_index iniState, std::type_index mainAxis)
 			: current(iniState), previous(iniState) , issuerId(mainAxis) {
-		} // ‰Šúó‘Ô‚ğw’è‚µ‚Ä‰Šú‰»
+		} // åˆæœŸçŠ¶æ…‹ã‚’æŒ‡å®šã—ã¦åˆæœŸåŒ–
+
+		inline void beginFrameSnapshot() { previous = current; }
+
+		inline void applyTransition(
+			std::type_index toState,
+			float now
+			)
+		{
+			const auto from = current;
+
+			// çŠ¶æ…‹æ›´æ–°
+			previous = from;
+			current = toState;
+			// issuerId = issuerAxis;
+
+			if (current != StateTag::NONE && current != StateTag::IMMUNE)
+			{
+				enteredAt = now;
+			}
+
+			transitionSerial += 1;
+			applied.fromState = from;
+			applied.toState = current;
+			applied.appliedAt = now;
+			applied.isValid = true;
+		}
 	};
 }

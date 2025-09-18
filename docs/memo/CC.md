@@ -10,8 +10,17 @@
 <details>
 <summary id="debug_cc_req"> <strong>CCFSMSystem/Req動作確認</strong> </summary>
 
-### デバッグ
+### デバッグ (2025/09/18 時点)
 
+### 想定仕様
+- `window`は一回目のCC適用が開始点のスライディング方式(固定区間ではない！)
+- 同型CCの上書きは可能 (`count>=threshold`にならない限り)
+- `IMMUNE`発火は`count>=threshold`になったのち直近CC解除時点で適用
+
+### 不変条件
+- I1: `IMMUNE`は「window内で`count>=2`」かつ「CC効果終了直後」にのみ発火
+- I2: `count>=2`の保護期間中はいかなるCCも上書き不可
+- I3: `fromNeutral && toCC` はCC適用イベントによって増える
 
 #### ログ解析
 ```
@@ -67,5 +76,37 @@
   - 本来は`count>=2`になれば`Stunned`やその他の`CC`で上書きされてはいけない
 - 
 
+
+### 原因の特定
+
+>[!WARNING] 問題1.について
+> **仕様の矛盾**
+> - Game/Character/FSM/CC/System/CCFSMResolverSystem.cpp
+>  - 仕様：`CCStateComponent`: `current/previous`が**状態更新時のみ変動する**
+>
+>- Game/Character/Control/CC/System/AntiChainSystem.cpp
+>  - 仕様：`line:90`の判定`if(fromNeutral&&toCC)`は**毎フレーム状態更新する前提**
+> 
+
+---
+
+>[!Warning] 問題2. について
+> **判定の欠如**
+> - Game/Character/FSM/CC/System/CCFSMResolverSystem.cpp
+>   - `CCStateComponent`の**CC適用前**に`CCAntiChainComponen`の`count`と`threshold`をチェックする必要あり <br>
+>   - \-> API化
+
+### 解決策
+>[!NOTE] 問題1
+> 矛盾の解決
+> - Game/Character/Control/CC/System/AntiChainSystem.cpp
+>   - `AntiChain`は「状態サンプリング」ではなく「遷移イベント」を観測する
+
+----
+
+>[!NOTE] 問題2
+> 判定APIの追加
+> - Game/Character/FSM/CC/System/CCFSMResolverSystem.cpp
+>   - `addmisible`計算のラムダ関数に`count`判定を追加
 
 </details>

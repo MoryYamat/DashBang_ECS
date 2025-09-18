@@ -26,7 +26,7 @@ namespace Game::Character::Control::CC::Policy
 		//enum class ReapplyPolicy { Ignore, RefreshTime, Replace, Queue };
 		//ReapplyPolicy reapply = ReapplyPolicy::Ignore;
 
-		// ヘルパ
+		// ヘルパ 重みづけ取得
 		int weightOf(std::type_index cc) const {
 			if (auto it = weightByCC.find(cc); it != weightByCC.end()) return it->second;
 			return 1;
