@@ -99,13 +99,15 @@
 ### 解決策
 >[!NOTE] 問題1
 > 矛盾の解決
-> - Game/Character/Control/CC/System/AntiChainSystem.cpp
->   - `AntiChain`は「状態サンプリング」ではなく「遷移イベント」を観測する
+> - Game/Character/FSM/CC/StateModel/CCStateComponent.hpp
+>   - `CCTransitionApplied`データを追加し，直近で適用されたリクエストを記録
+>   - FSM/CC/System/CCFSMResolverSystem.cppで`state.previous`を毎フレーム更新することによって遷移エッジを検出可能に
+>   - Control/CC/System/CCAntiChainSystem.cppで遷移エッジを判定し`anti.count`を計算することで対応
 
 ----
 
 >[!NOTE] 問題2
-> 判定APIの追加
+> 判定の追加
 > - Game/Character/FSM/CC/System/CCFSMResolverSystem.cpp
 >   - `addmisible`計算のラムダ関数に`count`判定を追加
 

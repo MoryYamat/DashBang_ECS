@@ -72,6 +72,9 @@ namespace Game::Character::Control::CC
 			const bool fromCC = (ev.fromState != StateTag::NONE) && (ev.fromState != StateTag::IMMUNE);
 			const bool toNONE = (ev.toState == StateTag::NONE);
 
+			// 丸め誤差対策
+			const float eps = 1e-4f;
+
 			// TODO: 同フレーム内の複数CCをどう扱うかは課題！！！！！
 			if (toCC)
 			{
@@ -87,7 +90,7 @@ namespace Game::Character::Control::CC
 				{
 					// WindowSec内かどうか確認
 					const float dt = ev.appliedAt - antiChain.windowStart;
-					if (dt >= policy.windowSec)
+					if (dt + eps >= policy.windowSec)
 					{
 						// window 外なら カウントリセット/windowリセット
 						antiChain.count = 0;

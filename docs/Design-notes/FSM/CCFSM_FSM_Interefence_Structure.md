@@ -1,4 +1,75 @@
-# <Design-notes FSMの状態干渉の構造分析・設計>
+# CCFSMのFSM干渉の設計
+
+## 目次
+- [基本設計](#basic_design)
+
+
+
+## 最新バージョン
+<details>
+<summary id="basic_design"> <strong>基本設計</strong> </summary>
+
+### 実装の目的
+> [!Important] FSMの干渉動作
+> - `CCState`の状態変化を原因にして，`SkillState`や`MovementState`の状態を強制変化させること<br>
+> \-> 直交`State`の相互作用を`干渉`によって実現することによって，状態の組合せの複雑性を抑える
+
+### シナリオ
+1. キャラクターがCC効果を含む攻撃に被弾
+2. `HitEvent`が作成され，`SkillID`から`CC`効果を参照し被弾したキャラクターエンティティを`targetET`として`CCRequest`を送信(`CCRequestComponent`に`request`を`push`)
+3. `CCFSMResolver`でCCが適用されるかどうかを判定
+4. CCが適用できる状態の場合`targetET`の`CCStateComponent`の`currentState`をCC状態へ遷移
+5. この遷移をトリガーとして(事前定義された)`CC2MovementInterference`/`CC2SkillInterference`副作用が実行される
+6. 各`Interference`副作用では，`InterferenceRequest`を作成される
+7. `targetET`の`MovementFSMLeaseComponent`/`SkillFSMLeaseComponent`の情報を更新
+8. `LeaseComponent`は`StateComponent`がどの`FSM定義`に従うかという情報を持つComponentである(たとえば`MovementStateComponent`は基本的に`MovementFSM定義`に従うが，`干渉`動作の際は`CCFSM定義`に一時的に従うようになる)
+9. `LeaseComponent`も`request-resolver`構造で動作を決定する
+10. 干渉動作自体の制御(干渉の時間管理や`lease`状態の解除など)は干渉元の`FSM`のシステムでは行わず，干渉を受けた側の`FSM`のシステムで行う
+11. つまり，`MovementLeaseResolver(仮)`や`MovementLeaseSystem(仮)`によって`MovementLeaseComponent`の情報を管理する
+12. 干渉がどれくらいの時間行われるか，どのような状態を強制されるか，という定義は干渉の発生元(今回はCC)の副作用の実装(つまり`CC2MovementInterference`など)によって定義する
+
+### 必要なデータおよびデータ構造
+- `LeaseComponent`
+  - `StateComponent`の(占有)情報を持つ
+  - 
+- `InterferenceRequest`
+  - `LeaseComponent`の情報を上書きするようなリクエストとなるデータ(の構造)
+
+- `CC2MovementInterference`
+  - `InterferenceRequest`を実際に作成する具体的に定義された副作用
+
+- `CC2SkillInterference`
+  - `InterferenceRequest`を実際に作成する具体的に定義された副作用
+ 
+
+
+### 必要な処理および責務分離
+- `LeaseResolver`
+  - どの`InterferenceRequest` を採用するかを何らかの優先度などに基づいて計算し決定・反映するシステム
+  - 
+- `Lease(Management)System`
+  - 適用された干渉の残り時間や動作を実際に管理・実行・停止するシステム
+
+- 
+
+### 
+
+
+
+
+</details>
+
+
+---
+## 旧バージョン 
+<details> 
+
+~~<summary> 旧番 </summary>~~
+
+>[!caution] 注意
+> このセクターの文書は古いです．最新版は上のものを閲覧してください (実際の変更は微小ですが書式が見にくいため廃止しました)
+
+<Design-notes FSMの状態干渉の構造分析・設計>
 - **Stats**: Draft
 - **Owner**: @you
 - **Related ADR**:
@@ -86,3 +157,6 @@
 [ ] ログ/メトリクス/トレースで可観測性が確保されている
 [ ] データ/APIのバージョニングと移行手順がある
 ```
+
+
+</details>
