@@ -1,4 +1,6 @@
-#include "MovementFSMInterferenceResolver.hpp"
+ï»¿#include "MovementFSMInterferenceResolver.hpp"
+
+#include "Engine/Time/WorldClock.hpp"
 
 #include "Game/Character/FSM/Interference/Core/Utils/ResolverUtil.hpp"
 
@@ -6,7 +8,12 @@
 
 namespace Game::Character::FSM::Movement::Interference
 {
+	using namespace Engine::Time;
 
+	using namespace Engine::ECS;
+	using namespace Game::Character::FSM::Interference::Core::Data;
+	using namespace Game::Character::FSM::Movement::StateModel;
+	using namespace Game::Character::FSM::Movement;
 
 	void MovementFSMInterferenceResolver::Update(EntityMgr& ecs, float deltaTime)
 	{
@@ -16,13 +23,21 @@ namespace Game::Character::FSM::Movement::Interference
 			auto& state = ecs.get<MovementStateComponent>(e);
 			auto& lease = ecs.get<MovementFSMLeaseComponent>(e);
 
-			resolveMovementFSMInterference(ecs, e, request, state, lease);
+
+			if (auto selected = computeHighestPriorityRequest(ecs, e, request, state, lease))
+			{
+				acceptInterference(ecs, e, *selected, lease);
+			}
+
+			updateInterference(ecs, e, lease, deltaTime);// çŠ¶æ…‹ã¯å¤‰ãˆãªã„ (çŠ¶æ…‹æ›´æ–°ã¯FSMResovlerã§)
+
+
 		}
 	}
 
 
 
-	void MovementFSMInterferenceResolver::resolveMovementFSMInterference(
+	const FSMInterferenceRequest* MovementFSMInterferenceResolver::computeHighestPriorityRequest(
 		EntityMgr& ecs,
 		Entity e,
 		const FSMInterferenceRequestComponent& requestComp,
@@ -34,11 +49,11 @@ namespace Game::Character::FSM::Movement::Interference
 		using namespace Game::Character::FSM::Movement;
 
 
-		// Š±ÂƒŠƒNƒGƒXƒg‚Ì•¡”“K—p‚ğ‹–—e‚·‚éd—l‚Ìê‡ˆÈ‰º‚ª•K—v
-		// ‚Ü‚¾g—p‚ğŒˆ‚ß‚é‚Ì‚ª“ï‚µ‚¢‚Ì‚Å•Û—¯
-		// TODO: •¡”ƒŠƒNƒGƒXƒg‚ÌˆÙ‚È‚éƒ‚[ƒh‚ÌŠ±Â‚ğ‹–‰Â‚·‚é‚©‚Ç‚¤‚©
-		// TODO: ˆê‚Â‚ÌŠ±ÂƒŠƒ\[ƒX‚ª•¡”‚Ìƒ‚[ƒh‚ğw’è‚·‚é‚±‚Æ‚ª‚Å‚«‚é‚æ‚¤‚É‚·‚é‚©‚Ç‚¤‚©(bitflag‰»)
-		// TODO: ƒ‚[ƒh‚ÌÚ×‚àl‚¦‚é
+		// å¹²æ¸‰ãƒªã‚¯ã‚¨ã‚¹ãƒˆã®è¤‡æ•°é©ç”¨ã‚’è¨±å®¹ã™ã‚‹ä»•æ§˜ã®å ´åˆä»¥ä¸‹ãŒå¿…è¦
+		// ã¾ã ä½¿ç”¨ã‚’æ±ºã‚ã‚‹ã®ãŒé›£ã—ã„ã®ã§ä¿ç•™
+		// TODO: è¤‡æ•°ãƒªã‚¯ã‚¨ã‚¹ãƒˆã®ç•°ãªã‚‹ãƒ¢ãƒ¼ãƒ‰ã®å¹²æ¸‰ã‚’è¨±å¯ã™ã‚‹ã‹ã©ã†ã‹
+		// TODO: ä¸€ã¤ã®å¹²æ¸‰ãƒªã‚½ãƒ¼ã‚¹ãŒè¤‡æ•°ã®ãƒ¢ãƒ¼ãƒ‰ã‚’æŒ‡å®šã™ã‚‹ã“ã¨ãŒã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹ã‹ã©ã†ã‹(bitflagåŒ–)
+		// TODO: ãƒ¢ãƒ¼ãƒ‰ã®è©³ç´°ã‚‚è€ƒãˆã‚‹
 		//std::vector<const FSMInterferenceRequest*> validRequests;
 
 		//for (const auto& req : requestComp.requests)
@@ -49,7 +64,7 @@ namespace Game::Character::FSM::Movement::Interference
 		//	}
 		//}
 
-		//// Å‘å—Dæ“x‚ğŒvZ
+		//// æœ€å¤§å„ªå…ˆåº¦ã‚’è¨ˆç®—
 		//auto maxSeverity = std::max_element(validRequests.begin(), validRequests.end(),
 		//	[](const auto* a, const auto* b) {
 		//		return a->severity < b->severity;
@@ -64,22 +79,74 @@ namespace Game::Character::FSM::Movement::Interference
 
 		for (const auto& req : requestComp.requests)
 		{
+			// æœ‰åŠ¹ãªrequestã‹ç¢ºèª(durationSec>0 && targetAxis == AxisTag::MovementAxis)
 			if (!shouldApply(req, targetAxis)) continue;
+			// forcedStateãŒãªã‘ã‚Œã°ç„¡è¦–
 			if (!req.forcedState.has_value()) continue;
-			if (req.severity <= lease.severity) continue;
+			// ç¾åœ¨ã®lease.severityã‚ˆã‚Šå°ã•ã„ãªã‚‰ç„¡è¦–
+			if (req.severity < lease.severity) continue;
 
+			// 
 			if (!selected || req.severity > selected->severity)
 				selected = &req;
 		}
 
 		if (!selected) return;
+		return selected;
 
-		// ‹­§‘JˆÚˆ—
-		applyForcedTransition(lease, state, *selected);
+		// å¼·åˆ¶é·ç§»å‡¦ç†
+		// applyForcedTransition(lease, state, *selected);
 
 		//lease.severity = selected->severity;
 		//lease.remainingDurationSec = selected->durationSec;
 
 		//state.current = *selected->forcedState;
+	}
+
+	void MovementFSMInterferenceResolver::acceptInterference(
+		Engine::ECS::EntityMgr& ecs,
+		Engine::ECS::Entity e,
+		const FSMInterferenceRequest& req,
+		Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent& lease
+	)
+	{
+		lease.issuerAxis = req.issuerAxis;
+		//lease.issuerEntity
+		lease.mode = req.mode;
+		lease.forcedState = req.forcedState;
+		lease.severity = req.severity;
+		lease.remainingDurationSec = req.durationSec;
+	}
+
+	void MovementFSMInterferenceResolver::updateInterference(
+		Engine::ECS::EntityMgr& ecs,
+		Engine::ECS::Entity e,
+		Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent& lease,
+		float dt
+	)
+	{
+		constexpr float eps = 1e-6;
+
+		if (!lease.isActive(eps))
+		{
+			lease.reset();// æ®‹éª¸å‡¦ç†
+			return;
+		}
+
+		lease.tick(dt);
+
+		// switchã¯ç¾åœ¨æœªä½¿ç”¨ï¼šãã‚Œã»ã©å¤§è¦æ¨¡ãªã®çŠ¶æ…‹å¹²æ¸‰å‹•ä½œã‚’æƒ³å®šã—ã¦ã„ãªã„
+		switch (lease.mode)
+		{
+		case InterferenceMode::ForceTransition:
+
+		case InterferenceMode::BlockInput:
+		}
+		
+		if (!lease.hasTimeLeft(eps))
+		{
+			lease.reset();
+		}
+
 	}
 }

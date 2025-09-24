@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/ECS/EntityManager.h"
 #include "Engine/ECS/Entity.h"
@@ -9,24 +9,36 @@
 
 namespace Game::Character::FSM::Movement::Interference
 {
-	using namespace Engine::ECS;
-	using namespace Game::Character::FSM::Interference::Core::Data;
-	using namespace Game::Character::FSM::Movement::StateModel;
-	using namespace Game::Character::FSM::Movement;
 
 	class MovementFSMInterferenceResolver
 	{
 	public:
-		static void Update(EntityMgr& ecs, float deltaTime);
+		static void Update(Engine::ECS::EntityMgr& ecs, float deltaTime);
 
 	private:
-		static void resolveMovementFSMInterference(
-			EntityMgr& ecs,
-			Entity e, 
-			const FSMInterferenceRequestComponent& requestComp,
-			MovementStateComponent& state,
-			MovementFSMLeaseComponent& lease
+		static const Game::Character::FSM::Interference::Core::Data::FSMInterferenceRequest* computeHighestPriorityRequest(
+			Engine::ECS::EntityMgr& ecs,
+			Engine::ECS::Entity e,
+			const Game::Character::FSM::Interference::Core::Data::FSMInterferenceRequestComponent& requestComp,
+			Game::Character::FSM::Movement::MovementStateComponent& state,
+			Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent& lease
 			);
+
+		// Interference受理 1フレームのみ
+		static void acceptInterference(
+			Engine::ECS::EntityMgr& ecs,
+			Engine::ECS::Entity e,
+			const Game::Character::FSM::Interference::Core::Data::FSMInterferenceRequest& req,
+			Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent& lease
+		);
+
+		// 干渉動作の期限をコントロール
+		static void updateInterference(
+			Engine::ECS::EntityMgr& ecs,
+			Engine::ECS::Entity e,
+			Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent& lease,
+			float dt
+		);
 	};
 
 }

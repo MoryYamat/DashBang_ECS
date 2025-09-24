@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Engine/ECS/Entity.h"
 
@@ -12,10 +12,11 @@ namespace Game::Character::FSM::Interference::Core::Data
 
 	enum class InterferenceMode
 	{
-		ForceTransition,// “Á’è‚Ìó‘Ô‚É‹­§‘JˆÚ‚³‚¹‚é
-		BlockInput,// “ü—Í‚ğ–³Œø‰»‚·‚é
-		Freeze,// ó‘Ô‚ğŒÅ’è
-		// •K—v‚É‰‚¶‚ÄŠg’£
+		None, 
+		ForceTransition,// ç‰¹å®šã®çŠ¶æ…‹ã«å¼·åˆ¶é·ç§»ã•ã›ã‚‹
+		BlockInput,// å…¥åŠ›ã‚’ç„¡åŠ¹åŒ–ã™ã‚‹
+		Freeze,// çŠ¶æ…‹ã‚’å›ºå®š
+		// å¿…è¦ã«å¿œã˜ã¦æ‹¡å¼µ
 	};
 
 	enum class ControlSeverity : uint8_t
@@ -28,21 +29,21 @@ namespace Game::Character::FSM::Interference::Core::Data
 
 	struct FSMInterferenceRequest
 	{
-		std::type_index issuerAxis;// ”­sÒFSM¯•Êq
-		std::type_index targetAxis;// Š±Â‘ÎÛ‚ÌFSM
+		std::type_index issuerAxis;// ç™ºè¡Œè€…FSMè­˜åˆ¥å­
+		std::type_index targetAxis;// å¹²æ¸‰å¯¾è±¡ã®FSM
 
 		ControlSeverity severity;
 
 
 		InterferenceMode mode;
-		std::optional<std::type_index> forcedState; // ‹­§‘JˆÚ‚³‚¹‚½‚¢ó‘Ô
+		std::optional<std::type_index> forcedState; // å¼·åˆ¶é·ç§»ã•ã›ãŸã„çŠ¶æ…‹
 
-		float durationSec = 0.0f;// Å‰Š±ÂŠÔ
+		float durationSec = 0.0f;// æœ€åˆå¹²æ¸‰æ™‚é–“
 
-		std::optional<Entity> issuerEntity; // Entity(optional) // Š±Â‚Ì‹N“_
-		std::optional<Entity> targetEntity; // ‘ÎÛ‚ÌƒGƒ“ƒeƒBƒeƒB
+		std::optional<Entity> issuerEntity; // Entity(optional) // å¹²æ¸‰ã®èµ·ç‚¹
+		std::optional<Entity> targetEntity; // å¯¾è±¡ã®ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£
 
-		std::any customContext; // Šg’£î•ñE•â‘«ƒRƒ“ƒeƒLƒXƒg
+		std::any customContext; // æ‹¡å¼µæƒ…å ±ãƒ»è£œè¶³ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ
 	};
 
 	struct FSMInterferenceRequestComponent

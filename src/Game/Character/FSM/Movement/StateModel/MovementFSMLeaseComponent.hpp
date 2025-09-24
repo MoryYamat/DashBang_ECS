@@ -1,6 +1,8 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Engine/ECS/Entity.h"
+
+#include "Game/Character/FSM/Movement/MovementStateTags.hpp"
 
 #include "Game/Character/FSM/Interference/Core/Data/FSMInterferenceRequest.hpp"
 
@@ -10,20 +12,48 @@
 
 namespace Game::Character::FSM::Movement::StateModel
 {
-	using namespace Engine::ECS;
-	using namespace Game::Character::FSM::Interference::Core::Data;
 
 	struct MovementFSMLeaseComponent
 	{
-		std::type_index issuerAxis;// Š±ÂŒ³‚ÌFSM¯•Êq
-		Entity issuerEntity;// Š±ÂŒ³ƒGƒ“ƒeƒBƒeƒB(—á: CCƒGƒtƒFƒNƒg‚ğ—^‚¦‚½‘Šè)
+		std::type_index issuerAxis;// å¹²æ¸‰å…ƒã®FSMè­˜åˆ¥å­
+		Engine::ECS::Entity issuerEntity;// å¹²æ¸‰å…ƒã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£(ä¾‹: CCã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’ä¸ãˆãŸç›¸æ‰‹)
 
-		ControlSeverity severity;// Š±Â‚Ì—Dæ“x”äŠr
-		InterferenceMode mode;
+		Game::Character::FSM::Interference::Core::Data::ControlSeverity severity;// å¹²æ¸‰ã®å„ªå…ˆåº¦æ¯”è¼ƒ
+		Game::Character::FSM::Interference::Core::Data::InterferenceMode mode;
 
-		std::optional<std::type_index> forocedState;// ‹­§‘JˆÚæ‚Ìó‘ÔŒ^
+		std::optional<std::type_index> forcedState;// å¼·åˆ¶é·ç§»å…ˆã®çŠ¶æ…‹å‹
 
-		float remainingDurationSec = 0.0f;// c‚èŠ±ÂŠÔ
-		std::any customContext;// Šg’£î•ñ
+		float remainingDurationSec = 0.0f;// æ®‹ã‚Šå¹²æ¸‰æ™‚é–“
+
+		std::any customContext;// æ‹¡å¼µæƒ…å ±
+
+
+		inline void reset()
+		{
+			issuerAxis = Game::Character::FSM::Movement::AxisTag::MovementAxis;
+			// issuerEntity = 
+
+			forcedState = std::nullopt;
+			remainingDurationSec = 0.0f;
+			severity = Game::Character::FSM::Interference::Core::Data::ControlSeverity::Low;
+			mode = Game::Character::FSM::Interference::Core::Data::InterferenceMode::None;
+		}
+
+		inline void tick(float dt)
+		{
+			remainingDurationSec -= dt;
+		}
+
+		inline bool hasTimeLeft(float eps)
+		{
+			return remainingDurationSec - eps >= 0;
+		}
+
+		inline const bool isActive(float eps) const
+		{
+			return (mode != Game::Character::FSM::Interference::Core::Data::InterferenceMode::None)
+				&&
+				(remainingDurationSec > eps);
+		}
 	};
 }

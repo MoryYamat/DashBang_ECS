@@ -1,5 +1,4 @@
-#pragma once
-
+﻿#pragma once
 
 #include "Game/Character/FSM/Movement/StateModel/MovementFSMStates.hpp"
 
