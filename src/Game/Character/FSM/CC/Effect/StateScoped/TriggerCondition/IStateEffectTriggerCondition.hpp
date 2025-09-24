@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Game/Character/FSM/CC/StateModel/CCFSMContext.hpp"
 
@@ -14,7 +14,7 @@ namespace Game::Character::FSM::CC::StateEffect
 
 
 		virtual bool evaluate(
-			const CCFSMContext& ctx,
+			const Game::Character::FSM::CC::StateModel::CCFSMContext& ctx,
 			const std::type_index& currentState,
 			const std::type_index& previousState
 		) const = 0;
@@ -30,7 +30,7 @@ namespace Game::Character::FSM::CC::StateEffect
 		}
 
 		bool evaluate(
-			const CCFSMContext& ctx,
+			const Game::Character::FSM::CC::StateModel::CCFSMContext& ctx,
 			const std::type_index& currentState,
 			const std::type_index& previousState
 		) const override

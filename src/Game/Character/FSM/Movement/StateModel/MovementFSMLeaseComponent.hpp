@@ -15,7 +15,7 @@ namespace Game::Character::FSM::Movement::StateModel
 
 	struct MovementFSMLeaseComponent
 	{
-		std::type_index issuerAxis;// 干渉元のFSM識別子
+		std::type_index issuerAxis = Game::Character::FSM::Movement::AxisTag::MovementAxis;// 干渉元のFSM識別子
 		Engine::ECS::Entity issuerEntity;// 干渉元エンティティ(例: CCエフェクトを与えた相手)
 
 		Game::Character::FSM::Interference::Core::Data::ControlSeverity severity;// 干渉の優先度比較
@@ -25,7 +25,7 @@ namespace Game::Character::FSM::Movement::StateModel
 
 		float remainingDurationSec = 0.0f;// 残り干渉時間
 
-		std::any customContext;// 拡張情報
+		// std::any customContext;// 拡張情報
 
 
 		inline void reset()

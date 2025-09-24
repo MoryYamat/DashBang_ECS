@@ -1,14 +1,13 @@
-#include "MovementFSMResolverSystem.hpp"
+ï»¿#include "MovementFSMResolverSystem.hpp"
 
-#include "Game/Character/FSM/Movement/Database/MovementFSMDatabase.hpp"
+#include "Game/Character/FSM/Movement/StateModel/MovementFSMContext.hpp"
 
 #include "Game/Character/Control/Movement/Component/Intent/MovementIntentComponent.h"
 
-#include "Game/Character/FSM/Movement/StateModel/MovementStateComponent.hpp"
-
 #include "Game/Character/FSM/Movement/StateModel/MovementFSMTransitionRequestComponent.hpp"
 
-// FIXME: Resolver‚ÆStateScoped‚Ì•›ì—p‚Í•ª—£‚µ‚½‚Ù‚¤‚ª‚æ‚¢
+
+// FIXME: Resolverã¨StateScopedã®å‰¯ä½œç”¨ã¯åˆ†é›¢ã—ãŸã»ã†ãŒã‚ˆã„
 void Game::Character::FSM::Movement::System::MovementFSMResolverSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 	using namespace Engine::ECS::Component::Logic2D;
@@ -16,29 +15,39 @@ void Game::Character::FSM::Movement::System::MovementFSMResolverSystem::Update(e
 	using namespace Game::Character::FSM::Movement;
 	using namespace Game::Character::FSM::Movement::Effect;
 	using namespace Game::Character::FSM::Movement::Database;
+	using namespace Game::Character::FSM::Movement::StateModel;
 
 	const auto& db = ecs.getResource<MovementFSMDatabase>();
-	const auto& def = db.Get("basic");// TODO: «—ˆ entity‚²‚Æ‚ÉØ‚è‘Ö‚¦‰Â”\
-
+	// const auto& def = db.Get("basic");// TODO: å°†æ¥ entityã”ã¨ã«åˆ‡ã‚Šæ›¿ãˆå¯èƒ½ // ç¾åœ¨æœªä½¿ç”¨
 
 	for (eNsECS::Entity e : ecs.view<
 		MovementStateComponent,
-		MovementFSMTransitionRequestComponent>()
+		MovementFSMTransitionRequestComponent,
+		MovementFSMLeaseComponent
+	>()
 		)
 	{
 		auto& state = ecs.get<MovementStateComponent>(e);
 		auto& reqs = ecs.get<MovementFSMTransitionRequestComponent>(e);
+		auto& lease = ecs.get<MovementFSMLeaseComponent>(e);
+
+		if (tryApplyForcedTransition(ecs, e, state, lease, db))
+		{
+			reqs.requests.clear();
+			continue;
+		}
+
 
 		if (reqs.requests.empty()) continue;
 
 
 		// std::cout << "here\n";
 
-		// ”’l‚ª‘å‚«‚¢‚Ù‚Ç—Dæ“x‚ª‚‚¢
+		// æ•°å€¤ãŒå¤§ãã„ã»ã©å„ªå…ˆåº¦ãŒé«˜ã„
 		std::sort(reqs.requests.begin(), reqs.requests.end(),
-			[](const auto& a, const auto& b) { return a.priority < b.priority; });
+			[](const auto& a, const auto& b) { return a.priority > b.priority; });
 
-		// Å‰‚ÌƒŠƒNƒGƒXƒg‚ğó‘øi¡ŒãCğŒ•t‚«ó‘ø‚à‰Â”\‚Éj
+		// æœ€åˆã®ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’å—è«¾ï¼ˆä»Šå¾Œï¼Œæ¡ä»¶ä»˜ãå—è«¾ã‚‚å¯èƒ½ã«ï¼‰
 		const auto& request = reqs.requests.front();
 
 		//if (state.current == request.requestedTo)
@@ -47,14 +56,106 @@ void Game::Character::FSM::Movement::System::MovementFSMResolverSystem::Update(e
 		//	continue;
 		//}
 
-		std::type_index previous = state.current;
-		state.previous = previous;
-		state.current = request.requestedTo;
 
-		std::cout << "[MovementFSMTransitionSystem]: Transition accepted: "
-			<< previous.name() << " ¨ " << request.requestedTo.name() << "\n";
+		// TODO: é·ç§»å‡¦ç†ã®APIåŒ–
+		//std::type_index previous = state.current;
+		//state.previous = previous;
+		//state.current = request.requestedTo;
 
-		// EffectÀsiTrigger‚É‡’v‚·‚é‚à‚Ì‚ğ’T‚·j
+		if (applyStateUpdate(state, request.requestedTo))
+		{
+			std::cout << "[MovementFSMTransitionSystem]: Transition accepted: "
+				<< state.previous.name() << " â†’ " << request.requestedTo.name() << "\n";
+
+			runMovementEffects(ecs, e, state, db);
+		}
+
+
+
+
+		// ============ API åŒ–
+		// Effectå®Ÿè¡Œï¼ˆTriggerã«åˆè‡´ã™ã‚‹ã‚‚ã®ã‚’æ¢ã™ï¼‰
+		//MovementFSMContext ctx;
+		//if (ecs.hasComponent<MovementIntentComponent>(e))
+		//{
+		//	const auto& intent = ecs.get<MovementIntentComponent>(e);
+		//	ctx.intentActive = intent.isActive;
+		//	ctx.direction = intent.direction;
+		//}
+
+		//std::cout << "[FSMResolverSystem] ctx.direction = ("
+		//	<< ctx.direction.x << ", " << ctx.direction.y << ")\n";
+
+		//for (const auto& hook : def.effectHooks)
+		//{
+		//	if (hook.trigger->evaluate(ctx, state.current, state.previous))
+		//	{
+		//		hook.effect->apply(ecs, e, ctx);
+		//	}
+		//}
+
+		// ===============
+
+
+		// ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’æ¶ˆå»
+		reqs.requests.clear();
+	}
+}
+
+namespace Game::Character::FSM::Movement::System
+{
+	using namespace Game::Character::Intent;
+
+	bool MovementFSMResolverSystem::tryApplyForcedTransition
+	(
+		Engine::ECS::EntityMgr& ecs,
+		const Engine::ECS::Entity e,
+		Game::Character::FSM::Movement::MovementStateComponent& state,
+		const Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent& lease,
+		const Game::Character::FSM::Movement::Database::MovementFSMDatabase& db
+	)
+	{
+		using IM = Game::Character::FSM::Interference::Core::Data::InterferenceMode;
+		if (lease.mode != IM::ForceTransition) return false;
+		if (!lease.forcedState.has_value()) return false;
+
+		const auto target = *lease.forcedState;
+
+		if (applyStateUpdate(state,target))
+		{
+			runMovementEffects(ecs, e, state, db);
+			// std::type_index previous = state.current;
+			// state.previous = previous;
+			// state.current = target;
+
+		}
+
+		return true;
+	}
+
+
+	bool MovementFSMResolverSystem::applyStateUpdate(
+		Game::Character::FSM::Movement::MovementStateComponent& state,
+		std::type_index to
+	)
+	{
+		if (state.current == to) return false;
+		state.previous = state.current;
+		state.current = to;
+		return true;
+	}
+
+	void MovementFSMResolverSystem::runMovementEffects
+	(
+		Engine::ECS::EntityMgr& ecs,
+		const Engine::ECS::Entity e,
+		Game::Character::FSM::Movement::MovementStateComponent& state,
+		const Game::Character::FSM::Movement::Database::MovementFSMDatabase& db
+	)
+	{
+		const auto& def = db.Get("basic");// TODO: å°†æ¥ entityã”ã¨ã«åˆ‡ã‚Šæ›¿ãˆå¯èƒ½
+
+		// context ä½œæˆ
 		MovementFSMContext ctx;
 		if (ecs.hasComponent<MovementIntentComponent>(e))
 		{
@@ -67,15 +168,14 @@ void Game::Character::FSM::Movement::System::MovementFSMResolverSystem::Update(e
 			<< ctx.direction.x << ", " << ctx.direction.y << ")\n";
 
 
+		// å‰¯ä½œç”¨å®Ÿè¡Œ
 		for (const auto& hook : def.effectHooks)
 		{
-			if (hook.trigger->evaluate(ctx, state.current, previous))
+			if (hook.trigger->evaluate(ctx, state.current, state.previous))
 			{
 				hook.effect->apply(ecs, e, ctx);
 			}
 		}
 
-		// ƒŠƒNƒGƒXƒg‚ğÁ‹
-		reqs.requests.clear();
 	}
 }

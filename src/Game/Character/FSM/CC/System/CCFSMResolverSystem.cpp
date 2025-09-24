@@ -151,6 +151,8 @@ namespace Game::Character::FSM::CC::System
 			}
 
 
+			tryTriggerReset(ecs, e, def, state.current, state.previous);
+
 			reqs.requests.clear();
 		}
 
@@ -178,13 +180,13 @@ namespace Game::Character::FSM::CC::System
 		if (hook.trigger->evaluate(ctx, current, previous) &&
 			!record.hasExecuted(hash))
 		{
-			hook.handler->execute(entity, ctx);
+			hook.handler->execute(ecs, entity, ctx);
 			record.markExecuted(hash);
 		}
 
-		std::cout << "[tryTriggerEffect(CCFSM)] effectHash: " << hash << "\n";
-		std::cout << "[tryTriggerEffect(CCFSM)] hasExecuted: " << record.hasExecuted(hash) << "\n";
-		std::cout << "[tryTriggerEffect(CCFSM)] trigger.evaluate: " << hook.trigger->evaluate(ctx,current, previous) << "\n";
+		// std::cout << "[tryTriggerEffect(CCFSM)] effectHash: " << hash << "\n";
+		// std::cout << "[tryTriggerEffect(CCFSM)] hasExecuted: " << record.hasExecuted(hash) << "\n";
+		// std::cout << "[tryTriggerEffect(CCFSM)] trigger.evaluate: " << hook.trigger->evaluate(ctx,current, previous) << "\n";
 
 	}
 
@@ -194,13 +196,20 @@ namespace Game::Character::FSM::CC::System
 	// record の リセット
 	void CCFSMResolverSystem::tryTriggerReset(
 		eNsECS::EntityMgr& ecs,
-		const CCFSMStateEffectHook& hook,
 		const eNsECS::Entity entity,
 		const CCFSMDefinition& def,
-		const CCFSMContext& ctx,
 		const std::type_index& current,
 		const std::type_index& previous)
 	{
-
+		for (const auto& hook : def.resetHooks)
+		{
+			if (hook.trigger->evaluate(current, previous))
+			{
+				for (const auto& handler : hook.handlers)
+				{
+					handler->execute(ecs, entity);
+				}
+			}
+		}
 	}
 }

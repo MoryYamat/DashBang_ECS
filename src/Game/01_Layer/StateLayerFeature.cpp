@@ -36,6 +36,9 @@ void Game::Layer::StateLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 
 	gNsFeature::Character::FSM::CCFSMFeature::UpdateCCFSMResolverSystem(ecs, deltaTime);
 
+	// interference
+	gNsFeature::Character::FSM::MovementFSMFeature::UpdateMovementFSMInterferenceResolver(ecs);
+
 	// =========== FSM Scoped System =========
 
 	gNsFeature::Character::FSM::MovementFSMFeature::UpdateMovementFSMScopedSystem(ecs, deltaTime);

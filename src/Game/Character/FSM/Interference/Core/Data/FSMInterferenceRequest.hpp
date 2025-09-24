@@ -43,23 +43,27 @@ namespace Game::Character::FSM::Interference::Core::Data
 		std::optional<Entity> issuerEntity; // Entity(optional) // 干渉の起点
 		std::optional<Entity> targetEntity; // 対象のエンティティ
 
-		std::any customContext; // 拡張情報・補足コンテキスト
+		FSMInterferenceRequest(std::type_index issuerAxis, std::type_index targetAxis) 
+			: issuerAxis(issuerAxis), targetAxis(targetAxis){};
+
+		//std::any customContext; // 拡張情報・補足コンテキスト
 	};
 
-	struct FSMInterferenceRequestComponent
-	{
-		std::vector<FSMInterferenceRequest> requests;
+	// 雛形
+	//struct FSMInterferenceRequestComponent
+	//{
+	//	std::vector<FSMInterferenceRequest> requests;
 
-		bool hasActiveRequest()
-		{
-			for (const auto& req : requests)
-			{
-				if (req.durationSec > 0.0f)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-	};
+	//	bool hasActiveRequest()
+	//	{
+	//		for (const auto& req : requests)
+	//		{
+	//			if (req.durationSec > 0.0f)
+	//			{
+	//				return true;
+	//			}
+	//		}
+	//		return false;
+	//	}
+	//};
 }

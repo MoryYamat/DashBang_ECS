@@ -1,4 +1,4 @@
-#include "MovementFSMFeature.hpp"
+ï»¿#include "MovementFSMFeature.hpp"
 
 #include "Game/Character/FSM/Movement/Init/MovementTransitionInitialize.hpp"
 
@@ -8,6 +8,8 @@
 #include "Game/Character/FSM/Movement/System/MovementFSMSystem.hpp"
 
 #include "Game/Character/FSM/Movement/System/MovementFSMScopedSystem.hpp"
+
+#include "Game/Character/FSM/Movement/Interference/MovementFSMInterferenceResolver.hpp"
 
 #include "Common/GameNamespaceDecl.h"
 
@@ -19,7 +21,7 @@ void Game::Feature::Character::FSM::MovementFSMFeature::InitializeMovementFSMDef
 
 void Game::Feature::Character::FSM::MovementFSMFeature::UpdateMovementIntentResolver(eNsECS::EntityMgr& ecs)
 {
-	//Game::Character::Control::Movement::UpdateMovementIntentResolverSystem(ecs);// íœ—\’èFFSM“±“üŒã”p~
+	//Game::Character::Control::Movement::UpdateMovementIntentResolverSystem(ecs);// å‰Šé™¤äºˆå®šï¼šFSMå°å…¥å¾Œå»ƒæ­¢
 }
 
 void Game::Feature::Character::FSM::MovementFSMFeature::UpdateMovementFSMSystem(eNsECS::EntityMgr& ecs)
@@ -37,4 +39,12 @@ void Game::Feature::Character::FSM::MovementFSMFeature::UpdateMovementFSMScopedS
 {
 	// fsm scope
 	Game::Character::FSM::Movement::System::MovementFSMScopedEffectSystem::Update(ecs, deltaTime);
+}
+
+namespace Game::Feature::Character::FSM
+{
+	void MovementFSMFeature::UpdateMovementFSMInterferenceResolver(Engine::ECS::EntityMgr& ecs)
+	{
+		Game::Character::FSM::Movement::Interference::MovementFSMInterferenceResolver::Update(ecs);
+	}
 }

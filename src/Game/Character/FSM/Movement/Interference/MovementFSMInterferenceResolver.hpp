@@ -5,7 +5,7 @@
 
 #include "Game/Character/FSM/Movement/StateModel/MovementFSMLeaseComponent.hpp"
 #include "Game/Character/FSM/Movement/StateModel/MovementStateComponent.hpp"
-#include "Game/Character/FSM/Interference/Core/Data/FSMInterferenceRequest.hpp"
+#include "Game/Character/FSM/Movement/StateModel/MovementFSMInterferenceRequestComponent.hpp"
 
 namespace Game::Character::FSM::Movement::Interference
 {
@@ -13,13 +13,13 @@ namespace Game::Character::FSM::Movement::Interference
 	class MovementFSMInterferenceResolver
 	{
 	public:
-		static void Update(Engine::ECS::EntityMgr& ecs, float deltaTime);
+		static void Update(Engine::ECS::EntityMgr& ecs);
 
 	private:
 		static const Game::Character::FSM::Interference::Core::Data::FSMInterferenceRequest* computeHighestPriorityRequest(
 			Engine::ECS::EntityMgr& ecs,
 			Engine::ECS::Entity e,
-			const Game::Character::FSM::Interference::Core::Data::FSMInterferenceRequestComponent& requestComp,
+			const Game::Character::FSM::Movement::StateModel::MovementFSMInterferenceRequestComponent& requestComp,
 			Game::Character::FSM::Movement::MovementStateComponent& state,
 			Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent& lease
 			);
@@ -29,7 +29,8 @@ namespace Game::Character::FSM::Movement::Interference
 			Engine::ECS::EntityMgr& ecs,
 			Engine::ECS::Entity e,
 			const Game::Character::FSM::Interference::Core::Data::FSMInterferenceRequest& req,
-			Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent& lease
+			Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent& lease,
+			float clock
 		);
 
 		// 干渉動作の期限をコントロール
@@ -37,6 +38,7 @@ namespace Game::Character::FSM::Movement::Interference
 			Engine::ECS::EntityMgr& ecs,
 			Engine::ECS::Entity e,
 			Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent& lease,
+			float clock,
 			float dt
 		);
 	};

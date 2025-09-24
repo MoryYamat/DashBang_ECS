@@ -1,10 +1,14 @@
-#pragma once
+Ôªø#pragma once
 
 #include "Game/Character/FSM/CC/StateModel/CCFSMConditions.hpp"
 
 #include "Game/Character/FSM/CC/StateModel/CCTransitionTable.hpp"
 
 #include "Game/Character/FSM/CC/Effect/StateScoped/Hook/CCFSMStateEffectHook.hpp"
+
+// reset
+#include "Game/Character/FSM/CC/Reset/ResetHookDefinition.hpp"
+
 
 #include "Game/Character/FSM/CC/CCStateTags.hpp"
 
@@ -13,13 +17,12 @@
 
 namespace Game::Character::FSM::CC::StateModel
 {
-	using namespace Game::Character::FSM::CC;
-	using namespace Game::Character::FSM::CC::StateEffect;
-
+	
 	struct CCFSMDefinition
 	{
 		std::type_index initialState = StateTag::NONE;
-		std::vector<CCTransition> transitions;
-		std::vector<CCFSMStateEffectHook> hooks;// ïõçÏóp
+		std::vector<Game::Character::FSM::CC::StateModel::CCTransition> transitions;
+		std::vector<Game::Character::FSM::CC::StateEffect::CCFSMStateEffectHook> hooks;// ÂâØ‰ΩúÁî®
+		std::vector<Game::Character::FSM::CC::Reset::CCFSMResetHook> resetHooks;
 	};
 }

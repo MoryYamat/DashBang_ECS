@@ -68,9 +68,12 @@
 #include "Game/Character/State/Component/Action/ActionStateComponent.hpp"
 
 // =========== FSM ===========
+// 
 // movement
 #include "Game/Character/FSM/Movement/StateModel/MovementStateComponent.hpp"
 #include "Game/Character/FSM/Movement/StateModel/MovementFSMTransitionRequestComponent.hpp"
+#include "Game/Character/FSM/Movement/StateModel/MovementFSMLeaseComponent.hpp"
+#include "Game/Character/FSM/Movement/StateModel/MovementFSMInterferenceRequestComponent.hpp"
 //CC
 #include "Game/Character/FSM/CC/StateModel/CCStateComponent.hpp"
 #include "Game/Character/FSM/CC/StateModel/CCFSMTransitionRequestComponent.hpp"
@@ -276,9 +279,12 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 
 
 	// =========== FSM ===========
+	// interference
 	// movement FSM
 	ecs.addComponent(entity, gNsCharaFSMMovement::MovementStateComponent{});
 	ecs.addComponent(entity, gNsCharaFSMMovement::MovementFSMTransitionRequestComponent{});
+	ecs.addComponent(entity, Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent{});// 
+	ecs.addComponent(entity, Game::Character::FSM::Movement::StateModel::MovementFSMInterferenceRequestComponent{});
 	// CC FSM
 	ecs.addComponent(entity, gNsCharaFSMCC::StateModel::CCStateComponent{});
 	ecs.addComponent(entity, Game::Character::FSM::CC::StateModel::CCFSMTransitionRequestComponent{});

@@ -1,4 +1,4 @@
-#include "MovementFSMSystem.hpp"
+ï»¿#include "MovementFSMSystem.hpp"
 
 #include "Engine/ECS/Component/Logic2D/Velocity2DComponent.h"
 
@@ -22,7 +22,7 @@ void Game::Character::FSM::Movement::UpdateMovementFSMSystem(eNsECS::EntityMgr& 
 	using namespace Game::Character::FSM::Movement::Database;
 
 	const auto& db = ecs.getResource<MovementFSMDatabase>();
-	const auto& def = db.Get("basic"); // TODO: «—ˆentity–‚Éˆá‚¤’è‹`‚ğ‚Ä‚é‚æ‚¤‚É
+	const auto& def = db.Get("basic"); // TODO: å°†æ¥entityäº‹ã«é•ã†å®šç¾©ã‚’æŒã¦ã‚‹ã‚ˆã†ã«
 
 	for (eNsECS::Entity e : ecs.view<
 		MovementStateComponent,
@@ -50,10 +50,10 @@ void Game::Character::FSM::Movement::UpdateMovementFSMSystem(eNsECS::EntityMgr& 
 					.priority = 0
 				});
 
-			std::cout << "[MovementFSMResolverSystem] Requesting transition: "
-				<< trans.from.name() << " -> " << trans.to.name() << std::endl;
+			//std::cout << "[MovementFSMResolverSystem] Requesting transition: "
+			//	<< trans.from.name() << " -> " << trans.to.name() << std::endl;
 
-			// break; // ˆê“x‚É•¡”‘JˆÚ‚µ‚È‚¢
+			// break; // ä¸€åº¦ã«è¤‡æ•°é·ç§»ã—ãªã„
 		}
 	}
 
@@ -66,7 +66,7 @@ void Game::Character::FSM::Movement::UpdateMovementFSMSystem(eNsECS::EntityMgr& 
 	//	const auto& velocity = ecs.get<Engine::ECS::Component::Logic2D::Velocity2DComponent>(entity).velocity;
 
 	//	MovementFSMContext ctx;
-	//	ctx.velocity = velocity;// ƒRƒ“ƒeƒLƒXƒg‚ğXV
+	//	ctx.velocity = velocity;// ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’æ›´æ–°
 
 	//	for (auto& trans : transitions)
 	//	{
@@ -75,7 +75,7 @@ void Game::Character::FSM::Movement::UpdateMovementFSMSystem(eNsECS::EntityMgr& 
 	//			std::cout << "[MovementFSMSystem.cpp]: Transition from "
 	//				<< state.current.name() << " to " << trans.to.name() << "\n";
 
-	//			state.current = trans.to; // ó‘Ô‘JˆÚ‚ğÀs
+	//			state.current = trans.to; // çŠ¶æ…‹é·ç§»ã‚’å®Ÿè¡Œ
 	//			break;
 
 	//			// fsm.requestTransition<Movement::Moving>();

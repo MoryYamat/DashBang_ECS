@@ -4,7 +4,10 @@
 
 #include "Game/Character/FSM/Interference/Core/Utils/ResolverUtil.hpp"
 
+
 #include "Game/Character/FSM/Movement/MovementStateTags.hpp"
+
+#include <iostream>
 
 namespace Game::Character::FSM::Movement::Interference
 {
@@ -15,23 +18,26 @@ namespace Game::Character::FSM::Movement::Interference
 	using namespace Game::Character::FSM::Movement::StateModel;
 	using namespace Game::Character::FSM::Movement;
 
-	void MovementFSMInterferenceResolver::Update(EntityMgr& ecs, float deltaTime)
+	void MovementFSMInterferenceResolver::Update(EntityMgr& ecs)
 	{
-		for (auto e : ecs.view<FSMInterferenceRequestComponent, MovementStateComponent, MovementFSMLeaseComponent>())
+		const auto& clock = worldClock(ecs);
+
+		for (auto e : ecs.view<MovementFSMInterferenceRequestComponent, MovementStateComponent, MovementFSMLeaseComponent>())
 		{
-			auto& request = ecs.get<FSMInterferenceRequestComponent>(e);
+			auto& request = ecs.get<MovementFSMInterferenceRequestComponent>(e);
 			auto& state = ecs.get<MovementStateComponent>(e);
 			auto& lease = ecs.get<MovementFSMLeaseComponent>(e);
 
 
 			if (auto selected = computeHighestPriorityRequest(ecs, e, request, state, lease))
 			{
-				acceptInterference(ecs, e, *selected, lease);
+				acceptInterference(ecs, e, *selected, lease, clock.now);
 			}
 
-			updateInterference(ecs, e, lease, deltaTime);// 状態は変えない (状態更新はFSMResovlerで)
+			updateInterference(ecs, e, lease, clock.now ,clock.dt);// 状態は変えない (状態更新はFSMResovlerで)
 
 
+			request.requests.clear();
 		}
 	}
 
@@ -40,7 +46,7 @@ namespace Game::Character::FSM::Movement::Interference
 	const FSMInterferenceRequest* MovementFSMInterferenceResolver::computeHighestPriorityRequest(
 		EntityMgr& ecs,
 		Entity e,
-		const FSMInterferenceRequestComponent& requestComp,
+		const MovementFSMInterferenceRequestComponent& requestComp,
 		MovementStateComponent& state,
 		MovementFSMLeaseComponent& lease)
 	{
@@ -91,7 +97,7 @@ namespace Game::Character::FSM::Movement::Interference
 				selected = &req;
 		}
 
-		if (!selected) return;
+		if (!selected) return nullptr;
 		return selected;
 
 		// 強制遷移処理
@@ -107,7 +113,8 @@ namespace Game::Character::FSM::Movement::Interference
 		Engine::ECS::EntityMgr& ecs,
 		Engine::ECS::Entity e,
 		const FSMInterferenceRequest& req,
-		Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent& lease
+		Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent& lease,
+		float clock
 	)
 	{
 		lease.issuerAxis = req.issuerAxis;
@@ -116,12 +123,17 @@ namespace Game::Character::FSM::Movement::Interference
 		lease.forcedState = req.forcedState;
 		lease.severity = req.severity;
 		lease.remainingDurationSec = req.durationSec;
+
+		std::cout << "[MovementFSMInterference]: forced state Transition accepted at " << clock 
+			<< " seconds. -> (release at " << clock + lease.remainingDurationSec << " )\n";
+
 	}
 
 	void MovementFSMInterferenceResolver::updateInterference(
 		Engine::ECS::EntityMgr& ecs,
 		Engine::ECS::Entity e,
-		Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent& lease,
+		Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent& lease, 
+		float clock,
 		float dt
 	)
 	{
@@ -129,6 +141,7 @@ namespace Game::Character::FSM::Movement::Interference
 
 		if (!lease.isActive(eps))
 		{
+			// std::cout << "[MovementFSMInterferenceResolver] released at " << clock << "\n";
 			lease.reset();// 残骸処理
 			return;
 		}
@@ -136,15 +149,16 @@ namespace Game::Character::FSM::Movement::Interference
 		lease.tick(dt);
 
 		// switchは現在未使用：それほど大規模なの状態干渉動作を想定していない
-		switch (lease.mode)
-		{
-		case InterferenceMode::ForceTransition:
+		//switch (lease.mode)
+		//{
+		//case InterferenceMode::ForceTransition:
 
-		case InterferenceMode::BlockInput:
-		}
+		//case InterferenceMode::BlockInput:
+		//}
 		
 		if (!lease.hasTimeLeft(eps))
 		{
+			// std::cout << "[MovementFSMInterferenceResolver] released at " << clock << "\n";
 			lease.reset();
 		}
 

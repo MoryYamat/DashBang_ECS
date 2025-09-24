@@ -9,6 +9,16 @@
 
 #include "Game/Character/FSM/CC/CCStateTags.hpp"
 
+#include "Game/Character/FSM/CC/Effect/StateScoped/Hook/CCFSMStateEffectHook.hpp"
+#include "Game/Character/FSM/CC/Effect/StateScoped/TriggerCondition/IStateEffectTriggerCondition.hpp"
+#include "Game/Character/FSM/CC/Effect/StateScoped/Handler/Interference/emitMovementInterferenceOnStunned.hpp"
+
+// reset
+#include "Game/Character/FSM/CC/Reset/ResetHookDefinition.hpp"
+#include "Game/Character/FSM/CC/Reset/Handler/ClearEffectExecutionLog.hpp"
+#include "Game/Character/FSM/CC/Reset/Trigger/OnResetTransition.hpp"
+
+#include <optional>
 #include <string>
 #include <memory>
 
@@ -16,6 +26,8 @@ void Game::Character::FSM::CC::InitCCTransitionDefinitionDatabase(eNsECS::Entity
 {
 	using namespace Game::Character::FSM::CC::Database;
 	using namespace Game::Character::FSM::CC::StateModel;
+	using namespace Game::Character::FSM::CC::StateEffect;
+	using namespace Game::Character::FSM::CC::Reset;
 
 	auto& db = ecs.createResource<CCFSMDatabase>();
 
@@ -24,6 +36,7 @@ void Game::Character::FSM::CC::InitCCTransitionDefinitionDatabase(eNsECS::Entity
 
 	CCFSMDefinition def;
 	def.initialState = StateTag::NONE;
+
 
 	// HitEvent -> 解析 -> リクエストによる方式に変更
 	//def.transitions.push_back(
@@ -53,6 +66,13 @@ void Game::Character::FSM::CC::InitCCTransitionDefinitionDatabase(eNsECS::Entity
 		}
 	);
 
+	def.hooks.push_back(
+		{
+			.handler = std::make_shared<emitMovementInterferenceOnStunned>(stunSec),
+			.trigger = std::make_shared<OnTransition>(StateTag::NONE, StateTag::STUNNED)
+		}
+	);
+
 	def.transitions.push_back(
 		{
 			.from = StateTag::KNOCKDOWNED,
@@ -61,6 +81,19 @@ void Game::Character::FSM::CC::InitCCTransitionDefinitionDatabase(eNsECS::Entity
 			.priority = 100
 		}
 	);
+
+	// reset
+	def.resetHooks = 
+	{
+		CCFSMResetHook
+		{
+			.handlers =
+			{
+				std::make_shared<ClearEffectExecutionLog>(),
+			},
+			.trigger = std::make_shared<OnResetTransition>(std::nullopt, StateTag::NONE),
+		},
+	};
 
 	// TODO:
 	// FSMSystem

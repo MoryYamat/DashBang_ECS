@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/ECS/EntityManager.h"
 #include "Common/EngineNamespaceDecl.h"
@@ -17,5 +17,7 @@ namespace Game::Feature::Character::FSM
 		static void UpdateMovementFSMResolverSystem(eNsECS::EntityMgr& ecs, float deltaTime);
 
 		static void UpdateMovementFSMScopedSystem(eNsECS::EntityMgr& ecs, float deltaTime);
+
+		static void UpdateMovementFSMInterferenceResolver(eNsECS::EntityMgr& ecs);
 	};
 }

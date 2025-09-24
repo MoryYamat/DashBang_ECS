@@ -36,10 +36,8 @@ namespace Game::Character::FSM::CC::System
 
 		static void tryTriggerReset(
 			eNsECS::EntityMgr& ecs,
-			const CCFSMStateEffectHook& hook,
 			const eNsECS::Entity entity,
 			const CCFSMDefinition& def,
-			const CCFSMContext& ctx,
 			const std::type_index& current,
 			const std::type_index& previous
 		);
