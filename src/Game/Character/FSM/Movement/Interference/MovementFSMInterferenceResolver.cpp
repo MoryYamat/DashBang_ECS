@@ -34,6 +34,11 @@ namespace Game::Character::FSM::Movement::Interference
 				acceptInterference(ecs, e, *selected, lease, clock.now);
 			}
 
+			// FIX:
+			// CC時間の上書きができていない．
+			// おそらく LeaseCompの上書きができていないからだと思われる
+			//
+
 			updateInterference(ecs, e, lease, clock.now ,clock.dt);// 状態は変えない (状態更新はFSMResovlerで)
 
 
@@ -89,8 +94,10 @@ namespace Game::Character::FSM::Movement::Interference
 			if (!shouldApply(req, targetAxis)) continue;
 			// forcedStateがなければ無視
 			if (!req.forcedState.has_value()) continue;
-			// 現在のlease.severityより小さいなら無視
-			if (req.severity < lease.severity) continue;
+			
+			// accept時に比較するように変更
+			// // 現在のlease.severityより小さいなら無視
+			// if (req.severity < lease.severity) continue;
 
 			// 
 			if (!selected || req.severity > selected->severity)
@@ -117,6 +124,8 @@ namespace Game::Character::FSM::Movement::Interference
 		float clock
 	)
 	{
+		if (req.severity < lease.severity) return;
+
 		lease.issuerAxis = req.issuerAxis;
 		//lease.issuerEntity
 		lease.mode = req.mode;
