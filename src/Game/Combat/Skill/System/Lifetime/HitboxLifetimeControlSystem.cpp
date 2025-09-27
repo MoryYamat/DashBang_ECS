@@ -1,4 +1,4 @@
-#include "HitboxLifetimeControlSystem.hpp"
+ï»¿#include "HitboxLifetimeControlSystem.hpp"
 
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
 
@@ -11,13 +11,14 @@
 
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 
-// ¡Œã hitboxEffect ©‘Ì‚ğFSM‰»‚·‚éê‡(‰ü—Ç•K—v‚É‚È‚é)
+// ä»Šå¾Œ hitboxEffect è‡ªä½“ã‚’FSMåŒ–ã™ã‚‹å ´åˆ(æ”¹è‰¯å¿…è¦ã«ãªã‚‹)
 void Game::Combat::Skill::System::HitboxLifetimeControlSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 	using namespace Game::Combat::Skill::Component;
 	using namespace Game::Combat::Skill::Database;
 	using namespace Game::ECS::Component;
 	using namespace Game::Combat::Skill::FSM;
+	using namespace Game::Combat::Skill::FSM::StateModel;
 
 	auto& db = ecs.getResource<SkillDatabase>();
 
@@ -40,7 +41,7 @@ void Game::Combat::Skill::System::HitboxLifetimeControlSystem::Update(eNsECS::En
 		if (!ecs.hasComponent<SkillStateComponent>(owner.caster)) continue;
 		const auto& state = ecs.get<SkillStateComponent>(owner.caster);
 
-		// state‚ªActive‚¶‚á‚È‚­‚È‚Á‚½‚çC
+		// stateãŒActiveã˜ã‚ƒãªããªã£ãŸã‚‰ï¼Œ
 		if (state.current != StateTag::ACTIVE)
 		{
 			lifetime.elapsedTime = lifetime.totalLifetime;

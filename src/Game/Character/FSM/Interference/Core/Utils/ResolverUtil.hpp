@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Game/Character/FSM/Interference/Core/Data/FSMInterferenceRequest.hpp"
 #include <typeindex>
@@ -6,23 +6,23 @@ namespace Game::Character::FSM::Interference::Core::Util
 {
 	using namespace Game::Character::FSM::Interference::Core::Data;
 
-	bool isTargetAxis(const FSMInterferenceRequest& req, const std::type_index& targetAxis)
+	inline bool isTargetAxis(const FSMInterferenceRequest& req, const std::type_index& targetAxis)
 	{
 		return req.targetAxis == targetAxis;
 	}
 
-	bool isValidRequest(const FSMInterferenceRequest& req)
+	inline bool isValidRequest(const FSMInterferenceRequest& req)
 	{
 		return req.durationSec > 0.0f;
 	}
 
 	//	
-	bool shouldApply(const FSMInterferenceRequest& req, const std::type_index& targetAxis)
+	inline bool shouldApply(const FSMInterferenceRequest& req, const std::type_index& targetAxis)
 	{
 		return isValidRequest(req) && isTargetAxis(req, targetAxis);
 	}
 
-	bool isControlAllowed(const FSMInterferenceRequest& req, ControlSeverity currentSeverity)
+	inline bool isControlAllowed(const FSMInterferenceRequest& req, ControlSeverity currentSeverity)
 	{
 		return req.severity > currentSeverity;
 	}

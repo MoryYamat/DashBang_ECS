@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMStates.hpp"
@@ -7,16 +7,16 @@
 
 #include "Common/GameNamespaceDecl.h"
 
-namespace Game::Combat::Skill::FSM
+namespace Game::Combat::Skill::FSM::StateModel
 {
-	// ƒXƒLƒ‹‚Ìó‘Ô‚ğ•\‚·ƒRƒ“ƒ|[ƒlƒ“ƒg
+	// ã‚¹ã‚­ãƒ«ã®çŠ¶æ…‹ã‚’è¡¨ã™ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
 	struct SkillStateComponent
 	{
-		std::type_index current; // Œ»İ‚Ìó‘Ô‚ğ•\‚·Œ^‚ÌƒCƒ“ƒfƒbƒNƒX
+		std::type_index current; // ç¾åœ¨ã®çŠ¶æ…‹ã‚’è¡¨ã™å‹ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 
-		SkillStateComponent() : current(typeid(Game::Combat::Skill::FSM::SkillPhase::None)) {} // ‰Šúó‘Ô‚ÍNone
+		SkillStateComponent() : current(typeid(Game::Combat::Skill::FSM::SkillPhase::None)) {} // åˆæœŸçŠ¶æ…‹ã¯None
 
 		explicit SkillStateComponent(std::type_index init)
-			: current(init) {} // ‰Šúó‘Ô‚ğw’è‚µ‚Ä‰Šú‰»
+			: current(init) {} // åˆæœŸçŠ¶æ…‹ã‚’æŒ‡å®šã—ã¦åˆæœŸåŒ–
 	};
 }

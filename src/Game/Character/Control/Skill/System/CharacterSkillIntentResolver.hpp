@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Game/Combat/Skill/MasterData/SkillEntry.hpp"
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
@@ -6,22 +6,19 @@
 #include "Game/Combat/Skill/FSM/Trigger/ISkillTriggerCondition.hpp"
 
 #include "Engine/ECS/EntityManager.h"	
-#include "Common/EngineNamespaceDecl.h"
-
-#include "Common/GameNamespaceDecl.h"
 
 namespace Game::Character::Control::Skill
 {
-	// ƒXƒLƒ‹”­“®ˆÓ}‚ğ”½‰f‚·‚é‚©‚µ‚È‚¢‚©”»’è‚·‚éƒVƒXƒeƒ€
-	void UpdateSkillResolverSystem(eNsECS::EntityMgr& ecs);
+	// ã‚¹ã‚­ãƒ«ç™ºå‹•æ„å›³ã‚’åæ˜ ã™ã‚‹ã‹ã—ãªã„ã‹åˆ¤å®šã™ã‚‹ã‚·ã‚¹ãƒ†ãƒ 
+	void UpdateSkillResolverSystem(Engine::ECS::EntityMgr& ecs);
 
 	// 
 	bool canTriggerSkill
 	(
-		const gNsSkillFSM::SkillStateComponent& state, 
-		const gNsSkillData::SkillEntry& entry
+		const Game::Combat::Skill::FSM::StateModel::SkillStateComponent& state,
+		const Game::Combat::Skill::Data::SkillEntry& entry
 	);
 
-	// íœ—\’èFƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹‚ÌˆÓ}‚ğ”½‰f‚·‚é‚©‚µ‚È‚¢‚©”»’è‚·‚éƒVƒXƒeƒ€iFSMÀ‘•Œã”p~j
-	void UpdateCharacterSkillIntentResovlver(eNsECS::EntityMgr& ecs);
+	// å‰Šé™¤äºˆå®šï¼šã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«ã®æ„å›³ã‚’åæ˜ ã™ã‚‹ã‹ã—ãªã„ã‹åˆ¤å®šã™ã‚‹ã‚·ã‚¹ãƒ†ãƒ ï¼ˆFSMå®Ÿè£…å¾Œå»ƒæ­¢ï¼‰
+	void UpdateCharacterSkillIntentResovlver(Engine::ECS::EntityMgr& ecs);
 }

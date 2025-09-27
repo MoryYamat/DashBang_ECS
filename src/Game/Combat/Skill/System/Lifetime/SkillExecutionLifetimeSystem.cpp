@@ -1,4 +1,4 @@
-#include "SkillExecutionLifetimeSystem.hpp"
+ï»¿#include "SkillExecutionLifetimeSystem.hpp"
 
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMStates.hpp"
 #include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
@@ -9,11 +9,12 @@
 #include "Engine/ECS/EntityUtils/EntityUtils.h"
 
 
-// íœ—\’èFSkillExecution‚ğcharacterƒAƒNƒ^[‚Ö•t—^‚·‚é•û®‚É•ÏX‚µ‚½‚½‚ß
+// å‰Šé™¤äºˆå®šï¼šSkillExecutionã‚’characterã‚¢ã‚¯ã‚¿ãƒ¼ã¸ä»˜ä¸ã™ã‚‹æ–¹å¼ã«å¤‰æ›´ã—ãŸãŸã‚
 void Game::Combat::Skill::System::UpdateSkillExecutionLifetimeSystem(eNsECS::EntityMgr& ecs)
 {
 	using namespace Game::Combat::Skill::Component;
 	using namespace Game::Combat::Skill::FSM;
+	using namespace Game::Combat::Skill::FSM::StateModel;
 
 	for (eNsECS::Entity eSkill : ecs.view<SkillExecutionContextComponent>())
 	{
@@ -29,7 +30,7 @@ void Game::Combat::Skill::System::UpdateSkillExecutionLifetimeSystem(eNsECS::Ent
 		if (!ecs.hasComponent<SkillStateComponent>(caster)) continue;
 		const auto& state = ecs.get<SkillStateComponent>(caster);
 
-		// FSM ‚ª None‚É‘JˆÚ ‚©‚Â SkillExecutionComponent‚ğ‚ÂƒGƒ“ƒeƒBƒeƒB‚ª‘¶İ‚·‚é‚È‚ç‚Îíœ
+		// FSM ãŒ Noneã«é·ç§» ã‹ã¤ SkillExecutionComponentã‚’æŒã¤ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ãŒå­˜åœ¨ã™ã‚‹ãªã‚‰ã°å‰Šé™¤
 		if (state.current == StateTag::NONE)
 		{
 			eNsECS::EntityUtils::MarkForPendingDestroy(ecs, eSkill);

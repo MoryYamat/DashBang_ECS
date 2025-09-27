@@ -1,4 +1,4 @@
-// SkillŠJn(None->Casting)‚Ì‹N“®ğŒ
+ï»¿// Skillé–‹å§‹(None->Casting)ã®èµ·å‹•æ¡ä»¶
 
 #pragma once
 
@@ -8,19 +8,19 @@
 
 namespace Game::Combat::Skill::FSM::Condition
 {
-	using namespace Game::Combat::Skill::FSM;
-	using namespace Game::Combat::Skill::Def;
 
-	// ƒXƒLƒ‹ƒgƒŠƒK[‰Â”Û”»’è‚ÍCŒ»İ‚ÌSkillState,Às’†‚ÌSkillDef,
-	// ƒgƒŠƒK[‚µ‚æ‚¤‚Æ(ˆÓ})‚µ‚æ‚¤‚Æ‚µ‚Ä‚¢‚éCSkillDef,‚É‚æ‚Á‚Ä”»’è‚³‚ê‚é‚×‚«D
-	// => SkillFSM‚Í“à•”‹““®‚Ì§ŒäƒƒWƒbƒN‚Å‚ ‚Á‚ÄCŠO•”FSM’è‹`©‘Ì‚É¶‰E‚³‚ê‚é‚×‚«‚Å‚Í‚È‚¢
+	// ã‚¹ã‚­ãƒ«ãƒˆãƒªã‚¬ãƒ¼å¯å¦åˆ¤å®šã¯ï¼Œç¾åœ¨ã®SkillState,å®Ÿè¡Œä¸­ã®SkillDef,
+	// ãƒˆãƒªã‚¬ãƒ¼ã—ã‚ˆã†ã¨(æ„å›³)ã—ã‚ˆã†ã¨ã—ã¦ã„ã‚‹ï¼ŒSkillDef,ã«ã‚ˆã£ã¦åˆ¤å®šã•ã‚Œã‚‹ã¹ãï¼
+	// => SkillFSMã¯å†…éƒ¨æŒ™å‹•ã®åˆ¶å¾¡ãƒ­ã‚¸ãƒƒã‚¯ã§ã‚ã£ã¦ï¼Œå¤–éƒ¨FSMå®šç¾©è‡ªä½“ã«å·¦å³ã•ã‚Œã‚‹ã¹ãã§ã¯ãªã„
 
-	// ƒXƒLƒ‹ƒgƒŠƒK[‚Ì”»’èğŒƒCƒ“ƒ^[ƒtƒF[ƒX
+	// ã‚¹ã‚­ãƒ«ãƒˆãƒªã‚¬ãƒ¼ã®åˆ¤å®šæ¡ä»¶ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
 	struct ISkillTriggerCondition
 	{
 		virtual ~ISkillTriggerCondition() = default;
 
 		// 
-		virtual bool evaluate(const SkillStateComponent& state, const SkillDef& def) const = 0;
+		virtual bool evaluate(
+			const Game::Combat::Skill::FSM::StateModel::SkillStateComponent& state, 
+			const Game::Combat::Skill::Def::SkillDef& def) const = 0;
 	};
 }

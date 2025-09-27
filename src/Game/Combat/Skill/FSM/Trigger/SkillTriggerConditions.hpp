@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 #include "Game/Combat/Skill/MasterData/SkillEntry.hpp"
@@ -11,10 +11,8 @@
 
 namespace Game::Combat::Skill::FSM::Condition
 {
-	using namespace Game::Combat::Skill::FSM;
-	using namespace Game::Combat::Skill::Data;
 
-	// ƒtƒF[ƒY‚ğw’è‚µ‚ÄƒgƒŠƒK[ğŒ‚ğİ’è
+	// ãƒ•ã‚§ãƒ¼ã‚ºã‚’æŒ‡å®šã—ã¦ãƒˆãƒªã‚¬ãƒ¼æ¡ä»¶ã‚’è¨­å®š
 	struct SkillTriggerCondition_PhaseEquals : public ISkillTriggerCondition
 	{
 		std::type_index requiredPhase;
@@ -22,14 +20,15 @@ namespace Game::Combat::Skill::FSM::Condition
 		explicit SkillTriggerCondition_PhaseEquals(std::type_index phase)
 			: requiredPhase(phase) { }
 
-		bool evaluate(const SkillStateComponent& state, const SkillDef&) const override
+		bool evaluate(const Game::Combat::Skill::FSM::StateModel::SkillStateComponent& state, 
+			const Game::Combat::Skill::Def::SkillDef&) const override
 		{
 			return state.current == requiredPhase;
 		}
 	};
 
 
-	//// ƒtƒF[ƒYŒo‰ßŠÔ‚ÌğŒ
+	//// ãƒ•ã‚§ãƒ¼ã‚ºçµŒéæ™‚é–“ã®æ¡ä»¶
 	//struct SkillTriggerCondition_PhaseElapsedTime : public ISkillTriggerCondition
 	//{
 	//	float minSeconds = 0.0f;
@@ -46,16 +45,17 @@ namespace Game::Combat::Skill::FSM::Condition
 	//	}
 	//};
 
-	// í‚É^‚ÌğŒ
+	// å¸¸ã«çœŸã®æ¡ä»¶
 	struct SkillTriggerCondition_AlwaysTrue : public ISkillTriggerCondition
 	{
-		bool evaluate(const SkillStateComponent& , const SkillDef&) const override
+		bool evaluate(const Game::Combat::Skill::FSM::StateModel::SkillStateComponent& , 
+			const Game::Combat::Skill::Def::SkillDef&) const override
 		{
 			return true;
 		}
 	};
 
-	//// ”CˆÓ‚Ìƒ‰ƒ€ƒ_‚âŠÖ”‚ğ“n‚·
+	//// ä»»æ„ã®ãƒ©ãƒ ãƒ€ã‚„é–¢æ•°ã‚’æ¸¡ã™
 	//struct SkillTriggerCondition_CustomFunction : public ISkillTriggerCondition
 	//{
 	//	std::function<bool(const SkillStateComponent&, const SkillFSMContext&, const SkillDef&)> func;

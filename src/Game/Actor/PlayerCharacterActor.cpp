@@ -292,7 +292,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	ecs.addComponent(entity, Game::Character::Control::CC::Component::CCAntiChainComponent{});
 
 	// skill FSM
-	ecs.addComponent(entity, gNsSkillFSM::SkillStateComponent{});
+	ecs.addComponent(entity, gNsSkillFSM::StateModel::SkillStateComponent{});
 	ecs.addComponent(entity, gNsSkillFSM::StateModel::SkillFSMTransitionRequestComponent{});
 	ecs.addComponent(entity, gNsSkillComp::SkillExecutionContextComponent{
 		.caster = entity,

@@ -44,7 +44,7 @@ namespace Game::Character::FSM::Interference::Core::Data
 		std::optional<Entity> targetEntity; // 対象のエンティティ
 
 		FSMInterferenceRequest(std::type_index issuerAxis, std::type_index targetAxis) 
-			: issuerAxis(issuerAxis), targetAxis(targetAxis){};
+			: issuerAxis(issuerAxis), targetAxis(targetAxis), severity(ControlSeverity::Low), mode(InterferenceMode::None){}
 
 		//std::any customContext; // 拡張情報・補足コンテキスト
 	};

@@ -44,9 +44,9 @@ namespace Game::Character::FSM::Movement::StateModel
 			remainingDurationSec -= dt;
 		}
 
-		inline bool hasTimeLeft(float eps)
+		inline bool hasTimeLeft(float eps) const 
 		{
-			return remainingDurationSec - eps >= 0;
+			return remainingDurationSec > eps;
 		}
 
 		inline const bool isActive(float eps) const

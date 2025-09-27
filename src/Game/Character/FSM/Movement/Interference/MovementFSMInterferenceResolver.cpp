@@ -29,7 +29,7 @@ namespace Game::Character::FSM::Movement::Interference
 			auto& lease = ecs.get<MovementFSMLeaseComponent>(e);
 
 
-			if (auto selected = computeHighestPriorityRequest(ecs, e, request, state, lease))
+			if (const auto selected = computeHighestPriorityRequest(ecs, e, request, state, lease))
 			{
 				acceptInterference(ecs, e, *selected, lease, clock.now);
 			}
@@ -86,6 +86,7 @@ namespace Game::Character::FSM::Movement::Interference
 
 		const auto targetAxis = AxisTag::MovementAxis;
 
+		// TODO: API化
 		const FSMInterferenceRequest* selected = nullptr;
 
 		for (const auto& req : requestComp.requests)

@@ -115,7 +115,7 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 }
 
 bool Game::Character::Control::Skill::canTriggerSkill(
-	const gNsSkillFSM::SkillStateComponent& state,
+	const gNsSkillFSM::StateModel::SkillStateComponent& state,
 	const gNsSkillData::SkillEntry& entry
 )
 {

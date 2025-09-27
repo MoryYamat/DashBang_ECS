@@ -1,4 +1,4 @@
-#include "MovementSpeedModifier.hpp"
+ï»¿#include "MovementSpeedModifier.hpp"
 
 #include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
 
@@ -25,11 +25,11 @@ float Game::Combat::Skill::FSM::Modifier::Movement::CalcMovementSpeedMultiplierF
 
 	FSMQuery fsmQuery(entity, ecs);
 
-	auto phaseOpt = fsmQuery.getCurrentState<SkillStateComponent>();
+	auto phaseOpt = fsmQuery.getCurrentState<StateModel::SkillStateComponent>();
 
 	if (!phaseOpt.has_value()) return 1.0f;
 
-	if (!ecs.hasComponent<SkillExecutionContextComponent>(entity)) return 1.0f;// Œ»“_‚Å‚ÍSkillExecutionComponent‚ÍƒXƒLƒ‹ê—p‚ÌEntity‚É•t—^‚³‚ê‚Ä‚¢‚é
+	if (!ecs.hasComponent<SkillExecutionContextComponent>(entity)) return 1.0f;// ç¾æ™‚ç‚¹ã§ã¯SkillExecutionComponentã¯ã‚¹ã‚­ãƒ«å°‚ç”¨ã®Entityã«ä»˜ä¸ã•ã‚Œã¦ã„ã‚‹
 
 	// std::cout << "here\n";
 	const auto& exec = ecs.get<SkillExecutionContextComponent>(entity);
@@ -41,7 +41,7 @@ float Game::Combat::Skill::FSM::Modifier::Movement::CalcMovementSpeedMultiplierF
 	if (!entry.def.movementModifiers.has_value()) return 1.0f;
 
 	const auto& modifiers = entry.def.movementModifiers.value();
-	auto it = modifiers.movementSpeedMultiplier.find(*phaseOpt);// std::optional->’†g‚ÉƒAƒNƒZƒX
+	auto it = modifiers.movementSpeedMultiplier.find(*phaseOpt);// std::optional->ä¸­èº«ã«ã‚¢ã‚¯ã‚»ã‚¹
 	if (it != modifiers.movementSpeedMultiplier.end()) 
 	{
 		return it->second;
