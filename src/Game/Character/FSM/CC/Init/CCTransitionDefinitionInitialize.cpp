@@ -9,9 +9,11 @@
 
 #include "Game/Character/FSM/CC/CCStateTags.hpp"
 
+// effect
 #include "Game/Character/FSM/CC/Effect/StateScoped/Hook/CCFSMStateEffectHook.hpp"
 #include "Game/Character/FSM/CC/Effect/StateScoped/TriggerCondition/IStateEffectTriggerCondition.hpp"
-#include "Game/Character/FSM/CC/Effect/StateScoped/Handler/Interference/emitMovementInterferenceOnStunned.hpp"
+#include "Game/Character/FSM/CC/Effect/StateScoped/Handler/Interference/emitMovementInterference.hpp"
+#include "Game/Character/FSM/CC/Effect/StateScoped/Handler/Interference/emitSkillInterference.hpp"
 
 // reset
 #include "Game/Character/FSM/CC/Reset/ResetHookDefinition.hpp"
@@ -68,8 +70,15 @@ void Game::Character::FSM::CC::InitCCTransitionDefinitionDatabase(eNsECS::Entity
 
 	def.hooks.push_back(
 		{
-			.handler = std::make_shared<emitMovementInterferenceOnStunned>(stunSec),
-			.trigger = std::make_shared<OnTransition>(StateTag::NONE, StateTag::STUNNED)
+			.handler = std::make_shared<emitMovementInterference>(stunSec),
+			.trigger = std::make_shared<OnTransition>(std::nullopt, StateTag::STUNNED)
+		}
+	);
+
+	def.hooks.push_back(
+		{
+			.handler = std::make_shared<emitSkillInterference>(stunSec),
+			.trigger = std::make_shared<OnTransition>(std::nullopt, StateTag::STUNNED)
 		}
 	);
 

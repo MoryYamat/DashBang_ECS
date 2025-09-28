@@ -1,6 +1,9 @@
 ﻿#pragma once
 
 #include "Game/Character/FSM/CC/CCStateTags.hpp"
+
+#include <cstdint>
+#include <optional>
 #include <typeindex>
 
 namespace Game::Character::FSM::CC::StateModel
@@ -11,6 +14,8 @@ namespace Game::Character::FSM::CC::StateModel
 		std::type_index toState{ StateTag::NONE };
 		float appliedAt{ 0.0f };
 		bool isValid{ false };
+
+		std::optional<uint32_t> causeId = 0;// hitevent の id
 	};
 
 	// TODO: typeidのパフォーマンス問題

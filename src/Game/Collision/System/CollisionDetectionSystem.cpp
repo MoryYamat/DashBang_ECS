@@ -57,7 +57,7 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 	using namespace Game::Combat::HitEvent::Database;
 	using namespace Game::Combat::HitEvent::Data;
 
-	using namespace Game::Combat::Skill::API;
+	using namespace Game::Combat::Skill::API::External;
 
 	// assert(ecs.hasResource<gNsCollData::CollisionResultBuffer>() && "CollisionResultBuffer not initialized");
 	// if(!ecs.hasResource< gNsCollData::CollisionResultBuffer>()) return;

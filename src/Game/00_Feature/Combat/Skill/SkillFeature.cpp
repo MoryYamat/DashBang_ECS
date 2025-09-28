@@ -1,33 +1,34 @@
-#include "SkillFeature.h"
+ï»¿#include "SkillFeature.h"
 
 #include "Game/Input/Intent/PlayerSkillIntentMapper.h"
 
 #include "Game/Combat/Skill/System/Trigger/PlayerSkillTriggerSystem.h"
 
 #include "Game/Combat/Skill/System/SkillCastingSystem.h"
-#include "Game/Combat/Skill/System/UpdateSkillPhase.h"// íœ—\’èFFSM“±“üŒã”p~
+#include "Game/Combat/Skill/System/UpdateSkillPhase.h"// å‰Šé™¤äºˆå®šï¼šFSMå°å…¥å¾Œå»ƒæ­¢
 #include "Game/Combat/Skill/System/SkillTrajectorySystem.h"
 
-#include "Game/Combat/Skill/System/InitializeSkills.h"// íœ—\’èFFSM“±“üŒã”p~
+#include "Game/Combat/Skill/System/InitializeSkills.h"// å‰Šé™¤äºˆå®šï¼šFSMå°å…¥å¾Œå»ƒæ­¢
 
-#include "Game/Combat/Skill/FSM/Init/InitSkillDatabase.hpp"// ÅV
+#include "Game/Combat/Skill/FSM/Init/InitSkillDatabase.hpp"// æœ€æ–°
 
-#include "Game/Combat/Skill/System/Lifetime/SkillExecutionLifetimeSystem.hpp"// ÅV
+#include "Game/Combat/Skill/System/Lifetime/SkillExecutionLifetimeSystem.hpp"// æœ€æ–°
 
 // lifetime
 #include "Game/Combat/Skill/System/HitArea/Attack2DAreaLifetimeSystem.hpp"
 
 #include "Game/Combat/Skill/System/Lifetime/HitboxLifetimeControlSystem.hpp"
 
-// lifetimeComponent“±“üŒã–¢g—pFíœ—\’è
+// lifetimeComponentå°å…¥å¾Œæœªä½¿ç”¨ï¼šå‰Šé™¤äºˆå®š
 #include "Game/Combat/Skill/System/Phase/AttackLifetimeSystem.hpp"
+
 
 
 
 // Initialize Database
 void Game::Feature::Combat::SkillFeature::InitializeSkillDatabase(eNsECS::EntityMgr& ecs)
 {
-	// gNsSkillSystem::InitializeSkills(ecs);// íœ—\’èFFSM“±“üŒã”p~
+	// gNsSkillSystem::InitializeSkills(ecs);// å‰Šé™¤äºˆå®šï¼šFSMå°å…¥å¾Œå»ƒæ­¢
 	gNsSkillDatabase::SkillResourceInitialization(ecs);
 }
 
@@ -41,12 +42,12 @@ void Game::Feature::Combat::SkillFeature::UpateSkillIntent(eNsECS::EntityMgr& ec
 // Trigger
 void Game::Feature::Combat::SkillFeature::TriggerSkillsFromIntent(eNsECS::EntityMgr& ecs)
 {
-	// íœ—\’èF”p~ SkillSystem‚ÌÄ\’z‚É”º‚¤
+	// å‰Šé™¤äºˆå®šï¼šå»ƒæ­¢ SkillSystemã®å†æ§‹ç¯‰ã«ä¼´ã†
 	// player Skill trigger
 	// gNsSkillTrigger::PlayerSkillTriggerSystem::TriggerPlayerSkillsFromIntent(ecs);
 }
 
-// ”p~
+// å»ƒæ­¢
 //void Game::Feature::Combat::SkillFeature::SkillGenerateSystem(eNsECS::EntityMgr& ecs)
 //{
 //	gNsSkillSystem::SpawnSkillHitArea(ecs);
@@ -59,7 +60,7 @@ void Game::Feature::Combat::SkillFeature::UpdateSkillTrajectorySystem(eNsECS::En
 }
 
 
-// íœ—\’èFSkillExecution‚ğcharacterƒAƒNƒ^[‚Ö•t—^‚·‚é•û®‚É•ÏX‚µ‚½‚½‚ß
+// å‰Šé™¤äºˆå®šï¼šSkillExecutionã‚’characterã‚¢ã‚¯ã‚¿ãƒ¼ã¸ä»˜ä¸ã™ã‚‹æ–¹å¼ã«å¤‰æ›´ã—ãŸãŸã‚
 void Game::Feature::Combat::SkillFeature::UpdateSkillExecutionLifetimeSystem(eNsECS::EntityMgr& ecs)
 {
 	//gNsSkillSystem::UpdateSkillExecutionLifetimeSystem(ecs);
@@ -67,12 +68,12 @@ void Game::Feature::Combat::SkillFeature::UpdateSkillExecutionLifetimeSystem(eNs
 
 void Game::Feature::Combat::SkillFeature::UpdateSkillPhaseSystem(eNsECS::EntityMgr& ecs, float deltaTime)
 {
-	// íœ—\’èFFSM“±“üŒã”p~
-	// gNsSkillSystem::UpdateSkillPhase(ecs, deltaTime);// ƒXƒLƒ‹‚Ì’iŠK‚ğXV
-	// gNsSkillSystem::UpdateAttack2DAreaLifetimeSystem(ecs, deltaTime);// UŒ‚”»’è‚Ìƒ‰ƒCƒtƒ^ƒCƒ€‚ğXV
+	// å‰Šé™¤äºˆå®šï¼šFSMå°å…¥å¾Œå»ƒæ­¢
+	// gNsSkillSystem::UpdateSkillPhase(ecs, deltaTime);// ã‚¹ã‚­ãƒ«ã®æ®µéšã‚’æ›´æ–°
+	// gNsSkillSystem::UpdateAttack2DAreaLifetimeSystem(ecs, deltaTime);// æ”»æ’ƒåˆ¤å®šã®ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ã‚’æ›´æ–°
 
-	// lifetimeComponent“±“üŒã–¢g—pFíœ—\’è
-	// gNsSkillSystem::AttackLifetimeSystem::Update(ecs, deltaTime);// UŒ‚”»’è‚Ìƒ‰ƒCƒtƒ^ƒCƒ€‚ğXV
+	// lifetimeComponentå°å…¥å¾Œæœªä½¿ç”¨ï¼šå‰Šé™¤äºˆå®š
+	// gNsSkillSystem::AttackLifetimeSystem::Update(ecs, deltaTime);// æ”»æ’ƒåˆ¤å®šã®ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ã‚’æ›´æ–°
 }
 
 void Game::Feature::Combat::SkillFeature::UpdateHitoboxLifetimeSystem(eNsECS::EntityMgr& ecs, float deltaTime)

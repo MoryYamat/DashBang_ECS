@@ -1,16 +1,18 @@
 ﻿#include "SkillFSMResolverSystem.hpp"
 
-#include "Game/Combat/Skill/MasterData/SkillDatabase.h"
+#include "Engine/Time/WorldClock.hpp"
+
 
 #include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
 
-#include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 #include "Game/Combat/Skill/Component/SkillEffectExecutionRecordComponent.hpp"
-
 
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMTransitionRequestComponent.hpp"
 
-#include <typeindex>
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMLeaseComponent.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMInterferenceRequestComponent.hpp"
+
+#include "Game/Character/FSM/Interference/Core/Data/FSMInterferenceRequest.hpp"
 
 // TODO: eExecとeCasterは同じになったので不要な処理あり，改善してもよいが後回し
 // TODO: リクエストを一定時間キューに保持しておきたい場合や，リクエストに「有効期間」や「依存関係」がある場合.requests.clear()では不可
@@ -22,12 +24,14 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::En
 	using namespace Game::Combat::Skill::FSM;
 	using namespace Game::Combat::Skill::FSM::StateModel;
 
+	const auto& clock = Engine::Time::worldClock(ecs);
+
 	auto& db = ecs.getResource<SkillDatabase>();
 
-	// ここで，`SkillExecution`を検索するのはどうなのか．常駐になったらフラグ的役割を果たせなくなる
-	for (eNsECS::Entity eExec : ecs.view<SkillExecutionContextComponent>())
+	// 
+	for (eNsECS::Entity e : ecs.view<SkillExecutionContextComponent>())
 	{
-		auto& exec = ecs.get<SkillExecutionContextComponent>(eExec);
+		auto& exec = ecs.get<SkillExecutionContextComponent>(e);
 
 		if (exec.skillId == 0) continue;// スキル未実行なのでスキップ
 
@@ -156,6 +160,57 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerReset
 				handler->execute(ecs, caster, def, ctx);
 			}
 		}
+	}
+}
+
+namespace Game::Combat::Skill::FSM::System
+{
+	namespace IF = Game::Character::FSM::Interference::Core::Data;
+
+	bool SkillFSMResolverSystem::tryApplyForcedTransition
+	(
+		Engine::ECS::EntityMgr& ecs,
+		const Engine::ECS::Entity e,
+		Game::Combat::Skill::FSM::StateModel::SkillStateComponent& state,
+		Game::Combat::Skill::FSM::StateModel::SkillFSMLeaseComponent& lease,
+		Game::Combat::Skill::Database::SkillDatabase& db
+	)
+	{
+		if (lease.mode != IF::InterferenceMode::ForceTransition) return false;
+		if (!lease.forcedState.has_value()) return false;
+
+		const std::type_index target = *lease.forcedState;
+
+		if (applyStateUpdate(state, target))
+		{
+			runSkillEffects(ecs, e, state, db);
+		}
+
+		return true;
+	}
+
+	bool SkillFSMResolverSystem::applyStateUpdate
+	(
+		Game::Combat::Skill::FSM::StateModel::SkillStateComponent& state,
+		std::type_index to
+	)
+	{
+		// 上書き処理の失敗の原因？
+		if (state.current == to)return false;
+		state.previous = state.current;
+		state.current = to;
+		return true;
+	}
+
+	void SkillFSMResolverSystem::runSkillEffects
+	(
+		Engine::ECS::EntityMgr& ecs,
+		Engine::ECS::Entity e,
+		Game::Combat::Skill::FSM::StateModel::SkillStateComponent& state,
+		Game::Combat::Skill::Database::SkillDatabase& db
+	)
+	{
+
 	}
 }
 

@@ -1,4 +1,4 @@
-#pragma once 
+ï»¿#pragma once 
 
 #include "Game/Character/FSM/Movement/MovementStateTags.hpp"
 
@@ -9,11 +9,12 @@ namespace Game::Character::FSM::Movement
 	struct MovementStateComponent
 	{
 		std::type_index previous;
-		std::type_index current; // Œ»İ‚Ìó‘Ô‚ğ•\‚·Œ^‚ÌƒCƒ“ƒfƒbƒNƒX
+		std::type_index current; // ç¾åœ¨ã®çŠ¶æ…‹ã‚’è¡¨ã™å‹ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 
-		MovementStateComponent() : current(StateTag::IDLE), previous(StateTag::IDLE) {} // –³Œøó‘Ô‚ÍvoidŒ^
+
+		MovementStateComponent() : current(StateTag::IDLE), previous(StateTag::IDLE) {} // ç„¡åŠ¹çŠ¶æ…‹ã¯voidå‹
 
 		explicit MovementStateComponent(std::type_index init)
-			: current(init), previous(init) {} // ‰Šúó‘Ô‚ğw’è‚µ‚Ä‰Šú‰»
+			: current(init), previous(init) {} // åˆæœŸçŠ¶æ…‹ã‚’æŒ‡å®šã—ã¦åˆæœŸåŒ–
 	};
 }

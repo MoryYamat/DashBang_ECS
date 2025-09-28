@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Game/Character/FSM/Movement/Effect/StateScoped/Template/IEffectTemplate.hpp"
 
@@ -7,6 +7,7 @@
 
 #include <glm/glm.hpp>
 
+// これは不使用なので削除可
 namespace Game::Character::FSM::Movement::Effect
 {
 	using namespace Engine::ECS::Component::Logic2D;
@@ -40,8 +41,8 @@ namespace Game::Character::FSM::Movement::Effect
 
 			vel.velocity = glm::vec2(0.0f);
 
-			std::cout << "[FSMResolverSystem] ctx.direction = ("
-				<< ctx.direction.x << ", " << ctx.direction.y << ")\n";
+			// std::cout << "[FSMResolverSystem] ctx.direction = ("
+			// 	<< ctx.direction.x << ", " << ctx.direction.y << ")\n";
 
 		}
 	};

@@ -1,11 +1,13 @@
-#pragma once
+Ôªø#pragma once
 
 #include "Game/Character/FSM/CC/CCStateTags.hpp"
 
+#include <cstdint>
 #include <optional>
 #include <typeindex>
 #include <vector>
 #include <algorithm>
+
 namespace Game::Character::FSM::CC::StateModel
 {
 
@@ -14,6 +16,7 @@ namespace Game::Character::FSM::CC::StateModel
 	{
 		std::optional<std::type_index> requestedTo = StateTag::NONE;
 		uint32_t priority = 0;
+		std::optional<std::uint32_t> causeId;// eventId
 	};
 
 	struct CCFSMTransitionRequestComponent
@@ -22,7 +25,7 @@ namespace Game::Character::FSM::CC::StateModel
 
 		bool hasExactRequest(const std::type_index& target, uint32_t priority) const
 		{
-			// Ç¢Ç∏ÇÍÇ©
+			// „ÅÑ„Åö„Çå„Åã
 			return std::any_of(requests.begin(), requests.end(),
 				[&](const CCFSMTransitionRequest& req)
 				{

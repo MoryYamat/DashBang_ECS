@@ -51,7 +51,7 @@ namespace Game::Combat::HitEvent::System
 			// Skill ID による CC種 解決
 			const auto& cc = *entry->def.cc;
 			// target に CCリクエストを送出するような関数呼び出し
-			emitCCRequest(ecs, ev.target, cc.type, cc.priority);
+			emitCCRequest(ecs, ev.target, cc.type, cc.priority, ev.eventId);
 			// ===
 
 			std::cout << "[HitEvent] eventID = " << ev.eventId

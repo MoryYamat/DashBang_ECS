@@ -16,6 +16,7 @@ namespace Game::Character::FSM::CC::API
 		Engine::ECS::EntityMgr& ecs,
 		Engine::ECS::Entity target,
 		std::type_index to,
-		uint32_t priority
+		uint32_t priority,
+		uint32_t causeId
 	);
 }

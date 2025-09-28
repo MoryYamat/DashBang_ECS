@@ -1,7 +1,8 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Game/Character/FSM/CC/CCStateTags.hpp"
 
+#include <cstdint>
 #include <typeindex>
 #include <optional>
 
@@ -12,16 +13,18 @@ namespace Game::Character::FSM::CC::StateModel
 	{
 		
 		std::optional<std::type_index> currentCC;
-		float ccEnteredAt = 0.0f;					// CC‚É“ü‚Á‚½(WorldClockŠî€)
-		float ccDuration = 0.0f;					// now - ccEnteredAt(currentCC‚ª‚ ‚é‚¾‚¯)
+		float ccEnteredAt = 0.0f;					// CCã«å…¥ã£ãŸæ™‚åˆ»(WorldClockåŸºæº–)
+		float ccDuration = 0.0f;					// now - ccEnteredAt(currentCCãŒã‚ã‚‹æ™‚ã ã‘)
 
 		bool immune = false;
 		float immuneEndsAt = 0.0f;
 
-		int chainCount = 0;	// •\¦—p
+		int chainCount = 0;	// è¡¨ç¤ºç”¨
 		float chainWindowStart = 0.0f;	// 
 		
-		// íœ—\’è
+		std::optional<uint32_t> causeId = 0;
+
+		// å‰Šé™¤äºˆå®š
 		// std::type_index dominantTag = StateTag::NONE;
 		// bool hasActiveCC = false;
 	};

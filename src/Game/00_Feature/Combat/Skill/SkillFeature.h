@@ -1,4 +1,4 @@
-// 
+ï»¿// 
 
 #pragma once
 
@@ -20,7 +20,7 @@ namespace Game::Feature::Combat
 
 		static void TriggerSkillsFromIntent(eNsECS::EntityMgr& ecs);
 
-		// ”pŽ~
+		// å»ƒæ­¢
 		// static void SkillGenerateSystem(eNsECS::EntityMgr& ecs);
 
 		static void UpdateSkillTrajectorySystem(eNsECS::EntityMgr& ecs, float deltaTime);
@@ -33,5 +33,6 @@ namespace Game::Feature::Combat
 
 
 		static void UpdateHitoboxLifetimeSystem(eNsECS::EntityMgr& ecs, float deltaTime);
+
 	};
 }

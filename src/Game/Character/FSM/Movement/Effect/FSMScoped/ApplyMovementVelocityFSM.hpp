@@ -1,4 +1,6 @@
-#pragma once
+ï»¿#pragma once
+
+#include "Engine/Time/WorldClock.hpp"
 
 #include "Engine/ECS/Entity.h"
 #include "Engine/ECS/EntityManager.h"
@@ -34,8 +36,11 @@ namespace Game::Character::FSM::Movement::Effect::FSMScoped
 
 	struct ApplyMovementVelocityFSM : IFSMScopedEffect
 	{
+
 		void update(eNsECS::EntityMgr& ecs, eNsECS::Entity entity, const MovementFSMContext& ctx, float deltaTime) const override
 		{
+			const auto& clock = Engine::Time::worldClock(ecs);
+
 			if (!ecs.hasComponent<Velocity2DComponent>(entity)) return;
 			if (!ecs.hasComponent<CharacterStatsComponent>(entity)) return;
 			if (!ecs.hasComponent<MovementStateComponent>(entity)) return;
@@ -45,11 +50,12 @@ namespace Game::Character::FSM::Movement::Effect::FSMScoped
 			const auto& stats = ecs.get<CharacterStatsComponent>(entity);
 			const auto& state = ecs.get<MovementStateComponent>(entity);
 
-			//std::cout << "[ApplyMovementVelocityFSM] ctx.direction = ("
-			//	<< ctx.direction.x << ", " << ctx.direction.y << ")\n";
+			// std::cout << "[ApplyMovementVelocityFSM] ctx.direction = ("
+			// 	<< ctx.direction.x << ", " << ctx.direction.y << ") / clock = "
+			// 	<< clock.now << "\n";
 
 
-			// ‚±‚Ì•ªŠò‚ª‚±‚±‚Å•K—v‚©‚Í—vŒŸ“¢
+			// ã“ã®åˆ†å²ãŒã“ã“ã§å¿…è¦ã‹ã¯è¦æ¤œè¨Ž
 			if (state.current == StateTag::MOVING)
 			{
 				const float multiplier = Game::Combat::Skill::FSM::Modifier::Movement::CalcMovementSpeedMultiplierFromSkillFSM(ecs, entity);

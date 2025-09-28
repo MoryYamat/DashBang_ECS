@@ -105,7 +105,17 @@ namespace Game::Character::FSM::Movement::Interference
 				selected = &req;
 		}
 
+		// ===== 以下解消済み(メモ代わりにしばらく残す) ======
+		// // 2回目の時selected が nullptrになっている => 上書きできない原因
+		// // reqが空? -> InterferenceRequestの発出は NONE->CC のエッジ検出
+		// // しかし 上書きは CC->CC なので エッジ検出が機能しない -> つまり リクエストが作成/追加されない
+		// // それが原因
+		// // 
+		// // 解消方法は，eventid をキャッチアップ -> record による effect.executeのトリガー判定に 使用することで
+		// // 状態遷移エッジ(stunned -> stunned ) を検出できなくても InterferenceRequestを生成する副作用を実行するように変更
+		// ===== 以上解消済み(メモ代わりにしばらく残す) ======
 		if (!selected) return nullptr;
+		// std::cout << "here\n";
 		return selected;
 
 		// 強制遷移処理
@@ -126,7 +136,6 @@ namespace Game::Character::FSM::Movement::Interference
 	)
 	{
 		if (req.severity < lease.severity) return;
-
 		lease.issuerAxis = req.issuerAxis;
 		//lease.issuerEntity
 		lease.mode = req.mode;

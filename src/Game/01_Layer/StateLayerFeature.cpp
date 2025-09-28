@@ -8,6 +8,7 @@
 #include "Game/00_Feature/Character/FSM/Skill/SkillFSMFeature.hpp"
 #include "Game/00_Feature/Character/FSM/CC/CCFSMFeature.hpp"
 
+
 #include "Common/GameNamespaceDecl.h"
 
 void Game::Layer::StateLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaTime)
@@ -23,7 +24,7 @@ void Game::Layer::StateLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 	gNsFeature::Character::FSM::MovementFSMFeature::UpdateMovementFSMSystem(ecs);
 
 	// update Skill FSM
-	gNsFeature::Skill::FSM::SkillFSMFeature::UpdateSkillFSMSystem(ecs, deltaTime);
+	Game::Feature::Character::Skill::FSM::SkillFSMFeature::UpdateSkillFSMSystem(ecs, deltaTime);
 
 	// update CC FSM
 	gNsFeature::Character::FSM::CCFSMFeature::UpdateCCFSMSystem(ecs);
@@ -31,13 +32,15 @@ void Game::Layer::StateLayerFeature::Update(eNsECS::EntityMgr& ecs, float deltaT
 
 	// =========== Resolver ==========
 
-	gNsFeature::Skill::FSM::SkillFSMFeature::UpdateSkillFSMResolverSystem(ecs, deltaTime);
+	Game::Feature::Character::Skill::FSM::SkillFSMFeature::UpdateSkillFSMResolverSystem(ecs, deltaTime);
 	gNsFeature::Character::FSM::MovementFSMFeature::UpdateMovementFSMResolverSystem(ecs, deltaTime);
 
 	gNsFeature::Character::FSM::CCFSMFeature::UpdateCCFSMResolverSystem(ecs, deltaTime);
 
-	// interference
+	// ===== interference ===== 
 	gNsFeature::Character::FSM::MovementFSMFeature::UpdateMovementFSMInterferenceResolver(ecs);
+	Game::Feature::Character::Skill::FSM::SkillFSMFeature::UpdateSkillInterferenceResolver(ecs);
+
 
 	// =========== FSM Scoped System =========
 

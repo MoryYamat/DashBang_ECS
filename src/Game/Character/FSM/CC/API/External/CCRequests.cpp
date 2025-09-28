@@ -11,9 +11,10 @@ namespace Game::Character::FSM::CC::API
 	void emitCCRequest
 	(
 		Engine::ECS::EntityMgr& ecs,
-		Engine::ECS::Entity target,
-		std::type_index to,
-		uint32_t priority
+		const Engine::ECS::Entity target,
+		const std::type_index to,
+		const uint32_t priority,
+		const uint32_t causeId
 	)
 	{
 		if (!ecs.hasComponent<CCFSMTransitionRequestComponent>(target))
@@ -21,6 +22,6 @@ namespace Game::Character::FSM::CC::API
 			ecs.addComponent(target, CCFSMTransitionRequestComponent{});
 		}
 		auto& reqs = ecs.get<CCFSMTransitionRequestComponent>(target);
-		reqs.requests.push_back(CCFSMTransitionRequest{ .requestedTo = to, .priority = priority});
+		reqs.requests.push_back(CCFSMTransitionRequest{ .requestedTo = to, .priority = priority, .causeId = causeId });
 	}
 }

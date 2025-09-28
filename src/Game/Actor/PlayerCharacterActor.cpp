@@ -77,6 +77,7 @@
 //CC
 #include "Game/Character/FSM/CC/StateModel/CCStateComponent.hpp"
 #include "Game/Character/FSM/CC/StateModel/CCFSMTransitionRequestComponent.hpp"
+#include "Game/Character/FSM/CC/StateModel/CCDedupStampComponent.hpp"
 
 #include "Game/Character/Control/CC/Component/CCAntiChainComponent.hpp"
 
@@ -85,6 +86,8 @@
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMTransitionRequestComponent.hpp"
 #include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
 #include "Game/Combat/Skill/Component/SkillEffectExecutionRecordComponent.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMInterferenceRequestComponent.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillFSMLeaseComponent.hpp"
 
 // CC
 
@@ -288,16 +291,21 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	// CC FSM
 	ecs.addComponent(entity, gNsCharaFSMCC::StateModel::CCStateComponent{});
 	ecs.addComponent(entity, Game::Character::FSM::CC::StateModel::CCFSMTransitionRequestComponent{});
-
 	ecs.addComponent(entity, Game::Character::Control::CC::Component::CCAntiChainComponent{});
+	ecs.addComponent(entity, Game::Character::FSM::CC::StateModel::CCDedupStampComponent{});
 
 	// skill FSM
+	// namespace alias
+	namespace gNsSkillStateModel = Game::Combat::Skill::FSM::StateModel;
+	// 
 	ecs.addComponent(entity, gNsSkillFSM::StateModel::SkillStateComponent{});
 	ecs.addComponent(entity, gNsSkillFSM::StateModel::SkillFSMTransitionRequestComponent{});
 	ecs.addComponent(entity, gNsSkillComp::SkillExecutionContextComponent{
 		.caster = entity,
 		});
 	ecs.addComponent(entity, gNsSkillComp::SkillEffectExecutionRecordComponent{});
+	ecs.addComponent(entity, gNsSkillStateModel::SkillFSMInterferenceRequestComponent{});
+	ecs.addComponent(entity, gNsSkillStateModel::SkillFSMLeaseComponent{});
 	// std::cout << "[PlayerCharacterActor.cpp] Created Player Entity: " << entity.id << std::endl;
 	//if (ecs.hasComponent<gNsCharacterState::CharacterStateComponent>(entity)) {
 	//	std::cout << "[確認] CharacterStateComponent は Entity " << entity.id << " に存在しています" << std::endl;

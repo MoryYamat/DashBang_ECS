@@ -9,7 +9,7 @@ namespace Game::Combat::Skill::FSM::StateModel
 	struct SkillFSMLeaseComponent
 	{
 
-		std::type_index issuerAxis;// 発行者FSM識別子
+		std::type_index issuerAxis = Game::Combat::Skill::FSM::AxisTag::SKILLAXIS;// 発行者FSM識別子
 		Engine::ECS::Entity issuerEntity;// 干渉元エンティティ(例: CCエフェクトを与えた相手)
 
 		Game::Character::FSM::Interference::Core::Data::ControlSeverity severity;

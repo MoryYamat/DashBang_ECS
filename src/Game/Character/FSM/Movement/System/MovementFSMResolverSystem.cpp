@@ -119,7 +119,7 @@ namespace Game::Character::FSM::Movement::System
 		if (lease.mode != IM::ForceTransition) return false;
 		if (!lease.forcedState.has_value()) return false;
 
-		const auto target = *lease.forcedState;
+		const std::type_index target = *lease.forcedState;
 
 		if (applyStateUpdate(state,target))
 		{
@@ -139,7 +139,7 @@ namespace Game::Character::FSM::Movement::System
 		std::type_index to
 	)
 	{
-		if (state.current == to) return false;
+		// if (state.current == to) return false;
 		state.previous = state.current;
 		state.current = to;
 		return true;
@@ -164,8 +164,8 @@ namespace Game::Character::FSM::Movement::System
 			ctx.direction = intent.direction;
 		}
 
-		std::cout << "[FSMResolverSystem] ctx.direction = ("
-			<< ctx.direction.x << ", " << ctx.direction.y << ")\n";
+		// std::cout << "[FSMResolverSystem] ctx.direction = ("
+		// 	<< ctx.direction.x << ", " << ctx.direction.y << ")\n";
 
 
 		// 副作用実行

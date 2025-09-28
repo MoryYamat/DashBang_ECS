@@ -6,6 +6,7 @@
 #include <optional>
 #include <any>
 #include <vector>
+
 namespace Game::Character::FSM::Interference::Core::Data
 {
 	using namespace Engine::ECS;

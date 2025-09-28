@@ -6,7 +6,7 @@
 
 #include "Game/Combat/Skill/Component/HitboxHitMemoComponent.hpp"
 
-namespace Game::Combat::Skill::API
+namespace Game::Combat::Skill::API::External
 {
 	inline Game::Combat::Skill::Component::HitboxHitMemoComponent* tryGetMemo
 	(

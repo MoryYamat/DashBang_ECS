@@ -5,10 +5,12 @@
 
 #include "Game/Character/FSM/CC/StateModel/CCStateComponent.hpp"
 #include "Game/Character/FSM/CC/StateModel/CCFSMTransitionRequestComponent.hpp"
+#include "Game/Character/FSM/CC/StateModel/CCDedupStampComponent.hpp"
 
 #include "Game/Character/FSM/CC/Effect/StateScoped/CCStateEffectExecutionRecordComponent.hpp"
 
 #include "Game/Character/FSM/CC/Database/CCFSMDatabase.hpp"
+
 
 // API
 // Internal
@@ -46,7 +48,8 @@ namespace Game::Character::FSM::CC::System
 		for (auto e : ecs.view<
 			CCStateComponent,
 			CCFSMTransitionRequestComponent,
-			CCAntiChainComponent
+			CCAntiChainComponent,
+			CCDedupStampComponent
 		>())
 		{
 			auto& state = ecs.get<CCStateComponent>(e);
@@ -95,6 +98,8 @@ namespace Game::Character::FSM::CC::System
 
 			if (!best) { reqs.requests.clear(); continue; }
 
+			// eventID のコピー
+			state.applied.causeId = best->causeId;
 			// =============
 			// このあたりで anti.count に基づいてcount>=threshold以上の場合，CCリクエストをブロックしなければならない．
 
@@ -133,6 +138,7 @@ namespace Game::Character::FSM::CC::System
 				ctx.currentCC = state.current;
 				ctx.ccEnteredAt = state.enteredAt;
 				ctx.ccDuration = clock.now - state.enteredAt;
+				ctx.causeId = state.applied.causeId;
 			}
 
 
@@ -166,7 +172,8 @@ namespace Game::Character::FSM::CC::System
 		const CCFSMDefinition& def,
 		const CCFSMContext& ctx,
 		const std::type_index& current,
-		const std::type_index& previous)
+		const std::type_index& previous
+	)
 	{
 		if (!ecs.hasComponent<CCStateEffectExecutionRecordComponent>(entity))
 		{
@@ -177,12 +184,33 @@ namespace Game::Character::FSM::CC::System
 
 		std::size_t hash = std::type_index(typeid(*hook.handler)).hash_code();
 
-		if (hook.trigger->evaluate(ctx, current, previous) &&
-			!record.hasExecuted(hash))
+		if (hook.trigger->evaluate(ctx, current, previous))
 		{
-			hook.handler->execute(ecs, entity, ctx);
-			record.markExecuted(hash);
+			if (ctx.causeId.has_value())
+			{
+				if (!record.hasExecutedWithCause(hash, *ctx.causeId))
+				{
+					hook.handler->execute(ecs, entity, ctx);
+					record.markExecutedWithCause(hash, *ctx.causeId);
+				}
+			}
+			else
+			{
+				if (!record.hasExecuted(hash))
+				{
+					hook.handler->execute(ecs, entity, ctx);
+					record.markExecuted(hash);
+				}
+			}
 		}
+
+
+		//if (hook.trigger->evaluate(ctx, current, previous) &&
+		//	!record.hasExecuted(hash))
+		//{
+		//	hook.handler->execute(ecs, entity, ctx);
+		//	record.markExecuted(hash);
+		//}
 
 		// std::cout << "[tryTriggerEffect(CCFSM)] effectHash: " << hash << "\n";
 		// std::cout << "[tryTriggerEffect(CCFSM)] hasExecuted: " << record.hasExecuted(hash) << "\n";
