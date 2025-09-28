@@ -56,13 +56,12 @@ namespace Game::Combat::Skill::FSM::Interference
 
 		for (const auto& req : reqs.requests)
 		{
-			if (IFUtils::shouldApply(req, targetAxis)) continue;
+			if (!IFUtils::shouldApply(req, targetAxis)) continue;
 			if (!req.forcedState.has_value()) continue;
 
 			if (!selected || req.severity > selected->severity) 
 				selected = &req;
 		}
-
 		if (!selected) return nullptr;
 		return selected;
 

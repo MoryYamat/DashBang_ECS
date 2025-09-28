@@ -2,12 +2,10 @@
 
 #include "Engine/Time/WorldClock.hpp"
 
-
-#include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
-
 #include "Game/Combat/Skill/Component/SkillEffectExecutionRecordComponent.hpp"
 
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMTransitionRequestComponent.hpp"
+#include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMLeaseComponent.hpp"
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMInterferenceRequestComponent.hpp"
@@ -29,9 +27,23 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::En
 	auto& db = ecs.getResource<SkillDatabase>();
 
 	// 
-	for (eNsECS::Entity e : ecs.view<SkillExecutionContextComponent>())
+	for (eNsECS::Entity caster : ecs.view<
+		SkillExecutionContextComponent,
+		SkillFSMTransitionRequestComponent,
+		SkillStateComponent,
+		SkillFSMLeaseComponent
+	>())
 	{
-		auto& exec = ecs.get<SkillExecutionContextComponent>(e);
+		auto& exec = ecs.get<SkillExecutionContextComponent>(caster);
+		auto& state = ecs.get<SkillStateComponent>(caster);
+		auto& reqs = ecs.get<SkillFSMTransitionRequestComponent>(caster);
+		const auto& lease = ecs.get<SkillFSMLeaseComponent>(caster);
+
+		if (tryApplyForcedTransition(ecs, caster, state, lease, exec))
+		{
+			reqs.requests.clear();
+			continue;
+		}
 
 		if (exec.skillId == 0) continue;// スキル未実行なのでスキップ
 
@@ -44,7 +56,7 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::En
 		if (!ecs.hasComponent<SkillStateComponent>(eCaster)) continue;
 		if (!ecs.hasComponent<SkillFSMTransitionRequestComponent>(eCaster)) continue;
 
-		auto& state = ecs.get<SkillStateComponent>(eCaster);
+		// auto& state = ecs.get<SkillStateComponent>(eCaster);
 		auto& reqComp = ecs.get<SkillFSMTransitionRequestComponent>(eCaster);
 
 		if (reqComp.requests.empty()) continue;
@@ -60,13 +72,16 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::En
 
 		if (bestRequest)
 		{
-			const std::type_index fromState = state.current;
-			const std::type_index toState = bestRequest->requestedTo.value();
+			// API化
+			// const std::type_index fromState = state.current;
+			// const std::type_index toState = bestRequest->requestedTo.value();
 
-			exec.previousState = fromState;
+			applyStateUpdate(state, bestRequest->requestedTo.value(), exec);
+
+			// exec.previousState = fromState;
 			// 状態更新
-			state.current = toState;
-			exec.phaseElapsedTime = 0.0f;
+			// state.current = toState;
+			// exec.phaseElapsedTime = 0.0f;
 
 			// std::cout << "[SkillFSMResolverSystem] Resolved transition: "
 			// 	<< fromState.name() << " -> " << toState.name()
@@ -85,13 +100,14 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::En
 				.isInterrupted = exec.isInterrupted
 			};
 
+			// 副作用処理実行
 			for (const auto& hook : entry.fsm.effectHooks)
 			{
-				tryTriggerEffect(ecs, hook, eCaster, entry.def, ctx, state.current, fromState);
+				tryTriggerEffect(ecs, hook, eCaster, entry.def, ctx, state.current, state.previous);
 			}
 
 			// リセット処理
-			tryTriggerReset(ecs, eCaster, entry.fsm, entry.def,  ctx, state.current, fromState);
+			tryTriggerReset(ecs, eCaster, entry.fsm, entry.def,  ctx, state.current, state.previous);
 		}
 
 		// リクエストを消費
@@ -166,14 +182,16 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerReset
 namespace Game::Combat::Skill::FSM::System
 {
 	namespace IF = Game::Character::FSM::Interference::Core::Data;
+	namespace Database = Game::Combat::Skill::Database;
+	namespace StateModel = Game::Combat::Skill::FSM;
 
 	bool SkillFSMResolverSystem::tryApplyForcedTransition
 	(
 		Engine::ECS::EntityMgr& ecs,
 		const Engine::ECS::Entity e,
 		Game::Combat::Skill::FSM::StateModel::SkillStateComponent& state,
-		Game::Combat::Skill::FSM::StateModel::SkillFSMLeaseComponent& lease,
-		Game::Combat::Skill::Database::SkillDatabase& db
+		const Game::Combat::Skill::FSM::StateModel::SkillFSMLeaseComponent& lease,
+		Game::Combat::Skill::Component::SkillExecutionContextComponent& exec
 	)
 	{
 		if (lease.mode != IF::InterferenceMode::ForceTransition) return false;
@@ -181,9 +199,10 @@ namespace Game::Combat::Skill::FSM::System
 
 		const std::type_index target = *lease.forcedState;
 
-		if (applyStateUpdate(state, target))
+		if (applyStateUpdate(state, target, exec))
 		{
-			runSkillEffects(ecs, e, state, db);
+
+			// runSkillEffects(ecs, e, state, db);
 		}
 
 		return true;
@@ -192,27 +211,48 @@ namespace Game::Combat::Skill::FSM::System
 	bool SkillFSMResolverSystem::applyStateUpdate
 	(
 		Game::Combat::Skill::FSM::StateModel::SkillStateComponent& state,
-		std::type_index to
+		std::type_index to,
+		Game::Combat::Skill::Component::SkillExecutionContextComponent& exec
 	)
 	{
-		// 上書き処理の失敗の原因？
 		if (state.current == to)return false;
 		state.previous = state.current;
 		state.current = to;
+		exec.reset(state.previous);
+
+		std::cout << "[SkillFSMResovler]: transition from "
+			<< state.previous.name() << " to " << state.current.name() << "\n";
 		return true;
 	}
 
-	void SkillFSMResolverSystem::runSkillEffects
-	(
-		Engine::ECS::EntityMgr& ecs,
-		Engine::ECS::Entity e,
-		Game::Combat::Skill::FSM::StateModel::SkillStateComponent& state,
-		Game::Combat::Skill::Database::SkillDatabase& db
-	)
-	{
-
-	}
-}
+//	void SkillFSMResolverSystem::runSkillEffects
+//	(
+//		Engine::ECS::EntityMgr& ecs,
+//		const Engine::ECS::Entity e,
+//		Game::Combat::Skill::FSM::StateModel::SkillStateComponent& state,
+//		Game::Combat::Skill::Component::SkillExecutionContextComponent& exec
+//	)
+//	{
+//		const auto& db = ecs.getResource<Database::SkillDatabase>();
+//
+//		const auto& skillId = exec.skillId;
+//		if(!db.Has(skillId)) return;
+//		const auto& entry = db.Get(skillId);
+//
+//		StateModel::SkillFSMContext ctx
+//		{
+//			.id = skillId,
+//			.elapsedTime = exec.elapsedTime,
+//			.phaseElapsedTime = exec.phaseElapsedTime,
+//			.isInterrupted = exec.isInterrupted
+//		};
+//
+//		for (const auto& hook : entry.fsm.effectHooks)
+//		{
+//			tryTriggerEffect(ecs, hook, e, entry.def, ctx, state.current, state.previous);
+//		}
+//	}
+//}
 
 // 
 // FIXME: SkillExecutionComponentの常駐化にともなう設計変更が必要

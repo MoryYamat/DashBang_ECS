@@ -1,4 +1,4 @@
-// uƒXƒLƒ‹’è‹`‚ÉŠî‚Ã‚¢‚½ó‘Ô‘JˆÚ‚Ìisv
+ï»¿// ã€Œã‚¹ã‚­ãƒ«å®šç¾©ã«åŸºã¥ã„ãŸçŠ¶æ…‹é·ç§»ã®é€²è¡Œã€
 
 #pragma once 
 
@@ -13,37 +13,37 @@
 #include <unordered_map>
 #include <typeindex>
 
-// TODO: ƒ}ƒWƒbƒNƒiƒ“ƒo[‚ğ‚·‚×‚ÄC³‚·‚é
+// TODO: ãƒã‚¸ãƒƒã‚¯ãƒŠãƒ³ãƒãƒ¼ã‚’ã™ã¹ã¦ä¿®æ­£ã™ã‚‹
 namespace Game::Combat::Skill::Component
 {
-	// ƒXƒLƒ‹‚ÌÀsƒtƒF[ƒY‚ğ’è‹`‚·‚é—ñ‹“Œ^
+	// ã‚¹ã‚­ãƒ«ã®å®Ÿè¡Œãƒ•ã‚§ãƒ¼ã‚ºã‚’å®šç¾©ã™ã‚‹åˆ—æŒ™å‹
 	enum class SkillExecutionPhase
 	{
-		Casting,// ƒXƒLƒ‹‚ÌƒLƒƒƒXƒg’iŠK
-		Active, // ƒXƒLƒ‹‚ÌƒAƒNƒeƒBƒu’iŠK(UŒ‚‚È‚Ç)
-		Recovery,// ƒXƒLƒ‹‚Ìd’¼
-		Completed, // ƒXƒLƒ‹‚ÌŠ®—¹’iŠK(I—¹ó‘Ô)
-		Interrupted, // ƒXƒLƒ‹‚Ì’†’f’iŠK(ƒXƒ^ƒ“‚â€–S‚È‚Ç)
-		Canceled, // ƒXƒLƒ‹ƒLƒƒƒ“ƒZƒ‹
+		Casting,// ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ã‚¹ãƒˆæ®µéš
+		Active, // ã‚¹ã‚­ãƒ«ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–æ®µéš(æ”»æ’ƒãªã©)
+		Recovery,// ã‚¹ã‚­ãƒ«ã®ç¡¬ç›´
+		Completed, // ã‚¹ã‚­ãƒ«ã®å®Œäº†æ®µéš(çµ‚äº†çŠ¶æ…‹)
+		Interrupted, // ã‚¹ã‚­ãƒ«ã®ä¸­æ–­æ®µéš(ã‚¹ã‚¿ãƒ³ã‚„æ­»äº¡ãªã©)
+		Canceled, // ã‚¹ã‚­ãƒ«ã‚­ãƒ£ãƒ³ã‚»ãƒ«
 	};
 
-	// ƒXƒLƒ‹‚ÌÀsƒtƒF[ƒYƒCƒxƒ“ƒg‚ğ’è‹`‚·‚é—ñ‹“Œ^
+	// ã‚¹ã‚­ãƒ«ã®å®Ÿè¡Œãƒ•ã‚§ãƒ¼ã‚ºã‚¤ãƒ™ãƒ³ãƒˆã‚’å®šç¾©ã™ã‚‹åˆ—æŒ™å‹
 	enum class SkillExecutionEvent
 	{
-		OnEneterCasting, // ƒXƒLƒ‹‚ÌƒLƒƒƒXƒgŠJn
-		OnExitCasting, // ƒXƒLƒ‹‚ÌƒLƒƒƒXƒgI—¹
-		OnEnterActive, // ƒXƒLƒ‹‚ÌƒAƒNƒeƒBƒuŠJn
-		OnExitActive, // ƒXƒLƒ‹‚ÌƒAƒNƒeƒBƒuI—¹
-		OnEnterRecovery, // ƒXƒLƒ‹‚ÌƒŠƒJƒoƒŠ[ŠJn
-		OnExitRecovery, // ƒXƒLƒ‹‚ÌƒŠƒJƒoƒŠ[I—¹
-		OnCompleted, // ƒXƒLƒ‹‚ÌŠ®—¹
-		OnInterrupted, // ƒXƒLƒ‹‚Ì’†’f
-		OnCanceled, // ƒXƒLƒ‹‚ÌƒLƒƒƒ“ƒZƒ‹
+		OnEneterCasting, // ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ã‚¹ãƒˆé–‹å§‹
+		OnExitCasting, // ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ã‚¹ãƒˆçµ‚äº†
+		OnEnterActive, // ã‚¹ã‚­ãƒ«ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–é–‹å§‹
+		OnExitActive, // ã‚¹ã‚­ãƒ«ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–çµ‚äº†
+		OnEnterRecovery, // ã‚¹ã‚­ãƒ«ã®ãƒªã‚«ãƒãƒªãƒ¼é–‹å§‹
+		OnExitRecovery, // ã‚¹ã‚­ãƒ«ã®ãƒªã‚«ãƒãƒªãƒ¼çµ‚äº†
+		OnCompleted, // ã‚¹ã‚­ãƒ«ã®å®Œäº†
+		OnInterrupted, // ã‚¹ã‚­ãƒ«ã®ä¸­æ–­
+		OnCanceled, // ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ãƒ³ã‚»ãƒ«
 	};
 
 	using namespace Game::Combat::Skill::FSM;
 
-	// ƒXƒLƒ‹Àsó‘Ôƒƒ^î•ñ
+	// ã‚¹ã‚­ãƒ«å®Ÿè¡ŒçŠ¶æ…‹ãƒ¡ã‚¿æƒ…å ±
 	struct SkillExecutionContextComponent
 	{
 		eNsECS::Entity caster = eNsECS::Entity::INVALID;
@@ -54,5 +54,11 @@ namespace Game::Combat::Skill::Component
 		bool isInterrupted = false;
 
 		std::type_index previousState = StateTag::NONE;
+
+		void reset(std::type_index& previous)
+		{
+			previousState = previous;
+			phaseElapsedTime = 0.0f;
+		}
 	};
 }

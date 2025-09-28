@@ -3,10 +3,12 @@
 #include "Engine/ECS/EntityManager.h"
 
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
+#include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
 
 #include "Game/Combat/Skill/Def/SkillDef.hpp"
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMContext.hpp"
 #include "Game/Combat/Skill/FSM/Effect/Hook/SkillEffectHook.hpp"
+
 
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMLeaseComponent.hpp"
@@ -63,22 +65,23 @@ namespace Game::Combat::Skill::FSM::System
 			Engine::ECS::EntityMgr& ecs,
 			const Engine::ECS::Entity e,
 			Game::Combat::Skill::FSM::StateModel::SkillStateComponent& state,
-			Game::Combat::Skill::FSM::StateModel::SkillFSMLeaseComponent& lease,
-			Game::Combat::Skill::Database::SkillDatabase& db
+			const Game::Combat::Skill::FSM::StateModel::SkillFSMLeaseComponent& lease,
+			Game::Combat::Skill::Component::SkillExecutionContextComponent& exec
 		);
 
 		static bool applyStateUpdate
 		(
 			Game::Combat::Skill::FSM::StateModel::SkillStateComponent& state,
-			std::type_index to
+			std::type_index to,
+			Game::Combat::Skill::Component::SkillExecutionContextComponent& exec
 		);
 
 		static void runSkillEffects
 		(
 			Engine::ECS::EntityMgr& ecs,
-			Engine::ECS::Entity e,
+			const Engine::ECS::Entity e,
 			Game::Combat::Skill::FSM::StateModel::SkillStateComponent& state,
-			Game::Combat::Skill::Database::SkillDatabase& db
+			Game::Combat::Skill::Component::SkillExecutionContextComponent& exec
 		);
 	};
 }

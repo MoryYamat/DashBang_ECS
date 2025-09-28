@@ -1,4 +1,4 @@
-#include "SkillFSMSystem.hpp"
+ï»¿#include "SkillFSMSystem.hpp"
 
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
 
@@ -16,9 +16,9 @@
 #include <iostream>
 #include <functional>
 
-// TODO: ExecutionComponent‚Ì“à•”î•ñ‚ğƒŠƒZƒbƒg‚·‚é‹@\‚ğÀ‘•‚·‚é•K—v‚ ‚è
-// TODO: ‘JˆÚ•]‰¿‚¾‚¯‚È‚Ì‚Å `break`‚ğÁ‚·‚½‚ß‚ÉC‘JˆÚpriority‚Ì‚¢‚¢‰Šú‰»C’è‹`•û–@‚ğl‚¦‚é
-// TODO: ‘½’i‘JˆÚ‚ğl‚¦‚é
+// TODO: ExecutionComponentã®å†…éƒ¨æƒ…å ±ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹æ©Ÿæ§‹ã‚’å®Ÿè£…ã™ã‚‹å¿…è¦ã‚ã‚Š
+// TODO: é·ç§»è©•ä¾¡ã ã‘ãªã®ã§ `break`ã‚’æ¶ˆã™ãŸã‚ã«ï¼Œé·ç§»priorityã®ã„ã„åˆæœŸåŒ–ï¼Œå®šç¾©æ–¹æ³•ã‚’è€ƒãˆã‚‹
+// TODO: å¤šæ®µé·ç§»ã‚’è€ƒãˆã‚‹
 void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 	using namespace Game::Combat::Skill::Database;
@@ -35,43 +35,43 @@ void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, floa
 
 		auto& exec = ecs.get<SkillExecutionContextComponent>(eExec);
 		
-		if (exec.skillId == 0) continue;// ƒXƒLƒ‹–¢Às‚È‚Ì‚ÅƒXƒLƒbƒv
+		if (exec.skillId == 0) continue;// ã‚¹ã‚­ãƒ«æœªå®Ÿè¡Œãªã®ã§ã‚¹ã‚­ãƒƒãƒ—
 
-		// ‚à‚Í‚â•s—v
+		// ã‚‚ã¯ã‚„ä¸è¦
 		const auto caster = exec.caster;
 
 		exec.elapsedTime += deltaTime;
 		exec.phaseElapsedTime += deltaTime;
 
-		// ƒLƒƒƒXƒ^[‚ª‘¶İ‚µ‚Ä‚¢‚È‚¢ or ”jŠüÏ‚İ‚È‚çƒXƒLƒbƒv
+		// ã‚­ãƒ£ã‚¹ã‚¿ãƒ¼ãŒå­˜åœ¨ã—ã¦ã„ãªã„ or ç ´æ£„æ¸ˆã¿ãªã‚‰ã‚¹ã‚­ãƒƒãƒ—
 		if (!ecs.isAlive(caster))continue;
 
 
-		// SkillStateComponent‚ªƒLƒƒƒXƒ^[‚É‚Â‚¢‚Ä‚¢‚é‚©Šm”F
+		// SkillStateComponentãŒã‚­ãƒ£ã‚¹ã‚¿ãƒ¼ã«ã¤ã„ã¦ã„ã‚‹ã‹ç¢ºèª
 		if (!ecs.hasComponent<SkillStateComponent>(caster)) continue;
 
 
 		auto& state = ecs.get<SkillStateComponent>(caster);
 		const auto& skillId = exec.skillId;
 
-		// ƒXƒLƒ‹ƒf[ƒ^ƒx[ƒX‚©‚çSkillEntry‚ğæ“¾
+		// ã‚¹ã‚­ãƒ«ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‹ã‚‰SkillEntryã‚’å–å¾—
 		if (!db.Has(skillId)) continue;
 		const auto& entry = db.Get(skillId);
 		const auto& fsmDef = entry.fsm;
 		const auto& def = entry.def;
 
-		// Context\’z
+		// Contextæ§‹ç¯‰
 		SkillFSMContext ctx;
 		ctx.id = skillId;
 		ctx.elapsedTime = exec.elapsedTime;
 		ctx.phaseElapsedTime = exec.phaseElapsedTime;
 		ctx.isInterrupted = exec.isInterrupted;
 
-		// ==== ó‘Ô‘JˆÚˆ— ====
+		// ==== çŠ¶æ…‹é·ç§»å‡¦ç† ====
 		for (const auto& transition : fsmDef.transitions)
 		{
 			
-			// fromğŒ‚ª‚ ‚é‚È‚çƒ`ƒFƒbƒN(nullopt = ‚·‚×‚Ä‚Ìó‘Ô‚©‚ç‹–—e)
+			// fromæ¡ä»¶ãŒã‚ã‚‹ãªã‚‰ãƒã‚§ãƒƒã‚¯(nullopt = ã™ã¹ã¦ã®çŠ¶æ…‹ã‹ã‚‰è¨±å®¹)
 			if (transition.from.has_value() && state.current != transition.from.value())
 				continue;
 
@@ -83,17 +83,17 @@ void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, floa
 				auto& reqComp = ecs.get<SkillFSMTransitionRequestComponent>(caster);
 				reqComp.requests.push_back(SkillFSMTransitionRequest{
 					.requestedTo = transition.to,
-					.priority = 0// Œ»İ‚ÍŒÅ’è’li«—ˆ‚Í©“®‰»j
+					.priority = 0// ç¾åœ¨ã¯å›ºå®šå€¤ï¼ˆå°†æ¥ã¯è‡ªå‹•åŒ–ï¼‰
 					});
 
-				// ‘JˆÚ‚ğ“K—p
+				// é·ç§»ã‚’é©ç”¨
 				// state.current = transition.to;
 				// exec.phaseElapsedTime = 0.0f;
 
-				// ƒƒO
-				//std::cout << "[SkillFSMSystem.cpp]: Skill " << skillId << " transitioned to " << state.current.name() << "\n";
+				// ãƒ­ã‚°
+				// std::cout << "[SkillFSMSystem.cpp]: Skill " << skillId << " transitioned to " << state.current.name() << "\n";
 
-				break; // 1ƒXƒeƒbƒv‚Å1‘JˆÚ‚¾‚¯s‚¤
+				break; // 1ã‚¹ãƒ†ãƒƒãƒ—ã§1é·ç§»ã ã‘è¡Œã†
 			}
 		}
 	}
