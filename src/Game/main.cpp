@@ -1,5 +1,7 @@
 ﻿// entry point
 
+// memo
+// cgltf（ローダ） 導入 -> animation再生自作 -> ECSとの接続
 
 #include <iostream>
 

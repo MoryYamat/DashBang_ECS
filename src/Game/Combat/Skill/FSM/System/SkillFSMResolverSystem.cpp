@@ -252,7 +252,7 @@ namespace Game::Combat::Skill::FSM::System
 //			tryTriggerEffect(ecs, hook, e, entry.def, ctx, state.current, state.previous);
 //		}
 //	}
-//}
+}
 
 // 
 // FIXME: SkillExecutionComponentの常駐化にともなう設計変更が必要

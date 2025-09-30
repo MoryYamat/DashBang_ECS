@@ -64,8 +64,8 @@ void Game::Character::FSM::Movement::System::MovementFSMResolverSystem::Update(e
 
 		if (applyStateUpdate(state, request.requestedTo))
 		{
-			std::cout << "[MovementFSMTransitionSystem]: Transition accepted: "
-				<< state.previous.name() << " → " << request.requestedTo.name() << "\n";
+			// std::cout << "[MovementFSMTransitionSystem]: Transition accepted: "
+			// 	<< state.previous.name() << " → " << request.requestedTo.name() << "\n";
 
 			runMovementEffects(ecs, e, state, db);
 		}

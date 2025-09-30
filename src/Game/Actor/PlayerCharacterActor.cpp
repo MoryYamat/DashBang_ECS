@@ -56,6 +56,9 @@
 #include "Engine/Graphics/Model/AssimpImporter.h"
 #include "Engine/Graphics/Renderer/GPUBufferUtils.h"
 
+#include "Engine/Graphics/Model/CgltfImporter.hpp"
+
+
 #include "Game/Init/InitModel/InitLogicTransformFromModel.h"
 #include "Game/Init/InitTileMap/InitTileMap.h"
 
@@ -106,7 +109,9 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	eNsECS::Entity entity = ecs.createEntity();
 
 	// load Model Datas from file
-	eNsGfxModel::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
+	// eNsGfxModel::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
+	// =============================== test ==================================
+	eNsGfxModel::ModelData modelData = Engine::Graphics::Model::CgltfImporter::Import("Assets/Models/paladdin_w_prop.glb");
 	for (const auto& mesh : modelData.meshes)
 	{
 		std::cout << "[PlayerCharacterActor.cpp]: Vertices: " << mesh.vertices.size()
@@ -128,7 +133,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	eNsCommonComp::TransformComponent transformComp;
 	transformComp.position = glm::vec3(0.0f, 0.0f, 0.0f);
 	transformComp.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	transformComp.scale = glm::vec3(0.01f);
+	transformComp.scale = glm::vec3(1.0f);
 	ecs.addComponent(entity, transformComp);
 
 
@@ -279,6 +284,9 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 
 	// skill execution state
 	ecs.addComponent(entity, gNsCharaActionState::CharacterSkillExecutionStateComponent{});
+
+
+
 
 
 	// =========== FSM ===========

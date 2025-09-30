@@ -38,6 +38,24 @@ target_include_directories(glad PUBLIC
     ${CMAKE_SOURCE_DIR}/External/GLAD/include
 )
 
+# cgltf
+add_library(cgltf STATIC
+    ${CMAKE_SOURCE_DIR}/src/thirdparty/cgltf/cgltf_impl.c
+)
+# ヘッダを公開
+target_include_directories(cgltf PUBLIC
+    ${CMAKE_SOURCE_DIR}/External/cgltf
+)
+# C としてコンパイル
+set_source_files_properties(
+    ${CMAKE_SOURCE_DIR}/src/thirdparty/cgltf_impl.c
+    PROPERTIES LANGUAGE C
+)
+#
+if(MSVC)
+    target_compile_definitions(cgltf PRIVATE _CRT_SECURE_NO_WARNINGS)
+endif()
+
 # ============================================================
 # プロジェクトのソース・ヘッダー
 # ============================================================
@@ -72,8 +90,7 @@ target_include_directories(DashBang_ECS PRIVATE
     ${CMAKE_SOURCE_DIR}/External/GLAD/include
     ${CMAKE_SOURCE_DIR}/External/GLM
     ${CMAKE_SOURCE_DIR}/External/stb
-    ${CMAKE_SOURCE_DIR}/External/Assimp/include
-
+    ${CMAKE_SOURCE_DIR}/External/Assimp/include   
 )
 
 file(COPY "${CMAKE_SOURCE_DIR}/shaders" DESTINATION "${CMAKE_BINARY_DIR}")
@@ -88,6 +105,7 @@ target_link_libraries(DashBang_ECS
     glad
     assimp
     opengl32
+    cgltf
 )
 
 
