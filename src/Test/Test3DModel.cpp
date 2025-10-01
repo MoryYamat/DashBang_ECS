@@ -1,4 +1,4 @@
-#include "Test3DModel.h"
+﻿#include "Test3DModel.h"
 
 #include "Engine/ECS/Entity.h"
 #include "Engine/ECS/EntityManager.h"
@@ -54,8 +54,8 @@ Test::Actor::Test3DModel::Test3DModel(eNsECS::EntityMgr& ecs, eNsGfxRender::Shad
 
 
 	ecs.addComponent(entity, eNsGfxComp::MeshComponent{
-			data,
-			modelGPU
+			std::move(data),
+			std::move(modelGPU)
 		});
 
 	ecs.addComponent(entity, transformComp);

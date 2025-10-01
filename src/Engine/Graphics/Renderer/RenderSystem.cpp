@@ -1,4 +1,4 @@
-#include "RenderSystem.h"
+ï»¿#include "RenderSystem.h"
 
 #include "Engine/ECS/Entity.h"
 
@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-// Œ»İ–¢g—p
+// ç¾åœ¨æœªä½¿ç”¨
 //void Engine::Graphics::Render::UpdateRenderContext(eNsECS::EntityMgr& ecs, eNsGfxRender::RenderContext& context)
 //{
 //	for (eNsECS::Entity e : ecs.view<
@@ -17,11 +17,11 @@
 //		const auto& transform = ecs.get<eNsCommonComp::TransformComponent>(e);
 //		const auto& cam = ecs.get<eNsCamComp::CameraComponent>(e);
 //
-//		// view / projection matrix‚ÌXV
+//		// view / projection matrixã®æ›´æ–°
 //		glm::mat4 view = glm::lookAt(transform.position, transform.position + cam.front, cam.up);
 //		glm::mat4 projection = glm::perspective(glm::radians(cam.fov), cam.aspect, cam.nearClip, cam.farClip);
 //
-//		// ƒLƒƒƒbƒVƒ…
+//		// ã‚­ãƒ£ãƒƒã‚·ãƒ¥
 //		context.cameraPosition = transform.position;
 //		context.cameraFront = cam.front;
 //		context.cameraRight = cam.right;
@@ -30,16 +30,32 @@
 //		context.viewMatrix = view;
 //		context.projectionMatrix = projection;
 //
-//		return;// Å‰‚ÌƒJƒƒ‰‚Ì‚İg—p
+//		return;// æœ€åˆã®ã‚«ãƒ¡ãƒ©ã®ã¿ä½¿ç”¨
 //	}
 //
 //	std::cerr << "[CameraSystem::UpdateRenderContext] : No camera found in ECS." << std::endl;
 //}
 
+// ä¸€æ™‚ãƒ˜ãƒ«ãƒ‘
+namespace
+{
+	inline void drawOneSubmesh(
+		const eNsGfxComp::MeshComponent& mc, size_t i
+	)
+	{
+		const auto& mg = mc.modelGPU.meshesGPU[i];
+		const auto& md = mc.modelData.meshes[i];
+		glBindVertexArray(mg.vao);
+		if (md.hasIndices) glDrawElements(GL_TRIANGLES, mg.indexCount, GL_UNSIGNED_INT, 0);
+		else               glDrawArrays(GL_TRIANGLES, 0, mg.indexCount);
+		glBindVertexArray(0);
+	}
+}
+
 // Changed to update RenderContext
 void Engine::Graphics::Render::RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader& shader, float aspect, RenderContext& context)
 {
-	// Views—ñAProjections—ñ
+	// Viewè¡Œåˆ—ã€Projectionè¡Œåˆ—
 	glm::mat4 view, projection;
 
 	if (!getCameraMatrices(ecs, view, projection, context))
@@ -56,13 +72,49 @@ void Engine::Graphics::Render::RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender
 		auto& meshComp = ecs.get<eNsGfxComp::MeshComponent>(entity);
 		auto& materialComp = ecs.get<eNsGfxComp::MaterialComponent>(entity);
 
-		// state machine (ƒVƒF[ƒ_[‚ğØ‚è‘Ö‚¦‚é‚ÆAview‚àprojection‚àƒZƒbƒg‚·‚é•K—v‚ ‚èB)
+		// state machine (ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹ã¨ã€viewã‚‚projectionã‚‚ã‚»ãƒƒãƒˆã™ã‚‹å¿…è¦ã‚ã‚Šã€‚)
 		shader.Use();
 		shader.setMat4("model", transformComp.toMatrix());
 		shader.setMat4("view", view);
 		shader.setMat4("projection", projection);
-		shader.setVec3("uBaseColor", materialComp.baseColor);
-		drawMesh(meshComp);
+
+		// meshã”ã¨ã«ç´ æã‚’åæ˜ 
+		for (size_t i = 0; i < meshComp.modelData.meshes.size(); ++i)
+		{
+			const auto& meshData = meshComp.modelData.meshes[i];
+
+			bool hasTex = false;
+			GLuint texId = 0;
+
+			// textures[0] ã‚’ "diffuse" ã¨ã—ã¦æ‰±ã†
+			if (!meshData.materialData.textures.empty())
+			{
+				texId = meshData.materialData.textures[0].id;
+				hasTex = (texId != 0);
+			}
+
+			shader.setBool("uHasBaseColorTex", hasTex);
+			if (hasTex)
+			{
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, texId);
+				shader.setInt("uBaseColorTex", 0);// sampler2D ã« ãƒ¦ãƒ‹ãƒƒãƒˆ0 ã‚’é–¢é€£ä»˜ã‘
+			}
+
+			// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãŒç„¡ã„ã¨ãç”¨ã®ä¿‚æ•°
+			shader.setVec3("uBaseColor", meshData.materialData.baseColor);
+
+			// 1ã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥ã ã‘æç”»ã™ã‚‹ãƒ˜ãƒ«ãƒ‘
+			drawOneSubmesh(meshComp, i);
+
+			if (hasTex)
+			{
+				glBindTexture(GL_TEXTURE_2D, 0);
+			}
+		}
+
+		//shader.setVec3("uBaseColor", materialComp.baseColor);
+		// drawMesh(meshComp);
 	}
 
 	context.viewMatrix = view;
@@ -107,6 +159,8 @@ void Engine::Graphics::Render::drawMesh(const eNsGfxComp::MeshComponent& meshCom
 	//}
 
 }
+
+
 
 bool Engine::Graphics::Render::getCameraMatrices(eNsECS::EntityMgr& ecs, glm::mat4& view, glm::mat4& projection)
 {
@@ -153,7 +207,7 @@ bool Engine::Graphics::Render::getCameraMatrices(eNsECS::EntityMgr& ecs, glm::ma
 	}
 
 
-	// ƒJƒƒ‰‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½
+	// ã‚«ãƒ¡ãƒ©ãŒè¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸ
 	std::cerr << "[RenderSystem.cpp(getCameraMatrices)]: No Camera found!" << std::endl;
 
 	return false;
@@ -200,7 +254,7 @@ void Engine::Graphics::Render::RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender
 		auto& meshComp = ecs.get<eNsGfxComp::MeshComponent>(entity);
 
 
-		// state machine (ƒVƒF[ƒ_[‚ğØ‚è‘Ö‚¦‚é‚ÆAview‚àprojection‚àƒZƒbƒg‚·‚é•K—v‚ ‚èB)
+		// state machine (ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹ã¨ã€viewã‚‚projectionã‚‚ã‚»ãƒƒãƒˆã™ã‚‹å¿…è¦ã‚ã‚Šã€‚)
 		shader.Use();
 		shader.setMat4("model", transformComp.toMatrix());
 		shader.setMat4("view", view);

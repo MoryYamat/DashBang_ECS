@@ -1,4 +1,4 @@
-// test object (ECS logical data chunks)
+﻿// test object (ECS logical data chunks)
 #include "TriangleActor.h"
 
 #include <vector>
@@ -37,8 +37,8 @@ Test::Actor::TriangleActor::TriangleActor(eNsECS::EntityMgr& ecs)
 	eNsGfxModel::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
 
 	ecs.addComponent(entity, eNsGfxComp::MeshComponent{
-			modelData,
-			modelGPU
+			std::move(modelData),
+			std::move(modelGPU)
 		});
 
 	std::cout << "[TriangleActor.cpp]: Triangle generated" << std::endl;

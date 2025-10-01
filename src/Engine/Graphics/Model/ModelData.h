@@ -1,4 +1,4 @@
-// ModelData (Universal Data Types)
+﻿// ModelData (Universal Data Types)
 #pragma once
 
 #include <vector>
@@ -13,9 +13,36 @@ namespace Engine::Graphics::Model
 {
 	struct TextureData
 	{
-		unsigned int id;
+		GLuint id = 0;
 		std::string type;// "diffuse", "specular", "normal", etc.
 		std::string path;
+
+
+		TextureData() = default;
+		~TextureData()
+		{
+			if (id != 0)
+			{
+				glDeleteTextures(1, &id);
+			}
+		}
+
+		TextureData(const TextureData&) = delete;
+		TextureData& operator= (const TextureData&) = delete;
+
+		TextureData(TextureData&& o) noexcept
+			: id(std::exchange(o.id, 0)), type(std::move(o.type)), path(std::move(o.path)) { }
+
+
+		TextureData& operator=(TextureData&& o) noexcept {
+			if (this != &o) {
+				if (id) glDeleteTextures(1, &id);
+				id = std::exchange(o.id, 0);
+				type = std::move(o.type);
+				path = std::move(o.path);
+			}
+			return *this;
+		}
 	};
 
 	struct MaterialData
@@ -67,6 +94,34 @@ namespace Engine::Graphics::Model
 		GLuint vbo = 0;
 		GLuint ebo = 0;
 		unsigned int indexCount = 0;
+
+		MeshGPU() = default;
+		~MeshGPU() {
+			if (ebo) glDeleteBuffers(1, &ebo);
+			if (vbo) glDeleteBuffers(1, &vbo);
+			if (vao) glDeleteVertexArrays(1, &vao);
+		}
+
+		MeshGPU(const MeshGPU&) = delete;
+		MeshGPU& operator=(const MeshGPU&) = delete;
+
+		MeshGPU(MeshGPU&& o) noexcept {
+			*this = std::move(o);
+		}
+		MeshGPU& operator=(MeshGPU&& o) noexcept {
+			if (this != &o) {
+				// 先に自分の分を片付け
+				if (ebo) glDeleteBuffers(1, &ebo);
+				if (vbo) glDeleteBuffers(1, &vbo);
+				if (vao) glDeleteVertexArrays(1, &vao);
+
+				vao = std::exchange(o.vao, 0);
+				vbo = std::exchange(o.vbo, 0);
+				ebo = std::exchange(o.ebo, 0);
+				indexCount = o.indexCount;
+			}
+			return *this;
+		}
 	};
 
 	struct ModelGPU

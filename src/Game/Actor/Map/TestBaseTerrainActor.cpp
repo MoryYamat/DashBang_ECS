@@ -1,4 +1,4 @@
-#include "TestBaseTerrainActor.h"
+ï»¿#include "TestBaseTerrainActor.h"
 
 #include "Engine/ECS/Entity.h"
 
@@ -36,7 +36,7 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 {
 	eNsECS::Entity entity = ecs.createEntity();
 
-	// ƒ‚ƒfƒ‹ƒf[ƒ^ƒCƒ“ƒ|[ƒg
+	// ãƒ¢ãƒ‡ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚¤ãƒ³ãƒãƒ¼ãƒˆ
 	eNsGfxModel::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/BaseMesh.fbx");
 	//ModelData modelData = AssimpImporter::Import("Assets/Models/HorizontallyTerrainMesh.fbx");
 	for (const auto& mesh : modelData.meshes)
@@ -46,14 +46,14 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 			<< ", hasIndices: " << mesh.hasIndices << std::endl;
 	}
 
-	// GPUBuffer‚ğƒCƒ“ƒ|[ƒgƒf[ƒ^‚©‚çì¬
+	// GPUBufferã‚’ã‚¤ãƒ³ãƒãƒ¼ãƒˆãƒ‡ãƒ¼ã‚¿ã‹ã‚‰ä½œæˆ
 	eNsGfxModel::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
 	ecs.addComponent(entity, eNsGfxComp::MeshComponent{
-			modelData,
-			modelGPU
+			std::move(modelData),
+			std::move(modelGPU)
 		});
 
-	// ‰Šú•`‰æÀ•W‚ğİ’è
+	// åˆæœŸæç”»åº§æ¨™ã‚’è¨­å®š
 	eNsCommonComp::TransformComponent transformComp;
 	transformComp.position = glm::vec3(0.0f, 0.0f, 0.0f);
 	transformComp.rotation = glm::vec3(0.0f, 30.0f, 0.0f);
@@ -75,13 +75,13 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 	}
 	ecs.addComponent(entity, shaderComp);
 
-	// Fî•ñ‚ğİ’è(ƒfƒoƒbƒO—p)
+	// è‰²æƒ…å ±ã‚’è¨­å®š(ãƒ‡ãƒãƒƒã‚°ç”¨)
 	eNsGfxComp::MaterialComponent materialComp;
 	materialComp.baseColor = glm::vec3(0.6f, 0.8f, 0.7f);
 	eNsDebugLog::LogVector("TestBaseTerrainActor.cpp(Color)", materialComp.baseColor);
 	ecs.addComponent(entity, materialComp);
 
-	// •`‰æî•ñ‚©‚ç˜_—î•ñ‚ğ‰Šú‰»
+	// æç”»æƒ…å ±ã‹ã‚‰è«–ç†æƒ…å ±ã‚’åˆæœŸåŒ–
 	eNsLogic2DComp::Logic2DTransformComponent logic2DComp;
 	logic2DComp = gNsInit::Logic2D::InitLogic2DTransformFromModel(transformComp, modelData);
 	ecs.addComponent(entity, logic2DComp);
@@ -89,12 +89,12 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 	std::cout << "TestBaseTerrainActor.cpp: Rotation " << logic2DComp.rotation << std::endl;
 
 
-	// íœ—\’è
-//	// 1.0f -> 1.0m (‘z’è)
+	// å‰Šé™¤äºˆå®š
+//	// 1.0f -> 1.0m (æƒ³å®š)
 //	eNsLogic2DComp::TileMapComponent tileMapComp;
 //	tileMapComp.tileSize = 0.5f;
 //	tileMapComp = gNsInit::Logic2D::InitTileMapFromBounds(transformComp, modelData, logic2DComp, tileMapComp.tileSize);
-//	// TileMapComponent“à‚ÌtilesƒxƒNƒgƒ‹‚ğì¬(‰Šú‰»)
+//	// TileMapComponentå†…ã®tilesãƒ™ã‚¯ãƒˆãƒ«ã‚’ä½œæˆ(åˆæœŸåŒ–)
 //	gNsInit::Logic2D::InitTileMapTiles(tileMapComp);
 ////	GameInit::TileMapFromMesh::InitWalKableByTerrain(tileMapComp, modelData);
 //	
@@ -110,14 +110,14 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 	glm::vec3 worldCenter3D = transformComp.toMatrix() * glm::vec4(localCenter, 1.0f);
 	glm::vec2 worldCenterXZ = glm::vec2(worldCenter3D.x, worldCenter3D.z);
 	// calc local vector axisX and axisZ
-	float rotRad = logic2DComp.rotation;// •`‰æŠî€‚Æ˜_—Šî€‚Ì®‡«‚ğl‚¦‚é
+	float rotRad = logic2DComp.rotation;// æç”»åŸºæº–ã¨è«–ç†åŸºæº–ã®æ•´åˆæ€§ã‚’è€ƒãˆã‚‹
 	// Front = Z axis basis
 	glm::vec2 axisZ = glm::normalize(eNsLogic2DMath::CalcForwardFromYaw((rotRad)));
 	glm::vec2 axisX = eNsLogic2DMath::CalcRightFromYaw(rotRad);
 
 	collisionComp.collider.shape = eNsLogic2DComp::Obb2D
 	{
-		.center = glm::vec2(0.0f),// ƒ[ƒJƒ‹ƒIƒtƒZƒbƒg
+		.center = glm::vec2(0.0f),// ãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆ
 		.halfExtents = worldSize * 0.5f,
 		.axisX = axisX,
 		.axisZ = axisZ
@@ -126,11 +126,11 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 
 	ecs.addComponent(entity, eNsTagComp::TerrainMeshTag{});
 
-	// TileMapActor‚Ìì¬(Entity‚Æ‚µ‚Ä)
+	// TileMapActorã®ä½œæˆ(Entityã¨ã—ã¦)
 	[[maybe_unused]] auto _ =  gNsActor::Map::TileMapActor::Create(ecs, transformComp, modelData, 0.5f);
 
 
-	// ÅIƒƒO
+	// æœ€çµ‚ãƒ­ã‚°
 	eNsDebugLog::GeneralLog("TestBaseTerrainActor.cpp", "TestBaseTerrainActor creation completed successfully");
 }
 

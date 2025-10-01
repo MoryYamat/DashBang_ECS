@@ -1,4 +1,4 @@
-#include "GPUBufferUtils.h"
+Ôªø#include "GPUBufferUtils.h"
 
 #include <iostream>
 
@@ -25,23 +25,43 @@ eNsGfxModel::ModelGPU Engine::Graphics::Render::GPUBufferUtils::createMeshGPUBuf
 		// ebo
 		if (meshData.hasIndices && !meshData.indices.empty())
 		{
-			// ÉCÉìÉfÉbÉNÉXêî
+			// „Ç§„É≥„Éá„ÉÉ„ÇØ„ÇπÊï∞
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshGPU.ebo);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, meshData.indices.size() * sizeof(unsigned int), meshData.indices.data(), GL_STATIC_DRAW);
 			meshGPU.indexCount = static_cast<unsigned int>(meshData.indices.size());
 		}
 		else
 		{
-			// í∏ì_êî
+			// È†ÇÁÇπÊï∞
 			meshGPU.indexCount = static_cast<unsigned int>(meshData.vertices.size());
 		}
 
-		// vao
+		using V = eNsGfxModel::VertexData;
+		const GLsizei stride = sizeof(V);
+
+		// layout(location = 0) position
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(eNsGfxModel::VertexData), (void*)offsetof(eNsGfxModel::VertexData, position));
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(V, position));
+
+		// layout(location = 1) normal
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(V, normal));
+
+		// layout(location = 2) uv
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(V, texCoords));
+
+		// layout(location = 3) tangent
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(V, tangent));
+
+		// layout(location = 4) bitangent
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(V, bitangent));
+
+		// boneIDs/weights „Çí‰Ωø„ÅÜÂ†¥Âêà„ÅØ ipointer/pointer „Åß 5/6 „ÇíË®≠ÂÆö„Åô„Çã
 
 		glBindVertexArray(0);
-
 		modelGPU.meshesGPU.push_back(meshGPU);
 
 	}

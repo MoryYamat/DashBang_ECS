@@ -124,8 +124,8 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 
 	// set MeshComponent
 	ecs.addComponent(entity, eNsGfxComp::MeshComponent{
-			modelData,
-			modelGPU
+			std::move(modelData),
+			std::move(modelGPU)
 		});
 
 

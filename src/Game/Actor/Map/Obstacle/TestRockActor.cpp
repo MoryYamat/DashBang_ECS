@@ -1,4 +1,4 @@
-#include "TestRockActor.h"
+ï»¿#include "TestRockActor.h"
 
 #include "Engine/ECS/Entity.h"
 
@@ -45,8 +45,8 @@ Game::Actor::Map::TestRockActor::TestRockActor(eNsECS::EntityMgr& ecs, eNsGfxRen
 
 	// set MeshComponent
 	ecs.addComponent(entity, eNsGfxComp::MeshComponent{
-			modelData,
-			modelGPU
+			std::move(modelData),
+			std::move(modelGPU)
 		});
 
 	// set TransformComponent
@@ -92,12 +92,12 @@ Game::Actor::Map::TestRockActor::TestRockActor(eNsECS::EntityMgr& ecs, eNsGfxRen
 	glm::vec3 worldCenter3D = transformComp.toMatrix() * glm::vec4(localCenter, 1.0f);
 	glm::vec2 worldCenterXZ = glm::vec2(worldCenter3D.x, worldCenter3D.z);
 	// calc local vector axisX and axisZ
-	float rotRad = logic.rotation;// •`‰æŠî€(+Z)‚Æ˜_—Šî€(-Z)‚Ì®‡«‚ğl‚¦‚é
+	float rotRad = logic.rotation;// æç”»åŸºæº–(+Z)ã¨è«–ç†åŸºæº–(-Z)ã®æ•´åˆæ€§ã‚’è€ƒãˆã‚‹
 	glm::vec2 axisZ = glm::normalize(eNsLogic2DMath::CalcForwardFromYaw(rotRad));
 	glm::vec2 axisX = eNsLogic2DMath::CalcRightFromYaw(rotRad);
 
 	testRockCollisionComp.collider.shape = eNsLogic2DComp::Obb2D{
-		.center = glm::vec2(0.0f),// ƒ[ƒJƒ‹ƒIƒtƒZƒbƒg
+		.center = glm::vec2(0.0f),// ãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆ
 		.halfExtents =obbSize / 2.0f,
 		.axisX = axisX,
 		.axisZ = axisZ

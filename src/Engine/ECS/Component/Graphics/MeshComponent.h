@@ -1,4 +1,4 @@
-// mesh data component
+﻿// mesh data component
 
 #include <GLAD/glad.h>
 
@@ -7,6 +7,9 @@
 #include "Engine/Graphics/Model/ModelData.h"
 
 #include <iostream>
+
+
+
 namespace Engine::ECS::Component::Graphics
 {
 	struct MeshComponent
@@ -15,19 +18,18 @@ namespace Engine::ECS::Component::Graphics
 		eNsGfxModel::ModelData modelData;
 		eNsGfxModel::ModelGPU modelGPU;
 
-		void Destroy()
-		{
-			for (auto& mesh : modelGPU.meshesGPU)
-			{
-				if (mesh.ebo != 0) glDeleteBuffers(1, &mesh.ebo);
-				if (mesh.vbo != 0) glDeleteBuffers(1, &mesh.vbo);
-				if (mesh.vao != 0) glDeleteVertexArrays(1, &mesh.vao);
+		MeshComponent() = default;
+		~MeshComponent() = default;
 
+		MeshComponent(const MeshComponent&) = delete;
+		MeshComponent& operator=(const MeshComponent&) = delete;
 
-				mesh.vao = mesh.vbo = mesh.ebo = 0;
-			}
+		MeshComponent(MeshComponent&&) noexcept = default;
+		MeshComponent& operator=(MeshComponent&&) noexcept = default;
 
-			std::cout << "\n[MeshComponent.h]: destroyer called." << std::endl;
+		// 追加：ムーブ専用の受け取り
+		MeshComponent(eNsGfxModel::ModelData&& md, eNsGfxModel::ModelGPU&& mg)
+			: modelData(std::move(md)), modelGPU(std::move(mg)) {
 		}
 	};
 

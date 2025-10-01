@@ -1,5 +1,6 @@
 ﻿#include "CgltfImporter.hpp"
 
+#include <cstddef>
 #include <iostream>
 
 namespace Engine::Graphics::Model
@@ -141,10 +142,48 @@ namespace Engine::Graphics::Model
 				if (prim.material)
 				{
 					const auto& pbr = prim.material->pbr_metallic_roughness;
+					
+					// 既存: ベースカラー係数
 					out.materialData.baseColor =
 					{
 						pbr.base_color_factor[0], pbr.base_color_factor[1], pbr.base_color_factor[2]
 					};
+
+					if (pbr.base_color_texture.texture && pbr.base_color_texture.texture->image)
+					{
+						const cgltf_image* img = pbr.base_color_texture.texture->image;
+
+						if (img->buffer_view)
+						{
+							const unsigned char* bytes = nullptr;
+							size_t sz = 0;
+
+							if (GetImageBytes_FromBufferView(img, g, bytes, sz))
+							{
+								GLuint id = CreateGLTexture2D_FromMemory_sRGB(bytes, sz);
+								if (id != 0)
+								{
+									MD::TextureData tex{};
+									tex.id = id;
+									tex.type = "diffuse";
+									tex.path = "";
+									out.materialData.textures.push_back(std::move(tex));
+								}
+							}
+
+							//if(GetImageBytes_FromBufferView(img, g, bytes, sz))
+							//{
+							//	std::cout << "[CgltfImporter]: embedded baseColorTexture bytes = "
+							//		<< sz << " bytes\n";
+							//}
+							//else
+							//{
+							//	std::cout << "[CgltfImporter]: no bufferView image for baseColorTexture\n";
+							//}
+						}
+
+					}
+
 				}
 
 				model.meshes.emplace_back(std::move(out));
@@ -293,7 +332,85 @@ namespace Engine::Graphics::Model
 		//	}(tgt_prim->material);
 
 		//model.meshes.emplace_back(std::move(mesh));
+	}
+
+	// img.buffer_view が指す生データ領域(PNG/JPGそのもの)をbytes/sizeに返す
+	bool CgltfImporter::GetImageBytes_FromBufferView(
+		const cgltf_image* img,// memory上にあり
+		const cgltf_data* g,
+		const unsigned char*& bytes,
+		size_t& size
+	)
+	{
+		bytes = nullptr;
+		size = 0;
+
+		if (!img || !img->buffer_view) return false;
+
+		const cgltf_buffer_view* bv = img->buffer_view;
+		if (!bv || !bv->buffer || !bv->buffer->data) return false;
+
+		// offset境界チェック
+		const size_t buf_size = static_cast<size_t>(bv->buffer->size);
+		const size_t off = static_cast<size_t>(bv->offset);
+		const size_t len = static_cast<size_t>(bv->size);
+		if (off > buf_size || len > buf_size - off) return false;
+
+		const unsigned char* base =
+			static_cast<const unsigned char*>(bv->buffer->data);
+
+		bytes = base + off;
+		size = len;
+		return (bytes && size > 0);
+	}
+
+	// 
+	GLuint CgltfImporter::CreateGLTexture2D_FromMemory_sRGB(
+		const unsigned char* bytes,
+		size_t size
+	)
+	{
+		if (!bytes || size == 0) return 0;
+
+		int w = 0, h = 0, comp = 0;
+
+		// glTFは通常上下反転不要．もし逆なら stbi_set_flip\vertically_on_load(true) を検討
+		// comp: 元のチャンネル数 
+		stbi_uc* rgba = stbi_load_from_memory(bytes, static_cast<int>(size), &w, &h, &comp, 4);
+		if (!rgba) {
+			std::cerr << "[CgltfImporter]: stb fail: " << stbi_failure_reason() << "\n";
+			return 0;
+		}
+
+		GLuint tex = 0;
+		// OpenGL テクスチャ生成
+		glGenTextures(1, &tex);
+		glBindTexture(GL_TEXTURE_2D, tex);
+
+		// unpack (行サイズ境界の罠回避)
+		GLint prevUnpack = 4;
+		glGetIntegerv(GL_UNPACK_ALIGNMENT, &prevUnpack);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+		// sRGBの内部フォーマット（カラー用）
+		GLint internalFormat = GL_SRGB8_ALPHA8;// フォールバックが必要なら GL_RGBA8 に変更
+		// GPUへ画素転送
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, rgba);
 
 
+		// サンプラ状態		
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		// ラップ/フィルタは glTF の sampler を後で反映 今はデフォルトで
+		glPixelStorei(GL_UNPACK_ALIGNMENT, prevUnpack);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		stbi_image_free(rgba);// free
+
+
+		return tex;// -> TextureData.id になる
 	}
 }

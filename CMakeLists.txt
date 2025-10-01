@@ -48,11 +48,21 @@ target_include_directories(cgltf PUBLIC
 )
 # C としてコンパイル
 set_source_files_properties(
-    ${CMAKE_SOURCE_DIR}/src/thirdparty/cgltf_impl.c
+    ${CMAKE_SOURCE_DIR}/src/thirdparty/cgltf/cgltf_impl.c
     PROPERTIES LANGUAGE C
 )
+
+# stb_image
+add_library(stb_image STATIC
+    ${CMAKE_SOURCE_DIR}/src/thirdparty/stb/stb_impl.cpp
+)
+target_include_directories(stb_image PUBLIC
+    ${CMAKE_SOURCE_DIR}/External/stb
+)
+
 #
 if(MSVC)
+    target_compile_definitions(stb_image PRIVATE _CRT_SECURE_NO_WARNINGS)
     target_compile_definitions(cgltf PRIVATE _CRT_SECURE_NO_WARNINGS)
 endif()
 
@@ -106,6 +116,7 @@ target_link_libraries(DashBang_ECS
     assimp
     opengl32
     cgltf
+    stb_image
 )
 
 

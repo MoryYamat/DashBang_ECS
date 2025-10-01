@@ -1,10 +1,16 @@
-#version 330 core
+﻿#version 330 core
 
-uniform vec3 uBaseColor;
-
+in vec2 vUV;
 out vec4 FragColor;
+
+uniform bool uHasBaseColorTex;
+uniform sampler2D uBaseColorTex;
+uniform vec3 uBaseColor;
 
 void main()
 {
-	FragColor = vec4(uBaseColor, 1.0);
+	vec3 albedo = uHasBaseColorTex ? texture(uBaseColorTex, vUV).rgb
+									: uBaseColor;
+
+	FragColor = vec4(albedo, 1.0);
 }

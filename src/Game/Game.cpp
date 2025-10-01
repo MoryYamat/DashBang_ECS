@@ -175,7 +175,7 @@ bool GameApp::GameApp::Initialize()
 	// WindowManager::CaptureMouse();
 
 	glEnable(GL_DEPTH_TEST);
-
+	glEnable(GL_FRAMEBUFFER_SRGB);// sRGB
 
 	// ShaderInit
 	mShader = new eNsGfxRender::Shader("shaders/basic.vertex.glsl", "shaders/basic.fragment.glsl");

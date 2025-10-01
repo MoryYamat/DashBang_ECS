@@ -1,4 +1,4 @@
-#include "Shader.h"
+﻿#include "Shader.h"
 
 #include <fstream>
 #include <sstream>
@@ -42,33 +42,47 @@ void Engine::Graphics::Render::Shader::Use() const
 
 void Engine::Graphics::Render::Shader::setBool(const std::string& name, bool value) const
 {
-	glUniform1i(glGetUniformLocation(mProgramID, name.c_str()), (int)value);
+	// The value -1 will be returned if if name does not correspond to an
+	// active uniform variable name in program, or if name is associated with a named
+	// uniform block. (from ref.)
+	GLint loc = glGetUniformLocation(mProgramID, name.c_str());
+	if (loc == -1) return;// 
+	glUniform1i(loc, (int)value);
 }
 void Engine::Graphics::Render::Shader::setInt(const std::string& name, int value) const
 {
-	glUniform1i(glGetUniformLocation(mProgramID, name.c_str()), value);
+	GLint loc = glGetUniformLocation(mProgramID, name.c_str());
+	if (loc == -1) return;
+
+	glUniform1i(loc, value);
 }
 
 void Engine::Graphics::Render::Shader::setFloat(const std::string& name, float value) const
 {
-	std::cerr << "[Shader]: Uniform not found or optimized out: " << name << std::endl;
-	glUniform1f(glGetUniformLocation(mProgramID, name.c_str()), value);
+	GLint loc = glGetUniformLocation(mProgramID, name.c_str());
+	if (loc == -1) return;
+	glUniform1f(loc, value);
 }
 
 void Engine::Graphics::Render::Shader::setVec3(const std::string& name, const glm::vec3& vec) const
 {
-
-	glUniform3fv(glGetUniformLocation(mProgramID, name.c_str()), 1, &vec[0]);
+	GLint loc = glGetUniformLocation(mProgramID, name.c_str());
+	if (loc == -1) return;
+	glUniform3fv(loc, 1, &vec[0]);
 }
 
 void Engine::Graphics::Render::Shader::setVec4(const std::string& name, const glm::vec4& vec) const
 {
-	glUniform4fv(glGetUniformLocation(mProgramID, name.c_str()), 1, &vec[0]);
+	GLint loc = glGetUniformLocation(mProgramID, name.c_str());
+	if (loc == -1) return;
+	glUniform4fv(loc, 1, &vec[0]);
 }
 
 void Engine::Graphics::Render::Shader::setMat4(const std::string& name, const glm::mat4& mat) const
 {
-	glUniformMatrix4fv(glGetUniformLocation(mProgramID, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
+	GLint loc = glGetUniformLocation(mProgramID, name.c_str());
+	if (loc == -1) return;
+	glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(mat));
 }
 
 

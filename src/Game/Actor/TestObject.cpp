@@ -54,8 +54,8 @@ Game::Actor::TestObject::TestObject(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader
 
 	// set MeshComponent
 	ecs.addComponent(entity, eNsGfxComp::MeshComponent{
-			modelData,
-			modelGPU
+			std::move(modelData),
+			std::move(modelGPU)
 		});
 
 
