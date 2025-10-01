@@ -34,14 +34,19 @@
 
 #include "Game/Init/InitModel/InitLogicTransformFromModel.h"
 
+#include "Engine/ECS/Ops/CoreOps.hpp"
+
 #include <iostream>
 
 Game::Actor::TestObject::TestObject(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader)
 {
-	eNsECS::Entity entity = ecs.createEntity();
+	namespace Ops = Engine::ECS::Ops;
+	namespace Comp = Engine::ECS::Component;
+
+	eNsECS::Entity e = ecs.createEntity();
 
 	// load Model Datas from file
-	eNsGfxModel::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
+	Engine::Graphics::Model::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
 	for (const auto& mesh : modelData.meshes)
 	{
 		std::cout << "[PlayerCharacterActor.cpp]: Vertices: " << mesh.vertices.size()
@@ -50,25 +55,22 @@ Game::Actor::TestObject::TestObject(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader
 	}
 
 	// set Mesh data to GPUBuffers
-	eNsGfxModel::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
+	Engine::Graphics::Model::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
 
 	// set MeshComponent
-	ecs.addComponent(entity, eNsGfxComp::MeshComponent{
-			std::move(modelData),
-			std::move(modelGPU)
-		});
+	Ops::Add<Comp::Graphics::MeshComponent>(ecs, e, Comp::Graphics::MeshComponent{ std::move(modelData), std::move(modelGPU) });
 
 
 	// set TransformComponent
-	eNsCommonComp::TransformComponent transformComp;
+	Comp::Common::TransformComponent transformComp;
 	transformComp.position = glm::vec3(0.0f, 0.0f, 0.0f);
 	transformComp.rotation = glm::vec3(0.0f, 45.0f, 0.0f);
 	transformComp.scale = glm::vec3(0.01f);
-	ecs.addComponent(entity, transformComp);
+	Ops::Add<Comp::Common::TransformComponent>(ecs, e, transformComp);
 
 
 	// set ShaderComponent
-	eNsGfxComp::ShaderComponent shaderComp;
+	Comp::Graphics::ShaderComponent shaderComp;
 	shaderComp.shader = shader;
 	if (shaderComp.shader)
 	{
@@ -80,37 +82,36 @@ Game::Actor::TestObject::TestObject(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader
 	{
 		std::cout << "[PlayerCharacterActor.cpp]: Shader not found." << std::endl;
 	}
-	ecs.addComponent(entity, shaderComp);
+	Ops::Add<Comp::Graphics::ShaderComponent>(ecs, e, shaderComp);
 
 	// Logic2D
-	eNsLogic2DComp::Logic2DTransformComponent logic;
+	Comp::Logic2D::Logic2DTransformComponent logic;
 	logic = gNsInit::Logic2D::InitLogic2DTransformFromModel(transformComp, modelData);
-	ecs.addComponent(entity, logic);
+	Ops::Add<Comp::Logic2D::Logic2DTransformComponent>(ecs, e, logic);
 
 	// set Test Corlor
-	eNsGfxComp::MaterialComponent materialComp;
+	Comp::Graphics::MaterialComponent materialComp;
 	materialComp.baseColor = glm::vec3(1.0f, 1.0f, 1.0f);
-	ecs.addComponent(entity, materialComp);
+	Ops::Add<Comp::Graphics::MaterialComponent>(ecs, e, materialComp);
 
 	// Collsion Initialization
 // コリジョン初期化
-	eNsLogic2DComp::CollisionComponent playerCollisionComp;
+	Comp::Logic2D::CollisionComponent playerCollisionComp;
 	playerCollisionComp.collider.shape = eNsLogic2DComp::Circle2D{
 		.center = glm::vec2(0.0f),// ローカルセンター
-		.radius = gNsInit::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, gNsInit::Logic2D::RadiusEstimateStrategy::MaxAxis)
+		.radius = Game::Init::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, Game::Init::Logic2D::RadiusEstimateStrategy::MaxAxis)
 	};
 	//playerCollisionComp.collider.circle2D.center = logic.positionXZ;
 	playerCollisionComp.isStatic = false;
 	// float radius = gNsInit::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, gNsInit::Logic2D::RadiusEstimateStrategy::MaxAxis);
 	// playerCollisionComp.collider.circle2D.radius = radius;
-	ecs.addComponent(entity, playerCollisionComp);
+	Ops::Add<Comp::Logic2D::CollisionComponent>(ecs, e, playerCollisionComp);
 
 	// Collision Mask 初期化
-	gNsCollComp::CollisionMaskComponent testObjectMask;
+	Game::Collision::Component::CollisionMaskComponent testObjectMask;
 	testObjectMask = gNsCollComp::CollisionMaskPresets::Character();
-	ecs.addComponent(entity, testObjectMask);
+	Ops::Add<Game::Collision::Component::CollisionMaskComponent>(ecs, e, testObjectMask);
 
-	ecs.addComponent(entity, gNsECSComp::TeamComponent{
-	.team = gNsECSComp::Team::EnemyTeam
-		});
+	Ops::Add<Game::ECS::Component::TeamComponent>(ecs, e, Game::ECS::Component::TeamComponent{ .team =
+		Game::ECS::Component::Team::EnemyTeam });
 }

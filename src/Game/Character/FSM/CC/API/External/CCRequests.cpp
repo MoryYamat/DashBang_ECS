@@ -2,6 +2,8 @@
 
 #include "Game/Character/FSM/CC/StateModel/CCFSMTransitionRequestComponent.hpp"
 
+#include "Engine/ECS/Ops/CoreOps.hpp"
+
 namespace Game::Character::FSM::CC::API
 {
 	using namespace Engine::ECS;
@@ -19,7 +21,8 @@ namespace Game::Character::FSM::CC::API
 	{
 		if (!ecs.hasComponent<CCFSMTransitionRequestComponent>(target))
 		{
-			ecs.addComponent(target, CCFSMTransitionRequestComponent{});
+			Ops::Add<CCFSMTransitionRequestComponent>(ecs, target, CCFSMTransitionRequestComponent{});
+			//ecs.addComponent(target, CCFSMTransitionRequestComponent{});
 		}
 		auto& reqs = ecs.get<CCFSMTransitionRequestComponent>(target);
 		reqs.requests.push_back(CCFSMTransitionRequest{ .requestedTo = to, .priority = priority, .causeId = causeId });

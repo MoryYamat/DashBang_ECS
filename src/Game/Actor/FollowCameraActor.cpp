@@ -1,4 +1,4 @@
-#include "Game/Actor/FollowCameraActor.h"
+ï»¿#include "Game/Actor/FollowCameraActor.h"
 
 #include "Engine/Window/WindowManager.h"
 
@@ -8,6 +8,8 @@
 #include "Engine/ECS/EntityUtils/EntityUtils.h"
 
 #include "Engine/Debug/DebugUtils.h"
+
+#include "Engine/ECS/Ops/CoreOps.hpp"
 
 #include <glm/gtx/rotate_vector.hpp>
 
@@ -23,9 +25,9 @@ Game::Actor::Camera::FollowCameraActor::FollowCameraActor(eNsECS::EntityMgr& ecs
 	//FollowCameraComponent followCamComp;
 	//TransformComponent CamTransformComp;
 
-	ecs.addComponent(entity, eNsCamComp::CameraComponent{});
-	ecs.addComponent(entity, eNsCamComp::FollowCameraComponent{});
-	ecs.addComponent(entity, eNsCommonComp::TransformComponent{});
+	Engine::ECS::Ops::Add<Engine::ECS::Component::Camera::CameraComponent>(ecs, entity, Engine::ECS::Component::Camera::CameraComponent{});
+	Engine::ECS::Ops::Add<Engine::ECS::Component::Camera::FollowCameraComponent>(ecs, entity, Engine::ECS::Component::Camera::FollowCameraComponent{});
+	Engine::ECS::Ops::Add<Engine::ECS::Component::Common::TransformComponent>(ecs, entity, Engine::ECS::Component::Common::TransformComponent{});
 
 	//camComp.aspect = WindowManager::GetAspect();
 	// initialize camera vectors
@@ -65,14 +67,14 @@ Game::Actor::Camera::FollowCameraActor::FollowCameraActor(eNsECS::EntityMgr& ecs
 }
 
 
-// Œ»İ–¢g—p
+// ç¾åœ¨æœªä½¿ç”¨
 void Game::Actor::Camera::FollowCameraActor::initializeFollowCameraGetFront(
 	eNsCamComp::FollowCameraComponent& followCamComp
 		, eNsLogic2DComp::Logic2DTransformComponent& targetLogic2DTransform
 	)
 {
 	// Calculating camera position
-	// ˜_—ƒf[ƒ^‚Ìfront‚É‘Î‚µ‚ÄA‘ÎŠpã‚É‘¶İ‚·‚é‚æ‚¤‚ÉŒvZ‚µ‚Ä‚¢‚é
+	// è«–ç†ãƒ‡ãƒ¼ã‚¿ã®frontã«å¯¾ã—ã¦ã€å¯¾è§’ä¸Šã«å­˜åœ¨ã™ã‚‹ã‚ˆã†ã«è¨ˆç®—ã—ã¦ã„ã‚‹
 	float yawDegrees = targetLogic2DTransform.rotation;
 	float yawRadians = glm::radians(yawDegrees);
 
@@ -81,7 +83,7 @@ void Game::Actor::Camera::FollowCameraActor::initializeFollowCameraGetFront(
 }
 
 
-// Œ»İ–¢g—p
+// ç¾åœ¨æœªä½¿ç”¨
 // Calculates the coordinate data for drawing the camera component from logical data
 void Game::Actor::Camera::FollowCameraActor::initializeCameraVectors(
 	eNsCamComp::CameraComponent& camComp

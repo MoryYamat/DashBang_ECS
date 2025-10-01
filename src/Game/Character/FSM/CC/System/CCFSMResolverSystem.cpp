@@ -19,6 +19,8 @@
 // clock
 #include "Engine/Time/WorldClock.hpp"
 
+#include "Engine/ECS/Ops/CoreOps.hpp"
+
 #include <iostream>
 
 // FIXME: ResolverとStateScopedの副作用は分離したほうがよい
@@ -30,6 +32,8 @@ namespace Game::Character::FSM::CC::System
 
 	using namespace Game::Character::Control::CC::Policy;
 	using namespace Game::Character::Control::CC::Component;
+
+	namespace Ops = Engine::ECS::Ops;
 
 	void CCFSMResolverSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 	{
@@ -177,7 +181,8 @@ namespace Game::Character::FSM::CC::System
 	{
 		if (!ecs.hasComponent<CCStateEffectExecutionRecordComponent>(entity))
 		{
-			ecs.addComponent(entity, CCStateEffectExecutionRecordComponent{});
+			Ops::Add<CCStateEffectExecutionRecordComponent>(ecs, entity, CCStateEffectExecutionRecordComponent{});
+			//ecs.addComponent(entity, CCStateEffectExecutionRecordComponent{});
 		}
 
 		auto& record = ecs.get<CCStateEffectExecutionRecordComponent>(entity);

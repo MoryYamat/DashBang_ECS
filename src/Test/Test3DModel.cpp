@@ -14,11 +14,15 @@
 #include "Engine/Graphics/Renderer/Shader.h"
 #include "Engine/Graphics/Renderer/GPUBufferUtils.h"
 
+#include "Engine/ECS/Ops/CoreOps.hpp"
+
 #include <iostream>
 
 Test::Actor::Test3DModel::Test3DModel(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader)
 {
-	eNsECS::Entity entity = ecs.createEntity();
+	namespace Ops = Engine::ECS::Ops;
+	namespace Comp = Engine::ECS::Component;
+	eNsECS::Entity e = ecs.createEntity();
 
 	eNsGfxModel::ModelData data = eNsGfxModel::AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
 
@@ -52,15 +56,15 @@ Test::Actor::Test3DModel::Test3DModel(eNsECS::EntityMgr& ecs, eNsGfxRender::Shad
 	}
 
 
-
-	ecs.addComponent(entity, eNsGfxComp::MeshComponent{
+	Ops::Add<Comp::Graphics::MeshComponent>(ecs, e,
+		Comp::Graphics::MeshComponent{
 			std::move(data),
 			std::move(modelGPU)
 		});
 
-	ecs.addComponent(entity, transformComp);
+	Ops::Add<Comp::Common::TransformComponent>(ecs, e, transformComp);
 
-	ecs.addComponent(entity, shaderComp);
+	Ops::Add<Comp::Graphics::ShaderComponent>(ecs, e, shaderComp);
 
 	std::cout << "[Test3Dmodel.cpp]: Test3Dmodel Settings Completed" << std::endl;
 }

@@ -1,4 +1,4 @@
-#include "PlayerSkillTriggerSystem.h"
+ï»¿#include "PlayerSkillTriggerSystem.h"
 
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
@@ -13,12 +13,16 @@
 
 #include "Game/Combat/Skill/Component/SkillSlotAssignmentComponent.h"
 
+#include "Engine/ECS/Ops/CoreOps.hpp"
+
 #include <iostream>
 
-// íœ—\’èF–¢g—p
-// Intent‚ğ•]‰¿‚µ‚ÄSkillIntstance‚ğ¶¬‚·‚é‚æ‚¤‚É‰üC
+// å‰Šé™¤äºˆå®šï¼šæœªä½¿ç”¨
+// Intentã‚’è©•ä¾¡ã—ã¦SkillIntstanceã‚’ç”Ÿæˆã™ã‚‹ã‚ˆã†ã«æ”¹ä¿®
 void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerPlayerSkillsFromIntent(eNsECS::EntityMgr& ecs)
 {
+
+	namespace Ops = Engine::ECS::Ops;
 
 	for (eNsECS::Entity ePlayer : ecs.view<
 		gNsSkillIntent::SkillIntentComponent,
@@ -32,12 +36,12 @@ void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerPlayerSkills
 
 		if (!intent.isActive) continue;
 
-		// ’l‚ÌQÆ‚Ì³“«‚ğ‰ü‘P‚·‚é(«—ˆ“I‚É)
-		// ƒXƒLƒ‹ID‚Í‚¢‚Â‚à`ƒXƒLƒ‹’è‹`(SkillDefinition)`‚Æ“™‚µ‚¢‚Ù‚¤‚ª³““I‚¾‚Æv‚í‚ê‚é????
+		// å€¤ã®å‚ç…§ã®æ­£çµ±æ€§ã‚’æ”¹å–„ã™ã‚‹(å°†æ¥çš„ã«)
+		// ã‚¹ã‚­ãƒ«IDã¯ã„ã¤ã‚‚`ã‚¹ã‚­ãƒ«å®šç¾©(SkillDefinition)`ã¨ç­‰ã—ã„ã»ã†ãŒæ­£çµ±çš„ã ã¨æ€ã‚ã‚Œã‚‹????
 		// 
 		for (auto slot : intent.requestedSlots)
 		{
-			//// contains ‚É•ÏX‰Â”\H
+			//// contains ã«å¤‰æ›´å¯èƒ½ï¼Ÿ
 			auto it = slotAssign.slotToSkillId.find(slot);
 			if (it == slotAssign.slotToSkillId.end()) continue;
 			// if (!slotAssign.slotToSkillId.contains(slot)) continue;
@@ -45,10 +49,10 @@ void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerPlayerSkills
 			 int skillId = it->second;
 			//int skillId = slotAssign.slotToSkillId.at(slot);
 
-			// ‚·‚Å‚ÉŠY“–ƒXƒLƒ‹‚ª”­“®’†‚©‚Ç‚¤‚©ƒ`ƒFƒbƒN
+			// ã™ã§ã«è©²å½“ã‚¹ã‚­ãƒ«ãŒç™ºå‹•ä¸­ã‹ã©ã†ã‹ãƒã‚§ãƒƒã‚¯
 			bool alreadyCasting = false;
 
-			// Œø—¦–â‘è ƒLƒƒƒbƒVƒ…
+			// åŠ¹ç‡å•é¡Œ ã‚­ãƒ£ãƒƒã‚·ãƒ¥
 			for (eNsECS::Entity eSkill : ecs.view<gNsSkillComp::SkillInstanceComponent>())
 			{
 				const auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(eSkill);
@@ -61,14 +65,14 @@ void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerPlayerSkills
 			
 			if (!alreadyCasting)
 			{
-				// SkillInstance ‚ğ¶¬
+				// SkillInstance ã‚’ç”Ÿæˆ
 				eNsECS::Entity skillEntity = ecs.createEntity();
 
 				gNsSkillComp::SkillInstanceComponent skillInstance;
 				skillInstance.caster = ePlayer;
 				skillInstance.skillId = skillId;
 				skillInstance.timeSinceCast = 0.0f;
-				ecs.addComponent(skillEntity, skillInstance);
+				Ops::Add<Game::Combat::Skill::Component::SkillInstanceComponent>(ecs, skillEntity, skillInstance);
 
 				eNsLogic2DComp::Transform2DComponent transform2DComp;
 				transform2DComp.positionXZ = logic.positionXZ;
@@ -76,7 +80,7 @@ void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerPlayerSkills
 				transform2DComp.front = logic.front;
 				transform2DComp.right = logic.right;
 				transform2DComp.scale = 1.0f;
-				ecs.addComponent(skillEntity, transform2DComp);
+				Ops::Add<Engine::ECS::Component::Logic2D::Transform2DComponent>(ecs, skillEntity, transform2DComp);
 
 				std::cout << "[SkillTrigger] Entity " << ePlayer.id
 					<< " triggered skill " << skillId
@@ -88,7 +92,7 @@ void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerPlayerSkills
 	}
 }
 
-// InputAction‚ğƒgƒŠƒK[‚É‚µ‚Ä’¼ÚƒXƒLƒ‹‚ğ¶¬‚µ‚Ä‚¢‚é(25/06/04)-> ˆÓ}‘w(SkillIntent)‚ğ‰î‚µ‚ÄƒgƒŠƒK[‚·‚é‚æ‚¤‚É•ÏX‚·‚é•K—v‚ª‚ ‚é
+// InputActionã‚’ãƒˆãƒªã‚¬ãƒ¼ã«ã—ã¦ç›´æ¥ã‚¹ã‚­ãƒ«ã‚’ç”Ÿæˆã—ã¦ã„ã‚‹(25/06/04)-> æ„å›³å±¤(SkillIntent)ã‚’ä»‹ã—ã¦ãƒˆãƒªã‚¬ãƒ¼ã™ã‚‹ã‚ˆã†ã«å¤‰æ›´ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
 // 
 //void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(eNsECS::EntityMgr& ecs, SkillInputMap& inputMap)
 //{
@@ -102,7 +106,7 @@ void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerPlayerSkills
 //			if (!input.isPressed(action))
 //				continue;
 //
-//			// contains‚ÅÈ—ª‰Â”\‚Ì‚Í‚¸(C++20)
+//			// containsã§çœç•¥å¯èƒ½ã®ã¯ãš(C++20)
 //			auto it = slotAssign.slotToSkillId.find(slot);
 //			if (it == slotAssign.slotToSkillId.end())
 //				continue;
@@ -111,22 +115,22 @@ void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerPlayerSkills
 //
 //			bool alreadyCasting = false;
 //
-//			// SkillInstance‚ª‘¶İ‚·‚é‚©ƒ`ƒFƒbƒN
+//			// SkillInstanceãŒå­˜åœ¨ã™ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
 //			for (eNsECS::Entity eSkill : ecs.view<gNsSkillComp::SkillInstanceComponent>())
 //			{
 //				const auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(eSkill);
 //				if (skillInstance.caster == ePlayer && skillInstance.skillId == skillId)
 //				{
-//					// SkillInstance ‚ÌCaster‚ÆPlayerEntity‚ª®‡‚·‚ê‚ÎCalreadyCasting
+//					// SkillInstance ã®Casterã¨PlayerEntityãŒæ•´åˆã™ã‚Œã°ï¼ŒalreadyCasting
 //					alreadyCasting = true;
 //					break;
 //				}
 //			}
 //
-//			// ‚Ü‚¾CalreadyCasting = false‚Ìê‡(‚Ü‚¾SkillInstance‚ª‘¶İ‚µ‚È‚¢ê‡)ì¬‚·‚é
+//			// ã¾ã ï¼ŒalreadyCasting = falseã®å ´åˆ(ã¾ã SkillInstanceãŒå­˜åœ¨ã—ãªã„å ´åˆ)ä½œæˆã™ã‚‹
 //			if (!alreadyCasting)
 //			{
-//				// Transform‚à¶¬
+//				// Transformã‚‚ç”Ÿæˆ
 //				eNsECS::Entity skillEntity = ecs.createEntity();
 //				gNsSkillComp::SkillInstanceComponent skillInstance;
 //				skillInstance.caster = ePlayer;
@@ -162,7 +166,7 @@ void Game::Combat::Skill::Trigger::PlayerSkillTriggerSystem::TriggerPlayerSkills
 //		{
 //			if (input.isPressed(action))
 //			{
-//				// d•¡”­“®–h~
+//				// é‡è¤‡ç™ºå‹•é˜²æ­¢
 //				bool alreadyCasting = false;
 //				for (Entity eSkill : ecs.view<SkillInstanceComponent>())
 //				{

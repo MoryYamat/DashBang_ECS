@@ -16,6 +16,8 @@
 
 #include "Engine/Debug/DebugUtils.h"
 
+#include "Engine/ECS/Ops/CoreOps.hpp"
+
 #include <cstdint>
 
 eNsECS::Entity Game::Actor::Map::TileMapActor::Create(
@@ -25,7 +27,10 @@ eNsECS::Entity Game::Actor::Map::TileMapActor::Create(
 	float tileSize
 )
 {
-	eNsECS::Entity entity = ecs.createEntity();
+	namespace Ops = Engine::ECS::Ops;
+	namespace Comp = Engine::ECS::Component;
+
+	eNsECS::Entity e = ecs.createEntity();
 
 	// コンポーネント初期化
 	// TerrainMeshの情報をコピーする
@@ -38,13 +43,13 @@ eNsECS::Entity Game::Actor::Map::TileMapActor::Create(
 	tileMapComp.tileSize = tileSize;
 	tileMapComp = gNsInit::Logic2D::InitTileMapFromBounds(transform, modelData, tempLogic2D, tileSize);
 	gNsInit::Logic2D::InitTileMapTiles(tileMapComp);
-	ecs.addComponent(entity, tileMapComp);
+	Ops::Add<Comp::Logic2D::TileMapComponent>(ecs, e, tileMapComp);
 
 	// 論理transformの再初期化(タイルマップ自体は回転を考えない)
 	eNsLogic2DComp::Logic2DTransformComponent fixedLogic2D;
 	fixedLogic2D.positionXZ = tempLogic2D.positionXZ;
 	fixedLogic2D.rotation = 0.0f;
-	ecs.addComponent(entity, fixedLogic2D);
+	Ops::Add<Comp::Logic2D::Logic2DTransformComponent>(ecs, e, fixedLogic2D);
 
 
 	// TileMapにCollisionComponentは不要なはず
@@ -76,7 +81,7 @@ eNsECS::Entity Game::Actor::Map::TileMapActor::Create(
 
 	//ecs.addComponent(entity, collisionComp);
 
-	ecs.addComponent(entity, eNsTagComp::MainTileMapTag{});
+	Ops::Add<Comp::Tags::MainTileMapTag>(ecs, e, Comp::Tags::MainTileMapTag{});
 
 	//ecs.addComponent(entity,
 	//	gNsCollComp::CollisionMaskComponent{
@@ -88,7 +93,7 @@ eNsECS::Entity Game::Actor::Map::TileMapActor::Create(
 
 	eNsDebugLog::debugLog("Tile Map Actor Created Successfully!", "TileMapActor.cpp(Create)");
 	
-	return entity;
+	return e;
 }
 
 //Game::Actor::Map::TileMapActor::TileMapActor(eNsECS::EntityMgr& ecs)

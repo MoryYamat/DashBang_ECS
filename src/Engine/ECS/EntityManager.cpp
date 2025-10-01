@@ -1,4 +1,4 @@
-#include "EntityManager.h"
+﻿#include "EntityManager.h"
 
 
 #include "Engine/ECS/Component/Graphics/MeshComponent.h"
@@ -18,13 +18,18 @@ void destroyIfExists(std::type_index currentType, std::shared_ptr<void>& compPtr
 // Clear all components at once
 void Engine::ECS::EntityMgr::Clear()
 {
-	for (auto& [typeIndex, componentMap] : mComponentPools)
+	for (auto& [type, entityMap] : mComponentPools)
 	{
-		for (auto& [entityID, compPtr] : componentMap)
+		auto ti = mTypeInfo.find(type);
+		for (auto& [eid, sp] : entityMap)
 		{
-			destroyIfExists<eNsGfxComp::MeshComponent>(typeIndex, compPtr);
+			if (sp && ti != mTypeInfo.end())
+				ti->second.onDestroy(sp.get());
 		}
 	}
 
 	mComponentPools.clear();
+	mLivingEntities.clear();
+	mResources.clear();
+	mTypeInfo.clear();
 }

@@ -15,6 +15,8 @@
 // FSM
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMStates.hpp"
 
+#include "Engine/ECS/Ops/CoreOps.hpp"
+
 // TODO: `SkillExecutionComponent`をアクターが保持する情報にする
 // TODO: `SkillExecutionComponent`の生成をFSMHook化する(SkillExecutionSetUpHookなど)
 // TODO: TransitionRequestの`Priority`制御の実装
@@ -27,6 +29,8 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 	using namespace Game::Combat::Skill::FSM::StateModel;
 	using namespace Engine::ECS::Component::Logic2D;
 	using namespace Game::Combat::Skill::Component;
+
+	namespace Ops = Engine::ECS::Ops;
 
 	auto& db = ecs.getResource<SkillDatabase>();
 
@@ -72,7 +76,9 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 			// eNsECS::Entity eSkill = ecs.createEntity();
 			if (!ecs.hasComponent<SkillExecutionContextComponent>(e))
 			{
-				ecs.addComponent(e, SkillExecutionContextComponent{});
+				Ops::Add<Game::Combat::Skill::Component::SkillExecutionContextComponent>
+					(ecs, e, Game::Combat::Skill::Component::SkillExecutionContextComponent{});
+				// ecs.addComponent(e, SkillExecutionContextComponent{});
 			}
 			auto& exec = ecs.get<SkillExecutionContextComponent>(e);
 
@@ -94,8 +100,11 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 
 
 			// skillFSMstate を 定義された初期状態にリクエストする
-			if (!ecs.hasComponent<SkillFSMTransitionRequestComponent>(e)) {
-				ecs.addComponent(e, SkillFSMTransitionRequestComponent{});
+			if (!ecs.hasComponent<SkillFSMTransitionRequestComponent>(e)) 
+			{
+				Ops::Add<Game::Combat::Skill::FSM::StateModel::SkillFSMTransitionRequestComponent>(
+					ecs, e, Game::Combat::Skill::FSM::StateModel::SkillFSMTransitionRequestComponent{});
+				// ecs.addComponent(e, SkillFSMTransitionRequestComponent{});
 			}
 			auto& reqComp = ecs.get<SkillFSMTransitionRequestComponent>(e);
 			reqComp.requests.push_back(SkillFSMTransitionRequest{

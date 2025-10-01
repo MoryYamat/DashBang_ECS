@@ -1,4 +1,4 @@
-// Game Loop
+ï»¿// Game Loop
 #pragma once
 
 #include <glad/glad.h>
@@ -20,21 +20,13 @@
 
 // Input
 #include "Engine/InputManager/InputManager.h"
-#include "Engine/InputManager/RawInputState.h"
 
-
-
-// ======================= Game =======================
 #include "Game/Collision/Data/CollisionResultStorage.h"
 
-#include "Game/Input/InputState.h"
-#include "Game/Input/InputMapping.h"
+// 
+#include "Game/Common/AppContext.h"
 
-// skill
-#include "Game/Combat/Skill/MasterData/SkillDatabase.h"
-#include "Game/Combat/Skill/System/Trigger/SkillInputMap.h"
-
-
+#include <memory>
 
 namespace GameApp
 {
@@ -45,47 +37,48 @@ namespace GameApp
 		GameApp();
 
 		bool Initialize();
-
 		void Shutdown();
-
 		void RunLoop();
 
-
-	// ‚Å‚«‚é‚¾‚¯‘O•ûéŒ¾‚ğg—p‚Å‚«‚é\‘¢‚É‚·‚é•K—v‚ª‚ ‚é(\‘¢”j’]‚ğ–h~‚·‚é‚½‚ß)
-	// ‚Å‚«‚é‚¾‚¯‘O•ûéŒ¾‚ğg—p‚Å‚«‚é\‘¢‚É‚·‚é•K—v‚ª‚ ‚é(\‘¢”j’]‚ğ–h~‚·‚é‚½‚ß)
-	// ‚Å‚«‚é‚¾‚¯‘O•ûéŒ¾‚ğg—p‚Å‚«‚é\‘¢‚É‚·‚é•K—v‚ª‚ ‚é(\‘¢”j’]‚ğ–h~‚·‚é‚½‚ß)
-	// ‚Å‚«‚é‚¾‚¯‘O•ûéŒ¾‚ğg—p‚Å‚«‚é\‘¢‚É‚·‚é•K—v‚ª‚ ‚é(\‘¢”j’]‚ğ–h~‚·‚é‚½‚ß)
+	// ã§ãã‚‹ã ã‘å‰æ–¹å®£è¨€ã‚’ä½¿ç”¨ã§ãã‚‹æ§‹é€ ã«ã™ã‚‹å¿…è¦ãŒã‚ã‚‹(æ§‹é€ ç ´ç¶»ã‚’é˜²æ­¢ã™ã‚‹ãŸã‚)
+	// ã§ãã‚‹ã ã‘å‰æ–¹å®£è¨€ã‚’ä½¿ç”¨ã§ãã‚‹æ§‹é€ ã«ã™ã‚‹å¿…è¦ãŒã‚ã‚‹(æ§‹é€ ç ´ç¶»ã‚’é˜²æ­¢ã™ã‚‹ãŸã‚)
+	// ã§ãã‚‹ã ã‘å‰æ–¹å®£è¨€ã‚’ä½¿ç”¨ã§ãã‚‹æ§‹é€ ã«ã™ã‚‹å¿…è¦ãŒã‚ã‚‹(æ§‹é€ ç ´ç¶»ã‚’é˜²æ­¢ã™ã‚‹ãŸã‚)
+	// ã§ãã‚‹ã ã‘å‰æ–¹å®£è¨€ã‚’ä½¿ç”¨ã§ãã‚‹æ§‹é€ ã«ã™ã‚‹å¿…è¦ãŒã‚ã‚‹(æ§‹é€ ç ´ç¶»ã‚’é˜²æ­¢ã™ã‚‹ãŸã‚)
 	private:
-		// loop flag => ãè‚Ég‚¤•û–@
+
+		std::unique_ptr<Engine::Window::Window> mWindow;
+		std::unique_ptr<Engine::Input::InputManager> mInput;
+		std::unique_ptr<Engine::Graphics::Render::Shader> mShader;
+		Engine::ECS::EntityMgr mECS;
+		Engine::Graphics::Render::RenderContext mRenderCtx;
+
+		// å‚ç…§ã®æŸ (æ‰€æœ‰ã—ãªã„)
+		Game::Common::AppContext mCtx;
+
+		float mLastFrame = 0.0f;
+
+		// loop flag => ä¸Šæ‰‹ã«ä½¿ã†æ–¹æ³•
 		bool mIsRunning;
 
 		int windowWidth, windowHeight;
 
-		// ecs
-		eNsECS::EntityMgr mECS;
+		// 
+		//// ecs
+		//eNsECS::EntityMgr mECS;
 
-		// shader
-		eNsGfxRender::Shader* mShader;// new ‚·‚é‚Ì‚ÅŠ®‘S‚È’è‹`‚ª•K—v
-		eNsGfxRender::RenderContext mRenderContext;
+		//// shader
+		//eNsGfxRender::Shader* mShader;// new ã™ã‚‹ã®ã§å®Œå…¨ãªå®šç¾©ãŒå¿…è¦
+		//eNsGfxRender::RenderContext mRenderContext;
 
-		Engine::Window::Window mWindow;
+		//Engine::Window::Window mWindow;
 
-		eNsInput::InputManager* mInputManager;
+		//eNsInput::InputManager* mInputManager;
 
-		// input states
-		gNsInput::InputMapping mInputMapping;
+		Game::Collision::Data::CollisionResultStorage mCollisionResults;
 
-		// collision detection results
-		gNsCollData::CollisionResultStorage mCollisionResults;
 
-		// skill 
-		// gNsSkillData::SkillDatabase mSkillDatabase;
-		// íœ—\’èFŒ»İ–¢g—pFECS‚ÌƒOƒ[ƒoƒ‹ƒŠƒ\[ƒX‚ÉˆÚsÏ‚İ
-		// íœ—\’èFŒ»İ–¢g—pFECS‚ÌƒOƒ[ƒoƒ‹ƒŠƒ\[ƒX‚ÉˆÚsÏ‚İ
-		//gNsSkillTrigger::SkillInputMap mSkillInputMap;
 
 		// float mDeltaTime = 0.0f;
-		float mLastFrame = 0.0f;
 
 		void updateGameLogics();
 
@@ -101,17 +94,11 @@ namespace GameApp
 
 		void updateContext();
 
-		void InitializeInputMapping();
-
-		void InitializeSkills();
-
-		void InitializeSkillMappings();
-
-		// ECS‚ÌƒOƒ[ƒoƒ‹ƒŠƒ\[ƒX‚Æ‚µ‚Ä•Û‚·‚éŠî€
-		// F‚Ç‚ÌƒGƒ“ƒeƒBƒeƒB‚âƒVƒXƒeƒ€‚©‚ç‚àQÆ‚³‚ê‚é
-		// F•p”É‚É•ÏX‚³‚ê‚¸C•s•Ï^Ã“I‚Éˆµ‚¦‚é => SkillInputMap, InputMapping
-		// F•¡”‚ÌSystem‚ªˆË‘¶‚µ‚Ä‚¢‚é‚ªCComponent‚Å‚Í‚È‚¢ => CollisionResultStorage(ó‘Ô‚Å‚Í‚È‚­ƒoƒbƒtƒ@)
-		// Fó‘Ô‚ğ‚Â•K—v‚ª‚È‚­CECS‚Ì¶‘¶ŠÇ—‚ÉŠÖŒW‚µ‚È‚¢
+		// ECSã®ã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒªã‚½ãƒ¼ã‚¹ã¨ã—ã¦ä¿æŒã™ã‚‹åŸºæº–
+		// ï¼šã©ã®ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ã‚„ã‚·ã‚¹ãƒ†ãƒ ã‹ã‚‰ã‚‚å‚ç…§ã•ã‚Œã‚‹
+		// ï¼šé »ç¹ã«å¤‰æ›´ã•ã‚Œãšï¼Œä¸å¤‰ï¼é™çš„ã«æ‰±ãˆã‚‹ => SkillInputMap, InputMapping
+		// ï¼šè¤‡æ•°ã®SystemãŒä¾å­˜ã—ã¦ã„ã‚‹ãŒï¼ŒComponentã§ã¯ãªã„ => CollisionResultStorage(çŠ¶æ…‹ã§ã¯ãªããƒãƒƒãƒ•ã‚¡)
+		// ï¼šçŠ¶æ…‹ã‚’æŒã¤å¿…è¦ãŒãªãï¼ŒECSã®ç”Ÿå­˜ç®¡ç†ã«é–¢ä¿‚ã—ãªã„
 		void InitializeGlobalResouces();
 	};
 }

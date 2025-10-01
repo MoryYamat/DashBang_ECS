@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/ECS/Entity.h"
 
@@ -9,7 +9,8 @@ namespace Game::Combat::Skill::Component
 {
 	struct SkillOwnerComponent
 	{
-		eNsECS::Entity caster;
-		uint32_t skillId;
+		Engine::ECS::Entity caster{};
+		uint32_t skillId{ 0 };
+
 	};
 }

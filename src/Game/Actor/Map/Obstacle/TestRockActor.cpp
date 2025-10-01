@@ -26,10 +26,15 @@
 
 #include "Engine/Debug/DebugUtils.h"
 
+#include "Engine/ECS/Ops/CoreOps.hpp"
+
 #include <iostream>
 
 Game::Actor::Map::TestRockActor::TestRockActor(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader)
 {
+	namespace Ops = Engine::ECS::Ops;
+	namespace Component = Engine::ECS::Component;
+
 	eNsECS::Entity entity = ecs.createEntity();
 
 	eNsGfxModel::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/TestRock.fbx");
@@ -44,17 +49,16 @@ Game::Actor::Map::TestRockActor::TestRockActor(eNsECS::EntityMgr& ecs, eNsGfxRen
 	eNsGfxModel::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
 
 	// set MeshComponent
-	ecs.addComponent(entity, eNsGfxComp::MeshComponent{
-			std::move(modelData),
-			std::move(modelGPU)
-		});
-
+	Ops::Add<Engine::ECS::Component::Graphics::MeshComponent>(ecs, entity,
+		Engine::ECS::Component::Graphics::MeshComponent{ std::move(modelData),std::move(modelGPU) });
+	
 	// set TransformComponent
 	eNsCommonComp::TransformComponent transformComp;
 	transformComp.position = glm::vec3(10.0f, 0.0f, -2.0f);
 	transformComp.rotation = glm::vec3(0.0f, -60.0f, 0.0f);
 	transformComp.scale = glm::vec3(0.01f);
-	ecs.addComponent(entity, transformComp);
+	Ops::Add<Engine::ECS::Component::Common::TransformComponent>(ecs, entity, transformComp);
+
 
 	// set ShaderComponent
 	eNsGfxComp::ShaderComponent shaderComp;
@@ -69,19 +73,20 @@ Game::Actor::Map::TestRockActor::TestRockActor(eNsECS::EntityMgr& ecs, eNsGfxRen
 	{
 		std::cout << "[TestRockActor.cpp]: Shader not found." << std::endl;
 	}
-	ecs.addComponent(entity, shaderComp);
+	Ops::Add<Engine::ECS::Component::Graphics::ShaderComponent>(ecs, entity, shaderComp);
+
 
 
 	// Logic2D
 	eNsLogic2DComp::Logic2DTransformComponent logic;
 	logic = Game::Init::Logic2D::InitLogic2DTransformFromModel(transformComp, modelData);
-	ecs.addComponent(entity, logic);
+	Ops::Add<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(ecs, entity, logic);
 
 
 	// set Test Corlor
 	eNsGfxComp::MaterialComponent materialComp;
 	materialComp.baseColor = glm::vec3(1.0f, 0.0f, 1.0f);
-	ecs.addComponent(entity, materialComp);
+	Ops::Add<Engine::ECS::Component::Graphics::MaterialComponent>(ecs, entity, materialComp);
 
 	// for collision setting
 	eNsLogic2DComp::CollisionComponent testRockCollisionComp;
@@ -103,13 +108,12 @@ Game::Actor::Map::TestRockActor::TestRockActor(eNsECS::EntityMgr& ecs, eNsGfxRen
 		.axisZ = axisZ
 	};
 
-
-
-	ecs.addComponent(entity, testRockCollisionComp);
+	
+	Ops::Add<Component::Logic2D::CollisionComponent>(ecs, entity, testRockCollisionComp);
 	
 	// obstacle object's tag
 	eNsTagComp::ObstacleTagComponent obstacleTagComp;
-	ecs.addComponent(entity, obstacleTagComp);
+	Ops::Add<Component::Tags::ObstacleTagComponent>(ecs, entity, obstacleTagComp);
 
 	// Log
 	//eNsDebugLog::LogVector_string("[TestRockActor.cpp(CollsionCenter)]: ", testRockCollisionComp.collider.obb2D.center);

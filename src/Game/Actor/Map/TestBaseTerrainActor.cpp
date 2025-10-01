@@ -30,10 +30,15 @@
 
 #include "Game/Actor/Map/TileMapActor.h"
 
+#include "Engine/ECS/Ops/CoreOps.hpp"
+
 #include <iostream>
 
 Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader)
 {
+	namespace Ops = Engine::ECS::Ops;
+	namespace Component = Engine::ECS::Component;
+
 	eNsECS::Entity entity = ecs.createEntity();
 
 	// モデルデータインポート
@@ -48,17 +53,17 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 
 	// GPUBufferをインポートデータから作成
 	eNsGfxModel::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
-	ecs.addComponent(entity, eNsGfxComp::MeshComponent{
-			std::move(modelData),
-			std::move(modelGPU)
-		});
+	Ops::Add<Component::Graphics::MeshComponent>(ecs, entity,
+		Component::Graphics::MeshComponent{ std::move(modelData), std::move(modelGPU)}
+		);
+
 
 	// 初期描画座標を設定
 	eNsCommonComp::TransformComponent transformComp;
 	transformComp.position = glm::vec3(0.0f, 0.0f, 0.0f);
 	transformComp.rotation = glm::vec3(0.0f, 30.0f, 0.0f);
 	transformComp.scale = glm::vec3(0.01f);
-	ecs.addComponent(entity, transformComp);
+	Ops::Add<Component::Common::TransformComponent>(ecs, entity, transformComp);
 
 	// set ShaderComponent
 	eNsGfxComp::ShaderComponent shaderComp;
@@ -73,18 +78,18 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 	{
 		std::cout << "[TestBaseTerrainActor.cpp]: Shader not found." << std::endl;
 	}
-	ecs.addComponent(entity, shaderComp);
+	Ops::Add<Component::Graphics::ShaderComponent>(ecs, entity, shaderComp);
 
 	// 色情報を設定(デバッグ用)
 	eNsGfxComp::MaterialComponent materialComp;
 	materialComp.baseColor = glm::vec3(0.6f, 0.8f, 0.7f);
 	eNsDebugLog::LogVector("TestBaseTerrainActor.cpp(Color)", materialComp.baseColor);
-	ecs.addComponent(entity, materialComp);
+	Ops::Add<Component::Graphics::MaterialComponent>(ecs, entity, materialComp);
 
 	// 描画情報から論理情報を初期化
 	eNsLogic2DComp::Logic2DTransformComponent logic2DComp;
 	logic2DComp = gNsInit::Logic2D::InitLogic2DTransformFromModel(transformComp, modelData);
-	ecs.addComponent(entity, logic2DComp);
+	Ops::Add<Component::Logic2D::Logic2DTransformComponent>(ecs, entity, logic2DComp);
 
 	std::cout << "TestBaseTerrainActor.cpp: Rotation " << logic2DComp.rotation << std::endl;
 
@@ -122,9 +127,9 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 		.axisX = axisX,
 		.axisZ = axisZ
 	};
-	ecs.addComponent(entity, collisionComp);
+	Ops::Add<Component::Logic2D::CollisionComponent>(ecs, entity, collisionComp);
 
-	ecs.addComponent(entity, eNsTagComp::TerrainMeshTag{});
+	Ops::Add<Component::Tags::TerrainMeshTag>(ecs, entity, Component::Tags::TerrainMeshTag{});
 
 	// TileMapActorの作成(Entityとして)
 	[[maybe_unused]] auto _ =  gNsActor::Map::TileMapActor::Create(ecs, transformComp, modelData, 0.5f);

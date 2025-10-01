@@ -1,4 +1,6 @@
-#include "GlobalCleanupSystem.h"
+ï»¿#include "GlobalCleanupSystem.h"
+
+#include "Engine/ECS/Component/Graphics/MeshComponent.h"
 
 #include "Engine/ECS/Component/Tags/PendingDestroyComponent.h"
 
@@ -8,7 +10,7 @@ void Engine::ECS::GrobalSystem::RunCleanup(eNsECS::EntityMgr& ecs)
 	{
 		auto& destroy = ecs.get<eNsTagComp::PendingDestroyComponent>(e);
 
-		// íœ’x‰„ƒtƒŒ[ƒ€Á”ï
+		// å‰Šé™¤é…å»¶ãƒ•ãƒ¬ãƒ¼ãƒ æ¶ˆè²»
 		if (destroy.delayFrames > 0)
 		{
 			destroy.delayFrames--;
@@ -17,7 +19,7 @@ void Engine::ECS::GrobalSystem::RunCleanup(eNsECS::EntityMgr& ecs)
 
 		if (destroy.fadeOutEffect)
 		{
-			// ƒtƒF[ƒhƒAƒEƒg‰‰oˆ—...
+			// ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆæ¼”å‡ºå‡¦ç†...
 		}
 
 		ecs.destroyEntity(e);

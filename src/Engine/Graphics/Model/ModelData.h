@@ -49,6 +49,15 @@ namespace Engine::Graphics::Model
 	{
 		std::vector<TextureData> textures;
 		glm::vec3 baseColor = glm::vec3(1.0f);
+
+		MaterialData() = default;
+		~MaterialData() = default;
+
+		MaterialData(const MaterialData&) = delete;
+		MaterialData& operator=(const MaterialData&) = delete;
+
+		MaterialData(MaterialData&&) noexcept = default;
+		MaterialData& operator=(MaterialData&&) noexcept = default;
 	};
 
 	// CPU-side data
@@ -71,6 +80,16 @@ namespace Engine::Graphics::Model
 		bool hasIndices = false;
 
 		MaterialData materialData;
+
+		MeshData() = default;
+		~MeshData() = default;
+
+		MeshData(const MeshData&) = delete;
+		MeshData& operator=(const MeshData&) = delete;
+
+		MeshData(MeshData&&) noexcept = default;
+		MeshData& operator=(MeshData&&) noexcept = default;
+
 	};
 
 	// 
@@ -81,6 +100,15 @@ namespace Engine::Graphics::Model
 		// model's size datas
 		glm::vec3 min = glm::vec3(FLT_MAX);
 		glm::vec3 max = glm::vec3(-FLT_MAX);
+
+		ModelData() = default;
+		~ModelData() = default;
+
+		ModelData(const ModelData&) = delete;
+		ModelData& operator=(const ModelData&) = delete;
+
+		ModelData(ModelData&&) noexcept = default;
+		ModelData& operator=(ModelData&&) noexcept = default;
 
 		glm::vec3 GetSize() const { return max - min; }
 		glm::vec3 GetCenter() const { return (min + max) * 0.5f; }

@@ -100,18 +100,21 @@
 
 #include "Engine/Debug/DebugUtils.h"
 
-#include "Common/GameNamespaceDecl.h"
+#include "Engine/ECS/Ops/CoreOps.hpp"
 
 #include <iostream>
 
 Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader)
 {
-	eNsECS::Entity entity = ecs.createEntity();
+	namespace Ops = Engine::ECS::Ops;
+	namespace Comp = Engine::ECS::Component;
+
+	Engine::ECS::Entity e = ecs.createEntity();
 
 	// load Model Datas from file
 	// eNsGfxModel::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
 	// =============================== test ==================================
-	eNsGfxModel::ModelData modelData = Engine::Graphics::Model::CgltfImporter::Import("Assets/Models/paladdin_w_prop.glb");
+	Engine::Graphics::Model::ModelData modelData = Engine::Graphics::Model::CgltfImporter::Import("Assets/Models/paladdin_w_prop.glb");
 	for (const auto& mesh : modelData.meshes)
 	{
 		std::cout << "[PlayerCharacterActor.cpp]: Vertices: " << mesh.vertices.size()
@@ -120,25 +123,48 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	}
 
 	// set Mesh data to GPUBuffers
-	eNsGfxModel::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
+	Engine::Graphics::Model::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
+
+	// move 前に 必要な情報を設定
+	// set TransformComponent
+	Comp::Common::TransformComponent transformComp;
+	transformComp.position = glm::vec3(0.0f, 0.0f, 0.0f);
+	transformComp.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	transformComp.scale = glm::vec3(1.0f);
+	Ops::Add<Comp::Common::TransformComponent>(ecs, e, transformComp);
+
+	// Logic2D
+	Comp::Logic2D::Logic2DTransformComponent logic;
+	logic = Game::Init::Logic2D::InitLogic2DTransformFromModel(transformComp, modelData);
+	Ops::Add<Comp::Logic2D::Logic2DTransformComponent>(ecs, e, logic);
+
+	// Collsion Initialization
+	// コリジョン初期化
+	Comp::Logic2D::CollisionComponent playerCollisionComp;
+	playerCollisionComp.collider.shape = eNsLogic2DComp::Circle2D{
+		.center = glm::vec2(0.0f),// ローカルセンター
+		.radius = Game::Init::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, gNsInit::Logic2D::RadiusEstimateStrategy::MaxAxis)
+	};
+	//playerCollisionComp.collider.circle2D.center = logic.positionXZ;
+	playerCollisionComp.isStatic = false;
+	// float radius = gNsInit::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, gNsInit::Logic2D::RadiusEstimateStrategy::MaxAxis);
+	// playerCollisionComp.collider.circle2D.radius = radius;
+	Ops::Add<Comp::Logic2D::CollisionComponent>(ecs, e, playerCollisionComp);
+
 
 	// set MeshComponent
-	ecs.addComponent(entity, eNsGfxComp::MeshComponent{
+	Ops::Add<Comp::Graphics::MeshComponent>(ecs, e,
+		Comp::Graphics::MeshComponent
+		{
 			std::move(modelData),
 			std::move(modelGPU)
 		});
 
 
-	// set TransformComponent
-	eNsCommonComp::TransformComponent transformComp;
-	transformComp.position = glm::vec3(0.0f, 0.0f, 0.0f);
-	transformComp.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	transformComp.scale = glm::vec3(1.0f);
-	ecs.addComponent(entity, transformComp);
 
 
 	// set ShaderComponent
-	eNsGfxComp::ShaderComponent shaderComp;
+	Comp::Graphics::ShaderComponent shaderComp;
 	shaderComp.shader = shader;
 	if (shaderComp.shader)
 	{
@@ -150,55 +176,40 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	{
 		std::cout << "[PlayerCharacterActor.cpp]: Shader not found." << std::endl;
 	}
-	ecs.addComponent(entity, shaderComp);
+	Ops::Add<Comp::Graphics::ShaderComponent>(ecs, e, shader);
 
 	// Input State Component
 	//InputComponent input;
 	//ecs.addComponent(entity, input);
-	gNsInput::InputActionComponent inputActionComp;
-	ecs.addComponent(entity, inputActionComp);
+	Game::Input::InputActionComponent inputActionComp{};
+	Ops::Add<Game::Input::InputActionComponent>(ecs, e, inputActionComp);
 
-	// Logic2D
-	eNsLogic2DComp::Logic2DTransformComponent logic;
-	logic = gNsInit::Logic2D::InitLogic2DTransformFromModel(transformComp, modelData);
-	ecs.addComponent(entity, logic);
+
 
 	// Controller Flag
-	eNsTagComp::PlayerControllerComponent PCflag;
-	ecs.addComponent(entity, PCflag);
+	Comp::Tags::PlayerControllerComponent PCflag;
+	Ops::Add<Comp::Tags::PlayerControllerComponent>(ecs, e, PCflag);
 
 	// Set NameComponent
-	eNsUtilComp::NameComponent nameComp;
+	Comp::Utils::NameComponent nameComp;
 	nameComp.name = "Player";
-	ecs.addComponent(entity, nameComp);
+	Ops::Add<Comp::Utils::NameComponent>(ecs, e, nameComp);
 
 
 	// set Test Corlor
-	eNsGfxComp::MaterialComponent materialComp;
+	Comp::Graphics::MaterialComponent materialComp;
 	materialComp.baseColor = glm::vec3(0.8f, 0.4f, 0.2f);
-	ecs.addComponent(entity, materialComp);
+	Ops::Add<Comp::Graphics::MaterialComponent>(ecs, e, materialComp);
 
-	// Collsion Initialization
-	// コリジョン初期化
-	eNsLogic2DComp::CollisionComponent playerCollisionComp;
-	playerCollisionComp.collider.shape = eNsLogic2DComp::Circle2D{
-		.center = glm::vec2(0.0f),// ローカルセンター
-		.radius = gNsInit::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, gNsInit::Logic2D::RadiusEstimateStrategy::MaxAxis)
-	};
-	//playerCollisionComp.collider.circle2D.center = logic.positionXZ;
-	playerCollisionComp.isStatic = false;
-	// float radius = gNsInit::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, gNsInit::Logic2D::RadiusEstimateStrategy::MaxAxis);
-	// playerCollisionComp.collider.circle2D.radius = radius;
-	ecs.addComponent(entity, playerCollisionComp);
+
 
 	// Collision Mask 初期化
-	gNsCollComp::CollisionMaskComponent playerMask;
-	playerMask = gNsCollComp::CollisionMaskPresets::Character();
-	ecs.addComponent(entity, playerMask);
+	Game::Collision::Component::CollisionMaskComponent playerMask;
+	playerMask = Game::Collision::Component::CollisionMaskPresets::Character();
+	Ops::Add<Game::Collision::Component::CollisionMaskComponent>(ecs, e, playerMask);
 
-	ecs.addComponent(entity, gNsECSComp::TeamComponent{
-	.team = gNsECSComp::Team::PlayerTeam
-		});
+	Ops::Add<Game::ECS::Component::TeamComponent>
+		(ecs, e, Game::ECS::Component::TeamComponent{ .team = Game::ECS::Component::Team::PlayerTeam });
 
 	// 以前の設計
 	//SkillInstanceComponent activeSkill1;
@@ -219,7 +230,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	assign.slotToSkillId[gNsSkillData::SkillSlot::Secondary] = 2;
 	assign.slotToSkillId[gNsSkillData::SkillSlot::Utility1] = 3;
 	assign.slotToSkillId[gNsSkillData::SkillSlot::Utility2] = 4;
-	ecs.addComponent(entity, assign);
+	Ops::Add<Game::Combat::Skill::Component::SkillSlotAssignmentComponent>(ecs, e, assign);
 
 	// InputAction と スキルスロットの割り当てを保持
 	gNsSkillComp::SkillInputBindingComponent binding;
@@ -227,18 +238,13 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	binding.actionToSlot[gNsInput::InputAction::CastSkill2] = gNsSkillData::SkillSlot::Secondary;
 	binding.actionToSlot[gNsInput::InputAction::CastSkill3] = gNsSkillData::SkillSlot::Utility1;
 	binding.actionToSlot[gNsInput::InputAction::CastSkill4] = gNsSkillData::SkillSlot::Utility2;
-	ecs.addComponent(entity, binding);
+	Ops::Add<Game::Combat::Skill::Component::SkillInputBindingComponent>(ecs, e, binding);
 
-	// 必要？（未使用のため検討が必要）何のために用意したか不明
-	ActiveSkillCasterComponent ascc;
-	ecs.addComponent(entity, ascc);
 
 	// Skill Context
-	ecs.addComponent(entity,
-		gNsSkillContext::SkillExecutionContextComponent{
-			.caster = entity,// caster entity
-		});
-
+	Ops::Add<Game::Combat::Skill::Component::SkillExecutionContextComponent>(ecs, e,
+		Game::Combat::Skill::Component::SkillExecutionContextComponent{ .caster = e }
+	);
 	// std::cout << "[[PlayerCharacterActor.cpp(radius)] : radius. " << radius << std::endl;
 
 	//std::cout << "[PlayerCharacterActor.cpp]: Logic Position: x. " << logic.positionXZ.x << " z. " << logic.positionXZ.y << std::endl;
@@ -250,40 +256,39 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	eNsDebugLog::LogVector("PlayerCharacterActor.cpp(Color)", materialComp.baseColor);
 
 	// velocity
-	ecs.addComponent(entity, eNsLogic2DComp::Velocity2DComponent{});
+	Ops::Add<Comp::Logic2D::Velocity2DComponent>(ecs, e, Comp::Logic2D::Velocity2DComponent{});
 
 	// Intent base
-	ecs.addComponent(entity, gNsCharacterControlSkill::SkillIntentComponent{});
+	Ops::Add<Game::Character::Control::Skill::SkillIntentComponent>(ecs, e, Game::Character::Control::Skill::SkillIntentComponent{});
 
 	// movement
-	ecs.addComponent(entity, gNsCharacterIntent::MovementIntentComponent{});
+	Ops::Add<Game::Character::Intent::MovementIntentComponent>(ecs, e, Game::Character::Intent::MovementIntentComponent{});
 
 	// front
-	ecs.addComponent(entity, gNsCharacterIntent::FacingIntentComponent{});
+	Ops::Add<Game::Character::Intent::FacingIntentComponent>(ecs, e, Game::Character::Intent::FacingIntentComponent{});
 
 	// stats
-	ecs.addComponent(entity, gNsCharacter::Stats::CharacterStatsComponent{
-		.moveSpeed = 10.0f
-		});
+	Ops::Add<Game::Character::Stats::CharacterStatsComponent>(ecs, e, Game::Character::Stats::CharacterStatsComponent{ .moveSpeed = 10.0f });
+	
 
 	// Tag
-	ecs.addComponent(entity, gNsTags::PlayerCharacterTag{});
+	Ops::Add<Game::ECS::Tags::PlayerCharacterTag>(ecs, e, Game::ECS::Tags::PlayerCharacterTag{});
 
 
 
 
 	// logical state comp
 	// life
-	ecs.addComponent(entity, gNsCharaLifeState::CharacterLifeStateComponent{});
+	//ecs.addComponent(entity, gNsCharaLifeState::CharacterLifeStateComponent{});
 
-	// movenet
-	ecs.addComponent(entity, gNsCharaMoveState::CharacterMovementStateComponent{});
+	//// movenet
+	//ecs.addComponent(entity, gNsCharaMoveState::CharacterMovementStateComponent{});
 
-	// action
-	ecs.addComponent(entity, gNsCharaActionState::CharacterActionStateComponent{});
+	//// action
+	//ecs.addComponent(entity, gNsCharaActionState::CharacterActionStateComponent{});
 
-	// skill execution state
-	ecs.addComponent(entity, gNsCharaActionState::CharacterSkillExecutionStateComponent{});
+	//// skill execution state
+	//ecs.addComponent(entity, gNsCharaActionState::CharacterSkillExecutionStateComponent{});
 
 
 
@@ -292,28 +297,29 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	// =========== FSM ===========
 	// interference
 	// movement FSM
-	ecs.addComponent(entity, gNsCharaFSMMovement::MovementStateComponent{});
-	ecs.addComponent(entity, gNsCharaFSMMovement::MovementFSMTransitionRequestComponent{});
-	ecs.addComponent(entity, Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent{});// 
-	ecs.addComponent(entity, Game::Character::FSM::Movement::StateModel::MovementFSMInterferenceRequestComponent{});
+	Ops::Add<Game::Character::FSM::Movement::MovementStateComponent>(ecs, e, Game::Character::FSM::Movement::MovementStateComponent{});
+	Ops::Add<Game::Character::FSM::Movement::MovementFSMTransitionRequestComponent>(ecs, e, Game::Character::FSM::Movement::MovementFSMTransitionRequestComponent{});
+	Ops::Add<Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent>(ecs, e, Game::Character::FSM::Movement::StateModel::MovementFSMLeaseComponent{});
+	Ops::Add<Game::Character::FSM::Movement::StateModel::MovementFSMInterferenceRequestComponent>(ecs, e, Game::Character::FSM::Movement::StateModel::MovementFSMInterferenceRequestComponent{});
+
 	// CC FSM
-	ecs.addComponent(entity, gNsCharaFSMCC::StateModel::CCStateComponent{});
-	ecs.addComponent(entity, Game::Character::FSM::CC::StateModel::CCFSMTransitionRequestComponent{});
-	ecs.addComponent(entity, Game::Character::Control::CC::Component::CCAntiChainComponent{});
-	ecs.addComponent(entity, Game::Character::FSM::CC::StateModel::CCDedupStampComponent{});
+	namespace CC = Game::Character::FSM::CC;
+	Ops::Add<CC::StateModel::CCStateComponent>(ecs, e, CC::StateModel::CCStateComponent{});
+	Ops::Add<CC::StateModel::CCFSMTransitionRequestComponent>(ecs, e, CC::StateModel::CCFSMTransitionRequestComponent{});
+	Ops::Add<Game::Character::Control::CC::Component::CCAntiChainComponent>(ecs, e, Game::Character::Control::CC::Component::CCAntiChainComponent{});
+	Ops::Add<CC::StateModel::CCDedupStampComponent>(ecs, e,  CC::StateModel::CCDedupStampComponent{});
 
 	// skill FSM
 	// namespace alias
-	namespace gNsSkillStateModel = Game::Combat::Skill::FSM::StateModel;
+	namespace Skill = Game::Combat::Skill::FSM::StateModel;
 	// 
-	ecs.addComponent(entity, gNsSkillFSM::StateModel::SkillStateComponent{});
-	ecs.addComponent(entity, gNsSkillFSM::StateModel::SkillFSMTransitionRequestComponent{});
-	ecs.addComponent(entity, gNsSkillComp::SkillExecutionContextComponent{
-		.caster = entity,
+	Ops::Add<Skill::SkillStateComponent>(ecs, e, Skill::SkillStateComponent{});
+	Ops::Add<Skill::SkillFSMTransitionRequestComponent>(ecs, e, Skill::SkillFSMTransitionRequestComponent{});
+	Ops::Add<Game::Combat::Skill::Component::SkillExecutionContextComponent>(ecs, e, Game::Combat::Skill::Component::SkillExecutionContextComponent{ .caster = e,
 		});
-	ecs.addComponent(entity, gNsSkillComp::SkillEffectExecutionRecordComponent{});
-	ecs.addComponent(entity, gNsSkillStateModel::SkillFSMInterferenceRequestComponent{});
-	ecs.addComponent(entity, gNsSkillStateModel::SkillFSMLeaseComponent{});
+	Ops::Add<Game::Combat::Skill::Component::SkillEffectExecutionRecordComponent>(ecs, e, Game::Combat::Skill::Component::SkillEffectExecutionRecordComponent{});
+	Ops::Add<Skill::SkillFSMInterferenceRequestComponent>(ecs, e, Skill::SkillFSMInterferenceRequestComponent{});
+	Ops::Add<Skill::SkillFSMLeaseComponent>(ecs, e, Skill::SkillFSMLeaseComponent{});
 	// std::cout << "[PlayerCharacterActor.cpp] Created Player Entity: " << entity.id << std::endl;
 	//if (ecs.hasComponent<gNsCharacterState::CharacterStateComponent>(entity)) {
 	//	std::cout << "[確認] CharacterStateComponent は Entity " << entity.id << " に存在しています" << std::endl;

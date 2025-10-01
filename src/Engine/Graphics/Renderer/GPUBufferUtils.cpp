@@ -62,7 +62,7 @@ eNsGfxModel::ModelGPU Engine::Graphics::Render::GPUBufferUtils::createMeshGPUBuf
 		// boneIDs/weights を使う場合は ipointer/pointer で 5/6 を設定する
 
 		glBindVertexArray(0);
-		modelGPU.meshesGPU.push_back(meshGPU);
+		modelGPU.meshesGPU.emplace_back(std::move(meshGPU));
 
 	}
 

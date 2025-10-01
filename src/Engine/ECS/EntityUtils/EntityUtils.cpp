@@ -1,4 +1,4 @@
-#include "EntityUtils.h"
+﻿#include "EntityUtils.h"
 
 #include "Engine/ECS/Component/Utils/NameComponent.h"
 
@@ -30,12 +30,12 @@ Engine::ECS::Entity Engine::ECS::EntityUtils::getEntityByName(EntityMgr& ecs, co
 void Engine::ECS::EntityUtils::MarkForPendingDestroyWithChildren(EntityMgr& ecs, eNsECS::Entity parent, const std::vector<eNsECS::Entity>& children,
 	int delayFrames, bool fadeOut)
 {
-	ecs.addComponent(parent, eNsTagComp::PendingDestroyComponent{ delayFrames, fadeOut });
+	ecs.addComponent<eNsTagComp::PendingDestroyComponent>(parent, eNsTagComp::PendingDestroyComponent{ delayFrames, fadeOut });
 	for (eNsECS::Entity child : children)
 	{
 		if (ecs.isAlive(child))
 		{
-			ecs.addComponent(child, eNsTagComp::PendingDestroyComponent{ delayFrames, fadeOut });
+			ecs.addComponent<eNsTagComp::PendingDestroyComponent>(child, eNsTagComp::PendingDestroyComponent{ delayFrames, fadeOut });
 		}
 	}
 }
@@ -44,6 +44,6 @@ void Engine::ECS::EntityUtils::MarkForPendingDestroy(EntityMgr& ecs, eNsECS::Ent
 {
 	if (ecs.isAlive(entity))
 	{
-		ecs.addComponent(entity, eNsTagComp::PendingDestroyComponent{ delayFrames, fadeOut });
+		ecs.addComponent<eNsTagComp::PendingDestroyComponent>(entity, eNsTagComp::PendingDestroyComponent{ delayFrames, fadeOut });
 	}
 }

@@ -18,6 +18,8 @@
 // Team ID
 #include "Game/ECS/Component/TeamComponent.h"
 
+#include "Engine/ECS/Ops/CoreOps.hpp"
+
 // TODO: spawnHitAreaに scale / spawnOffset などを拡張して Transform2DComponent の初期化を定義ドリブン化する
 // TODO: Lifetime の type を定義に持たせて FSM同期や衝突制御と連携できるようにする
 // TODO: CollisionMaskComponentの初期化
@@ -38,22 +40,23 @@ namespace Game::Combat::Skill::FSM::Effect
 			const SkillFSMContext& ctx
 		) const override
 		{
+			namespace Ops = Engine::ECS::Ops;
 			if (!def.spawnHitArea.has_value()) return;
 
 			const auto& spawn = def.spawnHitArea.value();
 
 			eNsECS::Entity eHitbox = ecs.createEntity();
 
-			ecs.addComponent(eHitbox, SkillOwnerComponent{
-				.caster = caster,
-				.skillId = def.id
-				});
+
+			Ops::Add<Game::Combat::Skill::Component::SkillOwnerComponent>
+				(ecs, eHitbox, Game::Combat::Skill::Component::SkillOwnerComponent{.caster = caster, .skillId = def.id});
 
 
 			// FIXME: def に定義されたCollisionMaskをコピーし，追加するように変更する
 			// CollisionMask
-			ecs.addComponent(eHitbox,
-				CollisionMaskComponent{
+			Ops::Add<Game::Collision::Component::CollisionMaskComponent>(ecs, eHitbox,
+				Game::Collision::Component::CollisionMaskComponent
+				{
 					.category = Category::SkillHitbox,
 					.collideCategoryMask = bit(Category::CharacterBody),
 					.relationMask = bit(Relation::Enemy) | bit(Relation::Ally),
@@ -62,27 +65,29 @@ namespace Game::Combat::Skill::FSM::Effect
 
 
 			// 判定済みtarget
-			ecs.addComponent(eHitbox,
-				Game::Combat::Skill::Component::HitboxHitMemoComponent{}
-			);
+			Ops::Add<Game::Combat::Skill::Component::HitboxHitMemoComponent>(ecs, eHitbox,
+				Game::Combat::Skill::Component::HitboxHitMemoComponent{});
 
 
 			// 当たり判定形状
-			ecs.addComponent(eHitbox, Attack2DAreaComponent{
-				.shape = spawn.shape
-				});
+			Ops::Add<Game::Combat::Skill::Component::Attack2DAreaComponent>
+				(ecs, eHitbox, Game::Combat::Skill::Component::Attack2DAreaComponent{
+					.shape = spawn.shape
+					});
 
 
 			// 軌跡形状
-			ecs.addComponent(eHitbox, SkillTrajectoryComponent{
+			Ops::Add<Game::Combat::Skill::Component::SkillTrajectoryComponent>
+				(ecs, eHitbox, Game::Combat::Skill::Component::SkillTrajectoryComponent{
 				.trajectory = spawn.trajectoryParams
-				});
+					});
 
 			// ライフタイム(寿命管理)
-			ecs.addComponent(eHitbox, LifetimeComponent{
-				.totalLifetime = spawn.duration.value_or(0.0f),
-				.elapsedTime = 0.0f,
-				});
+			Ops::Add<Game::ECS::Component::LifetimeComponent>
+				(ecs, eHitbox, Game::ECS::Component::LifetimeComponent{
+					.totalLifetime = spawn.duration.value_or(0.0f),
+					.elapsedTime = 0.0f,
+					});
 
 			if (ecs.hasComponent<Logic2DTransformComponent>(caster))
 			{
@@ -96,7 +101,8 @@ namespace Game::Combat::Skill::FSM::Effect
 				initialHitboxTransform.right = casterTransform.right;
 				initialHitboxTransform.scale = 1.0f;
 
-				ecs.addComponent(eHitbox, initialHitboxTransform);
+				Ops::Add<Engine::ECS::Component::Logic2D::Transform2DComponent>
+					(ecs, eHitbox, initialHitboxTransform);
 			}
 
 			// std::cout << "[SpawnHitboxEffect.hpp]: Spawned Hitbox Entity" << eHitbox.id 

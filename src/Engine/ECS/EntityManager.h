@@ -10,6 +10,7 @@
 #include <type_traits>
 #include <vector>
 #include <memory>
+#include <functional>
 
 #include <cstddef>
 #include <iostream>
@@ -20,6 +21,12 @@
 
 
 // TODO: 最適化
+// 
+// 破棄フック
+// remove / destroy / clearで使う
+// viewの最適化
+// 薄いファザード実装
+//
 namespace Engine::ECS
 {
 	// Entity Manager
@@ -49,6 +56,23 @@ namespace Engine::ECS
 		// グローバルに存在する参照すべき共有情報
 		std::unordered_map<std::type_index, std::shared_ptr<void>> mResources;
 
+		struct TypeInfo
+		{
+			std::function<void(void*)> onDestroy;// raw ptr -> sharedの中身
+		};
+
+		std::unordered_map<std::type_index, TypeInfo> mTypeInfo;
+
+
+		template<typename T>
+		static void CallDestroyIfExists(void* raw)
+		{
+			if constexpr (requires(T & x) { x.Destroy(); })
+			{
+				static_cast<T*>(raw)->Destroy();
+			}
+		}
+
 	public:
 		// create
 		Entity createEntity()
@@ -59,26 +83,74 @@ namespace Engine::ECS
 		}
 
 		// add
-		template<typename T>
-		void addComponent(Entity e, T component)
-		{
-			const std::type_index type = std::type_index(typeid(T));
+		//template<typename T>
+		//T& addComponent(Entity e, T&& component)
+		//{
+		//	using U = std::decay_t<T>;
+		//	const std::type_index type = std::type_index(typeid(U));
 
-			if (mComponentPools.find(type) == mComponentPools.end())
+		//	auto& bucket = mComponentPools[type];
+		//	auto sp = std::make_shared<U>(std::forward<T>(component)); // ムーブ or コピー（コピー禁⽌ならムーブだけ使う）
+		//	bucket[e.id] = sp;
+
+		//	return *std::static_pointer_cast<U>(sp);
+		//}
+		template<typename T, typename... Args>
+		T& addComponent(Entity e, Args&&... args)
+		{
+			using U = std::decay_t<T>;
+			const std::type_index type = std::type_index(typeid(U));
+
+			assert(isAlive(e) && "addComponent: dead entity");
+
+			// 初回だけ破棄フック登録
+			if (mTypeInfo.find(type) == mTypeInfo.end())
 			{
-				//{ EntityID, ... }
-				mComponentPools[type] = std::unordered_map<uint32_t, std::shared_ptr<void>>();
+				mTypeInfo.emplace(type, TypeInfo{
+					[](void* raw) { CallDestroyIfExists<U>(raw);}
+				});
 			}
 
-			mComponentPools[type][e.id] = std::make_shared<T>(component);
+			auto& bucket = mComponentPools[type];
+			
+			if (auto it = bucket.find(e.id); it != bucket.end() && it->second)
+			{
+				if (auto ti = mTypeInfo.find(type); ti != mTypeInfo.end())
+					ti->second.onDestroy(it->second.get());
+			}
+
+			auto sp = std::make_shared<U>(std::forward<Args>(args)...);
+			bucket[e.id] = sp;
+
+			return *std::static_pointer_cast<U>(sp);
 		}
+
+		//template<typename T>
+		//void addComponent(Entity e, T component)
+		//{
+		//	const std::type_index type = std::type_index(typeid(T));
+
+		//	if (mComponentPools.find(type) == mComponentPools.end())
+		//	{
+		//		//{ EntityID, ... }
+		//		mComponentPools[type] = std::unordered_map<uint32_t, std::shared_ptr<void>>();
+		//	}
+
+		//	mComponentPools[type][e.id] = std::make_shared<T>(component);
+		//}
 
 		// get
 		template<typename T>
 		T& get(Entity e)
 		{
-			std::type_index type = std::type_index(typeid(T));
-			return *std::static_pointer_cast<T>(mComponentPools[type][e.id]);
+			const auto key = std::type_index(typeid(T));
+			auto it = mComponentPools.find(key);
+			assert(it != mComponentPools.end());
+
+			auto jt = it->second.find(e.id);
+			assert(jt != it->second.end() && jt->second);
+
+			return *static_cast<T*>(jt->second.get());
 		}
 
 		// writable
@@ -119,26 +191,26 @@ namespace Engine::ECS
 			std::vector<Entity> result;
 
 			using FirstComponent = typename std::tuple_element<0, std::tuple<Components...>>::type;
-			const std::type_index firstType = std::type_index(typeid(FirstComponent));
-
-			if (mComponentPools.find(firstType) == mComponentPools.end())
-			{
-				return result;
-			}
+			const auto key0 = std::type_index(typeid(FirstComponent));
+			auto it0 = mComponentPools.find(key0);
+			if (it0 == mComponentPools.end()) return result;
 
 			//　事前探索
-			const auto& base = mComponentPools[firstType];
+			const auto& base = it0->second;
+			result.reserve(base.size());
 
-			for (const auto& [entityID, _] : base)
+			for (const auto& [eid, _] : base)
 			{
-				bool hasAll = (... && (
-					mComponentPools.count(std::type_index(typeid(Components))) &&
-					mComponentPools[std::type_index(typeid(Components))].count(entityID)
-					));
+				bool hasAll = (... && [&] {
+					const auto key = std::type_index(typeid(Components));
+					auto it = mComponentPools.find(key);
+					return it != mComponentPools.end() && it->second.count(eid) > 0;
+
+				}());
 
 				if (hasAll)
 				{
-					result.push_back(Entity{ entityID });
+					result.push_back(Entity{ eid });
 				}
 			}
 
@@ -290,8 +362,15 @@ namespace Engine::ECS
 				//{
 				//	std::cout << "[EntityManager(destroy)] Deletion of Component """ << type.name() << " for " << e.id << " completed successfully\n";
 				//}
+
+				auto it = entityMap.find(e.id);
+				if (it != entityMap.end() && it->second)
+				{
+					if (auto ti = mTypeInfo.find(type); ti != mTypeInfo.end())
+						ti->second.onDestroy(it->second.get());
+					entityMap.erase(it);
+				}
 				
-				entityMap.erase(e.id);
 			}
 			mLivingEntities.erase(e.id);
 		}
@@ -389,7 +468,14 @@ namespace Engine::ECS
 			if (poolIt == mComponentPools.end()) return;
 
 			auto& entityMap = poolIt->second;
-			entityMap.erase(e.id);
+			auto it = entityMap.find(e.id);
+			if (it != entityMap.end() && it->second)
+			{
+				if (auto ti = mTypeInfo.find(type); ti != mTypeInfo.end())
+					ti->second.onDestroy(it->second.get());
+				entityMap.erase(it);
+			}
+
 
 			// entityMapが空ならtype自体の登録を削除してもよい（最適化）
 			if (entityMap.empty())
@@ -397,6 +483,7 @@ namespace Engine::ECS
 				mComponentPools.erase(type);
 			}
 		}
+
 	};
 }
 

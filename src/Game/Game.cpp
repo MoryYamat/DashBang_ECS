@@ -103,10 +103,6 @@
 // コンストラクタ
 GameApp::GameApp::GameApp()
 	: mIsRunning(true)
-	, mShader(nullptr)
-	, mRenderContext()
-	, mInputManager(nullptr)
-	, mCollisionResults()
 	, windowWidth(1280)
 	, windowHeight(720)
 {
@@ -119,16 +115,17 @@ void GameApp::GameApp::Shutdown()
 	unloadData();
 
 	// Destroy all components
+	mCtx = {};
+
 	mECS.Clear();
 
-	delete mShader;
-	mShader = nullptr;
 
-	delete mInputManager;
-	mInputManager = nullptr;
+	mShader.reset();
+	mInput.reset();
 
 
-	mWindow.Shutdown();
+	if(mWindow)mWindow->Shutdown();
+	mWindow.reset();
 
 	std::cout << "\n[Game.cpp (Shutdown)]: The application shut down successfully." << std::endl;
 }
@@ -161,7 +158,8 @@ bool GameApp::GameApp::Initialize()
 
 	//glViewport(0, 0, mWindow_Width, mWindow_Height);
 	
-	if (!mWindow.Initialize(windowWidth, windowHeight, "Game"))
+	mWindow = std::make_unique<Engine::Window::Window>();
+	if (!mWindow->Initialize(windowWidth, windowHeight, "Game"))
 	{
 		std::cerr << "[Game.cpp]: Failed to Initialize WindowManager" << std::endl;
 		return false;
@@ -170,33 +168,35 @@ bool GameApp::GameApp::Initialize()
 	// initialize input system
 	//InputManager::Initialize(WindowManager::GetWindow());
 
-	mInputManager = new eNsInput::InputManager(mWindow.GetGLFWWindow());
-
+	mInput = std::make_unique<Engine::Input::InputManager>(mWindow->GetGLFWWindow());
+	mShader = std::make_unique<Engine::Graphics::Render::Shader>
+		(
+			"shaders/basic.vertex.glsl", "shaders/basic.fragment.glsl"
+		);
 	// WindowManager::CaptureMouse();
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_FRAMEBUFFER_SRGB);// sRGB
 
 	// ShaderInit
-	mShader = new eNsGfxRender::Shader("shaders/basic.vertex.glsl", "shaders/basic.fragment.glsl");
-
+	// mShader = new eNsGfxRender::Shader("shaders/basic.vertex.glsl", "shaders/basic.fragment.glsl");
 
 	// Log
-	std::cout << "[Game.cpp (Initialize)]: Application initialization completed successfully" << std::endl;
+	// std::cout << "[Game.cpp (Initialize)]: Application initialization completed successfully" << std::endl;
+
+	mCtx.ecs = &mECS;
+	mCtx.renderCtx = &mRenderCtx;
+	mCtx.window = mWindow.get();
+	mCtx.input = mInput.get();
+	mCtx.shader = mShader.get();
 
 
-	// initialize input mapping
-	InitializeInputMapping();
 
 	// Initialize Skill database
 	// InitializeSkills();
 
 	// 遅らせ初期化
 	gNsLayer::InitializeLayerFeature::DelayedInitialzation(mECS);
-
-
-	InitializeSkillMappings();
-
 
 	loadData();
 
@@ -205,18 +205,11 @@ bool GameApp::GameApp::Initialize()
 
 void GameApp::GameApp::RunLoop()
 {
-	while (!glfwWindowShouldClose(mWindow.GetGLFWWindow()) && mIsRunning)
+	while (!glfwWindowShouldClose(mWindow->GetGLFWWindow()) && mIsRunning)
 	{
-
 		updateGameLogics();
-
 		generateOutputs();
-
 		glfwPollEvents();
-
-
-		// Newline output for console debugging
-		// std::cout << std::endl;
 	}
 }
 
@@ -232,14 +225,12 @@ void GameApp::GameApp::updateGameLogics()
 	// delete PendingDestroyComponent
 	eNsECS::GrobalSystem::RunCleanup(mECS);
 
-	// ECSのグローバルリソースへ以降予定(移行後削除予定)
-	// コリジョンコンテキスト: 1フレームごとに初期化
-	mCollisionResults.Clear();
+
 
 	// Input
-	mInputManager->Update();
+	mInput->Update();
  
-	const eNsInput::RawInputState& input = mInputManager->GetRawInput();;
+	const eNsInput::RawInputState& input = mInput->GetRawInput();
 	if (input.keyState.count(GLFW_KEY_ESCAPE) && input.keyState.at(GLFW_KEY_ESCAPE)) {
 		mIsRunning = false;
 	}
@@ -248,28 +239,8 @@ void GameApp::GameApp::updateGameLogics()
 	// 修正済みのため削除予定
 	// gNsInput::InputRouterSystem(mECS, mInputManager->GetRawInput(), mInputMapping);
 	// InputRouter
-	gNsInput::InputRouterSystem(mECS, mInputManager->GetRawInput());
-	gNsInput::Analog::RouteAnalogInput(mECS, mInputManager->GetRawInput(), mRenderContext);
-	// 入力状態マップの更新
-	//mInputMapping.update(mWindow.GetGLFWWindow(), mInputState);
-
-	// ====INTENT====
-	// gNsInputIntent::IntentMappingSystem::UpdatePlayerMovementIntent(mECS);
-
-	
-	// characterの移動 (削除予定(Intentレイヤー導入のため))
-	// gNsInput::Player::Update(mECS, mInputManager->GetRawInput(), mRenderContext, mDeltaTime);
-	//PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime, mRenderContext);
-	// PlayerCharacterControlSystem::Update(mEcs, mInputState, mDeltaTime);
-
-	// skill system (削除予定(レイヤー構造導入のため))
-	// gNsSkillTrigger::PlayerSkillTriggerSystem::TriggerSkillsFromInput(mECS, mSkillInputMap);
-	// SkillSystem::Casting::SpawnSkillHitArea(mEcs, mSkillDatabase);
-	// gNsSkillSystem::UpdateSkillPhase(mECS, mDeltaTime, mSkillDatabase);
-	// gNsSkillSystem::SkillTrajectorySystem::Update(mECS, mDeltaTime);
-	// SkillSystem::Lifetime::UpdateSkillLifetimes(mEcs, mDeltaTime, mSkillDatabase);
-	// SkillSystem::Trigger::PlayerSkillTriggerSystem::Update(mEcs, mSkillInputMap);
-	// SkillSystem::SkillCastingSystem(mEcs, mSkillDatabase, mRenderContext, mDeltaTime);
+	gNsInput::InputRouterSystem(mECS, mInput->GetRawInput());
+	gNsInput::Analog::RouteAnalogInput(mECS, mInput->GetRawInput(), mRenderCtx);
 
 	// 2D (Logic)-> 3D (Drawing)
 	eNsSyncL2T::Apply2DToTransform(mECS, deltaTime);
@@ -278,17 +249,9 @@ void GameApp::GameApp::updateGameLogics()
 	gNsCam::Update(mECS, deltaTime);
 	// GameSystemInput::UpdateCamera(mEcs, mInputState, mDeltaTime);
 
-
 	GameApp::updateContext();
 
-	// Update Mouse Cursor Logic data (削除予定(Intent レイヤー導入のため))
-	// gNsInput::Analog::Update(mECS, mInputManager->GetRawInput(), mRenderContext);
-	//MouseCursorUpdateSystem::Update(mEcs, mInputState, mRenderContext);
-
-
-
-	// ECSのグローバルリソースへ以降予定(移行後削除予定)
-	gNsCollSystem::UpdateCollisionResultStorage(mECS, mCollisionResults);
+	Game::Collision::System::UpdateCollisionResultStorage(mECS, mCollisionResults);
 
 	// Update from the top layer	
 	gNsLayer::IntentLayerFeature::Update(mECS);
@@ -314,18 +277,12 @@ void GameApp::GameApp::generateOutputs()
 
 	// An algorithm is needed to set the shader for each object.
 	// RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
-	eNsGfxRender::RenderSystem(mECS, *mShader, mWindow.GetAspect(), mRenderContext);
+	eNsGfxRender::RenderSystem(mECS, *mShader, mWindow->GetAspect(), mRenderCtx);
 
-
-	// draw for debugging
-	// (ECSグローバルリソース導入後変更必要)
-	// (ECSグローバルリソース導入後変更必要)
-	// (ECSグローバルリソース導入後変更必要)
-	eNsDebugDraw::Logic2D::Draw(mECS, mRenderContext, mCollisionResults);
-
+	Engine::Debug::Drawing::Logic2D::Draw(mECS, mRenderCtx, mCollisionResults);
 
 	//
-	glfwSwapBuffers(mWindow.GetGLFWWindow());
+	glfwSwapBuffers(mWindow->GetGLFWWindow());
 }
 
 void GameApp::GameApp::loadData()
@@ -349,7 +306,7 @@ void GameApp::GameApp::spawnAllActors()
 
 //Test3DModel test3d = Test3DModel(mEcs, mShader);
 
-	gNsActorPlayer::PlayerCharacter player = gNsActorPlayer::PlayerCharacter(mECS, mShader);
+	gNsActorPlayer::PlayerCharacter player = gNsActorPlayer::PlayerCharacter(mECS, mShader.get());
 
 	gNsActorCam::FollowCameraActor followCam = gNsActorCam::FollowCameraActor(mECS);
 
@@ -359,11 +316,11 @@ void GameApp::GameApp::spawnAllActors()
 	// TestRockActor testRock = TestRockActor(mEcs, mShader);
 
 
-	gNsActorMap::TestBaseTerrainActor testTerrainMap = gNsActorMap::TestBaseTerrainActor(mECS, mShader);
+	gNsActorMap::TestBaseTerrainActor testTerrainMap = gNsActorMap::TestBaseTerrainActor(mECS, mShader.get());
 
-	gNsActorMap::TestRockActor testRock = gNsActorMap::TestRockActor(mECS, mShader);
+	gNsActorMap::TestRockActor testRock = gNsActorMap::TestRockActor(mECS, mShader.get());
 
-	gNsActor::TestObject testObj = gNsActor::TestObject(mECS, mShader);
+	gNsActor::TestObject testObj = gNsActor::TestObject(mECS, mShader.get());
 
 	// CameraActor camActor = CameraActor(mEcs);
 
@@ -396,7 +353,7 @@ void GameApp::GameApp::RunInitializationPhase()
 		eNsLogic2DComp::TileMapComponent,
 		eNsCamComp::FollowCameraComponent
 	// コンテキスト情報を渡す．
-	>(mECS, mWindow);
+	>(mECS, *mWindow);
 
 	gNsInit::Input::InputBindingInitializationSystem(mECS);
 }
@@ -404,68 +361,6 @@ void GameApp::GameApp::RunInitializationPhase()
 void GameApp::GameApp::updateContext()
 {
 	// update RenderContext:: viewport 
-	mRenderContext.viewport = glm::vec4(0, 0, mWindow.GetWidth(), mWindow.GetHeight());
+	mRenderCtx.viewport = glm::vec4(0, 0, mWindow->GetWidth(), mWindow->GetHeight());
 }
 
-// 別処理か別ファイルへ分離予定(JSONもしくはCSVなどで与えるようにするべき)
-// ゲーム中に設定で変更できるようにするべき
-void GameApp::GameApp::InitializeInputMapping()
-{
-	//mInputMapping.bindKey(GLFW_KEY_W, gNsInput::InputAction::MoveForward);
-	//mInputMapping.bindKey(GLFW_KEY_S, gNsInput::InputAction::MoveBackward);
-	//mInputMapping.bindKey(GLFW_KEY_D, gNsInput::InputAction::MoveRight);
-	//mInputMapping.bindKey(GLFW_KEY_A, gNsInput::InputAction::MoveLeft);
-	//mInputMapping.bindKey(GLFW_MOUSE_BUTTON_1, gNsInput::InputAction::CastSkill1);
-	//mInputMapping.bindKey(GLFW_MOUSE_BUTTON_2, gNsInput::InputAction::CastSkill2);
-	//mInputMapping.bindKey(GLFW_KEY_1, gNsInput::InputAction::CastSkill3);
-
-}
-
-// 別処理か別ファイルへ分離予定(スキル定義はJSONもしくはCSVなどで与えるようにするべき)
-// Combat/Skill/System/InitializeSkills.h へ責務以降 => Featureをインターフェースとして，InitializeLayerFeatureで呼び出す構造へ
-// 削除予定( 別ファイルへ分離したため )
-void GameApp::GameApp::InitializeSkills()
-{
-	//gNsSkillData::SkillDefinition slash;
-	//slash.id = 1;
-	//slash.name = "Basic Slash";
-	//slash.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Circle2DAttack{CanonicalDefaults::kLocalCenterXZ, 5.0f} };
-	//slash.duration = 1.0f;
-	//slash.trajectoryType = gNsSkillData::TrajectoryType::LinearForward;
-	//slash.trajectoryParams = gNsSkillData::SkillTrajectory::LinearTrajectoryParams
-	//{
-	//	.speed = 20.0f
-	//};
-	//mSkillDatabase.AddSkill(slash);
-
-	//gNsSkillData::SkillDefinition slash2;
-	//slash2.id = 2;
-	//slash2.name = "Power Slash";
-	//slash2.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Sector2DAttack{CanonicalDefaults::kLocalCenterXZ, CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f} };// -Z方向が前方
-	//slash2.duration = 1.0f;
-
-	//mSkillDatabase.AddSkill(slash2);
-
-	//gNsSkillData::SkillDefinition blade;
-	//blade.id = 3;
-	//blade.name = "Blade";
-	//blade.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Rectangle2DAttack{glm::vec2(0.0f, 5.0f), CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f}};
-	//blade.duration = 1.0f;
-	//// スキル奇跡の抽象定義の選択
-	//blade.trajectoryType = gNsSkillData::TrajectoryType::RotateAroundSelf;
-	//blade.trajectoryParams = gNsSkillData::SkillTrajectory::RotateTrajectoryParams
-	//{// 関数定義
-	//	.startAngle = 60.0f,
-	//	.endAngle = -60.0f
-	//};
-	//mSkillDatabase.AddSkill(blade);
-}
-
-// 別処理か別ファイルへ分離予定(JSONもしくはCSVなどで与えるようにするべき)
-// ゲーム中に設定で変更できるようにするべき
-void GameApp::GameApp::InitializeSkillMappings()
-{
-	//mSkillInputMap.bind(gNsInput::InputAction::CastSkill1, gNsSkillData::SkillSlot::Primary);// スキルID 1
-	//mSkillInputMap.bind(gNsInput::InputAction::CastSkill2, gNsSkillData::SkillSlot::Secondary);// スキルID 2
-	//mSkillInputMap.bind(gNsInput::InputAction::CastSkill3, gNsSkillData::SkillSlot::Utility1);// スキルID 3
-}

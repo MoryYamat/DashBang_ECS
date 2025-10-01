@@ -12,6 +12,8 @@
 
 #include "Game/Character/FSM/Interference/Core/Data/FSMInterferenceRequest.hpp"
 
+#include "Engine/ECS/Ops/CoreOps.hpp"
+
 // TODO: eExecとeCasterは同じになったので不要な処理あり，改善してもよいが後回し
 // TODO: リクエストを一定時間キューに保持しておきたい場合や，リクエストに「有効期間」や「依存関係」がある場合.requests.clear()では不可
 // TODO: 優先度が同じ場合のルールが未定義(先に来たほうを採用している)
@@ -21,6 +23,8 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::En
 	using namespace Game::Combat::Skill::Database;
 	using namespace Game::Combat::Skill::FSM;
 	using namespace Game::Combat::Skill::FSM::StateModel;
+
+	namespace Ops = Engine::ECS::Ops;
 
 	const auto& clock = Engine::Time::worldClock(ecs);
 
@@ -132,7 +136,9 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerEffect(
 
 	if (!ecs.hasComponent<SkillEffectExecutionRecordComponent>(caster))
 	{
-		ecs.addComponent(caster, SkillEffectExecutionRecordComponent{});
+		Ops::Add<Game::Combat::Skill::Component::SkillEffectExecutionRecordComponent>(ecs, caster,
+			Game::Combat::Skill::Component::SkillEffectExecutionRecordComponent{});
+		//ecs.addComponent(caster, SkillEffectExecutionRecordComponent{});
 	}
 
 	auto& record = ecs.get<SkillEffectExecutionRecordComponent>(caster);
