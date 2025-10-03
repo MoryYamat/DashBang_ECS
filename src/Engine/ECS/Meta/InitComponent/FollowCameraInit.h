@@ -1,5 +1,5 @@
-// Special template for initializing FollowCameraComponent
-// FollowCameraComponent�������p�̓���e���v���[�g
+﻿// Special template for initializing FollowCameraComponent
+// FollowCameraComponent初期化用の特殊テンプレート
 
 #pragma once
 
@@ -25,9 +25,11 @@
 
 #include <iostream>
 
+// 実質的なカメラ初期化用システム
+// TODO: カメラの微調整のために完成間近に詳細を詰める必要あり
 namespace Engine::ECS::Meta::Init
 {
-	// ���O��Ԃ��Q�[�����ɂ���K�v����
+	// 名前空間をゲーム側にする必要あり
 	template<>
 	struct InitSystem<eNsCamComp::FollowCameraComponent>
 	{
@@ -42,7 +44,7 @@ namespace Engine::ECS::Meta::Init
 
 			followCamComp.targetEntity = ePlayerActor;
 			// Relative coordinates
-			followCamComp.offset = { 0.0f, 8.5f, 8.5f };
+			followCamComp.offset = { 0.0f, 15.0f, 9.0f };
 
 			// get 
 			eNsCommonComp::TransformComponent& targetTransform = ecs.get<eNsCommonComp::TransformComponent>(ePlayerActor);
@@ -52,11 +54,14 @@ namespace Engine::ECS::Meta::Init
 			auto& camTransform = ecs.get<eNsCommonComp::TransformComponent>(cameraEntity);
 			camTransform.position = targetTransform.position + followCamComp.offset;
 
+			// カギは frontOffset と バネ
 
 			// Initialize camera Front vector
 			auto& camComp = ecs.get<eNsCamComp::CameraComponent>(cameraEntity);
+			camComp.fov = glm::radians(35.0f);
 			camComp.aspect = window.GetAspect();
-			camComp.front = glm::normalize(targetTransform.position - camTransform.position);
+			camComp.frontOffset = glm::vec3(0.0f, 0.0f, -0.6f);
+			camComp.front = glm::normalize(targetTransform.position - camTransform.position + camComp.frontOffset);
 			camComp.right = glm::normalize(glm::cross(camComp.front, camComp.up));
 
 

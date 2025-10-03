@@ -14,6 +14,7 @@
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 
+// 現在未使用: 削除予定
 Game::Actor::Camera::CameraActor::CameraActor(eNsECS::EntityMgr& ecs)
 {
 	eNsECS::Entity entity = ecs.createEntity();
@@ -25,7 +26,7 @@ Game::Actor::Camera::CameraActor::CameraActor(eNsECS::EntityMgr& ecs)
 	Engine::ECS::Ops::Add<Engine::ECS::Component::Common::TransformComponent>(ecs, entity, transformComp);
 
 	eNsCamComp::CameraComponent cameraComp;
-	cameraComp.fov = 60.0f;
+	cameraComp.fov = glm::radians(120.0f);
 	cameraComp.target = glm::vec3(0.0f, 0.0f, 0.0f);
 	cameraComp.up = glm::vec3(0.0f, 1.0f, 0.0f);
 

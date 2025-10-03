@@ -6,6 +6,7 @@
 
 #include <GLAD/glad.h>
 #include <GLM/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #define MAX_BONE_INFLUENCE 4
 
@@ -68,9 +69,49 @@ namespace Engine::Graphics::Model
 		glm::vec2 texCoords;
 		glm::vec3 tangent;
 		glm::vec3 bitangent;
+		glm::uvec4 joints = { 0,0,0,0 };
+		glm::vec4 weights = { 1,0,0,0 };
 
-		int boneIDs[MAX_BONE_INFLUENCE] = { 0 };
-		float weights[MAX_BONE_INFLUENCE] = { 0 };
+		//int boneIDs[MAX_BONE_INFLUENCE] = { 0 };
+		//float weights[MAX_BONE_INFLUENCE] = { 0 };
+	};
+
+	// ================= skelton / animation ================= 
+	struct Bone
+	{
+		int parent = -1;
+		int nodeIndex = -1;
+		glm::mat4 invBind = glm::mat4(1.0f);
+
+		glm::vec3 defT{ 0,0,0 };
+		glm::quat defR{ 1,0,0,0 };
+		glm::vec3 defS{ 1,1,1 };
+	};
+
+	struct Skeleton
+	{
+		std::vector<Bone> bones;
+
+		// glTF ノード index -> ボーンindex (逆引き)
+		std::unordered_map<int, int> nodeToBone;
+	};
+
+	enum class ChannelType { T, R, S };
+
+	struct Channel
+	{
+		int bone = -1;
+		ChannelType type;
+		std::vector<float> times;	// 秒
+		std::vector<glm::vec3> v3;	// T/S用
+		std::vector<glm::quat> vq;	// R用
+	};
+
+	struct AnimationClip
+	{
+		std::string name;
+		float duration = 0.0f;
+		std::vector<Channel> channels;
 	};
 
 	struct MeshData
@@ -100,6 +141,9 @@ namespace Engine::Graphics::Model
 		// model's size datas
 		glm::vec3 min = glm::vec3(FLT_MAX);
 		glm::vec3 max = glm::vec3(-FLT_MAX);
+
+		Skeleton skeleton;
+		std::vector<AnimationClip> clips;
 
 		ModelData() = default;
 		~ModelData() = default;

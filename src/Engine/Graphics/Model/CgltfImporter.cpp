@@ -1,5 +1,7 @@
 ﻿#include "CgltfImporter.hpp"
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <cstddef>
 #include <iostream>
 
@@ -44,6 +46,8 @@ namespace Engine::Graphics::Model
 				const cgltf_accessor* acc_nrm = nullptr;
 				const cgltf_accessor* acc_uv0 = nullptr;
 				const cgltf_accessor* acc_tan = nullptr;
+				const cgltf_accessor* acc_joints = nullptr;
+				const cgltf_accessor* acc_weights = nullptr;
 
 				for (cgltf_size ai = 0; ai < prim.attributes_count/*5*/; ++ai)
 				{
@@ -55,6 +59,8 @@ namespace Engine::Graphics::Model
 					case cgltf_attribute_type_normal: acc_nrm = a.data; break;
 					case cgltf_attribute_type_texcoord: if (a.index == 0) acc_uv0 = a.data; break;
 					case cgltf_attribute_type_tangent: acc_tan = a.data; break;
+					case cgltf_attribute_type_joints: if (a.index == 0) acc_joints = a.data; break;
+					case cgltf_attribute_type_weights: if (a.index == 0) acc_weights = a.data; break;
 					default: break;
 					}
 				}
@@ -109,6 +115,23 @@ namespace Engine::Graphics::Model
 					{
 						v.tangent = glm::vec3(0.0f);
 						v.bitangent = glm::vec3(0.0f);
+					}
+					if (acc_joints)
+					{
+						uint32_t j[4] = { 0,0,0,0 };
+						cgltf_accessor_read_uint(acc_joints, i, j, 4);
+						v.joints = { j[0], j[1], j[2], j[3] };
+					}
+					if (acc_weights)
+					{
+						float w[4] = { 0,0,0,0 };
+						cgltf_accessor_read_float(acc_weights, i, w, 4);
+
+						// 正規化
+						float s = w[0] + w[1] + w[2] + w[3];
+						if (s > 1e-8f) { for (int k = 0; k < 4; ++k) w[k] /= s; }
+						else { w[0] = 1; w[1] = w[2] = w[3] = 0; }
+						v.weights = { w[0],w[1],w[2],w[3] };
 					}
 
 					out.vertices[(size_t)i] = v;
@@ -189,149 +212,129 @@ namespace Engine::Graphics::Model
 				model.meshes.emplace_back(std::move(out));
 			}
 		}
+
+		// skelton
+		if (g->skins_count > 0)
+		{
+			const cgltf_skin* skin = &g->skins[0];
+			Skeleton& skel = model.skeleton;
+			skel.bones.resize(skin->joints_count);
+
+			// 逆引きテーブル
+			for (cgltf_size bi = 0; bi < skin->joints_count; ++bi)
+			{
+				const cgltf_node* jn = skin->joints[bi];
+				Bone b;
+				b.nodeIndex = int(jn - g->nodes);
+
+				// inverseBindMatrix
+				if (skin->inverse_bind_matrices)
+				{
+					float m[16];
+					cgltf_accessor_read_float(skin->inverse_bind_matrices, bi, m, 16);
+					b.invBind = glm::make_mat4(m);
+				}
+
+				// デフォルトTRS
+				if (jn->has_translation) b.defT = glm::vec3(jn->translation[0], jn->translation[1], jn->translation[2]);
+				if (jn->has_rotation) b.defR = glm::normalize(glm::quat(jn->rotation[3], jn->rotation[0], jn->rotation[1], jn->rotation[2]));// うまくいかない場合この順序が違う可能性あり
+				if (jn->has_scale) b.defS = glm::vec3(jn->scale[0], jn->scale[1], jn->scale[2]);
+
+				skel.bones[bi] = b;
+				skel.nodeToBone[b.nodeIndex] = int(bi);
+			}
+
+			// 親子関係を構築
+			std::vector<int> nodeParent(g->nodes_count, -1);
+			for (cgltf_size ni = 0; ni < g->nodes_count; ++ni)
+			{
+				const cgltf_node* n = &g->nodes[ni];
+				for (cgltf_size ci = 0; ci < n->children_count; ++ci)
+				{
+					int c = int(n->children[ci] - g->nodes);
+					nodeParent[c] = int(ni);
+				}
+			}
+			for (size_t bi = 0; bi < skel.bones.size(); ++bi)
+			{
+				int pNode = nodeParent[skel.bones[bi].nodeIndex];
+				auto it = skel.nodeToBone.find(pNode);
+				skel.bones[bi].parent = (it == skel.nodeToBone.end()) ? -1 : it->second;
+			}
+		}
+
+		// アニメーション
+		for (cgltf_size ai = 0; ai < g->animations_count; ++ai)
+		{
+			const cgltf_animation* a = &g->animations[ai];
+
+			AnimationClip clip;
+			clip.name = a->name ? a->name : ("anim_" + std::to_string(ai));
+
+			for (cgltf_size ci = 0; ci < a->channels_count; ++ci)
+			{
+				const cgltf_animation_channel& ch = a->channels[ci];
+				const cgltf_animation_sampler& sp = *ch.sampler;
+
+				// 対象ノードがボーンかどうか
+				int nodeIndex = int(ch.target_node - g->nodes);
+				auto it = model.skeleton.nodeToBone.find(nodeIndex);
+				if (it == model.skeleton.nodeToBone.end()) continue;
+				int bone = it->second;
+
+				Channel c{};
+				c.bone = bone;
+
+				if (ch.target_path == cgltf_animation_path_type_translation) c.type = ChannelType::T;
+				else if (ch.target_path == cgltf_animation_path_type_rotation) c.type = ChannelType::R;
+				else if (ch.target_path == cgltf_animation_path_type_scale) c.type = ChannelType::S;
+				else continue;// weights などは今回無視
+
+				// 時間
+				c.times.resize(sp.input->count);
+				for (cgltf_size i = 0; i < sp.input->count; ++i)
+				{
+					float t;
+					cgltf_accessor_read_float(sp.input, i, &t, 1);
+					c.times[i] = t;
+					clip.duration = std::max(clip.duration, t);
+				}
+
+				// 値
+				if (c.type == ChannelType::T || c.type == ChannelType::S)
+				{
+					c.v3.resize(sp.output->count);
+					for (cgltf_size i = 0; i < sp.output->count; ++i)
+					{
+						float v[3];
+						cgltf_accessor_read_float(sp.output, i, v, 3);
+						c.v3[i] = glm::vec3(v[0], v[1], v[2]);
+					}
+				}
+				else if (c.type == ChannelType::R)
+				{
+					c.vq.resize(sp.output->count);
+					for (cgltf_size i = 0; i < sp.output->count; ++i)
+					{
+						float q[4];
+						cgltf_accessor_read_float(sp.output, i, q, 4);
+						c.vq[i] = glm::normalize(glm::quat(q[3], q[0], q[1], q[2])); // (w, x, y, z) // うまくいかない場合この順番を見直す
+					}
+				}
+
+				clip.channels.push_back(std::move(c));
+			}
+
+			model.clips.push_back(std::move(clip));
+		}
+
+		std::cout << "Clips: " << model.clips.size() << std::endl;
+		for (auto& c : model.clips) {
+			std::cout << "  " << c.name << " dur=" << c.duration << "s channels=" << c.channels.size() << "\n";
+		}
+
 		cgltf_free(g);
 		return model;
-		// 最初のメッシュ & 最初の TRIANGLES primitive を探す
-		//const cgltf_mesh* tgt_mesh = nullptr;
-		//const cgltf_primitive* tgt_prim = nullptr;
-
-		//for (cgltf_size mi = 0; mi < g->meshes_count; ++mi)
-		//{
-		//	const cgltf_mesh& mesh = g->meshes[mi];
-		//	for (cgltf_size pi = 0; pi < mesh.primitives_count; ++pi)
-		//	{
-		//		const cgltf_primitive& prim = mesh.primitives[pi];
-		//		if (prim.type == cgltf_primitive_type_triangles)
-		//		{
-		//			tgt_mesh = &mesh;
-		//			tgt_prim = &prim;
-		//			break;
-		//		}
-		//	}
-		//}
-
-		//if (!tgt_prim)
-		//{
-		//	std::cerr << "No TRIANGLES primitive found." << std::endl;
-		//	cgltf_free(g);
-		//	return model;
-		//}
-
-		//// 属性アクセサのポインタをとる
-		//const cgltf_accessor* acc_pos = nullptr;
-		//const cgltf_accessor* acc_nrm = nullptr;
-		//const cgltf_accessor* acc_uv0 = nullptr;
-
-		//for (cgltf_size ai = 0; ai < tgt_prim->attributes_count; ++ai)
-		//{
-		//	const cgltf_attribute& attr = tgt_prim->attributes[ai];
-		//	switch (attr.type)
-		//	{
-		//	case cgltf_attribute_type_position: acc_pos = attr.data; break;
-		//	case cgltf_attribute_type_normal: acc_nrm = attr.data; break;
-		//	case cgltf_attribute_type_texcoord: 
-		//		if (attr.index == 0) acc_uv0 = attr.data;
-		//		break;
-		//	default: break;
-		//	}
-		//}
-
-		//if (!acc_pos)
-		//{
-		//	std::cerr << "POSITION not found in first triangles primitives." << std::endl;
-		//	cgltf_free(g);
-		//	return model;
-		//}
-
-		//// 頂点数 / インデックス数をログ
-		////const cgltf_size vcount = acc_pos->count;
-		////const cgltf_size icount = tgt_prim->indices ? tgt_prim->indices->count : vcount;
-
-		////std::cout << "[Probe] mesh=" << (tgt_mesh - g->meshes)
-		////	<< " vcount=" << vcount
-		////	<< " icount=" << icount
-		////	<< " hasNormals=" << (acc_nrm ? "Y" : "N")
-		////	<< " hasUV0=" << (acc_uv0 ? "Y" : "N")
-		////	<< std::endl;
-
-		//// 4) （任意）AABB を軽く計算してみる（POSITIONだけ読み出し）
-		////glm::vec3 min(FLT_MAX), max(-FLT_MAX);
-		////float tmp[4] = { 0,0,0,0 };
-		////for (cgltf_size i = 0; i < vcount; ++i) {
-		////	cgltf_accessor_read_float(acc_pos, i, tmp, 3);
-		////	glm::vec3 p(tmp[0], tmp[1], tmp[2]);
-		////	min = glm::min(min, p);
-		////	max = glm::max(max, p);
-		////}
-		////std::cout << "[Probe] AABB min=(" << min.x << "," << min.y << "," << min.z << ") "
-		////	<< "max=(" << max.x << "," << max.y << "," << max.z << ")\n";
-
-		//// MeshData を作る
-		//MD::MeshData mesh{};
-		//const cgltf_size vcount = acc_pos->count;
-		//mesh.vertices.resize(static_cast<size_t>(vcount));
-
-		//float tmp[4] = { 0,0,0,0 };
-		//for (cgltf_size i = 0; i < vcount; ++i)
-		//{
-		//	MD::VertexData v{};
-		//	cgltf_accessor_read_float(acc_pos, i, tmp, 3);
-		//	v.position = { tmp[0], tmp[1], tmp[2] };
-
-		//	if (acc_nrm)
-		//	{
-		//		cgltf_accessor_read_float(acc_nrm, i, tmp, 3);
-		//		v.normal = { tmp[0], tmp[1], tmp[2] };
-		//	}
-		//	else
-		//	{
-		//		v.normal = { 0,1,0 };
-		//	}
-
-		//	if (acc_uv0)
-		//	{
-		//		cgltf_accessor_read_float(acc_uv0, i, tmp, 2);
-		//		v.texCoords = { tmp[0], tmp[1] };
-		//	}
-		//	else
-		//	{
-		//		v.texCoords = { 0,0 };
-		//	}
-
-		//	mesh.vertices[static_cast<size_t>(i)] = v;
-
-		//	// AABB 更新
-		//	model.min = glm::min(model.min, v.position);
-		//	model.max = glm::max(model.max, v.position);
-		//}
-
-		//// インデックス
-		//if (tgt_prim->indices)
-		//{
-		//	mesh.indices.resize(static_cast<size_t>(tgt_prim->indices->count));
-		//	for (cgltf_size i = 0; i < tgt_prim->indices->count; ++i)
-		//	{
-		//		cgltf_size v = cgltf_accessor_read_index(tgt_prim->indices, i);
-		//		mesh.indices[i] = static_cast<unsigned int>(v);
-		//	}
-		//	mesh.hasIndices = true;
-		//}
-		//else
-		//{
-		//	// 非インデックス→0..vcount-1
-		//	mesh.indices.resize(static_cast<size_t>(vcount));
-		//	for (cgltf_size i = 0; i < vcount; ++i) mesh.indices[i] = static_cast<unsigned int>(i);
-		//	mesh.hasIndices = true;
-		//}
-
-		//// --- 5) マテリアル（まずは baseColorFactor のみ）
-		//mesh.materialData.baseColor = [](const cgltf_material* m) {
-		//	if (!m) return glm::vec3(1.0f);
-		//	const auto& pbr = m->pbr_metallic_roughness;
-		//	return glm::vec3(pbr.base_color_factor[0], pbr.base_color_factor[1], pbr.base_color_factor[2]);
-		//	}(tgt_prim->material);
-
-		//model.meshes.emplace_back(std::move(mesh));
 	}
 
 	// img.buffer_view が指す生データ領域(PNG/JPGそのもの)をbytes/sizeに返す

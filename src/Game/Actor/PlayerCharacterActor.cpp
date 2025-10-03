@@ -114,7 +114,8 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	// load Model Datas from file
 	// eNsGfxModel::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
 	// =============================== test ==================================
-	Engine::Graphics::Model::ModelData modelData = Engine::Graphics::Model::CgltfImporter::Import("Assets/Models/paladdin_w_prop.glb");
+	// Engine::Graphics::Model::ModelData modelData = Engine::Graphics::Model::CgltfImporter::Import("Assets/Models/paladdin_w_prop.glb");
+	Engine::Graphics::Model::ModelData modelData = Engine::Graphics::Model::CgltfImporter::Import("Assets/Models/paladin/paladin_run_idle_default.glb");
 	for (const auto& mesh : modelData.meshes)
 	{
 		std::cout << "[PlayerCharacterActor.cpp]: Vertices: " << mesh.vertices.size()

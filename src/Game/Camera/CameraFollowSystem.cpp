@@ -1,4 +1,4 @@
-#include "CameraFollowSystem.h"
+ï»¿#include "CameraFollowSystem.h"
 
 #include "Engine/ECS/Component/Camera/CameraComponent.h"
 
@@ -10,6 +10,7 @@
 
 #include <iostream>
 
+// ä½¿ç”¨ä¸­
 void Game::Camera::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 	for (eNsECS::Entity e : ecs.view<eNsCamComp::FollowCameraComponent, eNsCommonComp::TransformComponent, eNsCamComp::CameraComponent>())
@@ -36,10 +37,10 @@ void Game::Camera::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 
 
 		//camTransform.position = targetTransform.position + rotatedOffset;
-		// ’Ç](ƒIƒtƒZƒbƒg)
+		// è¿½å¾“(ã‚ªãƒ•ã‚»ãƒƒãƒˆ)
 		//camTransform.position = targetTransform.position + followCam.offset;
 
-		// •ûŒü‚ğ’Ç]‘ÎÛ‚Ö
+		// æ–¹å‘ã‚’è¿½å¾“å¯¾è±¡ã¸
 		//glm::vec3 direction = glm::normalize(targetTransform.position - camTransform.position);
 
 
@@ -56,7 +57,7 @@ void Game::Camera::setFollowCameraGetFront(eNsCamComp::FollowCameraComponent& fo
 )
 {
 	// Calculating camera position
-	// ˜_—ƒf[ƒ^‚Ìfront‚É‘Î‚µ‚ÄA‘ÎŠpã‚É‘¶İ‚·‚é‚æ‚¤‚ÉŒvZ‚µ‚Ä‚¢‚é
+	// è«–ç†ãƒ‡ãƒ¼ã‚¿ã®frontã«å¯¾ã—ã¦ã€å¯¾è§’ä¸Šã«å­˜åœ¨ã™ã‚‹ã‚ˆã†ã«è¨ˆç®—ã—ã¦ã„ã‚‹
 	float yawDegrees = targetLogic2DTransform.rotation;
 	float yawRadians = glm::radians(yawDegrees);
 
@@ -69,6 +70,8 @@ void Game::Camera::setCameraVectors(eNsCamComp::CameraComponent& camComp
 	, eNsCommonComp::TransformComponent& targetTransformComp
 )
 {
-	camComp.front = glm::normalize(targetTransformComp.position - camTransform.position);
+	// ã“ã®è¨ˆç®—å¼
+	// frontOffset
+	camComp.front = glm::normalize(targetTransformComp.position - camTransform.position + camComp.frontOffset);
 	camComp.right = glm::normalize(glm::cross(camComp.front, camComp.up));
 }

@@ -223,7 +223,7 @@ glm::mat4 Engine::Graphics::Render::computeViewMatrix(const eNsCommonComp::Trans
 
 glm::mat4 Engine::Graphics::Render::computeProjectionMatrix(float fov, float aspect, float nearClip, float farClip)
 {
-	return glm::perspective(glm::radians(fov), aspect, nearClip, farClip);
+	return glm::perspective(fov, aspect, nearClip, farClip);
 }
 
 
