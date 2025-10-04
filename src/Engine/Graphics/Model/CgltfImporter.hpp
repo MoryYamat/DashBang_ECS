@@ -29,5 +29,13 @@ namespace Engine::Graphics::Model
 		static GLuint CreateGLTexture2D_FromMemory_sRGB(
 			const unsigned char* bytes, size_t size
 		);
+
+		static glm::mat4 LocalOf(const cgltf_node* n);
+
+		static void BuildNodeGlobals(
+			const cgltf_data* g,
+			std::vector<int>& parent,
+			std::vector<glm::mat4>& globals
+		);
 	};
 }

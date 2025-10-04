@@ -237,8 +237,15 @@ namespace Engine::Graphics::Model
 
 				// デフォルトTRS
 				if (jn->has_translation) b.defT = glm::vec3(jn->translation[0], jn->translation[1], jn->translation[2]);
-				if (jn->has_rotation) b.defR = glm::normalize(glm::quat(jn->rotation[3], jn->rotation[0], jn->rotation[1], jn->rotation[2]));// うまくいかない場合この順序が違う可能性あり
+				if (jn->has_rotation) b.defR = glm::normalize(glm::quat(jn->rotation[3], jn->rotation[0], jn->rotation[1],jn->rotation[2]));// うまくいかない場合この順序が違う可能性あり
 				if (jn->has_scale) b.defS = glm::vec3(jn->scale[0], jn->scale[1], jn->scale[2]);
+
+				std::cout << "[dbg] rotationQuat(xyz w)=("
+					<< jn->rotation[0] << ", "
+					<< jn->rotation[1] << ", "
+					<< jn->rotation[2] << ", "
+					<< jn->rotation[3] << ")\n";
+
 
 				skel.bones[bi] = b;
 				skel.nodeToBone[b.nodeIndex] = int(bi);
@@ -333,6 +340,61 @@ namespace Engine::Graphics::Model
 			std::cout << "  " << c.name << " dur=" << c.duration << "s channels=" << c.channels.size() << "\n";
 		}
 
+		std::cout << "[dbg] bones=" << model.skeleton.bones.size() << "\n";
+		for (size_t i = 0;i < 3 && i < model.skeleton.bones.size();++i) {
+			auto& b = model.skeleton.bones[i];
+			// だいたい単位長？
+			std::cout << "[dbg] bone[" << i << "] parent=" << b.parent
+				<< " | |defR|=" << glm::length(glm::vec4(b.defR.x, b.defR.y, b.defR.z, b.defR.w))
+				<< " | invBind[0][0]=" << b.invBind[0][0] << "\n";
+		}
+
+		std::vector<int> parent(g->nodes_count, -1);
+		for (cgltf_size i = 0; i < g->nodes_count; ++i)
+		{
+			if (g->nodes[i].parent) parent[i] = int(g->nodes[i].parent - g->nodes);
+		}
+
+		std::vector <glm::mat4> globals;
+		BuildNodeGlobals(g, parent, globals);
+
+		int meshNodeIndex = -1;
+		if (g->skins_count > 0) {
+			const cgltf_skin* skin0 = &g->skins[0];
+			for (cgltf_size ni = 0; ni < g->nodes_count; ++ni) {
+				const cgltf_node* n = &g->nodes[ni];
+				if (n->mesh && n->skin == skin0) { // glTFの仕様：スキンはノードに付く
+					meshNodeIndex = int(ni);
+					break;
+				}
+			}
+		}
+		if (meshNodeIndex < 0) {
+			for (cgltf_size ni = 0; ni < g->nodes_count; ++ni) {
+				if (g->nodes[ni].mesh) { meshNodeIndex = int(ni); break; }
+			}
+		}
+		model.meshBindGlobal = (meshNodeIndex >= 0) ? globals[meshNodeIndex] : glm::mat4(1.0f);
+
+		// --- set skeletonRootBindGlobal -----------------------------------------
+		// skin->skeleton があればそれ。無ければ、任意ジョイントから親を辿って最上位をルートにする。
+		// スキンが無ければ単位行列。
+		glm::mat4 skelRoot = glm::mat4(1.0f);
+		if (g->skins_count > 0) {
+			const cgltf_skin* skin0 = &g->skins[0];
+			if (skin0->skeleton) {
+				int idx = int(skin0->skeleton - g->nodes);
+				skelRoot = globals[idx];
+			}
+			else {
+				// 最上位ジョイントを見つける
+				int any = int(skin0->joints[0] - g->nodes);
+				while (parent[any] >= 0) any = parent[any];
+				skelRoot = globals[any];
+			}
+		}
+		model.skeletonRootBindGlobal = skelRoot;
+
 		cgltf_free(g);
 		return model;
 	}
@@ -415,5 +477,43 @@ namespace Engine::Graphics::Model
 
 
 		return tex;// -> TextureData.id になる
+	}
+
+
+	glm::mat4 CgltfImporter::LocalOf(const cgltf_node* n)
+	{
+		if (n->has_matrix)
+			return glm::make_mat4(n->matrix);
+
+		glm::vec3 T = n->has_translation ? glm::vec3(n->translation[0], n->translation[1], n->translation[2]) : glm::vec3(0);
+		glm::quat R = n->has_rotation ? glm::quat(n->rotation[3], n->rotation[0], n->rotation[1], n->rotation[2]) : glm::quat(1, 0, 0, 0);
+		glm::vec3 S = n->has_scale ? glm::vec3(n->scale[0], n->scale[1], n->scale[2]) : glm::vec3(1);
+		return glm::translate(glm::mat4(1), T) * glm::mat4_cast(R) * glm::scale(glm::mat4(1), S);
+	}
+
+	void CgltfImporter::BuildNodeGlobals(
+		const cgltf_data* g,
+		std::vector<int>& parent,
+		std::vector<glm::mat4>& globals
+	)
+	{
+		globals.assign(g->nodes_count, glm::mat4(1));
+		std::function<void(int)> dfs = [&](int idx)
+			{
+				const cgltf_node* n = &g->nodes[idx];
+				int p = parent[idx];
+				globals[idx] = (p >= 0 ? globals[p] : glm::mat4(1)) * LocalOf(n);
+				for (cgltf_size ci = 0; ci < n->children_count; ++ci)
+				{
+					int child_index = int(n->children[ci] - g->nodes);
+					dfs(child_index);
+				}
+					
+			};
+
+		for (cgltf_size ni = 0; ni < g->nodes_count; ++ni)
+		{
+			if (parent[ni] < 0) dfs(int(ni));
+		}
 	}
 }

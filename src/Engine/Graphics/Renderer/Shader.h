@@ -1,4 +1,4 @@
-// load shader and set datas
+﻿// load shader and set datas
 #pragma once
 
 #include <GLAD/glad.h>

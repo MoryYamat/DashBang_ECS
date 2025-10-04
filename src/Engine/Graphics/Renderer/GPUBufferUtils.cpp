@@ -60,6 +60,12 @@ eNsGfxModel::ModelGPU Engine::Graphics::Render::GPUBufferUtils::createMeshGPUBuf
 		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(V, bitangent));
 
 		// boneIDs/weights を使う場合は ipointer/pointer で 5/6 を設定する
+		glEnableVertexAttribArray(5);
+		glVertexAttribIPointer(5, 4, GL_UNSIGNED_INT, stride,(void*)offsetof(V, joints));
+
+		glEnableVertexAttribArray(6);
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, stride,(void*)offsetof(V, weights));
+
 
 		glBindVertexArray(0);
 		modelGPU.meshesGPU.emplace_back(std::move(meshGPU));

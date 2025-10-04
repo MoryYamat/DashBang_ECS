@@ -31,6 +31,7 @@
 // Graphic
 #include "Engine/Graphics/Renderer/RenderSystem.h"
 #include "Engine/Graphics/Model/AssimpImporter.h"
+#include "Engine/Graphics/Animation/AnimationSystem.hpp"
 
 // Debug
 #include "Engine/Debug/DebugSystems/LogicDebugDrawSystem.h"
@@ -265,7 +266,7 @@ void GameApp::GameApp::updateGameLogics()
 	// Logic Layer
 	gNsLayer::LogicLayerFeature::Update(mECS, deltaTime);
 
-
+	Engine::Graphics::Animation::System::AnimationSystem(mECS);
 }
 
 void GameApp::GameApp::generateOutputs()

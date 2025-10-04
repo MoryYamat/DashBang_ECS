@@ -4,8 +4,13 @@
 
 
 #include "Engine/ECS/Component/Graphics/MaterialComponent.h"
+#include "Engine/ECS/Component/Graphics/AnimatorComponent.hpp"
+
+#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
+
+#define MAX_BONES 128
 
 // 現在未使用
 //void Engine::Graphics::Render::UpdateRenderContext(eNsECS::EntityMgr& ecs, eNsGfxRender::RenderContext& context)
@@ -66,18 +71,55 @@ void Engine::Graphics::Render::RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender
 
 
 
-	for (eNsECS::Entity entity : ecs.view<eNsCommonComp::TransformComponent, eNsGfxComp::MeshComponent, eNsGfxComp::MaterialComponent>())
+	for (eNsECS::Entity entity : ecs.view<
+		eNsCommonComp::TransformComponent, 
+		eNsGfxComp::MeshComponent, 
+		eNsGfxComp::MaterialComponent
+	>())
 	{
 		auto& transformComp = ecs.get<eNsCommonComp::TransformComponent>(entity);
 		auto& meshComp = ecs.get<eNsGfxComp::MeshComponent>(entity);
 		auto& materialComp = ecs.get<eNsGfxComp::MaterialComponent>(entity);
+		
 
 		// state machine (シェーダーを切り替えると、viewもprojectionもセットする必要あり。)
 		shader.Use();
-		shader.setMat4("model", transformComp.toMatrix());
-		shader.setMat4("view", view);
-		shader.setMat4("projection", projection);
+		shader.setMat4("uModel", transformComp.toMatrix());
+		// shader.setMat4("uModel", glm::mat4(1.0f));
+		shader.setMat4("uView", view);
+		shader.setMat4("uProjection", projection);
 
+		// ボーンパレットを送る
+		int boneCount = 0;
+		if (ecs.hasComponent<Engine::ECS::Component::Graphics::AnimatorComponent>(entity))
+		{
+			const auto& anim = ecs.get< Engine::ECS::Component::Graphics::AnimatorComponent>(entity);
+			boneCount = (int)anim.palette.size();
+			if (boneCount > 0)
+			{
+				boneCount = std::min(boneCount, MAX_BONES); // vs -> MAX_BONES
+				shader.setInt("uBoneCount", boneCount);
+				// shader.setInt("uBoneCount", 0);// -> スキニング側の問題っぽい
+
+				GLint loc = glGetUniformLocation(shader.GetProgram(), "uBones[0]");
+				if (loc == -1) {
+					std::cerr << "[RenderSystem] Warning: uBones[0] uniform not found (maybe optimized out)" << std::endl;
+				}
+				else {
+					glUniformMatrix4fv(loc, boneCount, GL_FALSE, glm::value_ptr(anim.palette[0]));
+					// std::cout << "[RenderSystem] Uploaded bone palette: " << boneCount << " matrices" << std::endl;
+				}
+			}
+			else
+			{
+				shader.setInt("uBoneCount", 0);
+			}
+		}
+		else
+		{
+			// アニメータなし -> スキニングなし
+			shader.setInt("uBoneCount", 0);
+		}
 		// meshごとに素材を反映
 		for (size_t i = 0; i < meshComp.modelData.meshes.size(); ++i)
 		{
@@ -256,9 +298,9 @@ void Engine::Graphics::Render::RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender
 
 		// state machine (シェーダーを切り替えると、viewもprojectionもセットする必要あり。)
 		shader.Use();
-		shader.setMat4("model", transformComp.toMatrix());
-		shader.setMat4("view", view);
-		shader.setMat4("projection", projection);
+		shader.setMat4("uModel", transformComp.toMatrix());
+		shader.setMat4("uView", view);
+		shader.setMat4("uProjection", projection);
 		drawMesh(meshComp);
 	}
 

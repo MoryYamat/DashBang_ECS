@@ -44,7 +44,8 @@ namespace Engine::ECS::Meta::Init
 
 			followCamComp.targetEntity = ePlayerActor;
 			// Relative coordinates
-			followCamComp.offset = { 0.0f, 15.0f, 9.0f };
+			followCamComp.offset = { 0.0f, 7.0f,5.0f };
+			//followCamComp.offset = { 0.0f, 30.0f,20.0f };
 
 			// get 
 			eNsCommonComp::TransformComponent& targetTransform = ecs.get<eNsCommonComp::TransformComponent>(ePlayerActor);
@@ -58,7 +59,7 @@ namespace Engine::ECS::Meta::Init
 
 			// Initialize camera Front vector
 			auto& camComp = ecs.get<eNsCamComp::CameraComponent>(cameraEntity);
-			camComp.fov = glm::radians(35.0f);
+			camComp.fov = glm::radians(60.0f);
 			camComp.aspect = window.GetAspect();
 			camComp.frontOffset = glm::vec3(0.0f, 0.0f, -0.6f);
 			camComp.front = glm::normalize(targetTransform.position - camTransform.position + camComp.frontOffset);

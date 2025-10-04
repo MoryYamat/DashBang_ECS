@@ -3,8 +3,12 @@
 #include "Engine/ECS/Entity.h"
 #include "Engine/ECS/EntityUtils/EntityUtils.h"
 #include "Engine/ECS/Component/Common/TransformComponent.h"
+
+// shader
 #include "Engine/ECS/Component/Graphics/MeshComponent.h"
 #include "Engine/ECS/Component/Graphics/ShaderComponent.h"
+#include "Engine/ECS/Component/Graphics/AnimatorComponent.hpp"
+
 
 #include "Engine/ECS/Component/Logic2D/Velocity2DComponent.h"
 
@@ -123,6 +127,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 			<< ", hasIndices: " << mesh.hasIndices << std::endl;
 	}
 
+
 	// set Mesh data to GPUBuffers
 	Engine::Graphics::Model::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
 
@@ -138,6 +143,31 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	Comp::Logic2D::Logic2DTransformComponent logic;
 	logic = Game::Init::Logic2D::InitLogic2DTransformFromModel(transformComp, modelData);
 	Ops::Add<Comp::Logic2D::Logic2DTransformComponent>(ecs, e, logic);
+
+	// animator comp // mesh-> move 前
+	auto& anim = Ops::Add<Comp::Graphics::AnimatorComponent>(ecs, e,
+		Comp::Graphics::AnimatorComponent{});
+
+	const auto& clips = modelData.clips;
+	if (!clips.empty())
+	{
+		if (!Comp::Graphics::SetClipByName(modelData, anim, "idle_default", true))
+		{
+			anim.clipIndex = 0;
+			anim.time = 0.f;
+			anim.speed = 1.f;
+			anim.loop = true;
+		}
+		std::cout << "[PlayerCharacterActor] Playing clip: "
+			<< clips[(size_t)anim.clipIndex].name
+			<< " (dur=" << clips[(size_t)anim.clipIndex].duration
+			<< "s, channels=" << clips[(size_t)anim.clipIndex].channels.size()
+			<< ")\n";
+	}
+	else
+	{
+		std::cout << "[PlayerCharacterActor] No animation clips in model.\n";
+	}
 
 	// Collsion Initialization
 	// コリジョン初期化

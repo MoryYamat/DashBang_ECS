@@ -141,9 +141,15 @@ namespace Engine::Graphics::Model
 		// model's size datas
 		glm::vec3 min = glm::vec3(FLT_MAX);
 		glm::vec3 max = glm::vec3(-FLT_MAX);
+		
+		// 追加
+		glm::mat4 meshBindGlobal = glm::mat4(1.0f);
+		glm::mat4 skeletonRootBindGlobal = glm::mat4(1.0f);
 
 		Skeleton skeleton;
 		std::vector<AnimationClip> clips;
+
+		
 
 		ModelData() = default;
 		~ModelData() = default;
