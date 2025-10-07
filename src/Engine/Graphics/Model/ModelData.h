@@ -81,7 +81,7 @@ namespace Engine::Graphics::Model
 	{
 		int parent = -1;
 		int nodeIndex = -1;
-		glm::mat4 invBind = glm::mat4(1.0f);
+		glm::mat4 invBind = glm::mat4(1.0f);// 逆行列
 
 		glm::vec3 defT{ 0,0,0 };
 		glm::quat defR{ 1,0,0,0 };

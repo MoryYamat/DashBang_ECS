@@ -1,10 +1,13 @@
 ﻿#include "InitializeLayerFeature.h"
 
+
 #include "Game/00_Feature/Combat/Skill/SkillFeature.h"
 
 #include "Game/00_Feature/System/InputFeature.h"
 
 #include "Game/00_Feature/Collision/CollisionFeature.h"
+
+#include "Game/00_Feature/Character/Animation/AnimationFeature.hpp"
 
 #include "Game/00_Feature/Character/State/CharacterStateFeature.hpp"
 
@@ -53,4 +56,6 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialzation(eNsECS::EntityMgr
 
 	// AntichainPolicy初期化
 	gNsFeature::Character::CharacterCCFeature::InitCCAntiChainPolicy(ecs);
+
+	Game::Feature::Character::Animation::CharacterAnimationFeature::InitProfileDatabase(ecs);
 }

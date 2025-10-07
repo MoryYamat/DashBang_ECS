@@ -1,0 +1,19 @@
+﻿#include "LocomotionResolverLayerFeature.hpp"
+
+#include "Game/00_Feature/Character/Animation/AnimationFeature.hpp"
+
+namespace Game::Layer
+{
+	namespace Anim = Game::Feature::Character::Animation;
+
+	void LocomotionResolverLayerFeature::Update(Engine::ECS::EntityMgr& ecs)
+	{
+		Anim::CharacterAnimationFeature::UpdateBuildAnimationQuery(ecs);
+
+		Anim::CharacterAnimationFeature::UpdateMovementAnimationResolver(ecs);
+
+		Anim::CharacterAnimationFeature::UpdateAnimationArbiterSystem(ecs);
+
+		Anim::CharacterAnimationFeature::UpdateApplyFinalAnimationDecision(ecs);
+	}
+}

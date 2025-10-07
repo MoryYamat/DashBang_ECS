@@ -66,7 +66,16 @@
 #include "Game/Init/InitModel/InitLogicTransformFromModel.h"
 #include "Game/Init/InitTileMap/InitTileMap.h"
 
+
+
 // character 
+
+// animation
+#include "Game/Character/Animation/Query/AnimationQueryComponent.hpp"
+#include "Game/Character/Animation/Resolve/Movement/MovementAnimDecisionComponent.hpp"
+#include "Game/Character/Animation/Profile/AnimationProfileComponent.hpp"
+#include "Game/Character/Animation/Arbiter/FinalAnimationDecisionComponent.hpp"
+
 // life
 #include "Game/Character/State/Component/LifeStateComponent.hpp"
 // movement
@@ -366,6 +375,17 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	//}
 	//std::cout << "view の typeid: " << typeid(decltype(ecs.view<gNsCharacterState::CharacterStateComponent>())).name() << std::endl;
 
+
+	// Animation
+	// Movement
+	namespace AnimQuery = Game::Character::Animation::Query;
+	namespace AnimDec = Game::Character::Animation::Resolve;
+	namespace AnimProf = Game::Character::Animation::Profile;
+	namespace AnimFinal = Game::Character::Animation::Arbiter;
+	Ops::Add<AnimQuery::AnimationQueryComponent>(ecs, e, AnimQuery::AnimationQueryComponent{});
+	Ops::Add<AnimDec::Movement::MovementAnimDecisionComponent>(ecs, e, AnimDec::Movement::MovementAnimDecisionComponent{});
+	Ops::Add<AnimProf::AnimationProfileComponent>(ecs, e, AnimProf::AnimationProfileComponent{ .profileId = "PaladinDefault" });
+	Ops::Add<AnimFinal::FinalAnimationDecisionComponent>(ecs, e, AnimFinal::FinalAnimationDecisionComponent{});
 }
 
 Game::Actor::Player::PlayerCharacter::~PlayerCharacter()

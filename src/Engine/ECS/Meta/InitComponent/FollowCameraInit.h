@@ -59,7 +59,7 @@ namespace Engine::ECS::Meta::Init
 
 			// Initialize camera Front vector
 			auto& camComp = ecs.get<eNsCamComp::CameraComponent>(cameraEntity);
-			camComp.fov = glm::radians(60.0f);
+			camComp.fov = glm::radians(45.0f);
 			camComp.aspect = window.GetAspect();
 			camComp.frontOffset = glm::vec3(0.0f, 0.0f, -0.6f);
 			camComp.front = glm::normalize(targetTransform.position - camTransform.position + camComp.frontOffset);

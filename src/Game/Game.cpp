@@ -48,6 +48,8 @@
 #include "Game/01_Layer/ResolverLayerFeature.hpp"
 #include "Game/01_Layer/LogicLayerFeature.h"
 #include "Game/01_Layer/StateLayerFeature.hpp"
+#include "Game/01_Layer/LocomotionResolverLayerFeature.hpp"
+
 //Game/Actor
 #include "Game/Actor/CameraActor.h"
 #include "Game/Actor/PlayerCharacterActor.h"
@@ -265,6 +267,9 @@ void GameApp::GameApp::updateGameLogics()
 
 	// Logic Layer
 	gNsLayer::LogicLayerFeature::Update(mECS, deltaTime);
+
+	// Anim Layer
+	Game::Layer::LocomotionResolverLayerFeature::Update(mECS);
 
 	Engine::Graphics::Animation::System::AnimationSystem(mECS);
 }

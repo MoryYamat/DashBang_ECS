@@ -21,6 +21,7 @@ namespace Engine::Graphics::Model::Animation
 		return int(times.size()) - 2;
 	}
 
+	// 線形補間
 	static glm::vec3 lerp3(const glm::vec3& a, const glm::vec3& b, float w)
 	{
 		return a * (1.f - w) + b * w;
@@ -95,7 +96,7 @@ namespace Engine::Graphics::Model::Animation
 
 				// 最適経路のための同向き補正
 				if (glm::dot(q0, q1) < 0.f) q1 = -q1;
-				glm::quat q = glm::slerp(q0, q1, w);
+				glm::quat q = glm::slerp(q0, q1, w);// 球面線形補間
 				outLocalTRS[ch.bone].r = glm::normalize(q);
 			}
 		}
@@ -176,7 +177,7 @@ namespace Engine::Graphics::Model::Animation
 		for (size_t i = 0; i < n; ++i)
 		{
 			// outPalette[i] = invMeshBind * ( skelRootBind * M[i] ) * skel.bones[i].invBind;
-			outPalette[i] = (skelRootBind * M[i]) * skel.bones[i].invBind;
+			outPalette[i] = (skelRootBind * M[i]) * skel.bones[i].invBind;// モデル空間における各ボーン行列
 		}
 	}
 }
