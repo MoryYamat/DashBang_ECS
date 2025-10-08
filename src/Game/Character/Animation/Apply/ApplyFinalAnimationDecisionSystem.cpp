@@ -48,4 +48,6 @@ namespace Game::Character::Animation::Apply
 			anim.speed = dec.playRate;
 		}
 	}
+
+
 }

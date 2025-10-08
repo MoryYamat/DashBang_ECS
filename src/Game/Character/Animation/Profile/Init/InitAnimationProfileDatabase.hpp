@@ -19,6 +19,9 @@ namespace Game::Character::Animation::Profile::Init
 		{
 			.idle = "idle_default",
 			.runFwd = "run_fwd_default",
+			.runBack = "run_back_default",
+			.runRight = "run_right_default",
+			.runLeft = "run_left_default",
 		};
 	}
 }

@@ -1,4 +1,4 @@
-// ˜_——pŒvZŠÖ”ŒQ
+ï»¿// è«–ç†ç”¨è¨ˆç®—é–¢æ•°ç¾¤
 
 
 #pragma once
@@ -7,12 +7,14 @@
 #include "Engine/Debug/DebugUtils.h"
 
 #include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
 
+#include <cmath>
 #include <iostream>
 
 namespace Engine::Math::Logic2D
 {
-	// ƒQ[ƒ€ƒƒWƒbƒN—pi+Z‚ª³–Êj rotationY = 0 -> return = (0, 1) rotationY = pi/2 -> return = (1, 0)
+	// ã‚²ãƒ¼ãƒ ãƒ­ã‚¸ãƒƒã‚¯ç”¨ï¼ˆ+ZãŒæ­£é¢ï¼‰ rotationY = 0 -> return = (0, 1) rotationY = pi/2 -> return = (1, 0)
 	inline glm::vec2 RotateVec2FromZForward(const glm::vec2& vec, float radians)
 	{
 		float c = glm::cos(radians);
@@ -25,19 +27,19 @@ namespace Engine::Math::Logic2D
 
 	//
 
-	// +Z‚ª‘O•û‚Ìê‡‚Ìradians‚¾‚¯‰ñ“]‚µ‚½ƒxƒNƒgƒ‹‚ğ“¾‚é
+	// +ZãŒå‰æ–¹ã®å ´åˆã®radiansã ã‘å›è»¢ã—ãŸãƒ™ã‚¯ãƒˆãƒ«ã‚’å¾—ã‚‹
 	inline glm::vec2 CalcForwardFromYaw(float radians)
 	{
 		return RotateVec2FromZForward(CanonicalDefaults::kLocalForwardXZ, radians);
 	}
 
-	// +Z‚ª‘O•û‚Ìê‡‚Ìradinas‚¾‚¯‰ñ“]‚µ‚½FrontƒxƒNƒgƒ‹‚É‘Î‚·‚éRightƒxƒNƒgƒ‹‚ğ“¾‚é
+	// +ZãŒå‰æ–¹ã®å ´åˆã®radinasã ã‘å›è»¢ã—ãŸFrontãƒ™ã‚¯ãƒˆãƒ«ã«å¯¾ã™ã‚‹Rightãƒ™ã‚¯ãƒˆãƒ«ã‚’å¾—ã‚‹
 	inline glm::vec2 CalcRightFromYaw(float radians)
 	{
 		return RotateVec2FromZForward(CanonicalDefaults::kCanonicalForwardXZ, radians + glm::half_pi<float>());
 	}
 
-	// [-pi, pi]‚ğ[0, 2pi]‚É³‹K‰»
+	// [-pi, pi]ã‚’[0, 2pi]ã«æ­£è¦åŒ–
 	inline float NormalizeAnglePositive(float rad)
 	{
 		float constexpr twoPi = 2.0f * glm::pi<float>();
@@ -47,24 +49,24 @@ namespace Engine::Math::Logic2D
 		return result;
 	}
 
-	// ‰ñ“]Œ´“_‚ğ’è‹`
-	// ‰EèŒn(+Z‚ª³–Ê(0.0‹) : ƒxƒNƒgƒ‹‚Ì‰ñ“]‚ğƒ‰ƒWƒAƒ“‚Å•Ô‚·
+	// å›è»¢åŸç‚¹ã‚’å®šç¾©
+	// å³æ‰‹ç³»(+ZãŒæ­£é¢(0.0Â°) : ãƒ™ã‚¯ãƒˆãƒ«ã®å›è»¢ã‚’ãƒ©ã‚¸ã‚¢ãƒ³ã§è¿”ã™
 	inline float CalcYawFromDirection(glm::vec2 vecXZ)
 	{
-		// ‚à‚¤­‚µ—Ç‚¢•ªŠò•û–@‚ğl‚¦‚é
+		// ã‚‚ã†å°‘ã—è‰¯ã„åˆ†å²æ–¹æ³•ã‚’è€ƒãˆã‚‹
 		if (glm::length(vecXZ) > 0.0001f)
 		{
 			// atan2 -> [-pi, pi] 
-			// return std::atan2(vecXZ.y, vecXZ.x);// +X²‚©‚ç+Z²
-			// return std::atan2(-vecXZ.y, vecXZ.x);// +X²‚©‚ç-Z²
-			// return std::atan2(vecXZ.y, -vecXZ.x);// -X²‚©‚ç+Z²
-			// return std::atan2(-vecXZ.y, -vecXZ.x);// -X²‚©‚ç-Z²
+			// return std::atan2(vecXZ.y, vecXZ.x);// +Xè»¸ã‹ã‚‰+Zè»¸
+			// return std::atan2(-vecXZ.y, vecXZ.x);// +Xè»¸ã‹ã‚‰-Zè»¸
+			// return std::atan2(vecXZ.y, -vecXZ.x);// -Xè»¸ã‹ã‚‰+Zè»¸
+			// return std::atan2(-vecXZ.y, -vecXZ.x);// -Xè»¸ã‹ã‚‰-Zè»¸
 
-			// [0, 2pi] ‚É•â³
-			// return NormalizeAnglePositive(std::atan2(-vecXZ.x, -vecXZ.y));// -Z²‚©‚ç-X²
-			// return std::atan2(-vecXZ.x, vecXZ.y);// Z²‚©‚ç-X²
-			// return std::atan2(vecXZ.x, -vecXZ.y);// -Z²‚©‚ç+X²
-			return NormalizeAnglePositive(std::atan2(vecXZ.x, vecXZ.y));// +Z²‚©‚ç+X²
+			// [0, 2pi] ã«è£œæ­£
+			// return NormalizeAnglePositive(std::atan2(-vecXZ.x, -vecXZ.y));// -Zè»¸ã‹ã‚‰-Xè»¸
+			// return std::atan2(-vecXZ.x, vecXZ.y);// Zè»¸ã‹ã‚‰-Xè»¸
+			// return std::atan2(vecXZ.x, -vecXZ.y);// -Zè»¸ã‹ã‚‰+Xè»¸
+			return NormalizeAnglePositive(std::atan2(vecXZ.x, vecXZ.y));// +Zè»¸ã‹ã‚‰+Xè»¸
 		}
 		else
 		{
@@ -73,11 +75,20 @@ namespace Engine::Math::Logic2D
 	}
 
 
-	// ‰EèŒn(”½Œv‰ñ‚è‚ª³)‚É‚¨‚¢‚ÄC‚ ‚éƒxƒNƒgƒ‹‚É‘Î‚·‚é‰EƒxƒNƒgƒ‹‚ğ•Ô‚·
+	// å³æ‰‹ç³»(åæ™‚è¨ˆå›ã‚ŠãŒæ­£)ã«ãŠã„ã¦ï¼Œã‚ã‚‹ãƒ™ã‚¯ãƒˆãƒ«ã«å¯¾ã™ã‚‹å³ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¿”ã™
 	inline glm::vec2 CalcRightFromForward(glm::vec2 front)
 	{
 		return glm::vec2(-front.y, front.x);
 		//return glm::vec2(front.y, front.x);
+	}
+
+	// [0, 2pi) ã®è§’åº¦ã‚’ [-pi, pi]ã«ãƒãƒƒãƒ—
+	inline float ToSignedPi(float rad)
+	{
+		const float twoPi = 2.0f * glm::pi<float>();
+		float a = std::fmod(rad + glm::pi<float>(), twoPi);
+		if (a < 0.0f) a += twoPi;
+		return a - glm::pi<float>();
 	}
 
 }
@@ -97,7 +108,7 @@ namespace Engine::Math::Logic2D
 {
 	namespace Transform
 	{
-		// ƒ[ƒJƒ‹ƒIƒtƒZƒbƒg‚ğƒ[ƒ‹ƒh‹óŠÔ‚Ö•ÏŠ·(ˆÊ’uƒxƒNƒgƒ‹)
+		// ãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰ç©ºé–“ã¸å¤‰æ›(ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«)
 		inline glm::vec2 ApplyLocalOffset(
 			const glm::vec2& localOffset,
 			const glm::vec2& positionXZ,
@@ -109,10 +120,10 @@ namespace Engine::Math::Logic2D
 			return positionXZ + rotated * scale;
 		}
 
-		// ƒ[ƒJƒ‹•ûŒüƒxƒNƒgƒ‹‚ğƒ[ƒ‹ƒh‹óŠÔ‚Ö•ÏŠ·inormalize„§j
+		// ãƒ­ãƒ¼ã‚«ãƒ«æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰ç©ºé–“ã¸å¤‰æ›ï¼ˆnormalizeæ¨å¥¨ï¼‰
 		inline glm::vec2 TransformDirection(
 			const glm::vec2& localDirection,
-			float rotationY = 0.0f// ƒ[ƒJƒ‹‰ñ“]
+			float rotationY = 0.0f// ãƒ­ãƒ¼ã‚«ãƒ«å›è»¢
 		)
 		{
 			return RotateVec2FromZForward(localDirection, rotationY);
