@@ -4,7 +4,6 @@
 
 #include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
-#include "Engine/ECS/Component/Tags/PlayerCharacterTag.h"
 
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 #include "Engine/ECS/Component/Logic2D/TileMapComponent.h"

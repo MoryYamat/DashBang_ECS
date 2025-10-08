@@ -1,7 +1,6 @@
-// 
+ï»¿// 
 #include "PlayerSkillIntentMapper.h"
 
-#include "Engine/ECS/Component/Tags/PlayerCharacterTag.h"
 
 #include "Game/Input/InputActionComponent.h"
 
@@ -16,8 +15,8 @@
 
 #include <iostream>
 
-// ƒ†[ƒU‚Ì“ü—Í‚©‚çPlayerCharacter‚ÌSkill—pIntent‚ğXV‚·‚é(Œ»İ‚ÍPlayerê—p‚¾‚ªŒãXAI‚à“‡‰Â”\H)
-// ƒˆ‚ÈInput->Intent‚Ì•ÏŠ·‚ğs‚¤ƒVƒXƒeƒ€
+// ãƒ¦ãƒ¼ã‚¶ã®å…¥åŠ›ã‹ã‚‰PlayerCharacterã®Skillç”¨Intentã‚’æ›´æ–°ã™ã‚‹(ç¾åœ¨ã¯Playerå°‚ç”¨ã ãŒå¾Œã€…AIã‚‚çµ±åˆå¯èƒ½ï¼Ÿ)
+// ç´”ç²‹ãªInput->Intentã®å¤‰æ›ã‚’è¡Œã†ã‚·ã‚¹ãƒ†ãƒ 
 void Game::Input::Intent::SkillIntentMappingSystem::UpdatePlayerSkillIntent(eNsECS::EntityMgr& ecs)
 {
 	// std::cout << "Here\n";
@@ -27,7 +26,7 @@ void Game::Input::Intent::SkillIntentMappingSystem::UpdatePlayerSkillIntent(eNsE
 		gNsCharacterControlSkill::SkillIntentComponent,
 		gNsTags::PlayerCharacterTag>())
 	{
-		// ‚±‚±‚Ü‚Å—ˆ‚Ä‚È‚¢
+		// ã“ã“ã¾ã§æ¥ã¦ãªã„
 		const auto& input = ecs.get<gNsInput::InputActionComponent>(e);
 		const auto& binding = ecs.get<gNsSkillComp::SkillInputBindingComponent>(e);
 		auto& intent = ecs.get<gNsCharacterControlSkill::SkillIntentComponent>(e);
@@ -40,7 +39,7 @@ void Game::Input::Intent::SkillIntentMappingSystem::UpdatePlayerSkillIntent(eNsE
 		{
 			if (input.isJustPressed(action))
 			{
-				// ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚éê‡Ctrue‚É
+				// ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹å ´åˆï¼Œtrueã«
 				intent.isActive = true;
 				intent.requestedSlots.push_back(slot);
 				// std::cout << "[SkillIntent] Intent triggered." << std::endl;

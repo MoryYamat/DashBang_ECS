@@ -9,6 +9,8 @@
 #include "Game/Character/Animation/Query/AnimationQueryComponent.hpp"
 #include "Game/Character/Animation/Resolve/Movement/MovementAnimDecisionComponent.hpp"
 
+#include "Game/ECS/Tags/CharacterAttribTags.h"
+
 #include "Engine/ECS/Ops/CoreOps.hpp"
 
 #include "Engine/Math/Logic2D/LogicMathUtils.h"
@@ -33,6 +35,7 @@ namespace Game::Character::Animation::Resolve::Movement
 
 	void MovementAnimationResolverSystem::Update(ECS::EntityMgr& ecs)
 	{
+		using Type = ARes::MoveAnimType;
 		auto& db = Ops::GetOrCreateRes<Prof::MovementAnimationProfileDatabase>(ecs);
 
 		for (auto e : ecs.view<
@@ -52,24 +55,61 @@ namespace Game::Character::Animation::Resolve::Movement
 				dec.valid = false;
 				continue;
 			}
-
-			dec.type = q.isMoving ? calcRelativeMovementDir(q.facingDirWorld, q.moveDirWorld, dec.type) : ARes::MoveAnimType::Idle;
+			const bool isPlayer = Ops::Has<Game::ECS::Tags::PlayerCharacterTag>(ecs, e);
+			const Type want = q.isMoving ? calcRelativeMovementDir(q.facingDirWorld, q.moveDirWorld, dec.type) : ARes::MoveAnimType::Idle;
 
 
 			const auto* mp = db.FindMovement(prof.profileId);
 			assert(mp);
 		
+			if(!isPlayer)
+			{
+				dec.type = quantizeTo4Dir(want);
+			}
+			else
+			{
+				// ② デバウンス処理
+				if (want == dec.type)
+				{
+					// 同じ方向ならリセット
+					dec.pendingFrames = 0;
+					dec.pending = want;
+				}
+				else
+				{
+					if (dec.pending != want)
+					{
+						// 新しい候補方向が出たのでリセット
+						dec.pending = want;
+						dec.pendingFrames = 0;
+					}
+					else
+					{
+						// 同じ候補方向が続いている
+						if (++dec.pendingFrames >= 3) // ←ここが閾値（3フレーム連続）
+						{
+							dec.type = dec.pending;
+							dec.pendingFrames = 0;
+						}
+					}
+				}
+			}
 
 
 
 			// TODO: switchは著しく柔軟性を損なうため、ほかの方法によって解決できるようにしたい
 			switch (dec.type)
 			{
-			case ARes::MoveAnimType::Idle: dec.clipKey = mp->idle.empty() ? "idle_default" : mp->idle; break;
-			case ARes::MoveAnimType::RunFwd: dec.clipKey = mp->runFwd.empty() ? "run_fwd_default" : mp->runFwd; break;
-			case ARes::MoveAnimType::RunBack: dec.clipKey = mp->runBack.empty() ? "run_back_default" : mp->runBack; break;
-			case ARes::MoveAnimType::RunRight: dec.clipKey = mp->runRight.empty() ? "run_right_default" : mp->runRight; break;
-			case ARes::MoveAnimType::RunLeft: dec.clipKey = mp->runLeft.empty() ? "run_left_default" : mp->runLeft; break;
+			case Type::Idle: dec.clipKey = mp->idle.empty() ? "idle_default" : mp->idle; break;
+			case Type::RunFwd: dec.clipKey = mp->runFwd.empty() ? "run_fwd_default" : mp->runFwd; break;
+			case Type::RunBack: dec.clipKey = mp->runBack.empty() ? "run_back_default" : mp->runBack; break;
+			case Type::RunRight: dec.clipKey = mp->runRight.empty() ? "run_right_default" : mp->runRight; break;
+			case Type::RunLeft: dec.clipKey = mp->runLeft.empty() ? "run_left_default" : mp->runLeft; break;
+			case Type::RunFwdLeft:   dec.clipKey = mp->runFwdLeft.empty() ? "run_fwd_left_default" : mp->runFwdLeft;  break;
+			case Type::RunFwdRight:  dec.clipKey = mp->runFwdRight.empty() ? "run_fwd_right_default" : mp->runFwdRight; break;
+			case Type::RunBackLeft:  dec.clipKey = mp->runBackLeft.empty() ? "run_back_left_default" : mp->runBackLeft; break;
+			case Type::RunBackRight: dec.clipKey = mp->runBackRight.empty() ? "run_back_right_default" : mp->runBackRight;break;
+
 			}
 
 			dec.loop = true;
@@ -100,37 +140,54 @@ namespace Game::Character::Animation::Resolve::Movement
 		const float yawF = Math2D::CalcYawFromDirection(f);
 		const float yawM = Math2D::CalcYawFromDirection(m);
 
-		const float yaw = Math2D::ToSignedPi(yawM - yawF); // [-pi, pi]
+		// const float yaw = Math2D::ToSignedPi(yawM - yawF); // [-pi, pi]
+		const float yaw = Math2D::ToSignedPi(yawF - yawM); // [-pi, pi]
 		const float ay = std::abs(yaw);
 		
 
 		//  TODO: switchはできるだけ避けたい->今後ほかの良い方法を考える
 		// 最適化必要
-		switch(prev)
-		{
-		case Type::RunFwd:
-			if (ay <= k45off) return Type::RunFwd;// 前を維持
-			break;
-		case Type::RunBack:
-			if (ay >= k135off) return Type::RunBack;// 後ろを維持
-			break;
-		case Type::RunLeft:
-			if (ay <= k45off) return Type::RunFwd;
-			if (ay >= k135on) return Type::RunBack;
-			if (yaw > 0.0f) return Type::RunLeft;
+		//switch(prev)
+		//{
+		//case Type::RunFwd:
+		//	if (ay <= k45off) return Type::RunFwd;// 前を維持
+		//	break;
+		//case Type::RunBack:
+		//	if (ay >= k135off) return Type::RunBack;// 後ろを維持
+		//	break;
+		//case Type::RunLeft:
+		//	if (ay <= k45off) return Type::RunFwd;
+		//	if (ay >= k135on) return Type::RunBack;
+		//	if (yaw > 0.0f) return Type::RunLeft;
 
-			return Type::RunRight;
+		//	return Type::RunRight;
 
-		case Type::RunRight:
-			if (ay <= k45off) return Type::RunFwd;
-			if (ay >= k135on) return Type::RunBack;
-			if (yaw < 0.0f) return Type::RunRight;
+		//case Type::RunRight:
+		//	if (ay <= k45off) return Type::RunFwd;
+		//	if (ay >= k135on) return Type::RunBack;
+		//	if (yaw < 0.0f) return Type::RunRight;
 
-			return Type::RunLeft;
+		//	return Type::RunLeft;
 
-		default:
-			break;
-		}
+		//default:
+		//	break;
+		//}
+
+		// yaw を degree に
+		float deg = glm::degrees(yaw);
+		if (deg < 0) deg += 360.f;
+
+		
+
+		// 8方向分割（22.5°ごと）
+		if(deg < 22.5f || deg >= 337.5f) return Type::RunFwd;
+		if (deg < 67.5f)  return Type::RunFwdRight;
+		if (deg < 112.5f) return Type::RunRight;
+		if (deg < 157.5f) return Type::RunBackRight;
+		if (deg < 202.5f) return Type::RunBack;
+		if (deg < 247.5f) return Type::RunBackLeft;
+		if (deg < 292.5f) return Type::RunLeft;
+		return Type::RunFwdLeft;
 
 
 
@@ -147,5 +204,29 @@ namespace Game::Character::Animation::Resolve::Movement
 		// righ 
 
 		// left
+	}
+
+	// TODO: 最適化
+	// TODO: 最適化
+	// TODO: 最適化
+	Game::Character::Animation::Resolve::Movement::MoveAnimType
+		MovementAnimationResolverSystem::quantizeTo4Dir
+		(const Game::Character::Animation::Resolve::Movement::MoveAnimType type)
+	{
+		using Type = ARes::MoveAnimType;
+
+		switch (type)
+		{
+		case Type::RunFwdLeft:
+		case Type::RunFwdRight:
+			return Type::RunFwd;
+
+		case Type::RunBackLeft:
+		case Type::RunBackRight:
+			return Type::RunBack;
+
+		default:
+			return type; // それ以外はそのまま（Idle, RunLeft, RunRight）
+		}
 	}
 }

@@ -22,6 +22,10 @@ namespace Game::Character::Animation::Profile::Init
 			.runBack = "run_back_default",
 			.runRight = "run_right_default",
 			.runLeft = "run_left_default",
+			.runFwdLeft = "run_fwd_left_default",
+			.runFwdRight = "run_fwd_right_default",
+			.runBackLeft = "run_back_left_default",
+			.runBackRight = "run_back_right_default",
 		};
 	}
 }

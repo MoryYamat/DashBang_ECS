@@ -1,4 +1,4 @@
-#include "LogicDebugDrawSystem.h"
+ï»¿#include "LogicDebugDrawSystem.h"
 
 #include "Engine/ECS/Component/Common/TransformComponent.h"
 
@@ -6,7 +6,6 @@
 #include "Engine/ECS/Component/Logic2D/TileMapComponent.h"
 
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
-#include "Engine/ECS/Component/Tags/PlayerCharacterTag.h"
 
 
 #include "Engine/ECS/Component/Logic2D/Transform2DComponent.h"
@@ -33,7 +32,7 @@
 
 #include <variant>
 
-// ƒfƒoƒbƒO—pi˜_—Œnj‚Ì•`‰æ‚·‚é‹@”\‚Ü‚Æ‚ß‚Ä‚ğ’ñ‹Ÿ
+// ãƒ‡ãƒãƒƒã‚°ç”¨ï¼ˆè«–ç†ç³»ï¼‰ã®æç”»ã™ã‚‹æ©Ÿèƒ½ã¾ã¨ã‚ã¦ã‚’æä¾›
 void Engine::Debug::Drawing::Logic2D::Draw(eNsECS::EntityMgr& ecs,
 	const eNsGfxRender::RenderContext& renderContext,
 	const Game::Collision::Data::CollisionResultStorage& collisionResult
@@ -45,12 +44,12 @@ void Engine::Debug::Drawing::Logic2D::Draw(eNsECS::EntityMgr& ecs,
 	//
 	DebugDrawLogicTileMaps(ecs, renderContext);
 
-	// PlayerCharacter‚Æƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ÌXZ•½–Êã‚ÌˆÊ’u‚ğ\š‚Å•`‰æ
+	// PlayerCharacterã¨ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã®XZå¹³é¢ä¸Šã®ä½ç½®ã‚’åå­—ã§æç”»
 	DebugDrawLogicPlayerPositions(ecs, renderContext);
 
 	DebugDrawPlayerCollision(ecs, renderContext);
 	
-	// Debug—p‚ÌƒRƒŠƒWƒ‡ƒ“ŒŸ’m‚ğ•\¦
+	// Debugç”¨ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³æ¤œçŸ¥ã‚’è¡¨ç¤º
 	DebugDrawPlayerAndTileMap(ecs, renderContext, collisionResult);
 
 	RenderAttack2DAreas(ecs, renderContext);
@@ -59,7 +58,7 @@ void Engine::Debug::Drawing::Logic2D::Draw(eNsECS::EntityMgr& ecs,
 	ResetOpenGLMatrixState();
 }
 
-// ƒfƒoƒbƒO—pi˜_—À•Wj‚Ì“_‚â‹éŒ`‚ğ•`‰æ‚·‚é‹@”\‚ğ’ñ‹Ÿ
+// ãƒ‡ãƒãƒƒã‚°ç”¨ï¼ˆè«–ç†åº§æ¨™ï¼‰ã®ç‚¹ã‚„çŸ©å½¢ã‚’æç”»ã™ã‚‹æ©Ÿèƒ½ã‚’æä¾›
 void Engine::Debug::Drawing::Logic2D::DebugDrawLogicPlayerPositions(eNsECS::EntityMgr& ecs, const eNsGfxRender::RenderContext& renderContext)
 {
 	//SetOpenGLMatrixState(renderContext);
@@ -91,7 +90,7 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawLogicPlayerPositions(eNsECS::Enti
 
 }
 
-// ƒfƒoƒbƒO—pAƒ^ƒCƒ‹ƒ}ƒbƒv‚ğ•`‰æ‚·‚é‹@”\‚ğ’ñ‹Ÿ
+// ãƒ‡ãƒãƒƒã‚°ç”¨ã€ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—ã‚’æç”»ã™ã‚‹æ©Ÿèƒ½ã‚’æä¾›
 void Engine::Debug::Drawing::Logic2D::DebugDrawLogicTileMaps(eNsECS::EntityMgr& ecs, const eNsGfxRender::RenderContext& renderContext)
 {
 	//SetOpenGLMatrixState(renderContext);
@@ -111,7 +110,7 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawLogicTileMaps(eNsECS::EntityMgr& 
 				glm::vec2 center = tileMapComp.origin + glm::vec2(col + 0.5f, row + 0.5f) * tileMapComp.tileSize;
 
 				glm::vec3 color;
-				// walkable‘®«‚É‚æ‚Á‚Ä•`‰æ•û–@‚ğ•ÏX
+				// walkableå±æ€§ã«ã‚ˆã£ã¦æç”»æ–¹æ³•ã‚’å¤‰æ›´
 				if (!tile.isWalkable)
 				{
 					color = glm::vec3(0.0f, 0.0f, 0.5f);
@@ -120,8 +119,8 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawLogicTileMaps(eNsECS::EntityMgr& 
 				else
 				{
 					color = glm::vec3(1.0f, 1.0f, 0.0f);
-					// ‚Ç‚±‚Å‰½‚Ìî•ñ‚ğ¶¬‚µA‚Ç‚¤‚¢‚¤Œ`‚Å“n‚·‚©‚ğ—vŒŸ“¢
-					// ‚Ç‚±‚Å‰½‚Ìî•ñ‚ğ¶¬‚µA‚Ç‚¤‚¢‚¤Œ`‚Å“n‚·‚©‚ğ—vŒŸ“¢
+					// ã©ã“ã§ä½•ã®æƒ…å ±ã‚’ç”Ÿæˆã—ã€ã©ã†ã„ã†å½¢ã§æ¸¡ã™ã‹ã‚’è¦æ¤œè¨
+					// ã©ã“ã§ä½•ã®æƒ…å ±ã‚’ç”Ÿæˆã—ã€ã©ã†ã„ã†å½¢ã§æ¸¡ã™ã‹ã‚’è¦æ¤œè¨
 					eNsDebugDraw::DrawQuad(center, tileMapComp.tileSize, color);
 				}
 
@@ -133,7 +132,7 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawLogicTileMaps(eNsECS::EntityMgr& 
 
 }
 
-// uiong—p‚ÌğŒ•ªŠò
+// uionä½¿ç”¨æ™‚ã®æ¡ä»¶åˆ†å²
 //void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerCollision(eNsECS::EntityMgr& ecs, const eNsGfxRender::RenderContext& renderContext)
 //{
 //	glm::vec3 color = glm::vec3(0.0f, 1.0f, 1.0f);
@@ -153,7 +152,7 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawLogicTileMaps(eNsECS::EntityMgr& 
 //	}
 //}
 
-// variant‚ÌğŒ•ªŠò
+// variantã®æ¡ä»¶åˆ†å²
 void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerCollision(eNsECS::EntityMgr& ecs, const eNsGfxRender::RenderContext& renderContext)
 {
 	glm::vec3 color = glm::vec3(0.0f, 1.0f, 1.0f);
@@ -167,11 +166,11 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerCollision(eNsECS::EntityMgr
 			using T = std::decay_t<decltype(shape)>;
 			if constexpr (std::is_same_v<T, eNsLogic2DComp::Circle2D>)
 			{
-				// ƒ[ƒJƒ‹ -> ƒ[ƒ‹ƒh•ÏŠ·
+				// ãƒ­ãƒ¼ã‚«ãƒ« -> ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›
 				glm::vec2 worldCenter = glm::vec2(transformComp.position.x, transformComp.position.z)
-					+ shape.center;// ƒ[ƒJƒ‹ƒIƒtƒZƒbƒg
+					+ shape.center;// ãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆ
 
-				float worldRadius = shape.radius;// •K—v‚È‚çƒXƒP[ƒŠƒ“ƒO(ƒ[ƒJƒ‹‚ÉƒXƒP[ƒŠƒ“ƒO‚ğ“K—pÏ(C³•K—v))
+				float worldRadius = shape.radius;// å¿…è¦ãªã‚‰ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°(ãƒ­ãƒ¼ã‚«ãƒ«ã«ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°ã‚’é©ç”¨æ¸ˆ(ä¿®æ­£å¿…è¦))
 
 				eNsDebugDraw::DrawCircle2D(worldCenter, worldRadius, color);
 			}
@@ -196,7 +195,7 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerAndTileMap(eNsECS::EntityMg
 	//{
 	//	const auto& collisionComp = ecs.get<CollisionComponent>(e);
 
-	//	// ‚±‚±‚Å‚±‚ê‚ğŒÄ‚Ño‚·‚Ì‚ª‚¨‚©‚µ‚¢‚Ì‚Å‚»‚ê‚ğC³‚·‚é
+	//	// ã“ã“ã§ã“ã‚Œã‚’å‘¼ã³å‡ºã™ã®ãŒãŠã‹ã—ã„ã®ã§ãã‚Œã‚’ä¿®æ­£ã™ã‚‹
 	//	//CollisionUtils::TestCircleTileMapCollisionHighlight(collisionComp, tileMapComp);
 	//}
 
@@ -219,8 +218,8 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerAndTileMap(eNsECS::EntityMg
 
 void Engine::Debug::Drawing::Logic2D::SetOpenGLMatrixState(const eNsGfxRender::RenderContext& renderContext)
 {
-	// view/projection ‚ğ–‘O‚ÉƒZƒbƒg
-	// ŒÅ’è‹@”\ƒpƒCƒvƒ‰ƒCƒ“‚ÌŒÃ‚¢‹@”\
+	// view/projection ã‚’äº‹å‰ã«ã‚»ãƒƒãƒˆ
+	// å›ºå®šæ©Ÿèƒ½ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®å¤ã„æ©Ÿèƒ½
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(glm::value_ptr(renderContext.projectionMatrix));
 

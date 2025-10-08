@@ -1,11 +1,10 @@
-#include "CharacterSkillExecutionSystem.hpp"
+ï»¿#include "CharacterSkillExecutionSystem.hpp"
 
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
 #include "Engine/ECS/Component/Logic2D/Transform2DComponent.h"
 
-#include "Engine/ECS/Component/Tags/PlayerCharacterTag.h"
 
-// ”p~—\’èFSkillExecutionComponent‚ÉˆÚs
+// å»ƒæ­¢äºˆå®šï¼šSkillExecutionComponentã«ç§»è¡Œ
 #include "Game/Combat/Skill/Component/SkillInstanceComponent.h"
 
 #include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
@@ -20,9 +19,9 @@
 
 #include "Common/GameNamespaceDecl.h"
 
-// íœ—\’èFFSMÀ‘•Œã”p~—\’è
-// FIXME:Intent‚ÉŠî‚Ã‚¢‚ÄƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹‚ğÀs‚·‚éD¦–{—ˆ‚Í‚±‚ÌExecution‚Ì‘O‚ÉResolver‚É‚æ‚éÀs‰Â”Û”»’è‚ª•K—v
-// Intent -> Resolver -> Logic : Intent‚ÆState‚ÉŠî‚Ã‚¢‚ÄƒXƒLƒ‹‚ÌÀs‰Â”Û‚ğ”»’è‚·‚é
+// å‰Šé™¤äºˆå®šï¼šFSMå®Ÿè£…å¾Œå»ƒæ­¢äºˆå®š
+// FIXME:Intentã«åŸºã¥ã„ã¦ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«ã‚’å®Ÿè¡Œã™ã‚‹ï¼â€»æœ¬æ¥ã¯ã“ã®Executionã®å‰ã«Resolverã«ã‚ˆã‚‹å®Ÿè¡Œå¯å¦åˆ¤å®šãŒå¿…è¦
+// Intent -> Resolver -> Logic : Intentã¨Stateã«åŸºã¥ã„ã¦ã‚¹ã‚­ãƒ«ã®å®Ÿè¡Œå¯å¦ã‚’åˆ¤å®šã™ã‚‹
 void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 
@@ -36,14 +35,14 @@ void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::Enti
 	//	const auto& slotAssign = ecs.get<gNsSkillComp::SkillSlotAssignmentComponent>(ePlayer);
 	//	const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(ePlayer);
 
-	//	// ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢ê‡‚ÍƒXƒ‹[
+	//	// ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ãªã„å ´åˆã¯ã‚¹ãƒ«ãƒ¼
 	//	if (!intent.isActive) continue;
 
-	//	// ’l‚ÌQÆ‚Ì³“«‚ğ‰ü‘P‚·‚é(«—ˆ“I‚É)
-	//	// ƒXƒLƒ‹ID‚Í‚¢‚Â‚à`ƒXƒLƒ‹’è‹`(SkillDefinition)`‚Æ“™‚µ‚¢‚Ù‚¤‚ª³““I‚¾‚Æv‚í‚ê‚é????
+	//	// å€¤ã®å‚ç…§ã®æ­£çµ±æ€§ã‚’æ”¹å–„ã™ã‚‹(å°†æ¥çš„ã«)
+	//	// ã‚¹ã‚­ãƒ«IDã¯ã„ã¤ã‚‚`ã‚¹ã‚­ãƒ«å®šç¾©(SkillDefinition)`ã¨ç­‰ã—ã„ã»ã†ãŒæ­£çµ±çš„ã ã¨æ€ã‚ã‚Œã‚‹????
 	//	for (auto slot : intent.requestedSlots)
 	//	{
-	//		//// contains ‚É•ÏX‰Â”\H
+	//		//// contains ã«å¤‰æ›´å¯èƒ½ï¼Ÿ
 	//		auto it = slotAssign.slotToSkillId.find(slot);
 	//		if (it == slotAssign.slotToSkillId.end()) continue;
 	//		// if (!slotAssign.slotToSkillId.contains(slot)) continue;
@@ -51,26 +50,26 @@ void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::Enti
 	//		int skillId = it->second;
 	//		//int skillId = slotAssign.slotToSkillId.at(slot);
 
-	//		// ‚·‚Å‚ÉŠY“–ƒXƒLƒ‹‚ª”­“®’†‚©‚Ç‚¤‚©ƒ`ƒFƒbƒN
+	//		// ã™ã§ã«è©²å½“ã‚¹ã‚­ãƒ«ãŒç™ºå‹•ä¸­ã‹ã©ã†ã‹ãƒã‚§ãƒƒã‚¯
 	//		bool alreadyCasting = false;
 
-	//		// Œø—¦–â‘è ƒLƒƒƒbƒVƒ…
-	//		// Fixme: “¯‚¶ƒXƒLƒ‹‚ğ’ZŠÔ‚Å•¡”‰ñ”­“®(˜AË‚İ‚½‚¢‚ÈŠ´‚¶)‚Å‚«‚é‚æ‚¤‚É‚·‚éê‡‚ÍA‚±‚±‚ğ•ÏX‚·‚é•K—v‚ª‚ ‚é
+	//		// åŠ¹ç‡å•é¡Œ ã‚­ãƒ£ãƒƒã‚·ãƒ¥
+	//		// Fixme: åŒã˜ã‚¹ã‚­ãƒ«ã‚’çŸ­æ™‚é–“ã§è¤‡æ•°å›ç™ºå‹•(é€£å°„ã¿ãŸã„ãªæ„Ÿã˜)ã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹å ´åˆã¯ã€ã“ã“ã‚’å¤‰æ›´ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
 	//		for (eNsECS::Entity eSkill : ecs.view<gNsSkillComp::SkillInstanceComponent>())
 	//		{
 	//			const auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(eSkill);
 	//			if (skillInstance.caster == ePlayer && skillInstance.skillId == skillId)
 	//			{
-	//				// ‚·‚Å‚ÉƒXƒLƒ‹‚ª”­“®’†
+	//				// ã™ã§ã«ã‚¹ã‚­ãƒ«ãŒç™ºå‹•ä¸­
 	//				alreadyCasting = true;
 	//				break;
 	//			}
 	//		}
 
-	//		// Fixme: ‚±‚Ìƒtƒ‰ƒO‚Å‚Í“¯‚¶ƒXƒLƒ‹‚ğd•¡”­“®‚Å‚«‚È‚¢‚Ì‚ÅC•Ê‚Ì•û–@‚ğŒŸ“¢‚·‚é•K—v‚ª‚ ‚é
+	//		// Fixme: ã“ã®ãƒ•ãƒ©ã‚°ã§ã¯åŒã˜ã‚¹ã‚­ãƒ«ã‚’é‡è¤‡ç™ºå‹•ã§ããªã„ã®ã§ï¼Œåˆ¥ã®æ–¹æ³•ã‚’æ¤œè¨ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
 	//		if (!alreadyCasting)
 	//		{
-	//			// SkillInstance ‚ğ¶¬
+	//			// SkillInstance ã‚’ç”Ÿæˆ
 	//			eNsECS::Entity skillEntity = ecs.createEntity();
 
 	//			gNsSkillComp::SkillExecutionComponent execution;
@@ -101,8 +100,8 @@ void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::Enti
 }
 
 
-// FIXME:Intent‚ÉŠî‚Ã‚¢‚ÄƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹‚ğÀs‚·‚éD¦–{—ˆ‚Í‚±‚ÌExecution‚Ì‘O‚ÉResolver‚É‚æ‚éÀs‰Â”Û”»’è‚ª•K—v
-// Intent -> Resolver -> Logic : Intent‚ÆState‚ÉŠî‚Ã‚¢‚ÄƒXƒLƒ‹‚ÌÀs‰Â”Û‚ğ”»’è‚·‚é
+// FIXME:Intentã«åŸºã¥ã„ã¦ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«ã‚’å®Ÿè¡Œã™ã‚‹ï¼â€»æœ¬æ¥ã¯ã“ã®Executionã®å‰ã«Resolverã«ã‚ˆã‚‹å®Ÿè¡Œå¯å¦åˆ¤å®šãŒå¿…è¦
+// Intent -> Resolver -> Logic : Intentã¨Stateã«åŸºã¥ã„ã¦ã‚¹ã‚­ãƒ«ã®å®Ÿè¡Œå¯å¦ã‚’åˆ¤å®šã™ã‚‹
 //void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::EntityMgr& ecs, float deltaTime)
 //{
 //
@@ -116,14 +115,14 @@ void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::Enti
 //		const auto& slotAssign = ecs.get<gNsSkillComp::SkillSlotAssignmentComponent>(ePlayer);
 //		const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(ePlayer);
 //
-//		// ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢ê‡‚ÍƒXƒ‹[
+//		// ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ãªã„å ´åˆã¯ã‚¹ãƒ«ãƒ¼
 //		if (!intent.isActive) continue;
 //
-//		// ’l‚ÌQÆ‚Ì³“«‚ğ‰ü‘P‚·‚é(«—ˆ“I‚É)
-//		// ƒXƒLƒ‹ID‚Í‚¢‚Â‚à`ƒXƒLƒ‹’è‹`(SkillDefinition)`‚Æ“™‚µ‚¢‚Ù‚¤‚ª³““I‚¾‚Æv‚í‚ê‚é????
+//		// å€¤ã®å‚ç…§ã®æ­£çµ±æ€§ã‚’æ”¹å–„ã™ã‚‹(å°†æ¥çš„ã«)
+//		// ã‚¹ã‚­ãƒ«IDã¯ã„ã¤ã‚‚`ã‚¹ã‚­ãƒ«å®šç¾©(SkillDefinition)`ã¨ç­‰ã—ã„ã»ã†ãŒæ­£çµ±çš„ã ã¨æ€ã‚ã‚Œã‚‹????
 //		for (auto slot : intent.requestedSlots)
 //		{
-//			//// contains ‚É•ÏX‰Â”\H
+//			//// contains ã«å¤‰æ›´å¯èƒ½ï¼Ÿ
 //			auto it = slotAssign.slotToSkillId.find(slot);
 //			if (it == slotAssign.slotToSkillId.end()) continue;
 //			// if (!slotAssign.slotToSkillId.contains(slot)) continue;
@@ -131,26 +130,26 @@ void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::Enti
 //			int skillId = it->second;
 //			//int skillId = slotAssign.slotToSkillId.at(slot);
 //
-//			// ‚·‚Å‚ÉŠY“–ƒXƒLƒ‹‚ª”­“®’†‚©‚Ç‚¤‚©ƒ`ƒFƒbƒN
+//			// ã™ã§ã«è©²å½“ã‚¹ã‚­ãƒ«ãŒç™ºå‹•ä¸­ã‹ã©ã†ã‹ãƒã‚§ãƒƒã‚¯
 //			bool alreadyCasting = false;
 //
-//			// Œø—¦–â‘è ƒLƒƒƒbƒVƒ…
-//			// Fixme: “¯‚¶ƒXƒLƒ‹‚ğ’ZŠÔ‚Å•¡”‰ñ”­“®(˜AË‚İ‚½‚¢‚ÈŠ´‚¶)‚Å‚«‚é‚æ‚¤‚É‚·‚éê‡‚ÍA‚±‚±‚ğ•ÏX‚·‚é•K—v‚ª‚ ‚é
+//			// åŠ¹ç‡å•é¡Œ ã‚­ãƒ£ãƒƒã‚·ãƒ¥
+//			// Fixme: åŒã˜ã‚¹ã‚­ãƒ«ã‚’çŸ­æ™‚é–“ã§è¤‡æ•°å›ç™ºå‹•(é€£å°„ã¿ãŸã„ãªæ„Ÿã˜)ã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹å ´åˆã¯ã€ã“ã“ã‚’å¤‰æ›´ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
 //			for (eNsECS::Entity eSkill : ecs.view<gNsSkillComp::SkillInstanceComponent>())
 //			{
 //				const auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(eSkill);
 //				if (skillInstance.caster == ePlayer && skillInstance.skillId == skillId)
 //				{
-//					// ‚·‚Å‚ÉƒXƒLƒ‹‚ª”­“®’†
+//					// ã™ã§ã«ã‚¹ã‚­ãƒ«ãŒç™ºå‹•ä¸­
 //					alreadyCasting = true;
 //					break;
 //				}
 //			}
 //
-//			// Fixme: ‚±‚Ìƒtƒ‰ƒO‚Å‚Í“¯‚¶ƒXƒLƒ‹‚ğd•¡”­“®‚Å‚«‚È‚¢‚Ì‚ÅC•Ê‚Ì•û–@‚ğŒŸ“¢‚·‚é•K—v‚ª‚ ‚é
+//			// Fixme: ã“ã®ãƒ•ãƒ©ã‚°ã§ã¯åŒã˜ã‚¹ã‚­ãƒ«ã‚’é‡è¤‡ç™ºå‹•ã§ããªã„ã®ã§ï¼Œåˆ¥ã®æ–¹æ³•ã‚’æ¤œè¨ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
 //			if (!alreadyCasting)
 //			{
-//				// SkillInstance ‚ğ¶¬
+//				// SkillInstance ã‚’ç”Ÿæˆ
 //				eNsECS::Entity skillEntity = ecs.createEntity();
 //
 //				gNsSkillComp::SkillInstanceComponent skillInstance;
@@ -185,7 +184,7 @@ void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::Enti
 //	const eNsLogic2DComp::Logic2DTransformComponent& casterTransform
 //)
 //{
-//	// skillInstance‚ğ¶¬
+//	// skillInstanceã‚’ç”Ÿæˆ
 //	eNsECS::Entity skillEntity = ecs.createEntity();
 //
 //	gNsSkillComp::SkillInstanceComponent skillInstance;
@@ -194,15 +193,15 @@ void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::Enti
 //	skillInstance.timeSinceCast = 0.0f;
 //	ecs.addComponent(skillEntity, skillInstance);
 //
-//	// Transform2DComponent‚ğİ’è
+//	// Transform2DComponentã‚’è¨­å®š
 //	eNsLogic2DComp::Transform2DComponent transform2DComp;
 //	transform2DComp.positionXZ = casterTransform.positionXZ;
 //	transform2DComp.rotationY = casterTransform.GetRotationYFromFrontVector();
 //	transform2DComp.front = casterTransform.front;
 //	transform2DComp.right = casterTransform.right;
-//	transform2DComp.scale = 1.0f; // ƒXƒP[ƒ‹‚Í1.0f‚Å‰Šú‰»
+//	transform2DComp.scale = 1.0f; // ã‚¹ã‚±ãƒ¼ãƒ«ã¯1.0fã§åˆæœŸåŒ–
 //	ecs.addComponent(skillEntity, transform2DComp);
 //
-//	// ƒRƒ“ƒeƒLƒXƒg‚Ö‚Ì‘‚«‚İ
+//	// ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã¸ã®æ›¸ãè¾¼ã¿
 //
 //}

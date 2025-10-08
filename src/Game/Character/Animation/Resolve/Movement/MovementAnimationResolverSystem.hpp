@@ -18,5 +18,11 @@ namespace Game::Character::Animation::Resolve::Movement
 		static Game::Character::Animation::Resolve::Movement::MoveAnimType 
 			calcRelativeMovementDir(const glm::vec2 facingDir, const glm::vec2 movingDir,
 				const Game::Character::Animation::Resolve::Movement::MoveAnimType prev);
+
+		// TODO: 最適化
+		// TODO: 最適化
+		// TODO: 最適化
+		static Game::Character::Animation::Resolve::Movement::MoveAnimType
+			quantizeTo4Dir(const Game::Character::Animation::Resolve::Movement::MoveAnimType type);
 	};
 }

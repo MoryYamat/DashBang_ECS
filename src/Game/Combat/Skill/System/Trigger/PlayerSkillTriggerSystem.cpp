@@ -4,7 +4,6 @@
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 #include "Engine/ECS/Component/Logic2D/Transform2DComponent.h"
 
-#include "Engine/ECS/Component/Tags/PlayerCharacterTag.h"
 
 #include "Game/Combat/Skill/Component/SkillInstanceComponent.h"
 #include "Game/Combat/Skill/Intent/Component/SkillIntentComponent.h"

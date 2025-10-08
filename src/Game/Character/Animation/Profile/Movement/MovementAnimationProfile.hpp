@@ -12,6 +12,10 @@ namespace Game::Character::Animation::Profile
 		std::string runBack;
 		std::string runRight;
 		std::string runLeft;
+		std::string runFwdLeft;
+		std::string runFwdRight;
+		std::string runBackLeft;
+		std::string runBackRight;
 	};
 
 
