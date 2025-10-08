@@ -7,7 +7,7 @@
 
 #include "Game/Character/FSM/CC/Effect/StateScoped/Handler/IStateEffectHandler.hpp"
 
-#include "Game/Combat/Skill/API/External/tryGetSkillInterferenceRequestComponent.hpp"
+#include "Game/Combat/Skill/API/Public/tryGetSkillInterferenceRequestComponent.hpp"
 
 
 #include "Game/Character/FSM/CC/CCStateTags.hpp"

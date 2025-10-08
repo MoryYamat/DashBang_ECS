@@ -17,14 +17,16 @@
 
 #include <cassert>
 
-
+// TODO: アニメーション切り替え境界時に 「ガクッ」という感じがある
+// アニメーション間のブレンドや「ヒステリシス」などによって対策が必要
+// 現在のところは考えない(2025/10/08)
 namespace Game::Character::Animation::Resolve::Movement
 {
 	namespace ECS = Engine::ECS;
 	namespace Ops = Engine::ECS::Ops;
 
 	namespace Query = Game::Character::Animation::Query;
-	namespace AnimResolve = Game::Character::Animation::Resolve::Movement;
+	namespace ARes = Game::Character::Animation::Resolve::Movement;
 	namespace Prof = Game::Character::Animation::Profile;
 
 	namespace Math2D = Engine::Math::Logic2D;
@@ -35,13 +37,13 @@ namespace Game::Character::Animation::Resolve::Movement
 
 		for (auto e : ecs.view<
 			Query::AnimationQueryComponent,
-			AnimResolve::MovementAnimDecisionComponent,
+			ARes::MovementAnimDecisionComponent,
 			Prof::AnimationProfileComponent
 		>())
 		{
 			const auto& q = Ops::Get<Query::AnimationQueryComponent>(ecs, e);
 			const auto& prof = Ops::Get<Prof::AnimationProfileComponent>(ecs, e);
-			auto& dec = Ops::Get<AnimResolve::MovementAnimDecisionComponent>(ecs, e);
+			auto& dec = Ops::Get<ARes::MovementAnimDecisionComponent>(ecs, e);
 
 
 
@@ -51,7 +53,7 @@ namespace Game::Character::Animation::Resolve::Movement
 				continue;
 			}
 
-			dec.type = q.isMoving ? calcRelativeMovementDir(q.facingDirWorld, q.moveDirWorld) : AnimResolve::MoveAnimType::Idle;
+			dec.type = q.isMoving ? calcRelativeMovementDir(q.facingDirWorld, q.moveDirWorld, dec.type) : ARes::MoveAnimType::Idle;
 
 
 			const auto* mp = db.FindMovement(prof.profileId);
@@ -63,11 +65,11 @@ namespace Game::Character::Animation::Resolve::Movement
 			// TODO: switchは著しく柔軟性を損なうため、ほかの方法によって解決できるようにしたい
 			switch (dec.type)
 			{
-			case AnimResolve::MoveAnimType::Idle: dec.clipKey = mp->idle.empty() ? "idle_default" : mp->idle; break;
-			case AnimResolve::MoveAnimType::RunFwd: dec.clipKey = mp->runFwd.empty() ? "run_fwd_default" : mp->runFwd; break;
-			case AnimResolve::MoveAnimType::RunBack: dec.clipKey = mp->runBack.empty() ? "run_back_default" : mp->runBack; break;
-			case AnimResolve::MoveAnimType::RunRight: dec.clipKey = mp->runRight.empty() ? "run_right_default" : mp->runRight; break;
-			case AnimResolve::MoveAnimType::RunLeft: dec.clipKey = mp->runLeft.empty() ? "run_left_default" : mp->runLeft; break;
+			case ARes::MoveAnimType::Idle: dec.clipKey = mp->idle.empty() ? "idle_default" : mp->idle; break;
+			case ARes::MoveAnimType::RunFwd: dec.clipKey = mp->runFwd.empty() ? "run_fwd_default" : mp->runFwd; break;
+			case ARes::MoveAnimType::RunBack: dec.clipKey = mp->runBack.empty() ? "run_back_default" : mp->runBack; break;
+			case ARes::MoveAnimType::RunRight: dec.clipKey = mp->runRight.empty() ? "run_right_default" : mp->runRight; break;
+			case ARes::MoveAnimType::RunLeft: dec.clipKey = mp->runLeft.empty() ? "run_left_default" : mp->runLeft; break;
 			}
 
 			dec.loop = true;
@@ -77,11 +79,19 @@ namespace Game::Character::Animation::Resolve::Movement
 	}
 
 	Game::Character::Animation::Resolve::Movement::MoveAnimType 
-		MovementAnimationResolverSystem::calcRelativeMovementDir(const glm::vec2 facingDir, const glm::vec2 movingDir)
+		MovementAnimationResolverSystem::calcRelativeMovementDir(const glm::vec2 facingDir, const glm::vec2 movingDir,
+			const Game::Character::Animation::Resolve::Movement::MoveAnimType prev)
 	{
-		constexpr float kEpsLen2 = 1e-8f;
-		constexpr float k45 = glm::pi<float>() / 4.0f; // 45
-		constexpr float k135 = 3.0f * glm::pi<float>() / 4.0f;// 135
+		using Type = ARes::MoveAnimType;
+
+		constexpr float k45 = glm::radians(45.0f);
+		constexpr float k135 = glm::radians(135.0f);
+		constexpr float kHys = glm::radians(5.0f);
+
+		const float k45on = k45 + kHys;
+		const float k45off = k45 - kHys;
+		const float k135on = k135 + kHys;
+		const float k135off = k135 - kHys;
 
 		glm::vec2 f = (Math2D::Vector::SquaredLength(facingDir)) > 0.f ? glm::normalize(facingDir) : glm::vec2(0, 1);
 		glm::vec2 m = (Math2D::Vector::SquaredLength(movingDir)) > 0.f ? glm::normalize(movingDir) : f;
@@ -92,11 +102,43 @@ namespace Game::Character::Animation::Resolve::Movement
 
 		const float yaw = Math2D::ToSignedPi(yawM - yawF); // [-pi, pi]
 		const float ay = std::abs(yaw);
+		
 
-		if (ay < k45) return AnimResolve::MoveAnimType::RunFwd;
-		else if (ay > k135) return AnimResolve::MoveAnimType::RunBack;
-		else if (yaw < 0.0f) return AnimResolve::MoveAnimType::RunRight;
-		else return AnimResolve::MoveAnimType::RunLeft;
+		//  TODO: switchはできるだけ避けたい->今後ほかの良い方法を考える
+		// 最適化必要
+		switch(prev)
+		{
+		case Type::RunFwd:
+			if (ay <= k45off) return Type::RunFwd;// 前を維持
+			break;
+		case Type::RunBack:
+			if (ay >= k135off) return Type::RunBack;// 後ろを維持
+			break;
+		case Type::RunLeft:
+			if (ay <= k45off) return Type::RunFwd;
+			if (ay >= k135on) return Type::RunBack;
+			if (yaw > 0.0f) return Type::RunLeft;
+
+			return Type::RunRight;
+
+		case Type::RunRight:
+			if (ay <= k45off) return Type::RunFwd;
+			if (ay >= k135on) return Type::RunBack;
+			if (yaw < 0.0f) return Type::RunRight;
+
+			return Type::RunLeft;
+
+		default:
+			break;
+		}
+
+
+
+		// 通常判定
+		if (ay < k45on) return Type::RunFwd;
+		else if (ay > k135on) return Type::RunBack;
+		else if (yaw < 0.0f) return Type::RunRight;
+		else return Type::RunLeft;
 
 		// fwd
 

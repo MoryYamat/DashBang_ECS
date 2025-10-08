@@ -9,7 +9,7 @@
 #include "Game/Character/FSM/CC/StateModel/CCFSMContext.hpp"
 
 #include "Game/Character/FSM/CC/Effect/StateScoped/Handler/IStateEffectHandler.hpp"
-#include "Game/Character/FSM/Movement/API/External/MovementInterferenceRequest.hpp"
+#include "Game/Character/FSM/Movement/API/Public/MovementInterferenceRequest.hpp"
 #include "Game/Character/FSM/CC/CCStateTags.hpp"
 
 #include "Game/Character/FSM/Movement/MovementStateTags.hpp"
