@@ -18,7 +18,7 @@ namespace Game::Character::Animation::Profile::Init
 		mvdb.movements["PaladinDefault"] = MvProfile::MovementAnimationProfile
 		{
 			.idle = "idle_default",
-			.runFwd = "run_default",
+			.runFwd = "run_fwd_default",
 		};
 	}
 }
