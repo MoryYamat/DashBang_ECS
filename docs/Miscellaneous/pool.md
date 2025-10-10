@@ -48,3 +48,8 @@ FSMの直交性を崩さず，定義ドリブンなFSMの干渉を考えた場�
 
 
 
+$$
+PlayerInput \overset{IntentLayer}{\to} \rho \overset{FSMs}{\to} WorldAction \\
+\\ 
+AIIntent \overset{same\rho}{\to} \rho \overset{FSMs}{\to} WorldAction
+$$

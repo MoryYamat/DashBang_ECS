@@ -6,18 +6,20 @@
 
 #include "Game/Character/FSM/Movement/StateModel/MovementFSMTransitionRequestComponent.hpp"
 
-
+#include "Engine/ECS/Ops/CoreOps.hpp"
 // FIXME: ResolverとStateScopedの副作用は分離したほうがよい
 void Game::Character::FSM::Movement::System::MovementFSMResolverSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
 {
 	using namespace Engine::ECS::Component::Logic2D;
+	namespace Ops = Engine::ECS::Ops;
 	using namespace Game::Character::Intent;
 	using namespace Game::Character::FSM::Movement;
 	using namespace Game::Character::FSM::Movement::Effect;
 	using namespace Game::Character::FSM::Movement::Database;
 	using namespace Game::Character::FSM::Movement::StateModel;
 
-	const auto& db = ecs.getResource<MovementFSMDatabase>();
+	// const auto& db = ecs.getResource<MovementFSMDatabase>();
+	const auto& db = Ops::GetOrCreateRes<MovementFSMDatabase>(ecs);
 	// const auto& def = db.Get("basic");// TODO: 将来 entityごとに切り替え可能 // 現在未使用
 
 	for (eNsECS::Entity e : ecs.view<

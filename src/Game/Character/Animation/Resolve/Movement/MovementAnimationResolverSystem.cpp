@@ -140,7 +140,7 @@ namespace Game::Character::Animation::Resolve::Movement
 		const float yawF = Math2D::CalcYawFromDirection(f);
 		const float yawM = Math2D::CalcYawFromDirection(m);
 
-		// const float yaw = Math2D::ToSignedPi(yawM - yawF); // [-pi, pi]
+		// const float yaw = Math2D::ToSignedPi(yawM - yawF); // [-pi, pi]// もし逆にしたいならこちらを使う
 		const float yaw = Math2D::ToSignedPi(yawF - yawM); // [-pi, pi]
 		const float ay = std::abs(yaw);
 		
@@ -173,20 +173,27 @@ namespace Game::Character::Animation::Resolve::Movement
 		//	break;
 		//}
 
-		// yaw を degree に
-		float deg = glm::degrees(yaw);
-		if (deg < 0) deg += 360.f;
+		float rad = yaw;
+		if (rad < 0) rad += glm::two_pi<float>();
 
-		
 
-		// 8方向分割（22.5°ごと）
-		if(deg < 22.5f || deg >= 337.5f) return Type::RunFwd;
-		if (deg < 67.5f)  return Type::RunFwdRight;
-		if (deg < 112.5f) return Type::RunRight;
-		if (deg < 157.5f) return Type::RunBackRight;
-		if (deg < 202.5f) return Type::RunBack;
-		if (deg < 247.5f) return Type::RunBackLeft;
-		if (deg < 292.5f) return Type::RunLeft;
+		// 8方向分割 (22.5°, 45°, 67.5° ... に対応)
+		constexpr float k22_5 = glm::radians(22.5f);
+		constexpr float k67_5 = glm::radians(67.5f);
+		constexpr float k112_5 = glm::radians(112.5f);
+		constexpr float k157_5 = glm::radians(157.5f);
+		constexpr float k202_5 = glm::radians(202.5f);
+		constexpr float k247_5 = glm::radians(247.5f);
+		constexpr float k292_5 = glm::radians(292.5f);
+		constexpr float k337_5 = glm::radians(337.5f);
+
+		if (rad < k22_5 || rad >= k337_5) return Type::RunFwd;
+		if (rad < k67_5)  return Type::RunFwdRight;
+		if (rad < k112_5) return Type::RunRight;
+		if (rad < k157_5) return Type::RunBackRight;
+		if (rad < k202_5) return Type::RunBack;
+		if (rad < k247_5) return Type::RunBackLeft;
+		if (rad < k292_5) return Type::RunLeft;
 		return Type::RunFwdLeft;
 
 

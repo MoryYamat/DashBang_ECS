@@ -1,22 +1,37 @@
 # **自作3Dゲーム~~エンジン~~**
 
-## **開発環境**
-* C++20
-* CMake()
+A fully custom 3D gameplay framework built from scratch in modern C++20,<br>
+featuring a data-driven ECS, and a unified intent-based control system.
 
+## **開発環境**
+- **Language:** C++20
+- **Build:** CMake
+- **Rendering:** OpenGL (GLTF-based asset pipeline)
+- **Architecture:** Custom ECS + Intent Resolver
+
+--- 
 ## **マイルストーン**
 - **FSM間の干渉(Interference)の完成** (2025/09/25)
-- 
+- **8軸の移動アニメーション再生実装** (2025/10/09)
+
+## 📺 Demo Video
+🎥 [Watch on YouTube (Private Link)](https://www.youtube.com/watch?v=mC9LQ8ZOKVg)
+> 自作3Dゲームエンジン上でのロコモーションアニメーション実装。
+> FSM制御とヒステリシス処理によって自然な8方向移動を実現。
 
 
 
 ## **ゲーム基盤**
 
-### **ECS**
+### **ECS Overview**
+All systems are structured under a custom data-oriented Entity Component System.  <br>
+Each layer communicates only through data contracts — ensuring modularity, clarity, and testability.
 
 
-### **Architecture Overview**
-This game engine is based on a layered input-intent-resolution pipeline designed for maximum flexibility, testability, and separation of concerns.
+
+### **Unified Behavior Architecture (Intent-Resolver-FSM Pipeline)**
+This engine is built around a **layered input-intent-resolution pipeline**,  <br>
+designed for maximum flexibility, debuggability, and behavioral consistency.
 
 ```nginx
 PlayerInput
@@ -28,51 +43,105 @@ IntentResolverSystem
 CharacterFSM
    ↓
 GameLogicExecution
+   ↓
+AnimationResolver
+   ↓
+Drawing
 ```
 
 ---
 
 🔹 Purpose and Benefits
-* Decoupling input devices from gameplay logic
+* Decouple input devices from gameplay logic
 
-* Unifying player, AI, and scripted behavior under a single "Intent" model
+* Unify player, AI, and scripted behaviors under a single "Intent" model
 
-* Empowering modularity in skills, state transitions, and interaction resolution
+* Make command validation explicit and testable
+
+* Enable clean layering of skills, interruptions, and cooldowns
 
 ---
 
 🔸 Layer Details
-1. Input → Intent
-> Maps raw physical input (keys, controller) to high-level gameplay intents (e.g. "MoveForward", "UseSkill1")
+1. **Input → Intent**<br>
+Maps raw physical input (keyboard, controller, network) to high-level gameplay intents<br>
+such as “MoveForward” or “CastSkill1”.
 
 * Allows flexible remapping and multi-device support
 
-* Cleanly separates input from meaning
+* Cleanly separates physical input from semantic meaning
 
-2. Intent → Resolver
-> Resolves whether an intent can be accepted, based on current state (e.g. "Can't cast while stunned")
+2. **Intent → Resolver**<br>
+Determines whether an intent can be accepted given the current FSM state.
 
-* Makes command validation explicit
+* Example: “Cannot cast while stunned”
 
-* Clean point for cancel, interrupt, or rejection logic
+* Centralized point for cancel, interrupt, or rejection logic
 
-3. Resolver → FSM
-> Accepts validated intent and applies state transition (e.g. Idle → Casting)
+3. **Resolver → FSM**<br>
+Accepts validated intents and drives state transitions.
 
-* Based on orthogonal FSM, allowing concurrent and independent control domains
+* Orthogonal FSMs (Movement, Skill, CC) operate concurrently
 
 * Fully data-driven and reusable across actors
 
-4. FSM → Logic
-> Triggers gameplay consequences: animation, skill hitbox generation, cooldowns, etc.
+4. **FSM → Logic**<br>
+Executes gameplay consequences — animations, skill hitboxes, cooldowns, etc.
 
-* Logic is derived from state, not hardcoded
+* Logic derived from state, not hardcoded
 
-* Enables timing-based logic (e.g. ActiveTimeElapsed → Recovery)
+* Enables precise timing-based transitions (e.g. Active → Recovery)
 
 ---
 
-🔹 Example Flow: Skill Casting
+### ⚙️ **MIC Contract Model (Motion–Intent–Control)**
+All gameplay actions are treated as contracts between actor and world.<br>
+Intent expresses desire, Control (FSM/Resolver) determines possibility,<br>
+and Motion (Animation/Logic) executes the outcome.
+
+|Layer | Role|Resposibility|
+|:-|:-|:-|
+|**Intent(Request)** | "I want to act."| Declares a desired action (e.g. jump, cast) without<br> assuming feasibility.|
+|**Control(Resolver/FSM)**|"Can I act?"| Evaluates state and rules — e.g. can’t jump while<br> airborne, can’t attack while stunned.|
+|**Motion(Anim/Logic)**|"Act."|Executes the accepted intent (movement, animation,<br> VFX, hitboxes).|
+
+
+#### Example
+```cpp
+Intent { action = JUMP}
+→ Resolver: if (FSM.state == Grounded) accept();
+             else reject();
+→ FSM: Idle → Jumping
+→ Animation: play("jump_start")
+```
+
+### **Key Idea**
+Gameplay is not driven by direct commands but by negotiated contracts<br>
+between what an actor wants to do and what the world allows.<br>
+This converts scattered conditional checks into explicit, data-driven agreements.<br>
+
+---
+
+### 🧠 Design Philosophy
+
+This engine embodies the principle that gameplay should be state-driven, not input-driven.
+Every actor — player, AI, or script — behaves through the same semantic pipeline.<br>
+
+It aims to maximize:
+
+- **Modularity**: Modularity: Systems evolve independently without hidden coupling
+
+- **Scalability**: Scalability: Logic expands via data, not conditional branches
+
+- **Clarity**: Clarity: Intent logs and FSM states make debugging transparent
+
+>(Side note: In real life, intent does not guarantee action — it must pass through constraints
+> of state and <br> 
+> environment.<br>
+> This engine models that exact principle in code.)
+
+
+#### 🎬 Example Flow: Skill Casting
 ```pgsql
 Player presses [Q]
 → Mapped to `Intent::CastSkill<SkillID>`
@@ -82,32 +151,28 @@ Player presses [Q]
 → After duration, FSM: Casting → Active → Recovery → None
 ```
 
----
-
-### 🧠 Design Philosophy
-
-This architecture reflects a belief that gameplay logic should be **state-driven, not input-driven**, and that actor behaviors should be unified regardless of source (player, AI, or script).  
-It aims to maximize:
-
-- **Modularity**: systems can evolve independently
-- **Scalability**: logic grows without becoming entangled
-- **Clarity**: debug and testing is simpler when intent is explicit
-
 ---  
-### 🧩 Why This Matters
+### 🔍 Why It Matters
 
-In traditional input systems, logic often becomes tightly coupled to control flow.  
-This leads to problems such as:
+Traditional input-driven systems tightly couple controls and logic, leading to:
 
-- Hard-to-test behavior (input must be simulated)
-- Unclear rejection rules (why did this action fail?)
-- Inflexible control schemes (can’t rebind or re-use for AI)
+- Hard-to-test behaviors (inputs must be simulated)
 
-By inserting `Intent` and `Resolver` layers, all behavior becomes explicit and state-aware.  
-This is crucial for complex games with skills, cooldowns, interruptions, or AI decision making.
+- Scattered “if” logic (unclear why actions fail)
+
+- Inflexible control schemes (player vs AI divergence)
+
+
+By introducing Intent and Resolver layers:
+- Behavior becomes explicit and state-aware
+
+- Rejections and cancellations are traceable
+
+- AI, human, and scripted entities share one unified behavioral model
 
 ---
+🧠 In One Line
 
-(Side note: this hierarchy reflects human behavior in the real world. Even though we want to do something, we can only act within the confines of our current state and environment. This led to a clear separation of intent, resolution, and execution in our systems.)
+“Every action in the game is a contract between intent and possibility — a microcosm of will constrained by the world.”
 
 ---
