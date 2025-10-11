@@ -49,6 +49,12 @@ namespace Engine::ECS::Ops
 		return ecs.createResource<T>();
 	}
 	
+	template<typename T>
+	inline T& GetRes(Engine::ECS::EntityMgr& ecs)
+	{
+		return ecs.getResource<T>();
+	}
+
 	template<typename T, typename... Args>
 	inline T& GetOrCreateRes(Engine::ECS::EntityMgr& ecs, Args&&... args)
 	{

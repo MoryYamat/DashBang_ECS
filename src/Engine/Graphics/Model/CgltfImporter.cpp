@@ -227,6 +227,12 @@ namespace Engine::Graphics::Model
 				Bone b;
 				b.nodeIndex = int(jn - g->nodes);
 
+				if (jn->name)// ボーン名
+				{
+					b.name = jn->name;
+					skel.nameToBone[b.name] = static_cast<int>(bi);// ボーン名 -> indexのマッピング
+				}
+
 				// inverseBindMatrix
 				if (skin->inverse_bind_matrices)
 				{
@@ -240,11 +246,11 @@ namespace Engine::Graphics::Model
 				if (jn->has_rotation) b.defR = glm::normalize(glm::quat(jn->rotation[3], jn->rotation[0], jn->rotation[1],jn->rotation[2]));// うまくいかない場合この順序が違う可能性あり
 				if (jn->has_scale) b.defS = glm::vec3(jn->scale[0], jn->scale[1], jn->scale[2]);
 
-				std::cout << "[dbg] rotationQuat(xyz w)=("
-					<< jn->rotation[0] << ", "
-					<< jn->rotation[1] << ", "
-					<< jn->rotation[2] << ", "
-					<< jn->rotation[3] << ")\n";
+				//std::cout << "[dbg] rotationQuat(xyz w)=("
+				//	<< jn->rotation[0] << ", "
+				//	<< jn->rotation[1] << ", "
+				//	<< jn->rotation[2] << ", "
+				//	<< jn->rotation[3] << ")\n";
 
 
 				skel.bones[bi] = b;
@@ -340,13 +346,13 @@ namespace Engine::Graphics::Model
 			std::cout << "  " << c.name << " dur=" << c.duration << "s channels=" << c.channels.size() << "\n";
 		}
 
-		std::cout << "[dbg] bones=" << model.skeleton.bones.size() << "\n";
+		// std::cout << "[dbg] bones=" << model.skeleton.bones.size() << "\n";
 		for (size_t i = 0;i < 3 && i < model.skeleton.bones.size();++i) {
 			auto& b = model.skeleton.bones[i];
 			// だいたい単位長？
-			std::cout << "[dbg] bone[" << i << "] parent=" << b.parent
-				<< " | |defR|=" << glm::length(glm::vec4(b.defR.x, b.defR.y, b.defR.z, b.defR.w))
-				<< " | invBind[0][0]=" << b.invBind[0][0] << "\n";
+			//std::cout << "[dbg] bone[" << i << "] parent=" << b.parent
+			//	<< " | |defR|=" << glm::length(glm::vec4(b.defR.x, b.defR.y, b.defR.z, b.defR.w))
+			//	<< " | invBind[0][0]=" << b.invBind[0][0] << "\n";
 		}
 
 		std::vector<int> parent(g->nodes_count, -1);
@@ -515,5 +521,107 @@ namespace Engine::Graphics::Model
 		{
 			if (parent[ni] < 0) dfs(int(ni));
 		}
+	}
+
+
+	// アニメーションだけ読み込んで base に追加
+	void CgltfImporter::ImportAnimationsInto(const std::string& path, MD::ModelData& base)
+	{
+		cgltf_options opt{};
+		cgltf_data* g = nullptr;
+		if (cgltf_parse_file(&opt, path.c_str(), &g) != cgltf_result_success || !g)
+		{
+			std::cerr << "[CgltfImproter] anim-only parse failed: " << path << "\n";
+			return;
+		}
+		if (cgltf_load_buffers(&opt, g, path.c_str()) != cgltf_result_success)
+		{
+			std::cerr << "[CgltfImporter] anim-only load buffers failed: " << path << "\n";
+			cgltf_free(g);
+			return;
+		}
+
+		const auto& nameToBone = base.skeleton.nameToBone;
+		if (nameToBone.empty())
+		{
+			std::cout << "[CgltfImporter] base skelton has no name map. load base first. \n";
+			cgltf_free(g);
+			return;
+		}
+
+		for (cgltf_size ai = 0; ai < g->animations_count; ++ai)
+		{
+			const cgltf_animation* a = &g->animations[ai];
+
+			MD::AnimationClip clip;
+			clip.name = a->name ? a->name : ("anim_" + std::to_string(ai));
+			clip.duration = 0.0f;
+
+			for (cgltf_size ci = 0; ci < a->channels_count; ++ci)
+			{
+				const cgltf_animation_channel& ch = a->channels[ci];
+				const cgltf_animation_sampler& sp = *ch.sampler;
+
+				// node名でベース骨を引く
+				const cgltf_node* tn = ch.target_node;
+				if (!tn || !tn->name)continue;
+				auto it = nameToBone.find(tn->name);
+				if (it == nameToBone.end())
+				{
+					std::cout << "[anim-map] missing bone: " << tn->name << "\n";
+					continue;
+				}
+				int bone = it->second;
+
+				MD::Channel c{};
+				c.bone = bone;
+				if (ch.target_path == cgltf_animation_path_type_translation) c.type = MD::ChannelType::T;
+				else if (ch.target_path == cgltf_animation_path_type_rotation) c.type = MD::ChannelType::R;
+				else if (ch.target_path == cgltf_animation_path_type_scale) c.type = MD::ChannelType::S;
+				else continue;
+
+				c.times.resize(sp.input->count);
+				for (cgltf_size i = 0; i < sp.input->count; ++i)
+				{
+					float t;
+					cgltf_accessor_read_float(sp.input, i, &t, 1);
+					c.times[i] = t;
+					if (t > clip.duration) clip.duration = t;
+				}
+
+				// 値
+				if (c.type == MD::ChannelType::R)
+				{
+					c.vq.resize(sp.output->count);
+					for (cgltf_size i = 0; i < sp.output->count; ++i)
+					{
+						float q[4];
+						cgltf_accessor_read_float(sp.output, i, q, 4);
+						c.vq[i] = glm::normalize(glm::quat(q[3], q[0], q[1], q[2]));
+					}
+				}
+				else
+				{
+					c.v3.resize(sp.output->count);
+					for (cgltf_size i = 0; i < sp.output->count; ++i)
+					{
+						float v[3];
+						cgltf_accessor_read_float(sp.output, i, v, 3);
+						c.v3[i] = glm::vec3(v[0], v[1], v[2]);
+					}
+				}
+
+				clip.channels.push_back(std::move(c));
+			}
+
+			std::cout << "[ImportAnimationsInto] add clip = " << clip.name
+				<< " ch=" << clip.channels.size()
+				<< " dur=" << clip.duration << "s\n";
+
+			if (!clip.channels.empty())
+				base.clips.push_back(std::move(clip));
+		}
+
+		cgltf_free(g);
 	}
 }

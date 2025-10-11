@@ -5,7 +5,8 @@
 
 namespace Game::Character::Animation::Query
 {
-	struct AnimationQueryComponent
+	// locomotion
+	struct LocomotionAnimQueryComponent
 	{
 		// movement
 		bool isMoving = false;

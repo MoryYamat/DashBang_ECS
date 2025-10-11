@@ -1,6 +1,7 @@
 ﻿// ModelData (Universal Data Types)
 #pragma once
 
+#include <cfloat>
 #include <vector>
 #include <string>
 
@@ -86,6 +87,8 @@ namespace Engine::Graphics::Model
 		glm::vec3 defT{ 0,0,0 };
 		glm::quat defR{ 1,0,0,0 };
 		glm::vec3 defS{ 1,1,1 };
+		
+		std::string name;
 	};
 
 	struct Skeleton
@@ -94,6 +97,8 @@ namespace Engine::Graphics::Model
 
 		// glTF ノード index -> ボーンindex (逆引き)
 		std::unordered_map<int, int> nodeToBone;
+
+		std::unordered_map<std::string, int> nameToBone;
 	};
 
 	enum class ChannelType { T, R, S };

@@ -53,9 +53,9 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 	testSkill.def.id = 1;
 	testSkill.def.name = "TestSkill";
 
-	testSkill.def.castDuration = 0.6f;
-	testSkill.def.activeDuration = 1.0f;
-	testSkill.def.recoveryDuration = 1.0f;
+	testSkill.def.castDuration = 0.0f;
+	testSkill.def.activeDuration = 0.5f;
+	testSkill.def.recoveryDuration = 0.3f;
 
 	CCSpec ccSpec{
 		.type = Game::Character::FSM::CC::StateTag::STUNNED,

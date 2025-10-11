@@ -18,6 +18,9 @@ namespace Engine::Graphics::Model
 		static Engine::Graphics::Model::ModelData Import(const std::string& path);
 
 
+		static void ImportAnimationsInto(const std::string& animGlbPath, ModelData& base);
+
+
 	private:
 		static bool GetImageBytes_FromBufferView(
 			const cgltf_image* img,
@@ -37,5 +40,6 @@ namespace Engine::Graphics::Model
 			std::vector<int>& parent,
 			std::vector<glm::mat4>& globals
 		);
+
 	};
 }

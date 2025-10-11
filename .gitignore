@@ -22,7 +22,7 @@ ipch/
 *.log
 
 # ========================
-# OSEƒGƒfƒBƒ^‹¤’Ê
+# OSï¿½Eï¿½Gï¿½fï¿½Bï¿½^ï¿½ï¿½ï¿½ï¿½
 # ========================
 .DS_Store
 Thumbs.db
@@ -30,7 +30,7 @@ Thumbs.db
 *.swo
 
 # ========================
-# ƒoƒCƒiƒŠ‚âˆêƒtƒ@ƒCƒ‹
+# ï¿½oï¿½Cï¿½iï¿½ï¿½ï¿½ï¿½êï¿½tï¿½@ï¿½Cï¿½ï¿½
 # ========================
 *.exe
 *.dll
@@ -41,3 +41,10 @@ Thumbs.db
 *.tmp
 *.bak
 *.old
+
+# Mixamo / model / texture / sound assets
+Assets/**/*.glb
+Assets/**/*.fbx
+Assets/**/*.png
+Assets/**/*.jpg
+Assets/**/*.wav

@@ -70,10 +70,13 @@
 // character 
 
 // animation
-#include "Game/Character/Animation/Query/AnimationQueryComponent.hpp"
+#include "Game/Character/Animation/Query/Locomotion/LocomotionAnimationQueryComponent.hpp"
 #include "Game/Character/Animation/Resolve/Movement/MovementAnimDecisionComponent.hpp"
 #include "Game/Character/Animation/Profile/AnimationProfileComponent.hpp"
 #include "Game/Character/Animation/Arbiter/FinalAnimationDecisionComponent.hpp"
+
+#include "Game/Character/Animation/Query/Skill/SkillAnimationQueryComponent.hpp"
+#include "Game/Character/Animation/Resolve/Skill/SkillAnimDecisionComponent.hpp"
 
 // life
 #include "Game/Character/State/Component/LifeStateComponent.hpp"
@@ -158,26 +161,29 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	auto& anim = Ops::Add<Comp::Graphics::AnimatorComponent>(ecs, e,
 		Comp::Graphics::AnimatorComponent{});
 
-	const auto& clips = modelData.clips;
-	if (!clips.empty())
-	{
-		if (!Comp::Graphics::SetClipByName(modelData, anim, "idle_default", true))
-		{
-			anim.clipIndex = 0;
-			anim.time = 0.f;
-			anim.speed = 1.f;
-			anim.loop = true;
-		}
-		std::cout << "[PlayerCharacterActor] Playing clip: "
-			<< clips[(size_t)anim.clipIndex].name
-			<< " (dur=" << clips[(size_t)anim.clipIndex].duration
-			<< "s, channels=" << clips[(size_t)anim.clipIndex].channels.size()
-			<< ")\n";
-	}
-	else
-	{
-		std::cout << "[PlayerCharacterActor] No animation clips in model.\n";
-	}
+	// skill animation
+	Engine::Graphics::Model::CgltfImporter::ImportAnimationsInto("Assets/Models/paladin/test_slash_outward_trim.glb", modelData);
+
+	//const auto& clips = modelData.clips;
+	//if (!clips.empty())
+	//{
+	//	if (!Comp::Graphics::SetClipByName(modelData, anim, "idle_default", true))
+	//	{
+	//		anim.clipIndex = 0;
+	//		anim.time = 0.f;
+	//		anim.speed = 1.f;
+	//		anim.loop = true;
+	//	}
+	//	std::cout << "[PlayerCharacterActor] Playing clip: "
+	//		<< clips[(size_t)anim.clipIndex].name
+	//		<< " (dur=" << clips[(size_t)anim.clipIndex].duration
+	//		<< "s, channels=" << clips[(size_t)anim.clipIndex].channels.size()
+	//		<< ")\n";
+	//}
+	//else
+	//{
+	//	std::cout << "[PlayerCharacterActor] No animation clips in model.\n";
+	//}
 
 	// Collsion Initialization
 	// コリジョン初期化
@@ -283,9 +289,9 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 
 
 	// Skill Context
-	Ops::Add<Game::Combat::Skill::Component::SkillExecutionContextComponent>(ecs, e,
-		Game::Combat::Skill::Component::SkillExecutionContextComponent{ .caster = e }
-	);
+	//Ops::Add<Game::Combat::Skill::Component::SkillExecutionContextComponent>(ecs, e,
+	//	Game::Combat::Skill::Component::SkillExecutionContextComponent{ .caster = e }
+	//);
 	// std::cout << "[[PlayerCharacterActor.cpp(radius)] : radius. " << radius << std::endl;
 
 	//std::cout << "[PlayerCharacterActor.cpp]: Logic Position: x. " << logic.positionXZ.x << " z. " << logic.positionXZ.y << std::endl;
@@ -383,10 +389,14 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	namespace AnimDec = Game::Character::Animation::Resolve;
 	namespace AnimProf = Game::Character::Animation::Profile;
 	namespace AnimFinal = Game::Character::Animation::Arbiter;
-	Ops::Add<AnimQuery::AnimationQueryComponent>(ecs, e, AnimQuery::AnimationQueryComponent{});
+	Ops::Add<AnimQuery::LocomotionAnimQueryComponent>(ecs, e, AnimQuery::LocomotionAnimQueryComponent{});
 	Ops::Add<AnimDec::Movement::MovementAnimDecisionComponent>(ecs, e, AnimDec::Movement::MovementAnimDecisionComponent{});
 	Ops::Add<AnimProf::AnimationProfileComponent>(ecs, e, AnimProf::AnimationProfileComponent{ .profileId = "PaladinDefault" });
 	Ops::Add<AnimFinal::FinalAnimationDecisionComponent>(ecs, e, AnimFinal::FinalAnimationDecisionComponent{});
+
+	// skill
+	Ops::Add<AnimQuery::SkillAnimQueryComponent>(ecs, e, AnimQuery::SkillAnimQueryComponent{});
+	Ops::Add<AnimDec::Skill::SkillAnimDecisionComponent>(ecs, e, AnimDec::Skill::SkillAnimDecisionComponent{});
 }
 
 Game::Actor::Player::PlayerCharacter::~PlayerCharacter()

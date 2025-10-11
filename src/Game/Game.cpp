@@ -9,7 +9,6 @@
 #include "Engine/ECS/Entity.h"
 #include "Engine/ECS/EntityManager.h"
 
-#include "Engine/ECS/Meta/InitComponent/FollowCameraInit.h"
 
 #include "Engine/ECS/GlobalSystem/GlobalCleanupSystem.h"
 
@@ -269,8 +268,12 @@ void GameApp::GameApp::updateGameLogics()
 	gNsLayer::LogicLayerFeature::Update(mECS, deltaTime);
 
 	// Anim Layer
+	// locomotion
 	Game::Layer::LocomotionResolverLayerFeature::Update(mECS);
+	// skill
+	Game::Layer::SkillAnimationResolverLayerFeature::Update(mECS);
 
+	// Anim Layer へ移動
 	Engine::Graphics::Animation::System::AnimationSystem(mECS);
 }
 
@@ -283,8 +286,10 @@ void GameApp::GameApp::generateOutputs()
 
 	// An algorithm is needed to set the shader for each object.
 	// RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
+	// draw Layer へ移動
 	eNsGfxRender::RenderSystem(mECS, *mShader, mWindow->GetAspect(), mRenderCtx);
 
+	// Draw Layerへ移動
 	Engine::Debug::Drawing::Logic2D::Draw(mECS, mRenderCtx, mCollisionResults);
 
 	//
@@ -330,15 +335,7 @@ void GameApp::GameApp::spawnAllActors()
 
 	// CameraActor camActor = CameraActor(mEcs);
 
-	//Collider a, c;
-	//c.type = ColliderType::Box2D;
-	//a.type = ColliderType::Box2D;
-	//c.box2D = Box2D{ glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f) };
-	//a.box2D = Box2D { glm::vec2(3.0f, 0.0f) , glm::vec2(1.0f,1.0f) };
 
-	//bool hit = CollisionUtils::intersectBox2D(a.box2D, c.box2D);
-
-	//std::cout << "Result: " << std::boolalpha << hit << std::endl;
 }
 
 void GameApp::GameApp::RunInitializationPhase()

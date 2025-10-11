@@ -1,8 +1,8 @@
-﻿#include "BuildAnimationQuerySystem.hpp"
+﻿#include "BuildLocomotionAnimationQuerySystem.hpp"
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 
-#include "Game/Character/Animation/Query/AnimationQueryComponent.hpp"
+#include "Game/Character/Animation/Query/Locomotion/LocomotionAnimationQueryComponent.hpp"
 
 #include "Engine/ECS/Component/Graphics/AnimatorComponent.hpp"
 #include "Engine/ECS/Component/Logic2D/Velocity2DComponent.h"
@@ -25,17 +25,17 @@ namespace Game::Character::Animation::Query
 
 	namespace Mv = Game::Character::FSM::Movement;
 
-	void BuildAnimationQuerySystem(Engine::ECS::EntityMgr& ecs)
+	void BuildLocomotionAnimationQuerySystem(Engine::ECS::EntityMgr& ecs)
 	{
 
 		for (auto e : ecs.view<
 			Mv::MovementStateComponent,
 			Logic2D::Logic2DTransformComponent,
 			Logic2D::Velocity2DComponent,
-			AnimationQueryComponent
+			LocomotionAnimQueryComponent
 		>())
 		{
-			auto& query = Ops::Get<AnimationQueryComponent>(ecs, e);
+			auto& query = Ops::Get<LocomotionAnimQueryComponent>(ecs, e);
 			const auto& state = Ops::Get<Mv::MovementStateComponent>(ecs, e);
 			
 			const auto& transform = Ops::Get<Logic2D::Logic2DTransformComponent>(ecs, e);
@@ -53,6 +53,8 @@ namespace Game::Character::Animation::Query
 			//query.normalizedSpeed = 
 
 			query.valid = true;
+
+			// std::cout << "[ ] " << query.valid << "\n";
 
 		}
 	

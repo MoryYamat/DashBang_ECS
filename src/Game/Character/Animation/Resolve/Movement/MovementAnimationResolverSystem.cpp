@@ -6,7 +6,7 @@
 #include "Game/Character/Animation/Profile/Movement/MovementAnimationProfile.hpp"
 
 
-#include "Game/Character/Animation/Query/AnimationQueryComponent.hpp"
+#include "Game/Character/Animation/Query/Locomotion/LocomotionAnimationQueryComponent.hpp"
 #include "Game/Character/Animation/Resolve/Movement/MovementAnimDecisionComponent.hpp"
 
 #include "Game/ECS/Tags/CharacterAttribTags.h"
@@ -39,12 +39,12 @@ namespace Game::Character::Animation::Resolve::Movement
 		auto& db = Ops::GetOrCreateRes<Prof::MovementAnimationProfileDatabase>(ecs);
 
 		for (auto e : ecs.view<
-			Query::AnimationQueryComponent,
+			Query::LocomotionAnimQueryComponent,
 			ARes::MovementAnimDecisionComponent,
 			Prof::AnimationProfileComponent
 		>())
 		{
-			const auto& q = Ops::Get<Query::AnimationQueryComponent>(ecs, e);
+			const auto& q = Ops::Get<Query::LocomotionAnimQueryComponent>(ecs, e);
 			const auto& prof = Ops::Get<Prof::AnimationProfileComponent>(ecs, e);
 			auto& dec = Ops::Get<ARes::MovementAnimDecisionComponent>(ecs, e);
 

@@ -57,5 +57,7 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialzation(eNsECS::EntityMgr
 	// AntichainPolicy初期化
 	gNsFeature::Character::CharacterCCFeature::InitCCAntiChainPolicy(ecs);
 
+	// animation
 	Game::Feature::Character::Animation::CharacterAnimationFeature::InitProfileDatabase(ecs);
+	Game::Feature::Character::Animation::CharacterAnimationFeature::InitSkillProfileDatabase(ecs);
 }

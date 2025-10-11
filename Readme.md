@@ -176,3 +176,16 @@ By introducing Intent and Resolver layers:
 “Every action in the game is a contract between intent and possibility — a microcosm of will constrained by the world.”
 
 ---
+
+
+### Asset Notice / ライセンス明記
+
+This repository contains 3D character models and animations that include assets
+originally obtained from [Mixamo](https://www.mixamo.com/) (© Adobe Systems).
+
+These assets have been combined, modified, and used solely for non-commercial, 
+educational, and portfolio purposes to demonstrate game engine and animation system development.
+
+They are **not intended for redistribution, resale, or commercial use**.
+If you are an Adobe representative or have any concerns regarding the usage,
+please contact me and I will remove or adjust the relevant files immediately.

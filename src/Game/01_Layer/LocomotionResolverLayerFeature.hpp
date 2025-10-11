@@ -9,4 +9,10 @@ namespace Game::Layer
 	public:
 		static void Update(Engine::ECS::EntityMgr& ecs);
 	};
+
+	class SkillAnimationResolverLayerFeature
+	{
+	public:
+		static void Update(Engine::ECS::EntityMgr& ecs);
+	};
 }

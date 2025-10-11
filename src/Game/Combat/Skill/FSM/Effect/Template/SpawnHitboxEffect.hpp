@@ -59,7 +59,8 @@ namespace Game::Combat::Skill::FSM::Effect
 				{
 					.category = Category::SkillHitbox,
 					.collideCategoryMask = bit(Category::CharacterBody),
-					.relationMask = bit(Relation::Enemy) | bit(Relation::Ally),
+					//.relationMask = bit(Relation::Enemy) | bit(Relation::Ally),
+					.relationMask = bit(Relation::Enemy),
 					.flags = 0
 				});
 

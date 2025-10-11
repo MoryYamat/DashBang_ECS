@@ -16,4 +16,11 @@ namespace Game::Layer
 
 		Anim::CharacterAnimationFeature::UpdateApplyFinalAnimationDecision(ecs);
 	}
+
+	void SkillAnimationResolverLayerFeature::Update(Engine::ECS::EntityMgr& ecs)
+	{
+		Anim::CharacterAnimationFeature::UpdateBuildSkillAnimQuerySystem(ecs);
+
+		Anim::CharacterAnimationFeature::UpdateSkillAnimationResolver(ecs);
+	}
 }
