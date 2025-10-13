@@ -63,4 +63,9 @@ namespace Game::Character::FSM::CC::StateModel
 			applied.isValid = true;
 		}
 	};
+
+	inline bool isCC(std::type_index current)
+	{
+		return (current == StateTag::STUNNED || current == StateTag::KNOCKDOWNED);
+	}
 }

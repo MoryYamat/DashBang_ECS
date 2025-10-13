@@ -45,7 +45,8 @@ namespace Game::Character::Animation::Resolve::Skill
 			//dec.playRate = 1.0f;
 			//dec.valid = true;
 
-			const auto& meta = adb.ResolveOrFallback("Paladin", q.skillId);
+			// TODO:
+			const auto& meta = adb.ResolveOrFallback("Paladin", q.skillId);// ハードコード解消必要 //tagCompもしくはidから解決必要
 			dec.clipKey = meta.clip;
 			dec.playRate = meta.speed;
 			dec.loop = true;

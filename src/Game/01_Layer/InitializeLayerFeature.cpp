@@ -58,6 +58,7 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialzation(eNsECS::EntityMgr
 	gNsFeature::Character::CharacterCCFeature::InitCCAntiChainPolicy(ecs);
 
 	// animation
-	Game::Feature::Character::Animation::CharacterAnimationFeature::InitProfileDatabase(ecs);
-	Game::Feature::Character::Animation::CharacterAnimationFeature::InitSkillProfileDatabase(ecs);
+	Game::Feature::Character::Animation::CharacterAnimationFeature::InitProfileDatabase(ecs);// locomotion
+	Game::Feature::Character::Animation::CharacterAnimationFeature::InitSkillProfileDatabase(ecs);// skill
+	Game::Feature::Character::Animation::CharacterAnimationFeature::InitCCProfileDatabase(ecs);// cc
 }

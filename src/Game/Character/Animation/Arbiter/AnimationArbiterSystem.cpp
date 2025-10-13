@@ -3,8 +3,8 @@
 #include "Game/Character/Animation/Arbiter/FinalAnimationDecisionComponent.hpp"
 
 #include "Game/Character/Animation/Resolve/Movement/MovementAnimDecisionComponent.hpp"
-
 #include "Game/Character/Animation/Resolve/Skill/SkillAnimDecisionComponent.hpp"
+#include "Game/Character/Animation/Resolve/CC/CCAnimDecisionComponent.hpp"
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 
@@ -15,18 +15,21 @@ namespace Game::Character::Animation::Arbiter
 	namespace Arbiter = Game::Character::Animation::Arbiter;
 	namespace MvAnim = Game::Character::Animation::Resolve::Movement;
 	namespace SkAnim = Game::Character::Animation::Resolve::Skill;
+	namespace CCAnim = Game::Character::Animation::Resolve::CC;
 
 	void AnimationArbiterSystem::Update(Engine::ECS::EntityMgr& ecs)
 	{
 		for (auto e : ecs.view<
 			Arbiter::FinalAnimationDecisionComponent,
 			MvAnim::MovementAnimDecisionComponent,
-			SkAnim::SkillAnimDecisionComponent
+			SkAnim::SkillAnimDecisionComponent,
+			CCAnim::CCAnimDecisionComponent
 		>())
 		{
 			auto& out = Ops::Get<Arbiter::FinalAnimationDecisionComponent>(ecs, e);
 			const auto& mv = Ops::Get<MvAnim::MovementAnimDecisionComponent>(ecs, e);
 			const auto& sk = Ops::Get<SkAnim::SkillAnimDecisionComponent>(ecs, e);
+			const auto& cc = Ops::Get<CCAnim::CCAnimDecisionComponent>(ecs, e);
 
 			if (mv.valid)
 			{
@@ -50,6 +53,14 @@ namespace Game::Character::Animation::Arbiter
 			//{
 			//	out.valid = false;
 			//}
+			if (cc.valid)
+			{
+				out.valid = true;
+				out.clipKey = cc.clipKey;
+				out.loop = cc.loop;
+				out.playRate = cc.playRate;
+				// std::cout << "here\n";
+			}
 
 			// 将来的に CC / Skill の優先度ロジックを追記したりする
 		}

@@ -224,6 +224,9 @@ void GameApp::GameApp::updateGameLogics()
 	mLastFrame = currentFrame;
 	// std::cout << "[Game.cpp(DeltaTime)]: deltaTime: " << deltaTime << "\n";
 
+	// debug用
+
+
 	// delete PendingDestroyComponent
 	eNsECS::GrobalSystem::RunCleanup(mECS);
 
@@ -272,6 +275,8 @@ void GameApp::GameApp::updateGameLogics()
 	Game::Layer::LocomotionResolverLayerFeature::Update(mECS);
 	// skill
 	Game::Layer::SkillAnimationResolverLayerFeature::Update(mECS);
+	// cc
+	Game::Layer::CCAnimationResolverLayerFeature::Update(mECS);
 
 	// Anim Layer へ移動
 	Engine::Graphics::Animation::System::AnimationSystem(mECS);

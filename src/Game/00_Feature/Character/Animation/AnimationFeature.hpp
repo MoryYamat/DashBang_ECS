@@ -23,5 +23,11 @@ namespace Game::Feature::Character::Animation
 		static void InitSkillProfileDatabase(Engine::ECS::EntityMgr& ecs);
 		static void UpdateSkillAnimationResolver(Engine::ECS::EntityMgr& ecs);
 		static void UpdateBuildSkillAnimQuerySystem(Engine::ECS::EntityMgr& ecs);
+
+
+		// cc animation
+		static void InitCCProfileDatabase(Engine::ECS::EntityMgr& ecs);
+		static void UpdateCCAnimationResolver(Engine::ECS::EntityMgr& ecs);
+		static void UpdateBuildCCAnimQuerySystem(Engine::ECS::EntityMgr& ecs);
 	};
 }

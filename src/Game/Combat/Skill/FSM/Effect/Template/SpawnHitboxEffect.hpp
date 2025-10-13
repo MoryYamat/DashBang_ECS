@@ -51,7 +51,7 @@ namespace Game::Combat::Skill::FSM::Effect
 			Ops::Add<Game::Combat::Skill::Component::SkillOwnerComponent>
 				(ecs, eHitbox, Game::Combat::Skill::Component::SkillOwnerComponent{.caster = caster, .skillId = def.id});
 
-
+			// TODO: 
 			// FIXME: def に定義されたCollisionMaskをコピーし，追加するように変更する
 			// CollisionMask
 			Ops::Add<Game::Collision::Component::CollisionMaskComponent>(ecs, eHitbox,
@@ -59,8 +59,8 @@ namespace Game::Combat::Skill::FSM::Effect
 				{
 					.category = Category::SkillHitbox,
 					.collideCategoryMask = bit(Category::CharacterBody),
-					//.relationMask = bit(Relation::Enemy) | bit(Relation::Ally),
-					.relationMask = bit(Relation::Enemy),
+					.relationMask = bit(Relation::Enemy) | bit(Relation::Ally),
+					// .relationMask = bit(Relation::Enemy),
 					.flags = 0
 				});
 

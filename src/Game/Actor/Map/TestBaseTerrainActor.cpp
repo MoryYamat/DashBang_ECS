@@ -22,6 +22,7 @@
 #include "Engine/Graphics/Model/ModelData.h"
 
 #include "Engine/Graphics/Model/AssimpImporter.h"
+#include "Engine/Graphics/Model/CgltfImporter.hpp"
 #include "Engine/Graphics/Renderer/GPUBufferUtils.h"
 
 #include "Engine/Math/Logic2D/LogicMathUtils.h"
@@ -38,11 +39,13 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 {
 	namespace Ops = Engine::ECS::Ops;
 	namespace Component = Engine::ECS::Component;
+	namespace Model = Engine::Graphics::Model;
 
 	eNsECS::Entity entity = ecs.createEntity();
 
 	// モデルデータインポート
-	eNsGfxModel::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/BaseMesh.fbx");
+	// eNsGfxModel::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/BaseMesh.fbx");
+	eNsGfxModel::ModelData modelData = Model::CgltfImporter::Import("Assets/Models/test_terrain.glb");
 	//ModelData modelData = AssimpImporter::Import("Assets/Models/HorizontallyTerrainMesh.fbx");
 	for (const auto& mesh : modelData.meshes)
 	{
@@ -61,8 +64,8 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 	// 初期描画座標を設定
 	eNsCommonComp::TransformComponent transformComp;
 	transformComp.position = glm::vec3(0.0f, 0.0f, 0.0f);
-	transformComp.rotation = glm::vec3(0.0f, 30.0f, 0.0f);
-	transformComp.scale = glm::vec3(0.01f);
+	transformComp.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	transformComp.scale = glm::vec3(1.0f);
 	Ops::Add<Component::Common::TransformComponent>(ecs, entity, transformComp);
 
 	// set ShaderComponent
@@ -82,7 +85,7 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 
 	// 色情報を設定(デバッグ用)
 	eNsGfxComp::MaterialComponent materialComp;
-	materialComp.baseColor = glm::vec3(0.6f, 0.8f, 0.7f);
+	// materialComp.baseColor = glm::vec3(0.6f, 0.8f, 0.7f);
 	eNsDebugLog::LogVector("TestBaseTerrainActor.cpp(Color)", materialComp.baseColor);
 	Ops::Add<Component::Graphics::MaterialComponent>(ecs, entity, materialComp);
 

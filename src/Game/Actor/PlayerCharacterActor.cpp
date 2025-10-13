@@ -78,6 +78,9 @@
 #include "Game/Character/Animation/Query/Skill/SkillAnimationQueryComponent.hpp"
 #include "Game/Character/Animation/Resolve/Skill/SkillAnimDecisionComponent.hpp"
 
+#include "Game/Character/Animation/Query/CC/CCAnimationQueryComponent.hpp"
+#include "Game/Character/Animation/Resolve/CC/CCAnimDecisionComponent.hpp"
+
 // life
 #include "Game/Character/State/Component/LifeStateComponent.hpp"
 // movement
@@ -163,6 +166,9 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 
 	// skill animation
 	Engine::Graphics::Model::CgltfImporter::ImportAnimationsInto("Assets/Models/paladin/test_slash_outward_trim.glb", modelData);
+	
+	// cc animation
+	Engine::Graphics::Model::CgltfImporter::ImportAnimationsInto("Assets/Models/paladin/stunned_default.glb", modelData);
 
 	//const auto& clips = modelData.clips;
 	//if (!clips.empty())
@@ -315,7 +321,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	Ops::Add<Game::Character::Intent::FacingIntentComponent>(ecs, e, Game::Character::Intent::FacingIntentComponent{});
 
 	// stats
-	Ops::Add<Game::Character::Stats::CharacterStatsComponent>(ecs, e, Game::Character::Stats::CharacterStatsComponent{ .moveSpeed = 10.0f });
+	Ops::Add<Game::Character::Stats::CharacterStatsComponent>(ecs, e, Game::Character::Stats::CharacterStatsComponent{ .moveSpeed = 5.0f });
 	
 
 	// Tag
@@ -397,6 +403,10 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	// skill
 	Ops::Add<AnimQuery::SkillAnimQueryComponent>(ecs, e, AnimQuery::SkillAnimQueryComponent{});
 	Ops::Add<AnimDec::Skill::SkillAnimDecisionComponent>(ecs, e, AnimDec::Skill::SkillAnimDecisionComponent{});
+
+	// CC
+	Ops::Add<AnimQuery::CC::CCAnimationQueryComponent>(ecs, e, AnimQuery::CC::CCAnimationQueryComponent{});
+	Ops::Add<AnimDec::CC::CCAnimDecisionComponent>(ecs, e, AnimDec::CC::CCAnimDecisionComponent{});
 }
 
 Game::Actor::Player::PlayerCharacter::~PlayerCharacter()

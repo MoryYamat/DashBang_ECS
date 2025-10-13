@@ -23,4 +23,10 @@ namespace Game::Layer
 
 		Anim::CharacterAnimationFeature::UpdateSkillAnimationResolver(ecs);
 	}
+
+	void CCAnimationResolverLayerFeature::Update(Engine::ECS::EntityMgr& ecs)
+	{
+		Anim::CharacterAnimationFeature::UpdateBuildCCAnimQuerySystem(ecs);
+		Anim::CharacterAnimationFeature::UpdateCCAnimationResolver(ecs);
+	}
 }

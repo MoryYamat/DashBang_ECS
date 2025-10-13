@@ -15,4 +15,10 @@ namespace Game::Layer
 	public:
 		static void Update(Engine::ECS::EntityMgr& ecs);
 	};
+
+	class CCAnimationResolverLayerFeature
+	{
+	public:
+		static void Update(Engine::ECS::EntityMgr& ecs);
+	};
 }

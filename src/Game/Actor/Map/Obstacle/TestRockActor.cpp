@@ -18,6 +18,7 @@
 #include "Game/Init/InitModel/InitLogicTransformFromModel.h"
 
 #include "Engine/Graphics/Model/AssimpImporter.h"
+#include "Engine/Graphics/Model/CgltfImporter.hpp"
 #include "Engine/Graphics/Renderer/GPUBufferUtils.h"
 
 #include "Engine/Math/Logic2D/LogicMathUtils.h"
@@ -34,10 +35,12 @@ Game::Actor::Map::TestRockActor::TestRockActor(eNsECS::EntityMgr& ecs, eNsGfxRen
 {
 	namespace Ops = Engine::ECS::Ops;
 	namespace Component = Engine::ECS::Component;
+	namespace Model = Engine::Graphics::Model;
 
 	eNsECS::Entity entity = ecs.createEntity();
 
 	eNsGfxModel::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/TestRock.fbx");
+	// eNsGfxModel::ModelData modelData = Model::CgltfImporter::Import("Assets/Models/TestRock.fbx");
 	for (const auto& mesh : modelData.meshes)
 	{
 		std::cout << "[TestRockActor.cpp]: Vertices: " << mesh.vertices.size()

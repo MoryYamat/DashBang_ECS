@@ -12,6 +12,11 @@
 #include "Game/Character/Animation/Resolve/Skill/SkillAnimResolverSystem.hpp"
 #include "Game/Character/Animation/Query/Skill/BuildSkillAnimQuerySystem.hpp"
 
+// cc
+#include "Game/Character/Animation/Profile/Init/InitCCAnimProfileDatabase.hpp"
+#include "Game/Character/Animation/Resolve/CC/CCAnimResolverSystem.hpp"
+#include "Game/Character/Animation/Query/CC/BuildCCAnimationQuerySystem.hpp"
+
 namespace Game::Feature::Character::Animation
 {
 	namespace Anim = Game::Character::Animation;
@@ -58,5 +63,27 @@ namespace Game::Feature::Character::Animation
 	void CharacterAnimationFeature::UpdateBuildSkillAnimQuerySystem(Engine::ECS::EntityMgr& ecs)
 	{
 		Anim::Query::BuildSkillAnimQuerySystem(ecs);
+	}
+}
+
+// cc
+namespace Game::Feature::Character::Animation
+{
+	namespace Anim = Game::Character::Animation;
+
+
+	void CharacterAnimationFeature::InitCCProfileDatabase(Engine::ECS::EntityMgr& ecs)
+	{
+		Anim::Profile::Init::InitCCAnimProfileDatabase(ecs);
+	}
+
+	void CharacterAnimationFeature::UpdateCCAnimationResolver(Engine::ECS::EntityMgr& ecs)
+	{
+		Anim::Resolve::CC::CCAnimResolverSystem::Update(ecs);
+	}
+
+	void CharacterAnimationFeature::UpdateBuildCCAnimQuerySystem(Engine::ECS::EntityMgr& ecs)
+	{
+		Anim::Query::CC::BuilCCAnimationQuerySystem(ecs);
 	}
 }
