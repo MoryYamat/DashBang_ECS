@@ -2,14 +2,14 @@
 
 #include <iostream>
 
-eNsGfxModel::ModelGPU Engine::Graphics::Render::GPUBufferUtils::createMeshGPUBuffers(const eNsGfxModel::ModelData& modelData)
+Engine::Graphics::Model::ModelGPU Engine::Graphics::Render::GPUBufferUtils::createMeshGPUBuffers(const Engine::Graphics::Model::ModelData& modelData)
 {
-	eNsGfxModel::ModelGPU modelGPU;
+	Engine::Graphics::Model::ModelGPU modelGPU;
 
 
 	for (const auto& meshData : modelData.meshes)
 	{
-		eNsGfxModel::MeshGPU meshGPU;
+		Engine::Graphics::Model::MeshGPU meshGPU;
 
 		// generate VAO, VBO, EBO
 		glGenVertexArrays(1, &meshGPU.vao);
@@ -20,7 +20,7 @@ eNsGfxModel::ModelGPU Engine::Graphics::Render::GPUBufferUtils::createMeshGPUBuf
 
 		// vbo
 		glBindBuffer(GL_ARRAY_BUFFER, meshGPU.vbo);
-		glBufferData(GL_ARRAY_BUFFER, meshData.vertices.size() * sizeof(eNsGfxModel::VertexData), meshData.vertices.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, meshData.vertices.size() * sizeof(Engine::Graphics::Model::VertexData), meshData.vertices.data(), GL_STATIC_DRAW);
 
 		// ebo
 		if (meshData.hasIndices && !meshData.indices.empty())
@@ -36,7 +36,7 @@ eNsGfxModel::ModelGPU Engine::Graphics::Render::GPUBufferUtils::createMeshGPUBuf
 			meshGPU.indexCount = static_cast<unsigned int>(meshData.vertices.size());
 		}
 
-		using V = eNsGfxModel::VertexData;
+		using V = Engine::Graphics::Model::VertexData;
 		const GLsizei stride = sizeof(V);
 
 		// layout(location = 0) position

@@ -1,4 +1,4 @@
-#include "InputManager.h"
+ï»¿#include "InputManager.h"
 
 #include <iostream>
 
@@ -9,13 +9,13 @@ Engine::Input::InputManager::InputManager(GLFWwindow* window)
 	, mFirstMouse(true)
 	, mLastMousePosition(0.0f)
 {
-	// ‰Šúƒ}ƒEƒXˆÊ’u
+	// åˆæœŸãƒã‚¦ã‚¹ä½ç½®
 	double x, y;
 	glfwGetCursorPos(window, &x, &y);
 	mLastMousePosition = glm::vec2(x, y);
 	// mFirstMouse = false;
 
-	eNsDebugLog::GeneralLog("InputManager.cpp(Initialize)", "InputManager initialization completed successfully");
+	Engine::Debug::Logging::GeneralLog("InputManager.cpp(Initialize)", "InputManager initialization completed successfully");
 }
 
 void Engine::Input::InputManager::Update()

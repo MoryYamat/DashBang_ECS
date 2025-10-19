@@ -19,21 +19,19 @@
 
 #include "Engine/Debug/DebugUtils.h"
 
-#include "Common/EngineNamespaceDecl.h"
-
-#include "Common/GameNamespaceDecl.h"
 
 #include <iostream>
 
+// 依存が逆転しているところがあるため配置か処理を考える必要あり
 // 実質的なカメラ初期化用システム
 // TODO: カメラの微調整のために完成間近に詳細を詰める必要あり
 namespace Engine::ECS::Meta::Init
 {
 	// 名前空間をゲーム側にする必要あり
 	template<>
-	struct InitSystem<eNsCamComp::FollowCameraComponent>
+	struct InitSystem<Engine::ECS::Component::Camera::FollowCameraComponent>
 	{
-		static void Init(eNsCamComp::FollowCameraComponent& followCamComp, eNsECS::EntityMgr& ecs, Entity cameraEntity, eNsWindow::Window& window)
+		static void Init(Engine::ECS::Component::Camera::FollowCameraComponent& followCamComp, Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity cameraEntity, Engine::Window::Window& window)
 		{
 			Entity ePlayerActor = EntityUtils::getEntityByName(ecs, "Player");
 			if (ePlayerActor == Entity::INVALID)
@@ -48,17 +46,17 @@ namespace Engine::ECS::Meta::Init
 			//followCamComp.offset = { 0.0f, 30.0f,20.0f };
 
 			// get 
-			eNsCommonComp::TransformComponent& targetTransform = ecs.get<eNsCommonComp::TransformComponent>(ePlayerActor);
-			eNsLogic2DComp::Logic2DTransformComponent& targetLogic2DTransform = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(ePlayerActor);
+			Engine::ECS::Component::Common::TransformComponent& targetTransform = ecs.get<Engine::ECS::Component::Common::TransformComponent>(ePlayerActor);
+			Engine::ECS::Component::Logic2D::Logic2DTransformComponent& targetLogic2DTransform = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(ePlayerActor);
 
 			// Initialize camera position
-			auto& camTransform = ecs.get<eNsCommonComp::TransformComponent>(cameraEntity);
+			auto& camTransform = ecs.get<Engine::ECS::Component::Common::TransformComponent>(cameraEntity);
 			camTransform.position = targetTransform.position + followCamComp.offset;
 
 			// カギは frontOffset と バネ
 
 			// Initialize camera Front vector
-			auto& camComp = ecs.get<eNsCamComp::CameraComponent>(cameraEntity);
+			auto& camComp = ecs.get<Engine::ECS::Component::Camera::CameraComponent>(cameraEntity);
 			camComp.fov = glm::radians(45.0f);
 			camComp.aspect = window.GetAspect();
 			camComp.frontOffset = glm::vec3(0.0f, 0.0f, -0.6f);
@@ -67,9 +65,9 @@ namespace Engine::ECS::Meta::Init
 
 
 
-			eNsDebugLog::LogVector("FollowCameraInit.h", camComp.front);
+			Engine::Debug::Logging::LogVector("FollowCameraInit.h", camComp.front);
 
-			eNsDebugLog::GeneralLog("FollowCameraInit.h", "FollowCamera");
+			Engine::Debug::Logging::GeneralLog("FollowCameraInit.h", "FollowCamera");
 		}
 	};
 }

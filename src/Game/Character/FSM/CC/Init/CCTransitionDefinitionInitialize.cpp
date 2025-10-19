@@ -34,7 +34,7 @@ void Game::Character::FSM::CC::InitCCTransitionDefinitionDatabase(eNsECS::Entity
 	auto& db = ecs.createResource<CCFSMDatabase>();
 
 	float stunSec = 5.0f;
-	float kdSec = 2.0f;
+	float kdSec = 5.0f;
 
 	CCFSMDefinition def;
 	def.initialState = StateTag::NONE;
@@ -68,20 +68,6 @@ void Game::Character::FSM::CC::InitCCTransitionDefinitionDatabase(eNsECS::Entity
 		}
 	);
 
-	def.hooks.push_back(
-		{
-			.handler = std::make_shared<emitMovementInterference>(stunSec),
-			.trigger = std::make_shared<OnTransition>(std::nullopt, StateTag::STUNNED)
-		}
-	);
-
-	def.hooks.push_back(
-		{
-			.handler = std::make_shared<emitSkillInterference>(stunSec),
-			.trigger = std::make_shared<OnTransition>(std::nullopt, StateTag::STUNNED)
-		}
-	);
-
 	def.transitions.push_back(
 		{
 			.from = StateTag::KNOCKDOWNED,
@@ -90,6 +76,32 @@ void Game::Character::FSM::CC::InitCCTransitionDefinitionDatabase(eNsECS::Entity
 			.priority = 100
 		}
 	);
+
+	// stun
+	def.hooks.push_back(
+		{
+			.handler = std::make_shared<emitMovementInterference>(stunSec),
+			.trigger = std::make_shared<OnTransition>(std::nullopt, StateTag::STUNNED)
+		}
+	);
+	def.hooks.push_back(
+		{
+			.handler = std::make_shared<emitSkillInterference>(stunSec),
+			.trigger = std::make_shared<OnTransition>(std::nullopt, StateTag::STUNNED)
+		}
+	);
+
+	// knockdown
+	def.hooks.push_back(
+		{
+			.handler = std::make_shared<emitMovementInterference>(kdSec),
+			.trigger = std::make_shared<OnTransition>(std::nullopt, StateTag::KNOCKDOWNED)
+		});
+	def.hooks.push_back(
+		{
+			.handler = std::make_shared<emitSkillInterference>(kdSec),
+			.trigger = std::make_shared<OnTransition>(std::nullopt, StateTag::KNOCKDOWNED)
+		});
 
 	// reset
 	def.resetHooks = 
@@ -103,6 +115,7 @@ void Game::Character::FSM::CC::InitCCTransitionDefinitionDatabase(eNsECS::Entity
 			.trigger = std::make_shared<OnResetTransition>(std::nullopt, StateTag::NONE),
 		},
 	};
+
 
 	// TODO:
 	// FSMSystem

@@ -1,9 +1,9 @@
-#include "AssimpImporter.h"
+Ôªø#include "AssimpImporter.h"
 
 #include <iostream>
 
 
-eNsGfxModel::ModelData Engine::Graphics::Model::AssimpImporter::Import(const std::string& path)
+Engine::Graphics::Model::ModelData Engine::Graphics::Model::AssimpImporter::Import(const std::string& path)
 {
 	ModelData data;
 
@@ -52,7 +52,7 @@ void Engine::Graphics::Model::AssimpImporter::processNode(aiNode* node, const ai
 	}
 }
 
-eNsGfxModel::MeshData Engine::Graphics::Model::AssimpImporter::processMesh(aiMesh* mesh, const aiScene* scene, eNsGfxModel::ModelData& modelData)
+Engine::Graphics::Model::MeshData Engine::Graphics::Model::AssimpImporter::processMesh(aiMesh* mesh, const aiScene* scene, Engine::Graphics::Model::ModelData& modelData)
 {
 	//static int x = 1;
 	//std::cout << "[assimpimporter.cpp]: mesh num:" << x << std::endl;
@@ -64,7 +64,7 @@ eNsGfxModel::MeshData Engine::Graphics::Model::AssimpImporter::processMesh(aiMes
 
 	glm::vec3 vector;
 
-	//Å@í∏ì_ëÆê´ÉfÅ[É^
+	//„ÄÄÈ†ÇÁÇπÂ±ûÊÄß„Éá„Éº„Çø
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
 		vector.x = mesh->mVertices[i].x;
@@ -92,7 +92,7 @@ eNsGfxModel::MeshData Engine::Graphics::Model::AssimpImporter::processMesh(aiMes
 		meshData.vertices.push_back(vertexData);
 	}
 
-	// ÉCÉìÉfÉbÉNÉXÉfÅ[É^
+	// „Ç§„É≥„Éá„ÉÉ„ÇØ„Çπ„Éá„Éº„Çø
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 	{
 		aiFace face = mesh->mFaces[i];
@@ -104,7 +104,7 @@ eNsGfxModel::MeshData Engine::Graphics::Model::AssimpImporter::processMesh(aiMes
 		}
 	}
 
-	// indicesÇ™Ç†ÇÍÇŒTrue, Ç»ÇØÇÍÇŒFalse;
+	// indices„Åå„ÅÇ„Çå„Å∞True, „Å™„Åë„Çå„Å∞False;
 	meshData.hasIndices = !meshData.indices.empty();
 
 

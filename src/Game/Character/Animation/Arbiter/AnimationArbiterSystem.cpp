@@ -31,6 +31,8 @@ namespace Game::Character::Animation::Arbiter
 			const auto& sk = Ops::Get<SkAnim::SkillAnimDecisionComponent>(ecs, e);
 			const auto& cc = Ops::Get<CCAnim::CCAnimDecisionComponent>(ecs, e);
 
+			// TODO: 条件のハードコードをやめ、優先度による解決、データ駆動で解決できるようにする必要がある
+			// FIXME:条件のハードコードをやめ、優先度による解決、データ駆動で解決できるようにする必要がある
 			if (mv.valid)
 			{
 				out.valid = true;

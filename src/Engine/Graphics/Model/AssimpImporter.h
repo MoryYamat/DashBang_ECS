@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/Graphics/Model/ModelData.h"
 
@@ -8,17 +8,16 @@
 #include <Assimp/scene.h>
 #include <Assimp/postprocess.h>
 
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Engine::Graphics::Model
 {
 	namespace AssimpImporter
 	{
-		eNsGfxModel::ModelData Import(const std::string& path);
+		Engine::Graphics::Model::ModelData Import(const std::string& path);
 
-		void processNode(aiNode* node, const aiScene* scene, eNsGfxModel::ModelData& modelData);
+		void processNode(aiNode* node, const aiScene* scene, Engine::Graphics::Model::ModelData& modelData);
 
-		eNsGfxModel::MeshData processMesh(aiMesh* mesh, const aiScene* scene, eNsGfxModel::ModelData& modelData);
+		Engine::Graphics::Model::MeshData processMesh(aiMesh* mesh, const aiScene* scene, Engine::Graphics::Model::ModelData& modelData);
 
 	}
 }

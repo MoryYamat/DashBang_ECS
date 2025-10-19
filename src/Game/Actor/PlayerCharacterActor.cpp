@@ -169,6 +169,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	
 	// cc animation
 	Engine::Graphics::Model::CgltfImporter::ImportAnimationsInto("Assets/Models/paladin/stunned_default.glb", modelData);
+	Engine::Graphics::Model::CgltfImporter::ImportAnimationsInto("Assets/Models/paladin/falling_back_default.glb", modelData);
 
 	//const auto& clips = modelData.clips;
 	//if (!clips.empty())

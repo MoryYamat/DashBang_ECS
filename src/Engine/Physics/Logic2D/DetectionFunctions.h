@@ -1,4 +1,4 @@
-// Õ“ËŒŸo‚Ì”Šw“IŒvZŠÖ”ŒQ
+ï»¿// è¡çªæ¤œå‡ºã®æ•°å­¦çš„è¨ˆç®—é–¢æ•°ç¾¤
 
 #pragma once
 
@@ -8,24 +8,23 @@
 
 #include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Engine::Physics::Logic2D::Collision
 {
-	// 2D‰~“¯m‚Ìd‚È‚èŒŸo
+	// 2Då††åŒå£«ã®é‡ãªã‚Šæ¤œå‡º
 	bool intersects_Circle2D_Circle2D(const glm::vec2& c1, float r1, const glm::vec2& c2, float r2);
 
-	// 2D‰~‚Æ2DîŒ`‚Ìd‚È‚èŒŸo
+	// 2Då††ã¨2Dæ‰‡å½¢ã®é‡ãªã‚Šæ¤œå‡º
 	bool Intersects_Circle2D_Sector2D(const glm::vec2& circleCenter, float circleRadius,
 		const glm::vec2& sectorCenter,
 		const glm::vec2& sectorDirection, // normalized
 		float sectorAngle,                // in radians
 		float sectorRadius);
 
-	// 2D‰~‚Æü•ª‚ÌŒğ·”»’è
+	// 2Då††ã¨ç·šåˆ†ã®äº¤å·®åˆ¤å®š
 	bool Intersects_Circle2D_Segment2D(const glm::vec2& circleCenter, float radius, const glm::vec2& segA, const glm::vec2& segB);
 
-	// 2D‰~‚Æ‰~ŒÊ‚ÌŒğ·”»’è
+	// 2Då††ã¨å††å¼§ã®äº¤å·®åˆ¤å®š
 	bool Intersects_Circle2D_Arc2D(
 		const glm::vec2& circleCenter,
 		float circleRadius,
@@ -35,7 +34,7 @@ namespace Engine::Physics::Logic2D::Collision
 		float arcAngle                 // radians	
 	);
 
-	// 2D‰~‚Æ2D‹éŒ`(Šp“x•t‚«)
+	// 2Då††ã¨2DçŸ©å½¢(è§’åº¦ä»˜ã)
 	bool Intersects_Circle2D_Obb2D(
 		const glm::vec2& circleCenter,
 		float circleRadius,
@@ -45,7 +44,7 @@ namespace Engine::Physics::Logic2D::Collision
 		const glm::vec2& obbUp // normalized
 	);
 
-	// 2D‰~‚Æ2D‹éŒ`(Šp“x‚È‚µ)
+	// 2Då††ã¨2DçŸ©å½¢(è§’åº¦ãªã—)
 	bool Intersects_Circle2D_Box2D(
 		const glm::vec2& circleCenter,
 		float circleRadius,
@@ -54,13 +53,13 @@ namespace Engine::Physics::Logic2D::Collision
 	);
 
 
-	// 2DîŒ`‚Æ2DîŒ`
+	// 2Dæ‰‡å½¢ã¨2Dæ‰‡å½¢
 	bool Intersects_Sector2D_Sector2D(
 		const glm::vec2& cA, const glm::vec2& dirA, float angA, float rA,
 		const glm::vec2& cB, const glm::vec2& dirB, float angB, float rB
 	);
 
-	// 2DîŒ`‚Æ2D‹éŒ`(²•t‚«)
+	// 2Dæ‰‡å½¢ã¨2DçŸ©å½¢(è»¸ä»˜ã)
 	bool Intersects_Sector2D_Obb2D(
 		const glm::vec2& sectorCenter,
 		const glm::vec2& sectorDirection,// normalized
@@ -73,7 +72,7 @@ namespace Engine::Physics::Logic2D::Collision
 		const glm::vec2& obbUp// normalized
 	);
 
-	// ü•ª‚Æü•ª
+	// ç·šåˆ†ã¨ç·šåˆ†
 	bool Intersects_Segment2D_Segment2D(
 		const glm::vec2& p1, const glm::vec2& p2,
 		const glm::vec2& q1, const glm::vec2& q2
@@ -111,11 +110,11 @@ namespace Engine::Physics::Logic2D::Collision
 	bool pointInBox(const glm::vec2& p, const glm::vec2& center, const glm::vec2& halfExtents);
 
 	// 
-	bool intersectBox2D(const eNsLogic2DComp::Box2D& a, const eNsLogic2DComp::Box2D& b);
+	bool intersectBox2D(const Engine::ECS::Component::Logic2D::Box2D& a, const Engine::ECS::Component::Logic2D::Box2D& b);
 
 
 	// A pure function that performs collision detection between a circle and an AABB.
-	// ‰~‚Æ AABB‚ªŒğ·‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©‚ğ”»’è‚·‚é
+	// å††ã¨ AABBãŒäº¤å·®ã—ã¦ã„ã‚‹ã‹ã©ã†ã‹ã‚’åˆ¤å®šã™ã‚‹
 	bool CheckCircleAABBIntersection(
 		const glm::vec2& circleCenter,
 		float radius,
@@ -123,10 +122,10 @@ namespace Engine::Physics::Logic2D::Collision
 		const glm::vec2& boxMax
 	);
 
-	bool intersectOBB2D_AABB2D(const eNsLogic2DComp::Obb2D& obb, const glm::vec2& aabbMin, const glm::vec2& aabbMax);
+	bool intersectOBB2D_AABB2D(const Engine::ECS::Component::Logic2D::Obb2D& obb, const glm::vec2& aabbMin, const glm::vec2& aabbMax);
 
 
-	// •â•ŠÖ”
+	// è£œåŠ©é–¢æ•°
 	inline float DistanceSquared(const glm::vec2& a, const glm::vec2& b)
 	{
 		glm::vec2 d = a - b;

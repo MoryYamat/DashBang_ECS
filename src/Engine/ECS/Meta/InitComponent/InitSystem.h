@@ -1,4 +1,4 @@
-// ƒRƒ“ƒ|[ƒlƒ“ƒg‰Šú‰»‚Ì”Ä—pƒeƒ“ƒvƒŒ[ƒg
+ï»¿// ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆåˆæœŸåŒ–ã®æ±ç”¨ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆ
 // Generic template for component initialization
 
 #pragma once
@@ -7,14 +7,13 @@
 
 #include "Engine/Window/Window.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Engine::ECS::Meta::Init
 {
 	template<typename Component>
 	struct InitSystem
 	{
-		static void Init(Component& comp, eNsECS::EntityMgr& ecs, eNsECS::Entity owner, const eNsWindow::Window& window)
+		static void Init(Component& comp, Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity owner, const Engine::Window::Window& window)
 		{
 			// The default is to do nothing.
 		}

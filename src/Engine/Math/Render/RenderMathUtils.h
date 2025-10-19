@@ -1,11 +1,11 @@
-// •`‰æ—pŒvZŠÖ”ŒQ
+ï»¿// æç”»ç”¨è¨ˆç®—é–¢æ•°ç¾¤
 
 
 #pragma once
 
 #include "Engine/Config/CanonicalDefaults.h"
 
-#include "Engie/Debug/DebugUtils.h"
+#include "Engine/Debug/DebugUtils.h"
 
 #include <glm/glm.hpp>
 
@@ -14,7 +14,7 @@
 namespace RenderMathUtils
 {
 
-	// •`‰æEƒ‚ƒfƒ‹Šî€—pi+Z‚ª³–Êj rotation = 0 -> front = (0, +1)
+	// æç”»ãƒ»ãƒ¢ãƒ‡ãƒ«åŸºæº–ç”¨ï¼ˆ+ZãŒæ­£é¢ï¼‰ rotation = 0 -> front = (0, +1)
 	inline glm::vec2 RotateVec2_FromPositiveZ(const glm::vec2& vec, float radians)
 	{
 		float c = glm::cos(radians);

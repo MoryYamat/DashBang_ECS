@@ -57,12 +57,17 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 	testSkill.def.activeDuration = 0.5f;
 	testSkill.def.recoveryDuration = 0.3f;
 
-	CCSpec ccSpec{
+	CCSpec ccSpec_STUN{
 		.type = Game::Character::FSM::CC::StateTag::STUNNED,
 		.priority = 300
 	};
 
-	testSkill.def.cc = ccSpec;
+	CCSpec ccSpec_KNOCK{
+		.type = Game::Character::FSM::CC::StateTag::KNOCKDOWNED,
+		.priority = 300
+	};
+
+	testSkill.def.cc = ccSpec_STUN;
 
 	testSkill.def.spawnHitArea = gNsSkill::Def::SpawnHitArea{
 		.duration = 2.0f,
@@ -142,6 +147,96 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 
 	db.AddSkill(testSkill);
 
+	SkillEntry testAttack;
+	testAttack.def.id = 2;
+	testAttack.def.name = "testAttack";
+
+	testAttack.def.castDuration = 0.2;
+	testAttack.def.activeDuration = 1.0f;
+	testAttack.def.recoveryDuration = 0.2f;
+
+	testAttack.def.cc = ccSpec_KNOCK;
+
+
+	testAttack.def.spawnHitArea = gNsSkill::Def::SpawnHitArea{
+	.duration = 2.0f,
+	.shape = gNsSkillComp::Attack2DShape {
+		gNsSkillComp::Rectangle2DAttack {
+			.center = CanonicalDefaults::kLocalCenterXZ, // 中心位置
+			.direction = CanonicalDefaults::kLocalForwardXZ,
+			.width = 10.f,
+			.height = 2.f
+	}},
+	.trajectoryParams = gNsSkillData::SkillTrajectory::LinearTrajectoryParams
+	{
+		.speed = 10.0f
+	},
+	.syncWithActivePhase = false,
+	};
+
+	testAttack.def.cooldown = 1.0f;
+
+
+
+	testAttack.fsm.transitions = {
+		{typeid(Casting), typeid(Active), std::make_shared<CastTimeElapsed>()},
+		{typeid(Active), typeid(Recovery), std::make_shared<ActiveTimeElapsed>()},
+		{typeid(Recovery), typeid(Completed), std::make_shared<RecoveryTimeElapsed>()},
+
+		// Interrupted(中断フラグが立ったらどこからでも)
+		{std::nullopt, typeid(Interrupted), std::make_shared<IsInterrupted>()},
+
+		// === 終了状態 から None に戻す === (すべてのリセットは`Completed`/`Interrupted`から行われることを前提とする)
+		{typeid(Completed), typeid(None), std::make_shared<AlwaysTrue>()},
+		{typeid(Interrupted), typeid(None), std::make_shared<AlwaysTrue>()},
+
+	};
+	testAttack.fsm.initialState = typeid(Casting);
+
+	testAttack.fsm.effectHooks =
+	{
+		SkillEffectHook {
+			std::make_shared<OnTransition>(StateTag::CASTING, StateTag::ACTIVE),
+			std::make_shared<SpawnHitboxEffect>()
+		},
+	};
+
+	testAttack.triggerCondition = std::make_shared<SkillTriggerCondition_PhaseEquals>(typeid(None));
+
+	// Modifier
+	// MovementFSMModifier
+	testAttack.def.movementModifiers =
+		MovementModifierPerPhase{
+			.movementSpeedMultiplier{
+				{StateTag::CASTING, 0.3f},
+				{StateTag::ACTIVE, 0.0f},
+				{StateTag::RECOVERY, 0.7f}
+	} };
+
+	testAttack.fsm.resetHooks =
+	{
+		SkillFSMResetHook
+		{
+			.handlers =
+			{
+				std::make_shared<ClearEffectExecutionLog>(),
+				std::make_shared<ResetSkillExecutionContext>()
+			},
+			.trigger = std::make_shared<OnResetTransition>(StateTag::COMPLETED, StateTag::NONE)
+		},
+
+		SkillFSMResetHook
+		{
+			.handlers =
+			{
+				std::make_shared<ClearEffectExecutionLog>(),
+				std::make_shared<ResetSkillExecutionContext>()
+			},
+			.trigger = std::make_shared<OnResetTransition>(StateTag::INTERRUPTED, StateTag::NONE)
+		},
+	};
+
+	db.AddSkill(testAttack);
 	// TODO :
 	// 
 	// `SkillStateTags.hpp`を適用し，typeidのハードコードを修正する

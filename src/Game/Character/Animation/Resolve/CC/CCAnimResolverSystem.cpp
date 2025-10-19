@@ -41,7 +41,7 @@ namespace Game::Character::Animation::Resolve::CC
 			const auto& meta = ccprof.ResolveOrFallback("default", q.current);
 			// std::cout << "current " << q.current.name();
 			dec.clipKey = meta.clipKey;
-			dec.loop = true;
+			dec.loop = meta.loop;
 			dec.playRate = meta.speed;
 			dec.valid = true;
 		}

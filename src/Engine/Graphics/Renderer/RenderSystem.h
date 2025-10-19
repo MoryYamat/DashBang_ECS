@@ -1,4 +1,4 @@
-// Rendering system
+Ôªø// Rendering system
 
 #pragma once
 
@@ -15,27 +15,25 @@
 #include "Engine/Graphics/Renderer/RenderContext.h"
 
 
-// common
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Engine::Graphics::Render
 {
-	void RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader& shader, float aspect);
-	void RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader& shader, float aspect, RenderContext& context);
+	void RenderSystem(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader& shader, float aspect);
+	void RenderSystem(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader& shader, float aspect, RenderContext& context);
 
-	// åªç›ñ¢égóp
+	// ÁèæÂú®Êú™‰ΩøÁî®
 	// void UpdateRenderContext(eNsECS::EntityMgr& ecs, eNsGfxRender::RenderContext& context);
 
-	void drawMesh(const eNsGfxComp::MeshComponent& meshComp);
+	void drawMesh(const Engine::ECS::Component::Graphics::MeshComponent& meshComp);
 
 
-	bool getCameraMatrices(eNsECS::EntityMgr& ecs, glm::mat4& view, glm::mat4& projection);
-	bool getCameraMatrices(eNsECS::EntityMgr& ecs, glm::mat4& view, glm::mat4& projection, RenderContext& context);
+	bool getCameraMatrices(Engine::ECS::EntityMgr& ecs, glm::mat4& view, glm::mat4& projection);
+	bool getCameraMatrices(Engine::ECS::EntityMgr& ecs, glm::mat4& view, glm::mat4& projection, RenderContext& context);
 
-	glm::mat4 computeViewMatrix(const eNsCommonComp::TransformComponent& transformComp, const eNsCamComp::CameraComponent& cameraComp);
+	glm::mat4 computeViewMatrix(const Engine::ECS::Component::Common::TransformComponent& transformComp, const Engine::ECS::Component::Camera::CameraComponent& cameraComp);
 
 
-	glm::mat4 computeViewMatrix(const eNsCommonComp::TransformComponent& transformComp, const eNsCamComp::CameraComponent& cameraComp);
+	glm::mat4 computeViewMatrix(const Engine::ECS::Component::Common::TransformComponent& transformComp, const Engine::ECS::Component::Camera::CameraComponent& cameraComp);
 
 	glm::mat4 computeProjectionMatrix(float fov, float aspect, float nearClip, float farClip);
 }

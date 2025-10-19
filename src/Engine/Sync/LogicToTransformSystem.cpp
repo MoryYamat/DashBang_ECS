@@ -1,4 +1,4 @@
-#include "LogicToTransformSystem.h"
+ï»¿#include "LogicToTransformSystem.h"
 
 #include "Engine/ECS/Component/Common/TransformComponent.h"
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
@@ -8,36 +8,36 @@
 #include <iostream>
 // Logic -> Drawing
 // 2D -> 3D
-void Engine::Sync::LogicToTransformSystem::Apply2DToTransform(eNsECS::EntityMgr& ecs, float deltaTime)
+void Engine::Sync::LogicToTransformSystem::Apply2DToTransform(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
-	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::Logic2DTransformComponent, eNsCommonComp::TransformComponent>())
+	for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Logic2D::Logic2DTransformComponent, Engine::ECS::Component::Common::TransformComponent>())
 	{
-		const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
-		auto& transform = ecs.get<eNsCommonComp::TransformComponent>(e);
+		const auto& logic = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(e);
+		auto& transform = ecs.get<Engine::ECS::Component::Common::TransformComponent>(e);
 
-		// 2D˜_—À•W(x, y=0, z ) -> 3D•`‰æÀ•W (x, y, z) (OpenGL)
+		// 2Dè«–ç†åº§æ¨™(x, y=0, z ) -> 3Dæç”»åº§æ¨™ (x, y, z) (OpenGL)
 		transform.position.x = logic.positionXZ.x;
-		transform.position.y = 0.0f;// Fixed height (‚‚³‚ÍŒÅ’è)(¡ŒãHeightMap‚É‚æ‚Á‚Ä”z’u)
+		transform.position.y = 0.0f;// Fixed height (é«˜ã•ã¯å›ºå®š)(ä»Šå¾ŒHeightMapã«ã‚ˆã£ã¦é…ç½®)
 		transform.position.z = logic.positionXZ.y;
 
 		// scale ( xz -> xyz)
-		// transform.scale‚Í˜_—ƒXƒP[ƒ‹‚Æˆê’v‚·‚é‘O’ñ‚ÅŒÅ’èB
-		// «—ˆ“I‚É‰‰o‚âƒ‚ƒfƒ‹·ˆÙ‚Å•ÏX‚ª•K—v‚É‚È‚Á‚½ê‡ARenderScaleComponent‚È‚Ç‚ð“±“ü‚·‚é
+		// transform.scaleã¯è«–ç†ã‚¹ã‚±ãƒ¼ãƒ«ã¨ä¸€è‡´ã™ã‚‹å‰æã§å›ºå®šã€‚
+		// å°†æ¥çš„ã«æ¼”å‡ºã‚„ãƒ¢ãƒ‡ãƒ«å·®ç•°ã§å¤‰æ›´ãŒå¿…è¦ã«ãªã£ãŸå ´åˆã€RenderScaleComponentãªã©ã‚’å°Žå…¥ã™ã‚‹
 		//transform.scale.x = logic.scale.x;
 		//// ???????
 		//transform.scale.y = 1.0f;
 		//transform.scale.z = logic.scale.y;
 
-		// rotation (logic.front ‚©‚çŒvŽZ) (î•ñŒ¹‚Ífront‚È‚Ì‚ÅA`logic.rotation`‚Í”ð‚¯‚Ä‚¢‚é)
+		// rotation (logic.front ã‹ã‚‰è¨ˆç®—) (æƒ…å ±æºã¯frontãªã®ã§ã€`logic.rotation`ã¯é¿ã‘ã¦ã„ã‚‹)
 		transform.rotation.y = glm::degrees(logic.GetRotationYFromFrontVector());
 
-		//// rotation (2D ƒ[ƒe[ƒVƒ‡ƒ“@-> YŽ²‰ñ‚è‚Ì‰ñ“])
+		//// rotation (2D ãƒ­ãƒ¼ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ã€€-> Yè»¸å›žã‚Šã®å›žè»¢)
 		//float rotation = logic.rotation;
 		//transform.rotation = glm::vec3(0.0f, rotation, 0.0f);
 
 		// [Rotation Unit Policy]
-		// - TransformComponent.rotation ¨ degrees
-		// - Logic2DTransformComponent.rotation ¨ radians
+		// - TransformComponent.rotation â†’ degrees
+		// - Logic2DTransformComponent.rotation â†’ radians
 		// - To sync from Transform to Logic: use glm::radians()
 		// - To sync from Logic to Transform: use glm::degrees()
 
@@ -57,7 +57,7 @@ void Engine::Sync::LogicToTransformSystem::Apply2DToTransform(eNsECS::EntityMgr&
 }
 
 // 3D -> 3D
-void Engine::Sync::LogicToTransformSystem::Apply3DToTransform(eNsECS::EntityMgr& ecs, float deltaTime)
+void Engine::Sync::LogicToTransformSystem::Apply3DToTransform(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
 	//for(Entity e: ecs.view<>)
 }

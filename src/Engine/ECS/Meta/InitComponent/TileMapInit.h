@@ -1,5 +1,5 @@
-// Special template for TileMapComponent initialization
-// TileMapComponent‰Šú‰»—p‚Ì“Áêƒeƒ“ƒvƒŒ[ƒg
+ï»¿// Special template for TileMapComponent initialization
+// TileMapComponentåˆæœŸåŒ–ç”¨ã®ç‰¹æ®Šãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆ
 
 #pragma once
 
@@ -11,18 +11,16 @@
 
 #include "Game/Init/InitTileMap/InitTileMap.h"
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
 
 namespace Engine::ECS::Meta::Init
 {
 	template<>
-	struct InitSystem<eNsLogic2DComp::TileMapComponent>
+	struct InitSystem<Engine::ECS::Component::Logic2D::TileMapComponent>
 	{
-		static void Init(eNsLogic2DComp::TileMapComponent& tileMapComp, eNsECS::EntityMgr& ecs, eNsECS::Entity tileMapEntity, const eNsWindow::Window& window)
+		static void Init(Engine::ECS::Component::Logic2D::TileMapComponent& tileMapComp, Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity tileMapEntity, const Engine::Window::Window& window)
 		{
-			gNsInit::Logic2D::ApplyObstacleCollidersToTileMap(ecs, tileMapComp);
-			gNsInit::Logic2D::MaskUncoveredTilesByTerrainOBB(ecs, tileMapComp);
+			Game::Init::Logic2D::ApplyObstacleCollidersToTileMap(ecs, tileMapComp);
+			Game::Init::Logic2D::MaskUncoveredTilesByTerrainOBB(ecs, tileMapComp);
 		}
 
 	};

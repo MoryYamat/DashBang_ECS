@@ -1,5 +1,5 @@
-// Functions that provide auxiliary functions for ECS
-// ECS‚Ì•â•‹@”\‚ğ’ñ‹Ÿ‚·‚éŠÖ”ŒQ
+ï»¿// Functions that provide auxiliary functions for ECS
+// ECSã®è£œåŠ©æ©Ÿèƒ½ã‚’æä¾›ã™ã‚‹é–¢æ•°ç¾¤
 #pragma once
 
 #include "Engine/ECS/Entity.h"
@@ -13,14 +13,14 @@ namespace Engine::ECS
 	namespace EntityUtils
 	{
 		// For name resolution
-		eNsECS::Entity getEntityByName(eNsECS::EntityMgr& ecs, const std::string& name);
+		Engine::ECS::Entity getEntityByName(Engine::ECS::EntityMgr& ecs, const std::string& name);
 
-		// e‚ÆŠÖ˜AqEntity‚ğíœ—\–ñ‚Éƒ}[ƒN‚·‚é
-		void MarkForPendingDestroyWithChildren(eNsECS::EntityMgr& ecs, eNsECS::Entity parent, const std::vector<eNsECS::Entity>& children,
+		// è¦ªã¨é–¢é€£å­Entityã‚’å‰Šé™¤äºˆç´„ã«ãƒãƒ¼ã‚¯ã™ã‚‹
+		void MarkForPendingDestroyWithChildren(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity parent, const std::vector<Engine::ECS::Entity>& children,
 			int delayFrames = 0, bool fadeOut = false);
 
-		// ƒXƒLƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX‚ªq‚ğ‚½‚È‚¢ê‡^ƒIƒuƒWƒFƒNƒg’P‘Ì‚ğíœ—\–ñ‚Éƒ}[ƒN‚·‚é
-		void MarkForPendingDestroy(eNsECS::EntityMgr& ecs, eNsECS::Entity entity, int delayFrames = 0, bool fadeOut = false);
+		// ã‚¹ã‚­ãƒ«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãŒå­ã‚’æŒãŸãªã„å ´åˆï¼ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå˜ä½“ã‚’å‰Šé™¤äºˆç´„ã«ãƒãƒ¼ã‚¯ã™ã‚‹
+		void MarkForPendingDestroy(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity entity, int delayFrames = 0, bool fadeOut = false);
 	}
 }
 

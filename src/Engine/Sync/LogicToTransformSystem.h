@@ -1,20 +1,19 @@
-// Linking logic coordinates with drawing coordinates
+ï»¿// Linking logic coordinates with drawing coordinates
 
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
 // Logic -> Drawing
-// ƒƒWƒbƒN@-> •`‰æ
+// ãƒ­ã‚¸ãƒƒã‚¯ã€€-> æç”»
 namespace Engine::Sync::LogicToTransformSystem
 {
 	// 2D -> 3D
-	void Apply2DToTransform(eNsECS::EntityMgr& ecs, float deltaTime);
+	void Apply2DToTransform(Engine::ECS::EntityMgr& ecs, float deltaTime);
 
 	// 3D -> 3D
-	void Apply3DToTransform(eNsECS::EntityMgr& ecs, float deltaTime);
+	void Apply3DToTransform(Engine::ECS::EntityMgr& ecs, float deltaTime);
 
 
 	// 2D -> 2D

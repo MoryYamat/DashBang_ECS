@@ -32,6 +32,7 @@ namespace Game::Character::Animation::Profile::CC
 		float speed = 1.0f;
 		float fadeIn = 0.0f;
 		float startOffset = 0.0f;// 先頭カット
+		bool loop = false;
 	};
 
 	// db

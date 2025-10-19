@@ -1,4 +1,4 @@
-// Utils for Debugging 
+ï»¿// Utils for Debugging 
 
 #pragma once
 
@@ -14,14 +14,13 @@
 
 #include <iostream>
 
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Engine::Debug::Logging
 {
 	// A template that returns the name of the Component with Entity.id.
-// Entity.id ‚ğ‚ÂƒRƒ“ƒ|[ƒlƒ“ƒg‚Ì–¼‘O‚ğ•Ô‚·ƒeƒ“ƒvƒŒ[ƒg
+// Entity.id ã‚’æŒã¤ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®åå‰ã‚’è¿”ã™ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆ
 	template<typename T>
-	void printEntityComponentIfExist(eNsECS::EntityMgr& ecs, eNsECS::Entity entity)
+	void printEntityComponentIfExist(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity entity)
 	{
 		if (ecs.hasComponent<T>(entity))
 		{
@@ -31,14 +30,14 @@ namespace Engine::Debug::Logging
 	}
 
 	// A template to find entities with a particular set of components
-	// “Á’è‚ÌƒRƒ“ƒ|[ƒlƒ“ƒg‚ÌW‡‚ğ‚à‚ÂƒGƒ“ƒeƒBƒeƒB‚ğŒŸõ‚·‚éƒeƒ“ƒvƒŒ[ƒg
+	// ç‰¹å®šã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®é›†åˆã‚’ã‚‚ã¤ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ã‚’æ¤œç´¢ã™ã‚‹ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆ
 	template<typename... Components>
-	void printEntityComponents(eNsECS::EntityMgr& ecs, eNsECS::Entity entity)
+	void printEntityComponents(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity entity)
 	{
 		(printEntityComponentIfExist<Components>(ecs, entity), ...);
 	}
 
-	// ŒÄ‚Ño‚µAƒ}ƒNƒ’è‹`‚©‚çA`DEBUG_LOG(msg)`
+	// å‘¼ã³å‡ºã—ã€ãƒã‚¯ãƒ­å®šç¾©ã‹ã‚‰ã€`DEBUG_LOG(msg)`
 	// Call, from the macro definition, `DEBUG_LOG(msg)`
 	inline void debugLog(const std::string& message, const char* functionName)
 	{

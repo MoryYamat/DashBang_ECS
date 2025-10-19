@@ -1,4 +1,4 @@
-// Debug drawing functions
+ï»¿// Debug drawing functions
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"
@@ -6,44 +6,42 @@
 
 #include "Game/Collision/Data/CollisionResultStorage.h"
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
 
 namespace Engine::Debug::Drawing::Logic2D
 {
-	// ƒfƒoƒbƒO—p•`‰æ‚ÌƒCƒ“ƒ^[ƒtƒF[ƒX
-	void Draw(eNsECS::EntityMgr& ecs,
-		const eNsGfxRender::RenderContext& renderContext,
+	// ãƒ‡ãƒãƒƒã‚°ç”¨æç”»ã®ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
+	void Draw(Engine::ECS::EntityMgr& ecs,
+		const Engine::Graphics::Render::RenderContext& renderContext,
 		const Game::Collision::Data::CollisionResultStorage& collisionResult);
 
-	// PlayerƒAƒNƒ^[‚ÌˆÊ’uEƒ}ƒEƒXƒ|ƒCƒ“ƒ^‚ÌˆÊ’u‚ğ•`‰æ(ƒfƒoƒbƒO—p)
-	void DebugDrawLogicPlayerPositions(eNsECS::EntityMgr& ecs, const eNsGfxRender::RenderContext& renderContext);
+	// Playerã‚¢ã‚¯ã‚¿ãƒ¼ã®ä½ç½®ãƒ»ãƒã‚¦ã‚¹ãƒã‚¤ãƒ³ã‚¿ã®ä½ç½®ã‚’æç”»(ãƒ‡ãƒãƒƒã‚°ç”¨)
+	void DebugDrawLogicPlayerPositions(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext);
 
-	// ƒ^ƒCƒ‹ƒ}ƒbƒv‚ÌƒƒCƒ„ƒtƒŒ[ƒ€•`‰æ(ƒfƒoƒbƒO—p)
-	void DebugDrawLogicTileMaps(eNsECS::EntityMgr& ecs, const eNsGfxRender::RenderContext& renderContext);
+	// ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—ã®ãƒ¯ã‚¤ãƒ¤ãƒ•ãƒ¬ãƒ¼ãƒ æç”»(ãƒ‡ãƒãƒƒã‚°ç”¨)
+	void DebugDrawLogicTileMaps(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext);
 
-	// 2D‰~‚ğ•`‰æ(ƒfƒoƒbƒO—p)
-	void DebugDrawPlayerCollision(eNsECS::EntityMgr& ecs, const eNsGfxRender::RenderContext& renderContext);
+	// 2Då††ã‚’æç”»(ãƒ‡ãƒãƒƒã‚°ç”¨)
+	void DebugDrawPlayerCollision(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext);
 
 
-	// TileMap‚ÆPlayerCircle2D‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ•`‰æ
-	void DebugDrawPlayerAndTileMap(eNsECS::EntityMgr& ecs,
-		const eNsGfxRender::RenderContext& renderContext,
+	// TileMapã¨PlayerCircle2Dã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’æç”»
+	void DebugDrawPlayerAndTileMap(Engine::ECS::EntityMgr& ecs,
+		const Engine::Graphics::Render::RenderContext& renderContext,
 		const Game::Collision::Data::CollisionResultStorage& collisionResult);
 
-	// ƒŒƒ“ƒ_[ƒRƒ“ƒeƒLƒXƒg‚ğƒZƒbƒgŠÖ”
-	void SetOpenGLMatrixState(const eNsGfxRender::RenderContext& renderContext);
+	// ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’ã‚»ãƒƒãƒˆé–¢æ•°
+	void SetOpenGLMatrixState(const Engine::Graphics::Render::RenderContext& renderContext);
 
-	// ƒŒƒ“ƒ_[ƒRƒ“ƒeƒLƒXƒg‚ğ‰ğœ‚·‚éŠÖ”
+	// ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’è§£é™¤ã™ã‚‹é–¢æ•°
 	void ResetOpenGLMatrixState();
 
 }
 
 
-// ƒtƒ@ƒCƒ‹‚ğuƒVƒXƒeƒ€—pƒfƒoƒbƒO•`‰æv‚ÆuƒQ[ƒ€—pƒfƒoƒbƒO•`‰æv‚É•ª‚¯‚é
-// ƒtƒ@ƒCƒ‹‚ğuƒVƒXƒeƒ€—pƒfƒoƒbƒO•`‰æv‚ÆuƒQ[ƒ€—pƒfƒoƒbƒO•`‰æv‚É•ª‚¯‚é
+// ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã€Œã‚·ã‚¹ãƒ†ãƒ ç”¨ãƒ‡ãƒãƒƒã‚°æç”»ã€ã¨ã€Œã‚²ãƒ¼ãƒ ç”¨ãƒ‡ãƒãƒƒã‚°æç”»ã€ã«åˆ†ã‘ã‚‹
+// ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã€Œã‚·ã‚¹ãƒ†ãƒ ç”¨ãƒ‡ãƒãƒƒã‚°æç”»ã€ã¨ã€Œã‚²ãƒ¼ãƒ ç”¨ãƒ‡ãƒãƒƒã‚°æç”»ã€ã«åˆ†ã‘ã‚‹
 namespace Engine::Debug::Drawing::Logic2D
 {
-	// Skill‚Ì˜_—“IŒø‰Ê”ÍˆÍŒ`ó‚ğ•`‰æ‚·‚é
-	void RenderAttack2DAreas(eNsECS::EntityMgr& ecs, const eNsGfxRender::RenderContext& renderContext);
+	// Skillã®è«–ç†çš„åŠ¹æœç¯„å›²å½¢çŠ¶ã‚’æç”»ã™ã‚‹
+	void RenderAttack2DAreas(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext);
 }

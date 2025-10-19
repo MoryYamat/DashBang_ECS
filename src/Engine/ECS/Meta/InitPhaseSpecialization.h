@@ -1,4 +1,4 @@
-// “Á’è‚ÌComponentŒ^‚É‘Î‚µ‚Ä‰Šú‰»ƒ^ƒCƒ~ƒ“ƒO‚ğ“Áê‰»
+ï»¿// ç‰¹å®šã®Componentå‹ã«å¯¾ã—ã¦åˆæœŸåŒ–ã‚¿ã‚¤ãƒŸãƒ³ã‚°ã‚’ç‰¹æ®ŠåŒ–
 // Specialize the initialization timing for a particular Component type.
 #pragma once
 
@@ -8,18 +8,17 @@
 
 #include "Engine/ECS/Component/Camera/FollowCameraComponent.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Engine::ECS::Meta::Init
 {
-	template<>// Specialize template ƒeƒ“ƒvƒŒ[ƒg“Áê‰»
-	constexpr InitPhase GetInitPhase<eNsLogic2DComp::TileMapComponent>()
+	template<>// Specialize template ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆç‰¹æ®ŠåŒ–
+	constexpr InitPhase GetInitPhase<Engine::ECS::Component::Logic2D::TileMapComponent>()
 	{
 		return InitPhase::Deferred;
 	}
 
 	template<>
-	constexpr InitPhase GetInitPhase <eNsCamComp::FollowCameraComponent > ()
+	constexpr InitPhase GetInitPhase <Engine::ECS::Component::Camera::FollowCameraComponent > ()
 	{
 		return InitPhase::Deferred;
 	}

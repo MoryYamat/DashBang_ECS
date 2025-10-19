@@ -1,4 +1,4 @@
-// ˆêŠ‡‰Šú‰»‚Ì‚½‚ß‚ÌŠÖ”ƒeƒ“ƒvƒŒ[ƒg
+ï»¿// ä¸€æ‹¬åˆæœŸåŒ–ã®ãŸã‚ã®é–¢æ•°ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆ
 // Function template for bulk initialization
 
 
@@ -9,12 +9,11 @@
 #include "Engine/ECS/Meta/InitPhaseSpecialization.h"
 #include "Engine/ECS/Meta/InitComponent/InitSystem.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Engine::ECS::Meta::Init
 {
 	template<typename Component>
-	void ApplyDeferredInitialization(eNsECS::EntityMgr& ecs, eNsWindow::Window& window)
+	void ApplyDeferredInitialization(Engine::ECS::EntityMgr& ecs, Engine::Window::Window& window)
 	{
 		constexpr InitPhase phase = GetInitPhase<Component>();
 

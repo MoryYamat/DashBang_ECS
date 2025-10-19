@@ -1,5 +1,5 @@
-// System-wide input management system
-// ƒVƒXƒeƒ€‘S‘Ì‚ÌƒCƒ“ƒvƒbƒgŠÇ—ƒVƒXƒeƒ€
+ï»¿// System-wide input management system
+// ã‚·ã‚¹ãƒ†ãƒ å…¨ä½“ã®ã‚¤ãƒ³ãƒ—ãƒƒãƒˆç®¡ç†ã‚·ã‚¹ãƒ†ãƒ 
 
 #pragma once
 
@@ -8,7 +8,6 @@
 
 #include "Engine/InputManager/RawInputState.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Engine::Input
 {
@@ -17,14 +16,14 @@ namespace Engine::Input
 	public:
 
 		InputManager(GLFWwindow* window);
-		void Update();// –ˆƒtƒŒ[ƒ€RawInputState‚ğXV
+		void Update();// æ¯ãƒ•ãƒ¬ãƒ¼ãƒ RawInputStateã‚’æ›´æ–°
 
 		// Raw Input getter
 		const RawInputState& GetRawInput() { return mRawInput; }
-		RawInputState& GetRawInputMutable() { return mRawInput; }// ‘‚«Š·‚¦—p
+		RawInputState& GetRawInputMutable() { return mRawInput; }// æ›¸ãæ›ãˆç”¨
 
 
-		// «—ˆ“I‚ÉMappingContext‚È‚Ç‚à•Û‚·‚é
+		// å°†æ¥çš„ã«MappingContextãªã©ã‚‚ä¿æŒã™ã‚‹
 
 	private:
 		// glfw window context

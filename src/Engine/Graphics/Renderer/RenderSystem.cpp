@@ -45,7 +45,7 @@
 namespace
 {
 	inline void drawOneSubmesh(
-		const eNsGfxComp::MeshComponent& mc, size_t i
+		const Engine::ECS::Component::Graphics::MeshComponent& mc, size_t i
 	)
 	{
 		const auto& mg = mc.modelGPU.meshesGPU[i];
@@ -58,7 +58,7 @@ namespace
 }
 
 // Changed to update RenderContext
-void Engine::Graphics::Render::RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader& shader, float aspect, RenderContext& context)
+void Engine::Graphics::Render::RenderSystem(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader& shader, float aspect, RenderContext& context)
 {
 	// View行列、Projection行列
 	glm::mat4 view, projection;
@@ -71,15 +71,15 @@ void Engine::Graphics::Render::RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender
 
 
 
-	for (eNsECS::Entity entity : ecs.view<
-		eNsCommonComp::TransformComponent, 
-		eNsGfxComp::MeshComponent, 
-		eNsGfxComp::MaterialComponent
+	for (Engine::ECS::Entity entity : ecs.view<
+		Engine::ECS::Component::Common::TransformComponent, 
+		Engine::ECS::Component::Graphics::MeshComponent, 
+		Engine::ECS::Component::Graphics::MaterialComponent
 	>())
 	{
-		auto& transformComp = ecs.get<eNsCommonComp::TransformComponent>(entity);
-		auto& meshComp = ecs.get<eNsGfxComp::MeshComponent>(entity);
-		auto& materialComp = ecs.get<eNsGfxComp::MaterialComponent>(entity);
+		auto& transformComp = ecs.get<Engine::ECS::Component::Common::TransformComponent>(entity);
+		auto& meshComp = ecs.get<Engine::ECS::Component::Graphics::MeshComponent>(entity);
+		auto& materialComp = ecs.get<Engine::ECS::Component::Graphics::MaterialComponent>(entity);
 		
 
 		// state machine (シェーダーを切り替えると、viewもprojectionもセットする必要あり。)
@@ -164,7 +164,7 @@ void Engine::Graphics::Render::RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender
 	//context.viewport = {0, 0, WindowManager::GetWidth(), WindowManager::GetHeight()};
 }
 
-void Engine::Graphics::Render::drawMesh(const eNsGfxComp::MeshComponent& meshComp)
+void Engine::Graphics::Render::drawMesh(const Engine::ECS::Component::Graphics::MeshComponent& meshComp)
 {
 
 	for (size_t i = 0; i < meshComp.modelData.meshes.size(); ++i)
@@ -204,14 +204,14 @@ void Engine::Graphics::Render::drawMesh(const eNsGfxComp::MeshComponent& meshCom
 
 
 
-bool Engine::Graphics::Render::getCameraMatrices(eNsECS::EntityMgr& ecs, glm::mat4& view, glm::mat4& projection)
+bool Engine::Graphics::Render::getCameraMatrices(Engine::ECS::EntityMgr& ecs, glm::mat4& view, glm::mat4& projection)
 {
-	eNsCommonComp::TransformComponent* camTransformComp = nullptr;
+	Engine::ECS::Component::Common::TransformComponent* camTransformComp = nullptr;
 	eNsCamComp::CameraComponent* camComp = nullptr;
 
-	for (eNsECS::Entity entity : ecs.view<eNsCommonComp::TransformComponent, eNsCamComp::CameraComponent>())
+	for (Engine::ECS::Entity entity : ecs.view<Engine::ECS::Component::Common::TransformComponent, eNsCamComp::CameraComponent>())
 	{
-		camTransformComp = &ecs.get<eNsCommonComp::TransformComponent>(entity);
+		camTransformComp = &ecs.get<Engine::ECS::Component::Common::TransformComponent>(entity);
 		camComp = &ecs.get<eNsCamComp::CameraComponent>(entity);
 		break;
 	}
@@ -228,12 +228,12 @@ bool Engine::Graphics::Render::getCameraMatrices(eNsECS::EntityMgr& ecs, glm::ma
 	return true;
 }
 
-bool Engine::Graphics::Render::getCameraMatrices(eNsECS::EntityMgr& ecs, glm::mat4& view, glm::mat4& projection, RenderContext& context)
+bool Engine::Graphics::Render::getCameraMatrices(Engine::ECS::EntityMgr& ecs, glm::mat4& view, glm::mat4& projection, RenderContext& context)
 {
 
-	for (eNsECS::Entity entity : ecs.view<eNsCommonComp::TransformComponent, eNsCamComp::CameraComponent>())
+	for (Engine::ECS::Entity entity : ecs.view<Engine::ECS::Component::Common::TransformComponent, eNsCamComp::CameraComponent>())
 	{
-		const auto& camTransformComp = ecs.get<eNsCommonComp::TransformComponent>(entity);
+		const auto& camTransformComp = ecs.get<Engine::ECS::Component::Common::TransformComponent>(entity);
 		const auto& camComp = ecs.get<eNsCamComp::CameraComponent>(entity);
 
 		view = computeViewMatrix(camTransformComp, camComp);
@@ -257,7 +257,7 @@ bool Engine::Graphics::Render::getCameraMatrices(eNsECS::EntityMgr& ecs, glm::ma
 
 
 
-glm::mat4 Engine::Graphics::Render::computeViewMatrix(const eNsCommonComp::TransformComponent& transformComp, const eNsCamComp::CameraComponent& cameraComp)
+glm::mat4 Engine::Graphics::Render::computeViewMatrix(const Engine::ECS::Component::Common::TransformComponent& transformComp, const eNsCamComp::CameraComponent& cameraComp)
 {
 	glm::vec3 position = transformComp.position;
 	return glm::lookAt(position, position + cameraComp.front, cameraComp.up);
@@ -271,7 +271,7 @@ glm::mat4 Engine::Graphics::Render::computeProjectionMatrix(float fov, float asp
 
 
 // For simple testing
-void Engine::Graphics::Render::RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader& shader, float aspect)
+void Engine::Graphics::Render::RenderSystem(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader& shader, float aspect)
 {
 	//for (auto entity : ecs.view<MeshComponent>())// for Test
 	//{
@@ -290,10 +290,10 @@ void Engine::Graphics::Render::RenderSystem(eNsECS::EntityMgr& ecs, eNsGfxRender
 
 
 
-	for (eNsECS::Entity entity : ecs.view<eNsCommonComp::TransformComponent, eNsGfxComp::MeshComponent>())
+	for (Engine::ECS::Entity entity : ecs.view<Engine::ECS::Component::Common::TransformComponent, Engine::ECS::Component::Graphics::MeshComponent>())
 	{
-		auto& transformComp = ecs.get<eNsCommonComp::TransformComponent>(entity);
-		auto& meshComp = ecs.get<eNsGfxComp::MeshComponent>(entity);
+		auto& transformComp = ecs.get<Engine::ECS::Component::Common::TransformComponent>(entity);
+		auto& meshComp = ecs.get<Engine::ECS::Component::Graphics::MeshComponent>(entity);
 
 
 		// state machine (シェーダーを切り替えると、viewもprojectionもセットする必要あり。)
