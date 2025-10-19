@@ -1,20 +1,20 @@
-#include "CharacterSkillFeature.hpp"
+ï»¿#include "CharacterSkillFeature.hpp"
 
 #include "Game/Character/Control/Skill/System/CharacterSkillExecutionSystem.hpp"
 
 #include "Game/Character/Control/Skill/System/CharacterSkillIntentResolver.hpp"
 
-#include "Common/GameNamespaceDecl.h"
 
-// ƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹Às‚ğXV‚·‚é
-void Game::Feature::Character::CharacterSkillFeature::UpdateCharacterSkillExecution(eNsECS::EntityMgr& ecs, float deltaTime)
+
+// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«å®Ÿè¡Œã‚’æ›´æ–°ã™ã‚‹
+void Game::Feature::Character::CharacterSkillFeature::UpdateCharacterSkillExecution(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
-	// gNsCharacterControlSkill::UpdateCharacterSkillExecution(ecs, deltaTime);// íœ—\’èFFSM“±“üŒã”p~
+	// Game::Character::Control::Skill::UpdateCharacterSkillExecution(ecs, deltaTime);// å‰Šé™¤äºˆå®šï¼šFSMå°å…¥å¾Œå»ƒæ­¢
 }
 
-// ƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹ˆÓ}‚ğ”½‰f‰Â”\‚©‚Ç‚¤‚©”»’è‚µCXV‚·‚é
-void Game::Feature::Character::CharacterSkillFeature::UpdateCharacterSkillIntentResolver(eNsECS::EntityMgr& ecs)
+// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«æ„å›³ã‚’åæ˜ å¯èƒ½ã‹ã©ã†ã‹åˆ¤å®šã—ï¼Œæ›´æ–°ã™ã‚‹
+void Game::Feature::Character::CharacterSkillFeature::UpdateCharacterSkillIntentResolver(Engine::ECS::EntityMgr& ecs)
 {
-	// gNsCharacterControlSkill::UpdateCharacterSkillIntentResovlver(ecs);// íœ—\’èFFSM“±“üŒã”p~
-	gNsCharacterControlSkill::UpdateSkillResolverSystem(ecs);
+	// Game::Character::Control::Skill::UpdateCharacterSkillIntentResovlver(ecs);// å‰Šé™¤äºˆå®šï¼šFSMå°å…¥å¾Œå»ƒæ­¢
+	Game::Character::Control::Skill::UpdateSkillResolverSystem(ecs);
 }

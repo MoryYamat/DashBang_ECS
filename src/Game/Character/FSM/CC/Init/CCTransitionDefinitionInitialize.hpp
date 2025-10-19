@@ -1,8 +1,7 @@
-#pragma once
+﻿#pragma once
 #include "Engine/ECS/EntityManager.h"
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Game::Character::FSM::CC
 {
-	void InitCCTransitionDefinitionDatabase(eNsECS::EntityMgr& ecs);
+	void InitCCTransitionDefinitionDatabase(Engine::ECS::EntityMgr& ecs);
 }

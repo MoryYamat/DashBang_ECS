@@ -1,12 +1,12 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Engine/ECS/EntityManager.h"
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Game::Character::FSM::Movement
 {
-	void InitMovementFSMDatabase(eNsECS::EntityMgr& ecs);
+	void InitMovementFSMDatabase(Engine::ECS::EntityMgr& ecs);
 
-	// MovementFSM‚Ì’è‹`‚ğ‰Šú‰»‚µCƒOƒ[ƒoƒ‹ƒŠƒ\[ƒX‚É“o˜^‚·‚éŠÖ”
-	// void InitializeMovementTransitionSystem(eNsECS::EntityMgr& ecs);
+	// MovementFSMã®å®šç¾©ã‚’åˆæœŸåŒ–ã—ï¼Œã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒªã‚½ãƒ¼ã‚¹ã«ç™»éŒ²ã™ã‚‹é–¢æ•°
+	// void InitializeMovementTransitionSystem(Engine::ECS::EntityMgr& ecs);
 }

@@ -1,4 +1,4 @@
-#include "MovementFSMScopedSystem.hpp"
+ï»¿#include "MovementFSMScopedSystem.hpp"
 
 #include "Game/Character/FSM/Movement/Database/MovementFSMDatabase.hpp"
 
@@ -11,10 +11,10 @@
 #include "Game/Character/FSM/Movement/MovementStateTags.hpp"
 
 
-// TODO: FSM‚ªƒAƒNƒeƒBƒu‚©‚Ç‚¤‚©‚Ì’è‹`‚ğ
-//		MovementFSMDefinition‚É–¾¦“I‚É‹Lq‚Å‚«‚é‚æ‚¤‚É‚·‚é
-//		‚Ü‚½‚ÍCMovementStateComponent‘¤‚ÅCFSMŠˆ«ó‘Ô‚ğ¦‚· bool ‚ğŠÇ—D
-void Game::Character::FSM::Movement::System::MovementFSMScopedEffectSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
+// TODO: FSMãŒã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‹ã©ã†ã‹ã®å®šç¾©ã‚’
+//		MovementFSMDefinitionã«æ˜ç¤ºçš„ã«è¨˜è¿°ã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹
+//		ã¾ãŸã¯ï¼ŒMovementStateComponentå´ã§ï¼ŒFSMæ´»æ€§çŠ¶æ…‹ã‚’ç¤ºã™ bool ã‚’ç®¡ç†ï¼
+void Game::Character::FSM::Movement::System::MovementFSMScopedEffectSystem::Update(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
 	using namespace Game::Character::Intent;
 	using namespace Game::Character::FSM::Movement;
@@ -22,12 +22,12 @@ void Game::Character::FSM::Movement::System::MovementFSMScopedEffectSystem::Upda
 
 	const auto& db = ecs.getResource<MovementFSMDatabase>();
 
-	const auto& def = db.Get("basic");// Ø‚è‘Ö‚¦‚Í¡Œã‘Î‰
+	const auto& def = db.Get("basic");// åˆ‡ã‚Šæ›¿ãˆã¯ä»Šå¾Œå¯¾å¿œ
 
 
 	if (def.fsmScopedEffects.empty()) return;
 
-	for (eNsECS::Entity e : ecs.view<
+	for (Engine::ECS::Entity e : ecs.view<
 		MovementStateComponent,
 		MovementIntentComponent
 	>())
@@ -35,7 +35,7 @@ void Game::Character::FSM::Movement::System::MovementFSMScopedEffectSystem::Upda
 		const auto& state = ecs.get<MovementStateComponent>(e);
 		const auto& intent = ecs.get<MovementIntentComponent>(e);
 
-		// IDLE/MOVING‚Ì‚Æ‚«‚¾‚¯FSMƒXƒR[ƒvƒGƒtƒFƒNƒg‚ğ“K—p
+		// IDLE/MOVINGã®ã¨ãã ã‘FSMã‚¹ã‚³ãƒ¼ãƒ—ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’é©ç”¨
 		if (state.current != StateTag::IDLE && state.current != StateTag::MOVING) continue;
 
 		MovementFSMContext ctx;

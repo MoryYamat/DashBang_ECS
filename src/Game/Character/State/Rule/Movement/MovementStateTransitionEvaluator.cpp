@@ -1,14 +1,14 @@
-#include "MovementStateTransitionEvaluator.hpp"
+ï»¿#include "MovementStateTransitionEvaluator.hpp"
 
 #include "Engine/Math/Logic2D/LogicMathUtils.h"
 
-// ‘JˆÚğŒ‚ğ‚·‚×‚Ä•]‰¿
+// é·ç§»æ¡ä»¶ã‚’ã™ã¹ã¦è©•ä¾¡
 bool Game::Character::State::Movement::AreConditionsMet
 (
-	const gNsCharaMoveState::CharacterMovementStateComponent& movement,// Œ»İ–¢g—p current / previous ‚ğg‚¤ê‡‚Í•K—v
-	const eNsLogic2DComp::Velocity2DComponent& vel,
+	const Game::Character::State::Movement::CharacterMovementStateComponent& movement,// ç¾åœ¨æœªä½¿ç”¨ current / previous ã‚’ä½¿ã†å ´åˆã¯å¿…è¦
+	const Engine::ECS::Component::Logic2D::Velocity2DComponent& vel,
 	float deltaTime,
-	const std::vector<gNsCharaMoveState::TransitionCondition>& conditions
+	const std::vector<Game::Character::State::Movement::TransitionCondition>& conditions
 )
 {
 	for (const auto& cond : conditions)
@@ -19,19 +19,19 @@ bool Game::Character::State::Movement::AreConditionsMet
 	return true;
 }
 
-// ‘JˆÚğŒ‚Ì’P‘Ì•]‰¿
+// é·ç§»æ¡ä»¶ã®å˜ä½“è©•ä¾¡
 bool Game::Character::State::Movement::EvaluateCondition
 (
-	const eNsLogic2DComp::Velocity2DComponent& vel,
+	const Engine::ECS::Component::Logic2D::Velocity2DComponent& vel,
 	float deltaTime,
-	const gNsCharaMoveState::TransitionCondition& cond
+	const Game::Character::State::Movement::TransitionCondition& cond
 )
 {
-	const float vel2 = eNsLogic2DMath::Vector::SquaredLength(vel.velocity);
+	const float vel2 = Engine::Math::Logic2D::Vector::SquaredLength(vel.velocity);
 
-	// ‚±‚±‚Ìƒn[ƒhƒR[ƒh‚ÍÅ“K‰»‚Å‚«‚È‚¢‚©HFƒfƒBƒXƒpƒbƒ`ƒƒ‚ÌÀ‘•‚È‚Ç
-	// ‚±‚±‚Ìƒn[ƒhƒR[ƒh‚ÍÅ“K‰»‚Å‚«‚È‚¢‚©HFƒfƒBƒXƒpƒbƒ`ƒƒ‚ÌÀ‘•‚È‚Ç
-	// ‚±‚±‚Ìƒn[ƒhƒR[ƒh‚ÍÅ“K‰»‚Å‚«‚È‚¢‚©HFƒfƒBƒXƒpƒbƒ`ƒƒ‚ÌÀ‘•‚È‚Ç
+	// ã“ã“ã®ãƒãƒ¼ãƒ‰ã‚³ãƒ¼ãƒ‰ã¯æœ€é©åŒ–ã§ããªã„ã‹ï¼Ÿï¼šãƒ‡ã‚£ã‚¹ãƒ‘ãƒƒãƒãƒ£ã®å®Ÿè£…ãªã©
+	// ã“ã“ã®ãƒãƒ¼ãƒ‰ã‚³ãƒ¼ãƒ‰ã¯æœ€é©åŒ–ã§ããªã„ã‹ï¼Ÿï¼šãƒ‡ã‚£ã‚¹ãƒ‘ãƒƒãƒãƒ£ã®å®Ÿè£…ãªã©
+	// ã“ã“ã®ãƒãƒ¼ãƒ‰ã‚³ãƒ¼ãƒ‰ã¯æœ€é©åŒ–ã§ããªã„ã‹ï¼Ÿï¼šãƒ‡ã‚£ã‚¹ãƒ‘ãƒƒãƒãƒ£ã®å®Ÿè£…ãªã©
 	switch (cond.type)
 	{
 	case TransitionConditionType::IsActualMoving:

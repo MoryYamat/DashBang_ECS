@@ -1,24 +1,24 @@
-#include "AnalogInputRoutingSystem.h"
+ï»¿#include "AnalogInputRoutingSystem.h"
 
 #include "Engine/ECS/Component/Input/AnalogInputComponent.h"
 
 #include "Game/Utils/SpatialTransformUtils.h"
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 #include "Engine/Debug/DebugUtils.h"
 
-void Game::Input::Analog::RouteAnalogInput(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, const eNsGfxRender::RenderContext& renderContext)
+void Game::Input::Analog::RouteAnalogInput(Engine::ECS::EntityMgr& ecs, const Engine::Input::RawInputState& rawInput, const Engine::Graphics::Render::RenderContext& renderContext)
 {
-	for (eNsECS::Entity e : ecs.view<eNsInputComp::AnalogInputComponent>())
+	for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Input::AnalogInputComponent>())
 	{
-		auto& analog = ecs.get<eNsInputComp::AnalogInputComponent>(e);
+		auto& analog = ecs.get<Engine::ECS::Component::Input::AnalogInputComponent>(e);
 
-		// ƒ}ƒEƒX‚ÌƒXƒNƒŠ[ƒ“À•W‚©‚çXZ•½–Ê‚Ö‚Ì“Š‰eˆÊ’u‚ÌŒvZ
+		// ãƒã‚¦ã‚¹ã®ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã‹ã‚‰XZå¹³é¢ã¸ã®æŠ•å½±ä½ç½®ã®è¨ˆç®—
 		analog.cursorLogicPositionXZ = Game::Utils::ProjectScreenToLogicXZPlane(rawInput.mousePosition, renderContext);
 		analog.cursorDelta = rawInput.mouseDelta;
 		analog.scrollDelta = rawInput.scrollDelta;
 
-		// eNsDebugLog::LogVector("AnalogInputRoutingSystem.cpp(Route)", analog.cursorLogicPositionXZ);
+		// Engine::Debug::Logging::LogVector("AnalogInputRoutingSystem.cpp(Route)", analog.cursorLogicPositionXZ);
 	}
 }

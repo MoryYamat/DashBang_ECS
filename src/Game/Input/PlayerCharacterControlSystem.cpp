@@ -1,4 +1,4 @@
-#include "PlayerCharacterControlSystem.h"
+ï»¿#include "PlayerCharacterControlSystem.h"
 
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
@@ -28,20 +28,20 @@
 #include <iostream>
 
 
-// raw Input ‚Æ Game Input ‚Ì•ª—£Œã (semantic Layer“±“üŒã ”p~)
-void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, eNsGfxRender::RenderContext& renderContext, float deltaTime)
+// raw Input ã¨ Game Input ã®åˆ†é›¢å¾Œ (semantic Layerå°å…¥å¾Œ å»ƒæ­¢)
+void Game::Input::Player::Update(Engine::ECS::EntityMgr& ecs, const Engine::Input::RawInputState& rawInput, Engine::Graphics::Render::RenderContext& renderContext, float deltaTime)
 {
-	gNsInput::InputActionComponent input;
-	for (eNsECS::Entity e : ecs.view<eNsTagComp::PlayerControllerComponent, gNsInput::InputActionComponent>())
+	Game::Input::InputActionComponent input;
+	for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Tags::PlayerControllerComponent, Game::Input::InputActionComponent>())
 	{
-		input = ecs.get<gNsInput::InputActionComponent>(e);
+		input = ecs.get<Game::Input::InputActionComponent>(e);
 		break;
 	}
 
-	for (eNsECS::Entity e : ecs.view<eNsTagComp::PlayerControllerComponent, eNsLogic2DComp::Logic2DTransformComponent, eNsLogic2DComp::CollisionComponent>())
+	for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Tags::PlayerControllerComponent, Engine::ECS::Component::Logic2D::Logic2DTransformComponent, Engine::ECS::Component::Logic2D::CollisionComponent>())
 	{
-		auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
-		auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
+		auto& logic = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(e);
+		auto& collisionComp = ecs.get<Engine::ECS::Component::Logic2D::CollisionComponent>(e);
 
 		glm::vec2 moveDir(0.0f);
 
@@ -52,7 +52,7 @@ void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, const eNsInput::RawInpu
 		glm::vec2 camRightXZ = glm::normalize(glm::vec2(camRight3D.x, camRight3D.z));
 
 		// Movement based on relative coordinates
-		// ‘Š‘ÎÀ•W‚ğŠî€‚ÉˆÚ“®
+		// ç›¸å¯¾åº§æ¨™ã‚’åŸºæº–ã«ç§»å‹•
 		if (input.isPressed(InputAction::MoveForward))
 			moveDir += camForwrdXZ;
 		if (input.isPressed(InputAction::MoveBackward))
@@ -65,19 +65,19 @@ void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, const eNsInput::RawInpu
 		if (glm::length(moveDir) > 0.0f)
 		{
 			moveDir = glm::normalize(moveDir);
-			logic.positionXZ += moveDir * deltaTime * 5.0f; // ˆÚ“®‘¬“x
+			logic.positionXZ += moveDir * deltaTime * 5.0f; // ç§»å‹•é€Ÿåº¦
 
-			// ‚±‚±‚ª–â‘è‚¾‚Æv‚¤(Ó–±•ª—£)
-			// ‚±‚±‚ª–â‘è‚¾‚Æv‚¤(Ó–±•ª—£)
-			// ‚±‚±‚ª–â‘è‚¾‚Æv‚¤(Ó–±•ª—£)
-			// ‚±‚±‚ª–â‘è‚¾‚Æv‚¤(Ó–±•ª—£)
-			// ‚±‚±‚ª–â‘è‚¾‚Æv‚¤(Ó–±•ª—£)
+			// ã“ã“ãŒå•é¡Œã ã¨æ€ã†(è²¬å‹™åˆ†é›¢)
+			// ã“ã“ãŒå•é¡Œã ã¨æ€ã†(è²¬å‹™åˆ†é›¢)
+			// ã“ã“ãŒå•é¡Œã ã¨æ€ã†(è²¬å‹™åˆ†é›¢)
+			// ã“ã“ãŒå•é¡Œã ã¨æ€ã†(è²¬å‹™åˆ†é›¢)
+			// ã“ã“ãŒå•é¡Œã ã¨æ€ã†(è²¬å‹™åˆ†é›¢)
 			// collision update
-			//if (collisionComp.collider.type == eNsLogic2DComp::ColliderType::Circle2D)
+			//if (collisionComp.collider.type == Engine::ECS::Component::Logic2D::ColliderType::Circle2D)
 			//{
 			//	collisionComp.collider.circle2D.center = logic.positionXZ;
 			//}
-			// ‚±‚±‚ÅC(local)center‚ğXV‚·‚é‚Ì‚Í‚æ‚­‚È‚¢
+			// ã“ã“ã§ï¼Œ(local)centerã‚’æ›´æ–°ã™ã‚‹ã®ã¯ã‚ˆããªã„
 			if (collisionComp.collider.IsCircle2D())
 			{
 				collisionComp.collider.AsCircle2D().center = logic.positionXZ;
@@ -91,13 +91,13 @@ void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, const eNsInput::RawInpu
 		// for testing
 		//GameUtils::SpatialTransform::ProjectScreenToLogicXZPlane(input.screenMousePosition, renderContext);
 
-		// vec2(0.0f)‚Í³‹K‰»‚Å‚«‚Ü‚¹‚ñB(isnan=> Not a Number)
+		// vec2(0.0f)ã¯æ­£è¦åŒ–ã§ãã¾ã›ã‚“ã€‚(isnan=> Not a Number)
 		if (glm::length(dir) > 0.0001f && !glm::any(glm::isnan(dir)))
 		{
 			logic.front = glm::normalize(dir);
-			logic.rotation = logic.GetRotationYFromFrontVector();//radians / -Z‚ª³–Ê(‰EèŒn:”½Œv‰ñ‚è‚ª³)
+			logic.rotation = logic.GetRotationYFromFrontVector();//radians / -ZãŒæ­£é¢(å³æ‰‹ç³»:åæ™‚è¨ˆå›ã‚ŠãŒæ­£)
 
-			// rightƒxƒNƒgƒ‹‚àfront‚©‚çÄŒvZ
+			// rightãƒ™ã‚¯ãƒˆãƒ«ã‚‚frontã‹ã‚‰å†è¨ˆç®—
 			logic.UpdateRightFromFront();
 		}
 		else
@@ -122,12 +122,12 @@ void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, const eNsInput::RawInpu
 }
 
 
-void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, InputState& input, float deltaTime, eNsGfxRender::RenderContext& renderContext)
+void Game::Input::Player::Update(Engine::ECS::EntityMgr& ecs, InputState& input, float deltaTime, Engine::Graphics::Render::RenderContext& renderContext)
 {
-	for (eNsECS::Entity e : ecs.view<eNsTagComp::PlayerControllerComponent, eNsLogic2DComp::Logic2DTransformComponent>())
+	for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Tags::PlayerControllerComponent, Engine::ECS::Component::Logic2D::Logic2DTransformComponent>())
 	{
-		auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
-		auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
+		auto& logic = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(e);
+		auto& collisionComp = ecs.get<Engine::ECS::Component::Logic2D::CollisionComponent>(e);
 
 		glm::vec2 moveDir(0.0f);
 
@@ -138,7 +138,7 @@ void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, InputState& input, floa
 		glm::vec2 camRightXZ = glm::normalize(glm::vec2(camRight3D.x, camRight3D.z));
 
 		// Movement based on relative coordinates
-		// ‘Š‘ÎÀ•W‚ğŠî€‚ÉˆÚ“®
+		// ç›¸å¯¾åº§æ¨™ã‚’åŸºæº–ã«ç§»å‹•
 		if (input.isPressed(InputAction::MoveForward))
 			moveDir += camForwrdXZ;
 		if (input.isPressed(InputAction::MoveBackward))
@@ -151,15 +151,15 @@ void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, InputState& input, floa
 		if (glm::length(moveDir) > 0.0f)
 		{
 			moveDir = glm::normalize(moveDir);
-			logic.positionXZ += moveDir * deltaTime * 5.0f; // ˆÚ“®‘¬“x
+			logic.positionXZ += moveDir * deltaTime * 5.0f; // ç§»å‹•é€Ÿåº¦
 
 			//// collision update
-			//if (collisionComp.collider.type == eNsLogic2DComp::ColliderType::Circle2D)
+			//if (collisionComp.collider.type == Engine::ECS::Component::Logic2D::ColliderType::Circle2D)
 			//{
 			//	collisionComp.collider.circle2D.center = logic.positionXZ;
 			//}
 
-			// ‚±‚±‚ÅC(local)center‚ğXV‚·‚é‚Ì‚Í‚æ‚­‚È‚¢
+			// ã“ã“ã§ï¼Œ(local)centerã‚’æ›´æ–°ã™ã‚‹ã®ã¯ã‚ˆããªã„
 			if (collisionComp.collider.IsCircle2D())
 			{
 				collisionComp.collider.AsCircle2D().center = logic.positionXZ;
@@ -174,14 +174,14 @@ void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, InputState& input, floa
 		// for testing
 		//GameUtils::SpatialTransform::ProjectScreenToLogicXZPlane(input.screenMousePosition, renderContext);
 
-		// vec2(0.0f)‚Í³‹K‰»‚Å‚«‚Ü‚¹‚ñB(isnan=> Not a Number)
+		// vec2(0.0f)ã¯æ­£è¦åŒ–ã§ãã¾ã›ã‚“ã€‚(isnan=> Not a Number)
 		if (glm::length(dir) > 0.0001f && !glm::any(glm::isnan(dir)))
 		{
 			logic.front = glm::normalize(dir);
 			logic.rotation = logic.GetRotationYFromFrontVector();
 
 
-			// rightƒxƒNƒgƒ‹‚àfront‚©‚çÄŒvZ
+			// rightãƒ™ã‚¯ãƒˆãƒ«ã‚‚frontã‹ã‚‰å†è¨ˆç®—
 			logic.UpdateRightFromFront();
 
 		}
@@ -206,16 +206,16 @@ void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, InputState& input, floa
 
 
 // Input for the player's character
-void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, InputState& input, float deltaTime)
+void Game::Input::Player::Update(Engine::ECS::EntityMgr& ecs, InputState& input, float deltaTime)
 {
-	for (eNsECS::Entity e : ecs.view<eNsTagComp::PlayerControllerComponent, eNsLogic2DComp::Logic2DTransformComponent>())
+	for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Tags::PlayerControllerComponent, Engine::ECS::Component::Logic2D::Logic2DTransformComponent>())
 	{
-		auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
+		auto& logic = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(e);
 
 		glm::vec2 moveDir(0.0f);
 
 		// Movement based on relative coordinates
-		// ‘Š‘ÎÀ•W‚ğŠî€‚ÉˆÚ“®
+		// ç›¸å¯¾åº§æ¨™ã‚’åŸºæº–ã«ç§»å‹•
 		if (input.isPressed(InputAction::MoveForward))
 			moveDir += logic.front;
 		if (input.isPressed(InputAction::MoveBackward))
@@ -228,7 +228,7 @@ void Game::Input::Player::Update(eNsECS::EntityMgr& ecs, InputState& input, floa
 		if (glm::length(moveDir) > 0.0f)
 		{
 			moveDir = glm::normalize(moveDir);
-			logic.positionXZ += moveDir * deltaTime * 3.0f; // ˆÚ“®‘¬“x
+			logic.positionXZ += moveDir * deltaTime * 3.0f; // ç§»å‹•é€Ÿåº¦
 		}
 
 

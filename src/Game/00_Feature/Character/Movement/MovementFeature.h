@@ -1,4 +1,4 @@
-// Intent -> Velocity -> Position
+﻿// Intent -> Velocity -> Position
 
 #pragma once
 
@@ -10,13 +10,13 @@ namespace Game::Feature::Character
 	{
 	public:
 		// intent
-		static void UpdateMovementIntent(eNsECS::EntityMgr& ecs);
+		static void UpdateMovementIntent(Engine::ECS::EntityMgr& ecs);
 
 		// expression
-		static void UpdateVelocity(eNsECS::EntityMgr& ecs);
+		static void UpdateVelocity(Engine::ECS::EntityMgr& ecs);
 
 		// logic
-		static void UpdateLogicFacing(eNsECS::EntityMgr& ecs);
-		static void UpdateLogicPosition(eNsECS::EntityMgr& ecs, float deltaTime);
+		static void UpdateLogicFacing(Engine::ECS::EntityMgr& ecs);
+		static void UpdateLogicPosition(Engine::ECS::EntityMgr& ecs, float deltaTime);
 	};
 }

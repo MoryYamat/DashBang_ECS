@@ -1,25 +1,25 @@
-// Space transformation utility functions for game logic
-// ƒQ[ƒ€ƒƒWƒbƒN—p‚Ì‹óŠÔ•ÏŠ·ŒnUtilityŠÖ”ŒQ
+ï»¿// Space transformation utility functions for game logic
+// ã‚²ãƒ¼ãƒ ãƒ­ã‚¸ãƒƒã‚¯ç”¨ã®ç©ºé–“å¤‰æ›ç³»Utilityé–¢æ•°ç¾¤
 #pragma once
 
 #include <GLM/glm.hpp>
 
 #include "Engine/Graphics/Renderer/RenderContext.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
-// ‚±‚ÌŠÖ”‚ÌƒtƒHƒ‹ƒ_ˆÊ’u‚â–¼‘O‹óŠÔ‚Ì\‘¢‚Íˆêl‚·‚é•K—v‚ª‚ ‚é(–{“–‚É‚±‚±‚Å‚¢‚¢‚Ì‚©H)
-// ‚±‚ÌŠÖ”‚ÌƒtƒHƒ‹ƒ_ˆÊ’u‚â–¼‘O‹óŠÔ‚Ì\‘¢‚Íˆêl‚·‚é•K—v‚ª‚ ‚é(–{“–‚É‚±‚±‚Å‚¢‚¢‚Ì‚©H)
-// ‚±‚ÌŠÖ”‚ÌƒtƒHƒ‹ƒ_ˆÊ’u‚â–¼‘O‹óŠÔ‚Ì\‘¢‚Íˆêl‚·‚é•K—v‚ª‚ ‚é(–{“–‚É‚±‚±‚Å‚¢‚¢‚Ì‚©H)
-// ‚±‚ÌŠÖ”‚ÌƒtƒHƒ‹ƒ_ˆÊ’u‚â–¼‘O‹óŠÔ‚Ì\‘¢‚Íˆêl‚·‚é•K—v‚ª‚ ‚é(–{“–‚É‚±‚±‚Å‚¢‚¢‚Ì‚©H)
+
+// ã“ã®é–¢æ•°ã®ãƒ•ã‚©ãƒ«ãƒ€ä½ç½®ã‚„åå‰ç©ºé–“ã®æ§‹é€ ã¯ä¸€è€ƒã™ã‚‹å¿…è¦ãŒã‚ã‚‹(æœ¬å½“ã«ã“ã“ã§ã„ã„ã®ã‹ï¼Ÿ)
+// ã“ã®é–¢æ•°ã®ãƒ•ã‚©ãƒ«ãƒ€ä½ç½®ã‚„åå‰ç©ºé–“ã®æ§‹é€ ã¯ä¸€è€ƒã™ã‚‹å¿…è¦ãŒã‚ã‚‹(æœ¬å½“ã«ã“ã“ã§ã„ã„ã®ã‹ï¼Ÿ)
+// ã“ã®é–¢æ•°ã®ãƒ•ã‚©ãƒ«ãƒ€ä½ç½®ã‚„åå‰ç©ºé–“ã®æ§‹é€ ã¯ä¸€è€ƒã™ã‚‹å¿…è¦ãŒã‚ã‚‹(æœ¬å½“ã«ã“ã“ã§ã„ã„ã®ã‹ï¼Ÿ)
+// ã“ã®é–¢æ•°ã®ãƒ•ã‚©ãƒ«ãƒ€ä½ç½®ã‚„åå‰ç©ºé–“ã®æ§‹é€ ã¯ä¸€è€ƒã™ã‚‹å¿…è¦ãŒã‚ã‚‹(æœ¬å½“ã«ã“ã“ã§ã„ã„ã®ã‹ï¼Ÿ)
 namespace Game::Utils
 {
-	// ƒ}ƒEƒXƒ|ƒCƒ“ƒ^(ƒXƒNƒŠ[ƒ“À•W)‚©‚çA˜_—XZ•½–Êã‚ÅƒLƒƒƒ‰ƒNƒ^[‚ğŒ´“_‚Æ‚µ‚½‘Š‘ÎˆÊ’uƒxƒNƒgƒ‹‚ğ“¾‚é
+	// ãƒã‚¦ã‚¹ãƒã‚¤ãƒ³ã‚¿(ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™)ã‹ã‚‰ã€è«–ç†XZå¹³é¢ä¸Šã§ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚’åŸç‚¹ã¨ã—ãŸç›¸å¯¾ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«ã‚’å¾—ã‚‹
 	// Get the relative position vector from the mouse pointer (screen coordinates) to the character's origin on the logical XZ plane
-	glm::vec2 GetLogicDirectionFromCursorToTarget(const glm::vec2& screenMousePos, const eNsGfxRender::RenderContext& renderContext,
+	glm::vec2 GetLogicDirectionFromCursorToTarget(const glm::vec2& screenMousePos, const Engine::Graphics::Render::RenderContext& renderContext,
 		const glm::vec2& playerLogicPosXZ // Character position in logical coordinates
 		);
 
-	// ƒXƒNƒŠ[ƒ“À•W(ƒ}ƒEƒXƒ|ƒCƒ“ƒ^‚È‚Ç)‚©‚çA˜_—XZ•½–Ê‚Å‚ÌÀ•W‚ğ“¾‚é
-	glm::vec2 ProjectScreenToLogicXZPlane(const glm::vec2& screenMousePos, const eNsGfxRender::RenderContext& renderContext);
+	// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™(ãƒã‚¦ã‚¹ãƒã‚¤ãƒ³ã‚¿ãªã©)ã‹ã‚‰ã€è«–ç†XZå¹³é¢ã§ã®åº§æ¨™ã‚’å¾—ã‚‹
+	glm::vec2 ProjectScreenToLogicXZPlane(const glm::vec2& screenMousePos, const Engine::Graphics::Render::RenderContext& renderContext);
 }

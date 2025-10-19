@@ -11,25 +11,25 @@
 
 #include "Game/Character/Control/Skill/Intent/SkillIntentComponent.hpp"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 #include <iostream>
 
 // ユーザの入力からPlayerCharacterのSkill用Intentを更新する(現在はPlayer専用だが後々AIも統合可能？)
 // 純粋なInput->Intentの変換を行うシステム
-void Game::Input::Intent::SkillIntentMappingSystem::UpdatePlayerSkillIntent(eNsECS::EntityMgr& ecs)
+void Game::Input::Intent::SkillIntentMappingSystem::UpdatePlayerSkillIntent(Engine::ECS::EntityMgr& ecs)
 {
 	// std::cout << "Here\n";
-	for (eNsECS::Entity e : ecs.view<
-		gNsInput::InputActionComponent,
-		gNsSkillComp::SkillInputBindingComponent,
-		gNsCharacterControlSkill::SkillIntentComponent,
-		gNsTags::PlayerCharacterTag>())
+	for (Engine::ECS::Entity e : ecs.view<
+		Game::Input::InputActionComponent,
+		Game::Combat::Skill::Component::SkillInputBindingComponent,
+		Game::Character::Control::Skill::SkillIntentComponent,
+		Game::ECS::Tags::PlayerCharacterTag>())
 	{
 		// ここまで来てない
-		const auto& input = ecs.get<gNsInput::InputActionComponent>(e);
-		const auto& binding = ecs.get<gNsSkillComp::SkillInputBindingComponent>(e);
-		auto& intent = ecs.get<gNsCharacterControlSkill::SkillIntentComponent>(e);
+		const auto& input = ecs.get<Game::Input::InputActionComponent>(e);
+		const auto& binding = ecs.get<Game::Combat::Skill::Component::SkillInputBindingComponent>(e);
+		auto& intent = ecs.get<Game::Character::Control::Skill::SkillIntentComponent>(e);
 
 		intent.isActive = false;
 		intent.requestedSlots.clear();

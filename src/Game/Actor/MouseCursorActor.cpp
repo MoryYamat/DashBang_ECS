@@ -17,7 +17,7 @@
 #include "Engine/ECS/Ops/CoreOps.hpp"
 
 // 
-Game::Actor::AnalogInput::MouseCursorActor::MouseCursorActor(eNsECS::EntityMgr& ecs)
+Game::Actor::AnalogInput::MouseCursorActor::MouseCursorActor(Engine::ECS::EntityMgr& ecs)
 {
 	namespace Ops = Engine::ECS::Ops;
 	namespace Comp = Engine::ECS::Component;

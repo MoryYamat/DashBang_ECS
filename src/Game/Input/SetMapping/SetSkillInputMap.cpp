@@ -1,17 +1,17 @@
-#include "SetSkillInputMap.h"
+ï»¿#include "SetSkillInputMap.h"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 #include "Game/Combat/Skill/System/Trigger/SkillInputMap.h"
 
 #include "Game/Character/Control/Skill/MapData/SkillInputMap.hpp"
 
-void Game::Input::Setting::InitSkillInputMap(eNsECS::EntityMgr& ecs)
+void Game::Input::Setting::InitSkillInputMap(Engine::ECS::EntityMgr& ecs)
 {
-	auto& skillMap = ecs.createResource<gNsCharacterControlSkill::SkillInputMap>();
+	auto& skillMap = ecs.createResource<Game::Character::Control::Skill::SkillInputMap>();
 
-	skillMap.bind(gNsInput::InputAction::CastSkill1, gNsSkillData::SkillSlot::Primary);// ƒXƒLƒ‹ID 1
-	skillMap.bind(gNsInput::InputAction::CastSkill2, gNsSkillData::SkillSlot::Secondary);// ƒXƒLƒ‹ID 2
-	skillMap.bind(gNsInput::InputAction::CastSkill3, gNsSkillData::SkillSlot::Utility1);// ƒXƒLƒ‹ID 3
-	skillMap.bind(gNsInput::InputAction::CastSkill4, gNsSkillData::SkillSlot::Utility2);// ƒXƒLƒ‹ID 3
+	skillMap.bind(Game::Input::InputAction::CastSkill1, Game::Combat::Skill::Data::SkillSlot::Primary);// ã‚¹ã‚­ãƒ«ID 1
+	skillMap.bind(Game::Input::InputAction::CastSkill2, Game::Combat::Skill::Data::SkillSlot::Secondary);// ã‚¹ã‚­ãƒ«ID 2
+	skillMap.bind(Game::Input::InputAction::CastSkill3, Game::Combat::Skill::Data::SkillSlot::Utility1);// ã‚¹ã‚­ãƒ«ID 3
+	skillMap.bind(Game::Input::InputAction::CastSkill4, Game::Combat::Skill::Data::SkillSlot::Utility2);// ã‚¹ã‚­ãƒ«ID 3
 }

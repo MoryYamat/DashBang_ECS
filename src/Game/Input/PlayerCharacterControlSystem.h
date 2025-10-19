@@ -1,4 +1,4 @@
-// player position control system
+ï»¿// player position control system
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"
@@ -10,20 +10,20 @@
 
 #include <glm/glm.hpp>
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
-// semantic Layer“±“üŒã ”p~—\’è(Intent‚ÖˆÚs—\’è)
-// semantic Layer“±“üŒã ”p~—\’è(Intent‚ÖˆÚs—\’è)
-// semantic Layer“±“üŒã ”p~—\’è(Intent‚ÖˆÚs—\’è)
+
+
+// semantic Layerå°å…¥å¾Œ å»ƒæ­¢äºˆå®š(Intentã¸ç§»è¡Œäºˆå®š)
+// semantic Layerå°å…¥å¾Œ å»ƒæ­¢äºˆå®š(Intentã¸ç§»è¡Œäºˆå®š)
+// semantic Layerå°å…¥å¾Œ å»ƒæ­¢äºˆå®š(Intentã¸ç§»è¡Œäºˆå®š)
 namespace Game::Input::Player
 {
 
-	// Ì‚Ì‚â‚Â
-	void Update(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, eNsGfxRender::RenderContext& renderContext, float deltaTime);
-	void Update(eNsECS::EntityMgr& ecs, InputState& input, float deltaTime);
-	void Update(eNsECS::EntityMgr& ecs, InputState& input, float deltaTime, eNsGfxRender::RenderContext& renderContext);
+	// æ˜”ã®ã‚„ã¤
+	void Update(Engine::ECS::EntityMgr& ecs, const Engine::Input::RawInputState& rawInput, Engine::Graphics::Render::RenderContext& renderContext, float deltaTime);
+	void Update(Engine::ECS::EntityMgr& ecs, InputState& input, float deltaTime);
+	void Update(Engine::ECS::EntityMgr& ecs, InputState& input, float deltaTime, Engine::Graphics::Render::RenderContext& renderContext);
 
 	// Calculate the position vector of the mouse pointer in logical coordinates with the character as the origin
-	// ˜_—À•W‚É‚¨‚¯‚éAƒLƒƒƒ‰ƒNƒ^[‚ğŒ´“_‚Æ‚µ‚½ƒ}ƒEƒXƒ|ƒCƒ“ƒ^‚ÌˆÊ’uƒxƒNƒgƒ‹‚ğŒvZ
+	// è«–ç†åº§æ¨™ã«ãŠã‘ã‚‹ã€ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚’åŸç‚¹ã¨ã—ãŸãƒã‚¦ã‚¹ãƒã‚¤ãƒ³ã‚¿ã®ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—
 
 };

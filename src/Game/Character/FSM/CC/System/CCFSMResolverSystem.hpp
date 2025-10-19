@@ -6,7 +6,7 @@
 #include "Game/Character/FSM/CC/StateModel/CCFSMDefinition.hpp"
 #include "Game/Character/FSM/CC/StateModel/CCFSMContext.hpp"
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 #include <typeindex>
 
@@ -19,15 +19,15 @@ namespace Game::Character::FSM::CC::System
 	{
 	public:
 
-		static void Update(eNsECS::EntityMgr& ecs, float deltaTime);
+		static void Update(Engine::ECS::EntityMgr& ecs, float deltaTime);
 
 
 	private:
 
 		static void tryTriggerEffect(
-			eNsECS::EntityMgr& ecs,
+			Engine::ECS::EntityMgr& ecs,
 			const CCFSMStateEffectHook& hook,
-			const eNsECS::Entity entity,
+			const Engine::ECS::Entity entity,
 			const CCFSMDefinition& def,
 			const CCFSMContext& ctx,
 			const std::type_index& current,
@@ -35,13 +35,13 @@ namespace Game::Character::FSM::CC::System
 		);
 
 		static void tryTriggerReset(
-			eNsECS::EntityMgr& ecs,
-			const eNsECS::Entity entity,
+			Engine::ECS::EntityMgr& ecs,
+			const Engine::ECS::Entity entity,
 			const CCFSMDefinition& def,
 			const std::type_index& current,
 			const std::type_index& previous
 		);
 	};
 
-	// void CCFSMResolverSystem(eNsECS::EntityMgr& ecs, float deltaTime);
+	// void CCFSMResolverSystem(Engine::ECS::EntityMgr& ecs, float deltaTime);
 }

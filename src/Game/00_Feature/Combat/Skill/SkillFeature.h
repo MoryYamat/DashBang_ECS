@@ -6,33 +6,33 @@
 
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
+
+
 
 namespace Game::Feature::Combat
 {
 	class SkillFeature
 	{
 	public:
-		static void InitializeSkillDatabase(eNsECS::EntityMgr& ecs);
+		static void InitializeSkillDatabase(Engine::ECS::EntityMgr& ecs);
 
-		static void UpateSkillIntent(eNsECS::EntityMgr& ecs);
+		static void UpateSkillIntent(Engine::ECS::EntityMgr& ecs);
 
-		static void TriggerSkillsFromIntent(eNsECS::EntityMgr& ecs);
+		static void TriggerSkillsFromIntent(Engine::ECS::EntityMgr& ecs);
 
 		// 廃止
-		// static void SkillGenerateSystem(eNsECS::EntityMgr& ecs);
+		// static void SkillGenerateSystem(Engine::ECS::EntityMgr& ecs);
 
-		static void UpdateSkillTrajectorySystem(eNsECS::EntityMgr& ecs, float deltaTime);
+		static void UpdateSkillTrajectorySystem(Engine::ECS::EntityMgr& ecs, float deltaTime);
 
-		static void UpdateSkillPhaseSystem(eNsECS::EntityMgr& ecs, float deltaTime);
+		static void UpdateSkillPhaseSystem(Engine::ECS::EntityMgr& ecs, float deltaTime);
 
-		static void UpdateSkillExecutionLifetimeSystem(eNsECS::EntityMgr& ecs);
+		static void UpdateSkillExecutionLifetimeSystem(Engine::ECS::EntityMgr& ecs);
 
-		// static void UpdateSkillAttackLifetimeSystem(eNsECS::EntityMgr& ecs, float deltaTime);
+		// static void UpdateSkillAttackLifetimeSystem(Engine::ECS::EntityMgr& ecs, float deltaTime);
 
 
-		static void UpdateHitoboxLifetimeSystem(eNsECS::EntityMgr& ecs, float deltaTime);
+		static void UpdateHitoboxLifetimeSystem(Engine::ECS::EntityMgr& ecs, float deltaTime);
 
 	};
 }

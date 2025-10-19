@@ -35,7 +35,7 @@ namespace Game::Character::FSM::CC::System
 
 	namespace Ops = Engine::ECS::Ops;
 
-	void CCFSMResolverSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
+	void CCFSMResolverSystem::Update(Engine::ECS::EntityMgr& ecs, float deltaTime)
 	{
 		const auto& clock = ecs.getResource<WorldClockData>();
 
@@ -170,9 +170,9 @@ namespace Game::Character::FSM::CC::System
 
 	// record へ Effect関数オブジェクトの型をhash化して登録する
 	void CCFSMResolverSystem::tryTriggerEffect(
-		eNsECS::EntityMgr& ecs,
+		Engine::ECS::EntityMgr& ecs,
 		const CCFSMStateEffectHook& hook,
-		const eNsECS::Entity entity,
+		const Engine::ECS::Entity entity,
 		const CCFSMDefinition& def,
 		const CCFSMContext& ctx,
 		const std::type_index& current,
@@ -228,8 +228,8 @@ namespace Game::Character::FSM::CC::System
 	// FIXME:ともかく情報の構造から実装の依存関係を整理する必要がある
 	// record の リセット
 	void CCFSMResolverSystem::tryTriggerReset(
-		eNsECS::EntityMgr& ecs,
-		const eNsECS::Entity entity,
+		Engine::ECS::EntityMgr& ecs,
+		const Engine::ECS::Entity entity,
 		const CCFSMDefinition& def,
 		const std::type_index& current,
 		const std::type_index& previous)

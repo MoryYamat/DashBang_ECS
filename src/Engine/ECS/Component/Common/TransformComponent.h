@@ -1,5 +1,5 @@
-// Position, rotation and scale information in world space
-// ���[���h��Ԃł́A�ʒu�E��]�E�X�P�[���̏��
+﻿// Position, rotation and scale information in world space
+// ワールド空間での、位置・回転・スケールの情報
 #pragma once
 
 #include "Engine/Config/CanonicalDefaults.h"
@@ -15,7 +15,7 @@ namespace Engine::ECS::Component::Common
 	{
 		glm::vec3 position = glm::vec3(0.0f);
 		// need to convert to a quaternion
-		// degrees�ŕێ����C�����̍s�񐶐���glm::radians()�ŕϊ�����
+		// degreesで保持し，内部の行列生成はglm::radians()で変換する
 		glm::vec3 rotation = glm::vec3(0.0f);
 		glm::vec3 scale = glm::vec3(1.0f);
 
@@ -24,16 +24,16 @@ namespace Engine::ECS::Component::Common
 		{
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), position);
 
-			// ���݁C�_����+Z�
-			// ���f���␳�l�F(�_����-Z�)���f����+Z���ʂȂ̂�180���ǉ�(�����͂��œK������K�v����)
-			// ���f���␳�l�F(�_����-Z�)���f����+Z���ʂȂ̂�180���ǉ�(�����͂��œK������K�v����)
-			// ���f���␳�l�F(�_����-Z�)���f����+Z���ʂȂ̂�180���ǉ�(�����͂��œK������K�v����)
-			// ���f���␳�l�F(�_����-Z�)���f����+Z���ʂȂ̂�180���ǉ�(�����͂��œK������K�v����)
-			// ���f���␳�l�F(�_����-Z�)���f����+Z���ʂȂ̂�180���ǉ�(�����͂��œK������K�v����)
+			// 現在，論理は+Z基準
+			// モデル補正値：(論理は-Z基準)モデルは+Z正面なので180°追加(将来はより最適化する必要あり)
+			// モデル補正値：(論理は-Z基準)モデルは+Z正面なので180°追加(将来はより最適化する必要あり)
+			// モデル補正値：(論理は-Z基準)モデルは+Z正面なので180°追加(将来はより最適化する必要あり)
+			// モデル補正値：(論理は-Z基準)モデルは+Z正面なので180°追加(将来はより最適化する必要あり)
+			// モデル補正値：(論理は-Z基準)モデルは+Z正面なので180°追加(将来はより最適化する必要あり)
 			// constexpr float modelFacingOffsetDeg = 180.0f;
-			// ���ݘ_����+Z�
+			// 現在論理は+Z基準
 
-			// �␳�l
+			// 補正値
 			constexpr float modelFacingOffsetDeg = 0.0f;
 
 			model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1, 0, 0));
@@ -43,9 +43,9 @@ namespace Engine::ECS::Component::Common
 			return model;
 		}
 
-		// ���ۂɕ\������Ă���傫���̎擾
+		// 実際に表示されている大きさの取得
 		// Get the actual size of the image
-		glm::vec3 GetWorldSize(const eNsGfxComp::ModelSizeComponent& modelSize) const
+		glm::vec3 GetWorldSize(const Engine::ECS::Component::Graphics::ModelSizeComponent& modelSize) const
 		{
 			return modelSize.GetSize() * scale;
 		}

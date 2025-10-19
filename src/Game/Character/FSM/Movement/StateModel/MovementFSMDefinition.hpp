@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Game/Character/FSM/Movement/MovementStateTags.hpp"
 
@@ -7,7 +7,7 @@
 
 #include "Game/Character/FSM/Movement/Effect/FSMScoped/IFSMScopedEffect.hpp"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 #include <vector>
 #include <typeindex>

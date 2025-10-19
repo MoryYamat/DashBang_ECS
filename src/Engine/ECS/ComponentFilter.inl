@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <unordered_map>
 #include <unordered_set>
@@ -10,13 +10,12 @@
 #include <cstddef>
 #include <iostream>
 
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Engine::ECS::Detail
 {
 
 
-	// AND: ‚·‚×‚Ä‚ÌŒ^‚ğ‚Â‚©
+	// AND: ã™ã¹ã¦ã®å‹ã‚’æŒã¤ã‹
 	template<typename... MustComponents>
 	bool hasAllComponents(const std::unordered_map<std::type_index, std::unordered_map<uint32_t, std::shared_ptr<void>>>& pools,
 		uint32_t entityID)
@@ -41,27 +40,27 @@ namespace Engine::ECS::Detail
 		//	}());
 
 
-		return (...&& (// ’Z—•]‰¿‚É‚æ‚Á‚ÄŒø—¦‰»
-			pools.count(std::type_index(typeid(MustComponents))) &&// ’Z—•]‰¿‚É‚æ‚Á‚Ä—áŠO‚É‚Í“ü‚ç‚È‚¢
+		return (...&& (// çŸ­çµ¡è©•ä¾¡ã«ã‚ˆã£ã¦åŠ¹ç‡åŒ–
+			pools.count(std::type_index(typeid(MustComponents))) &&// çŸ­çµ¡è©•ä¾¡ã«ã‚ˆã£ã¦ä¾‹å¤–ã«ã¯å…¥ã‚‰ãªã„
 			pools.at(std::type_index(typeid(MustComponents))).count(entityID)
 			));
 	}
 
-	// OR: ‚¢‚¸‚ê‚©‚ÌŒ^‚ğ‚Â‚©
+	// OR: ã„ãšã‚Œã‹ã®å‹ã‚’æŒã¤ã‹
 	template<typename... AnyComponents>
 	bool hasAnyComponents(const std::unordered_map<std::type_index, std::unordered_map<uint32_t, std::shared_ptr<void>>>& pools,
 		uint32_t entityID)
 	{
 		//bool anyFound = false;
 
-		//// •›ì—p‚ğ—˜—p
-		//(void)std::initializer_list<int>{// intŒ^ƒŠƒXƒg
-		//	(anyFound = anyFound || [&] // •›ì—p‚ÅŒvZŒ‹‰Ê‚ğ“¾‚éFanyFound || lambda() 
+		//// å‰¯ä½œç”¨ã‚’åˆ©ç”¨
+		//(void)std::initializer_list<int>{// intå‹ãƒªã‚¹ãƒˆ
+		//	(anyFound = anyFound || [&] // å‰¯ä½œç”¨ã§è¨ˆç®—çµæœã‚’å¾—ã‚‹ï¼šanyFound || lambda() 
 		//		{
 		//			std::type_index type = std::type_index(typeid(AnyComponents));
 		//			auto it = pools.find(type);
 		//			return it != pools.end() && it->second.find(entityID) != it->second.end();
-		//		}(), 0)...// ƒJƒ“ƒ}‰‰Zq (anyFound || lambda (), 0) => list—v‘f‚ğ‚·‚×‚Ä (int)0‚É‚µ‚Ä‚Â‚Ô‚·(’†g‚Í•s—v) void‚ÅÌ‚Ä‚é
+		//		}(), 0)...// ã‚«ãƒ³ãƒæ¼”ç®—å­ (anyFound || lambda (), 0) => listè¦ç´ ã‚’ã™ã¹ã¦ (int)0ã«ã—ã¦ã¤ã¶ã™(ä¸­èº«ã¯ä¸è¦) voidã§æ¨ã¦ã‚‹
 		//};
 
 		//return anyFound;
@@ -73,8 +72,8 @@ namespace Engine::ECS::Detail
 		//		return it != pools.end() && it->second.find(entityID) != it->second.end();
 		//		}());
 
-		return (... || (// ’Z—•]‰¿‚É‚æ‚Á‚ÄŒø—¦‰»
-			pools.count(std::type_index(typeid(AnyComponents))) &&// ’Z—•]‰¿‚É‚æ‚Á‚Ä—áŠO‚É‚Í“ü‚ç‚È‚¢
+		return (... || (// çŸ­çµ¡è©•ä¾¡ã«ã‚ˆã£ã¦åŠ¹ç‡åŒ–
+			pools.count(std::type_index(typeid(AnyComponents))) &&// çŸ­çµ¡è©•ä¾¡ã«ã‚ˆã£ã¦ä¾‹å¤–ã«ã¯å…¥ã‚‰ãªã„
 			pools.at(std::type_index(typeid(AnyComponents))).count(entityID)
 			));
 	}

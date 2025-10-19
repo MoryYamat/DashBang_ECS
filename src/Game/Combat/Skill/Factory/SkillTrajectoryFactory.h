@@ -1,4 +1,4 @@
-// ‰Šúó‘Ô‚ğŠî€‚Æ‚µ‚½·•ª‚â•â³’l‚ÆTransform2D‚Ìî•ñ‚É‚æ‚Á‚Äƒ[ƒ‹ƒhŒ`ó‚Ì‚½‚ß‚ÌTransform2DComponent‚ğ¶¬‚·‚éŠÖ”ŒQ
+ï»¿// åˆæœŸçŠ¶æ…‹ã‚’åŸºæº–ã¨ã—ãŸå·®åˆ†ã‚„è£œæ­£å€¤ã¨Transform2Dã®æƒ…å ±ã«ã‚ˆã£ã¦ãƒ¯ãƒ¼ãƒ«ãƒ‰å½¢çŠ¶ã®ãŸã‚ã®Transform2DComponentã‚’ç”Ÿæˆã™ã‚‹é–¢æ•°ç¾¤
 
 
 #pragma once
@@ -8,18 +8,18 @@
 
 #include <functional>
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
+
+
 
 namespace Game::Combat::Skill::Factory
 {
 	class SkillTrajectoryFactory
 	{
 	public:
-		// SkillDefinition + Origin Transform ‚©‚ç‹OÕŠÖ”‚ğ¶¬
-		static std::function<eNsLogic2DComp::Transform2DComponent(float)> Create(
-			const gNsSkillData::SkillDefinition& def,
-			const eNsLogic2DComp::Transform2DComponent& origin);
+		// SkillDefinition + Origin Transform ã‹ã‚‰è»Œè·¡é–¢æ•°ã‚’ç”Ÿæˆ
+		static std::function<Engine::ECS::Component::Logic2D::Transform2DComponent(float)> Create(
+			const Game::Combat::Skill::Data::SkillDefinition& def,
+			const Engine::ECS::Component::Logic2D::Transform2DComponent& origin);
 	};
 }
 

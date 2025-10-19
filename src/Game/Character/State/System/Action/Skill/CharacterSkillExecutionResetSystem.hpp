@@ -1,14 +1,14 @@
-#pragma once
+ï»¿#pragma once
 #include "Engine/ECS/EntityManager.h"
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Game::Character::State::Action
 {
-	// ƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹Àsó‘Ô‚ğƒŠƒZƒbƒg‚·‚éƒVƒXƒeƒ€
+	// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«å®Ÿè¡ŒçŠ¶æ…‹ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹ã‚·ã‚¹ãƒ†ãƒ 
 	class CharacterSkillExecutionResetSystem
 	{
 	public:
-		// ƒXƒLƒ‹Àsó‘Ô‚ğƒŠƒZƒbƒg‚·‚é
-		static void ResetSkillExecutionState(eNsECS::EntityMgr& ecs, float deltaTime);
+		// ã‚¹ã‚­ãƒ«å®Ÿè¡ŒçŠ¶æ…‹ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹
+		static void ResetSkillExecutionState(Engine::ECS::EntityMgr& ecs, float deltaTime);
 	};
 } // namespace Game::Character::State::Action

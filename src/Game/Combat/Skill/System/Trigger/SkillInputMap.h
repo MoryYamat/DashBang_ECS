@@ -1,5 +1,5 @@
-// Mapping InputAction and SkillId
-// InputAction‚ÆSkillId‚Ìƒ}ƒbƒsƒ“ƒO
+ï»¿// Mapping InputAction and SkillId
+// InputActionã¨SkillIdã®ãƒžãƒƒãƒ”ãƒ³ã‚°
 
 #pragma once
 
@@ -8,41 +8,41 @@
 
 #include "Game/Combat/Skill/MasterData/SkillSlot.h"
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
 
-// Œ»Ý–¢Žg—p‚Ì‚½‚ßíœ—\’è
+
+
+// ç¾åœ¨æœªä½¿ç”¨ã®ãŸã‚å‰Šé™¤äºˆå®š
 namespace Game::Combat::Skill::Trigger
 {
 	//class SkillInputMap
 	//{
 	//public:
-	//	void bind(gNsInput::InputAction action, gNsSkillData::SkillSlot slot)
+	//	void bind(Game::Input::InputAction action, Game::Combat::Skill::Data::SkillSlot slot)
 	//	{
 	//		mapping[action] = slot;
 	//	}
 
-	//	bool hasBinding(gNsInput::InputAction action) const
+	//	bool hasBinding(Game::Input::InputAction action) const
 	//	{
 	//		return mapping.find(action) != mapping.end();
 	//	}
 
-	//	gNsSkillData::SkillSlot getSkillID(gNsInput::InputAction action) const
+	//	Game::Combat::Skill::Data::SkillSlot getSkillID(Game::Input::InputAction action) const
 	//	{
 	//		auto it = mapping.find(action);
 	//		if (it != mapping.end())
 	//			return it->second;
 	//		else
-	//			return gNsSkillData::SkillSlot::None;// –³ŒøID
+	//			return Game::Combat::Skill::Data::SkillSlot::None;// ç„¡åŠ¹ID
 	//	}
 
-	//	const std::unordered_map<gNsInput::InputAction, gNsSkillData::SkillSlot>& getAllBindings() const
+	//	const std::unordered_map<Game::Input::InputAction, Game::Combat::Skill::Data::SkillSlot>& getAllBindings() const
 	//	{
 	//		return mapping;
 	//	}
 
 	//private:
-	//	std::unordered_map<gNsInput::InputAction, gNsSkillData::SkillSlot> mapping;
+	//	std::unordered_map<Game::Input::InputAction, Game::Combat::Skill::Data::SkillSlot> mapping;
 	//};
 }
 

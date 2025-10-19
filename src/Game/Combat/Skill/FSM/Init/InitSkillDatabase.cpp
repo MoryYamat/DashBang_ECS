@@ -34,13 +34,13 @@
 // cc
 #include "Game/Character/FSM/CC/CCStateTags.hpp"
 
-#include "Common/GameNamespaceDecl.h"
 
-void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMgr& ecs)
+
+void Game::Combat::Skill::Database::SkillResourceInitialization(Engine::ECS::EntityMgr& ecs)
 {
 	using namespace Game::Combat::Skill::Database;
-	using namespace gNsSkillFSM;
-	using namespace gNsSkillFSM::SkillPhase;
+	using namespace Game::Combat::Skill::FSM;
+	using namespace Game::Combat::Skill::FSM::SkillPhase;
 	using namespace Game::Combat::Skill::Data;
 	using namespace Game::Combat::Skill::Def;
 	using namespace Game::Combat::Skill::FSM::Condition;
@@ -69,14 +69,14 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 
 	testSkill.def.cc = ccSpec_STUN;
 
-	testSkill.def.spawnHitArea = gNsSkill::Def::SpawnHitArea{
+	testSkill.def.spawnHitArea = Game::Combat::Skill::Def::SpawnHitArea{
 		.duration = 2.0f,
-		.shape = gNsSkillComp::Attack2DShape {
-			gNsSkillComp::Circle2DAttack {
+		.shape = Game::Combat::Skill::Component::Attack2DShape {
+			Game::Combat::Skill::Component::Circle2DAttack {
 				.center = CanonicalDefaults::kLocalCenterXZ, // 中心位置
 				.radius = 5.0f // 半径
 			}},
-		.trajectoryParams = gNsSkillData::SkillTrajectory::LinearTrajectoryParams
+		.trajectoryParams = Game::Combat::Skill::Data::SkillTrajectory::LinearTrajectoryParams
 		{
 			.speed = 10.0f
 		},
@@ -158,16 +158,16 @@ void Game::Combat::Skill::Database::SkillResourceInitialization(eNsECS::EntityMg
 	testAttack.def.cc = ccSpec_KNOCK;
 
 
-	testAttack.def.spawnHitArea = gNsSkill::Def::SpawnHitArea{
+	testAttack.def.spawnHitArea = Game::Combat::Skill::Def::SpawnHitArea{
 	.duration = 2.0f,
-	.shape = gNsSkillComp::Attack2DShape {
-		gNsSkillComp::Rectangle2DAttack {
+	.shape = Game::Combat::Skill::Component::Attack2DShape {
+		Game::Combat::Skill::Component::Rectangle2DAttack {
 			.center = CanonicalDefaults::kLocalCenterXZ, // 中心位置
 			.direction = CanonicalDefaults::kLocalForwardXZ,
 			.width = 10.f,
 			.height = 2.f
 	}},
-	.trajectoryParams = gNsSkillData::SkillTrajectory::LinearTrajectoryParams
+	.trajectoryParams = Game::Combat::Skill::Data::SkillTrajectory::LinearTrajectoryParams
 	{
 		.speed = 10.0f
 	},

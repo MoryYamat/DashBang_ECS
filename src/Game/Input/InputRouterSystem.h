@@ -1,4 +1,4 @@
-// RawInput + Mapping ¨ ActionComponent ‚É•ÏŠ·	
+ï»¿// RawInput + Mapping â†’ ActionComponent ã«å¤‰æ›	
 // Convert RawInput + Mapping to ActionComponent
 
 #pragma once
@@ -8,15 +8,15 @@
 #include "Game/Input/InputMapping.h"
 #include "Game/Input/InputActionComponent.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
-#include "Common/GameNamespaceDecl.h"
+
+
 
 namespace Game::Input
 {
-	// GLFW‚Ì¶‚Ì“ü—Í‚ğComponentƒx[ƒX‚Ì’ŠÛ“ü—Í‚ÉŠ„‚è“–‚Ä‚é
-	void InputRouterSystem(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput);
+	// GLFWã®ç”Ÿã®å…¥åŠ›ã‚’Componentãƒ™ãƒ¼ã‚¹ã®æŠ½è±¡å…¥åŠ›ã«å‰²ã‚Šå½“ã¦ã‚‹
+	void InputRouterSystem(Engine::ECS::EntityMgr& ecs, const Engine::Input::RawInputState& rawInput);
 
-	//	GLFW‚Ì¶‚Ì“ü—Í‚ğComponent‚Ì’ŠÛ“ü—Í‚ÉŠ„‚è“–‚Ä‚é(ECSƒOƒ[ƒoƒ‹ƒŠƒ\[ƒXÀ‘•Œã–¢g—p)
-	void InputRouterSystem(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, const gNsInput::InputMapping& mapping);
+	//	GLFWã®ç”Ÿã®å…¥åŠ›ã‚’Componentã®æŠ½è±¡å…¥åŠ›ã«å‰²ã‚Šå½“ã¦ã‚‹(ECSã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒªã‚½ãƒ¼ã‚¹å®Ÿè£…å¾Œæœªä½¿ç”¨)
+	void InputRouterSystem(Engine::ECS::EntityMgr& ecs, const Engine::Input::RawInputState& rawInput, const Game::Input::InputMapping& mapping);
 }

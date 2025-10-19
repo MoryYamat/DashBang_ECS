@@ -15,8 +15,8 @@ namespace Engine::ECS::Component::Graphics
 	struct MeshComponent
 	{
 		// Mesh Resources
-		eNsGfxModel::ModelData modelData;
-		eNsGfxModel::ModelGPU modelGPU;
+		Engine::Graphics::Model::ModelData modelData;
+		Engine::Graphics::Model::ModelGPU modelGPU;
 
 		MeshComponent() = default;
 		~MeshComponent() = default;
@@ -28,7 +28,7 @@ namespace Engine::ECS::Component::Graphics
 		MeshComponent& operator=(MeshComponent&&) noexcept = default;
 
 		// 追加：ムーブ専用の受け取り
-		MeshComponent(eNsGfxModel::ModelData&& md, eNsGfxModel::ModelGPU&& mg)
+		MeshComponent(Engine::Graphics::Model::ModelData&& md, Engine::Graphics::Model::ModelGPU&& mg)
 			: modelData(std::move(md)), modelGPU(std::move(mg)) {
 		}
 	};

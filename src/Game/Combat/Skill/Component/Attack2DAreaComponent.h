@@ -1,5 +1,5 @@
-// A component that defines the logical shape, trajectory, and lifetime of an attack.
-// UŒ‚”»’è‚Ì˜_—Œ`ó‚â‹OÕCƒ‰ƒCƒtƒ^ƒCƒ€‚ğ’è‹`‚·‚éƒRƒ“ƒ|[ƒlƒ“ƒg
+ï»¿// A component that defines the logical shape, trajectory, and lifetime of an attack.
+// æ”»æ’ƒåˆ¤å®šã®è«–ç†å½¢çŠ¶ã‚„è»Œè·¡ï¼Œãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ã‚’å®šç¾©ã™ã‚‹ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
 
 #pragma once
 
@@ -11,34 +11,34 @@
 
 #include <variant>
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Game::Combat::Skill::Component
 {
-	// UŒ‚”»’èŒ`ó
+	// æ”»æ’ƒåˆ¤å®šå½¢çŠ¶
 // Attack Judgment Shape 
 	//enum class Attack2DShapeType
 	//{
 	//	None,
-	//	Circle2D,// 2D‰~
-	//	Sector2D,// 2DîŒ`
-	//	Rectangl2D,// 2D’·•ûŒ`
+	//	Circle2D,// 2Då††
+	//	Sector2D,// 2Dæ‰‡å½¢
+	//	Rectangl2D,// 2Dé•·æ–¹å½¢
 	//	Beam2D
 	//};
 
-	// 2D‰~
+	// 2Då††
 	struct Circle2DAttack
 	{
 		glm::vec2 center = CanonicalDefaults::kLocalCenterXZ;
 		float radius = 0.0f;
 	};
 
-	// 2DîŒ`
+	// 2Dæ‰‡å½¢
 	struct Sector2DAttack
 	{
 		glm::vec2 center = CanonicalDefaults::kLocalCenterXZ;
-		glm::vec2 direction = CanonicalDefaults::kLocalForwardXZ;// ƒ[ƒJƒ‹’PˆÊŒü‚«ƒxƒNƒgƒ‹(OpenGL‚Í-Z•ûŒü‚ª³–Ê)
-		float angle;// ƒ‰ƒWƒAƒ“
+		glm::vec2 direction = CanonicalDefaults::kLocalForwardXZ;// ãƒ­ãƒ¼ã‚«ãƒ«å˜ä½å‘ããƒ™ã‚¯ãƒˆãƒ«(OpenGLã¯-Zæ–¹å‘ãŒæ­£é¢)
+		float angle;// ãƒ©ã‚¸ã‚¢ãƒ³
 		float radius;
 	};
 
@@ -46,12 +46,12 @@ namespace Game::Combat::Skill::Component
 	struct Rectangle2DAttack
 	{
 		glm::vec2 center = CanonicalDefaults::kLocalCenterXZ;// local center
-		glm::vec2 direction = CanonicalDefaults::kLocalForwardXZ; // ƒ[ƒJƒ‹’PˆÊŒü‚«ƒxƒNƒgƒ‹(OpenGL‚Í-Z•ûŒü‚ª³–Ê)
+		glm::vec2 direction = CanonicalDefaults::kLocalForwardXZ; // ãƒ­ãƒ¼ã‚«ãƒ«å˜ä½å‘ããƒ™ã‚¯ãƒˆãƒ«(OpenGLã¯-Zæ–¹å‘ãŒæ­£é¢)
 		float width;// right direction
 		float height;// front direction
 	};
 
-	// g—p‚·‚éŒ`ó‚ğ‘I‘ğ“I‚É¶¬‚·‚éƒCƒ“ƒ^[ƒtƒF[ƒX‚Æ‚È‚é\‘¢‘Ì
+	// ä½¿ç”¨ã™ã‚‹å½¢çŠ¶ã‚’é¸æŠçš„ã«ç”Ÿæˆã™ã‚‹ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ã¨ãªã‚‹æ§‹é€ ä½“
 	// A structure that acts as an interface to selectively generate shapes to be used
 	struct Attack2DShape
 	{
@@ -77,7 +77,7 @@ namespace Game::Combat::Skill::Component
 	{
 		Attack2DShape shape;
 		//float lifetime = 1.0f;
-		//eNsECS::Entity owner = eNsECS::Entity::INVALID;// UŒ‚Ò(ƒLƒƒƒ‰ƒNƒ^[)
-		//eNsECS::Entity skillEntity = eNsECS::Entity::INVALID;// ‚±‚Ì”»’è‚ª‘®‚·‚éƒXƒLƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX
+		//Engine::ECS::Entity owner = Engine::ECS::Entity::INVALID;// æ”»æ’ƒè€…(ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼)
+		//Engine::ECS::Entity skillEntity = Engine::ECS::Entity::INVALID;// ã“ã®åˆ¤å®šãŒå±ã™ã‚‹ã‚¹ã‚­ãƒ«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 	};
 }

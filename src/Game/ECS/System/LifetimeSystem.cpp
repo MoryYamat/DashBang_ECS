@@ -1,21 +1,21 @@
-#include "LifetimeSystem.hpp"
+﻿#include "LifetimeSystem.hpp"
 
 #include "Engine/ECS/EntityUtils/EntityUtils.h"
 
 #include "Game/ECS/Component/LifetimeComponent.hpp"
 
-#include "Common/GameNamespaceDecl.h"
 
 
-void Game::ECS::System::UpdateLifetimeSystem(eNsECS::EntityMgr& ecs, float deltaTime)
+
+void Game::ECS::System::UpdateLifetimeSystem(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
-	for (eNsECS::Entity e : ecs.view<gNsECSComp::LifetimeComponent>())
+	for (Engine::ECS::Entity e : ecs.view<Game::ECS::Component::LifetimeComponent>())
 	{
-		auto& lifetime = ecs.get<gNsECSComp::LifetimeComponent>(e);
+		auto& lifetime = ecs.get<Game::ECS::Component::LifetimeComponent>(e);
 		lifetime.elapsedTime += deltaTime;
 		if (lifetime.elapsedTime >= lifetime.totalLifetime)
 		{
-			eNsECS::EntityUtils::MarkForPendingDestroy(ecs, e);
+			Engine::ECS::EntityUtils::MarkForPendingDestroy(ecs, e);
 		}
 	}
 }

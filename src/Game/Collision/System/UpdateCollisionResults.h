@@ -1,17 +1,17 @@
-#pragma once 
+ï»¿#pragma once 
 
 
-#include "Common/EngineNamespaceDecl.h"
+
 #include "Engine/ECS/EntityManager.h"
 
 namespace Game::Collision::System
 {
-	// ECSƒOƒ[ƒoƒ‹ƒŠƒ\[ƒX‚Éƒoƒbƒtƒ@î•ñ‚ğì¬
-	void InitCollisionResultStorage(eNsECS::EntityMgr ecs);
+	// ECSã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒªã‚½ãƒ¼ã‚¹ã«ãƒãƒƒãƒ•ã‚¡æƒ…å ±ã‚’ä½œæˆ
+	void InitCollisionResultStorage(Engine::ECS::EntityMgr ecs);
 
-	// ƒoƒbƒtƒ@‚ğƒNƒŠƒA
-	void ClearCollisionResultStorage(eNsECS::EntityMgr& ecs);
+	// ãƒãƒƒãƒ•ã‚¡ã‚’ã‚¯ãƒªã‚¢
+	void ClearCollisionResultStorage(Engine::ECS::EntityMgr& ecs);
 
-	// ƒoƒbƒtƒ@‚ğXV
-	void UpdateCollisionResultStorage(eNsECS::EntityMgr& ecs); 
+	// ãƒãƒƒãƒ•ã‚¡ã‚’æ›´æ–°
+	void UpdateCollisionResultStorage(Engine::ECS::EntityMgr& ecs); 
 }

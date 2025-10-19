@@ -1,7 +1,7 @@
-// íœ—\’èFFSM“±“üŒã”p~(“¯‹@”\‚ğ‚à‚Â•Êƒtƒ@ƒCƒ‹‚ğì¬E)
+ï»¿// å‰Šé™¤äºˆå®šï¼šFSMå°å…¥å¾Œå»ƒæ­¢(åŒæ©Ÿèƒ½ã‚’ã‚‚ã¤åˆ¥ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä½œæˆãƒ»)
 
 // Actually process the SKillInstance based on the existing SkillInstance and the SkillDefinition of the corresponding SkillID
-// ‘¶İ‚·‚éSkillInstance‚ÆŠY“–‚ÌSkillID‚ÌSkillDefinition‚ÉŠî‚Ã‚¢‚ÄSKillInstance‚ğÀÛ‚Éˆ—‚·‚é
+// å­˜åœ¨ã™ã‚‹SkillInstanceã¨è©²å½“ã®SkillIDã®SkillDefinitionã«åŸºã¥ã„ã¦SKillInstanceã‚’å®Ÿéš›ã«å‡¦ç†ã™ã‚‹
 
 #pragma once
 
@@ -16,23 +16,22 @@
 
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Game::Combat::Skill::System
 {
-	// ƒXƒLƒ‹Œ`ó‚ğ’è‹`‚É]‚Á‚Äì¬
-	void spawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsSkillData::SkillDatabase& skillDB, eNsECS::Entity skillEntity);
+	// ã‚¹ã‚­ãƒ«å½¢çŠ¶ã‚’å®šç¾©ã«å¾“ã£ã¦ä½œæˆ
+	void spawnSkillHitArea(Engine::ECS::EntityMgr& ecs, Game::Combat::Skill::Data::SkillDatabase& skillDB, Engine::ECS::Entity skillEntity);
 
-	// ”p~
-	void SpawnSkillHitArea(eNsECS::EntityMgr& ecs);
+	// å»ƒæ­¢
+	void SpawnSkillHitArea(Engine::ECS::EntityMgr& ecs);
 
-	// ƒXƒLƒ‹‚Ì˜_—“IŒ`óiHitAreaj‚ğ’è‹`‚É]‚Á‚Ä¶¬‚·‚é
-	void SpawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsSkillData::SkillDatabase& skillDB);
+	// ã‚¹ã‚­ãƒ«ã®è«–ç†çš„å½¢çŠ¶ï¼ˆHitAreaï¼‰ã‚’å®šç¾©ã«å¾“ã£ã¦ç”Ÿæˆã™ã‚‹
+	void SpawnSkillHitArea(Engine::ECS::EntityMgr& ecs, Game::Combat::Skill::Data::SkillDatabase& skillDB);
 
-	// UŒ‚”ÍˆÍŒ`ó‚ÌCollisionMask‚ğì¬‚·‚é
-	gNsCollComp::CollisionMaskComponent generateSkillCollisionMask(
-		eNsECS::EntityMgr& ecs,
-		eNsECS::Entity caster
+	// æ”»æ’ƒç¯„å›²å½¢çŠ¶ã®CollisionMaskã‚’ä½œæˆã™ã‚‹
+	Game::Collision::Component::CollisionMaskComponent generateSkillCollisionMask(
+		Engine::ECS::EntityMgr& ecs,
+		Engine::ECS::Entity caster
 	);
 	// void RotateVec2(const glm::vec2& v, float radians);
 

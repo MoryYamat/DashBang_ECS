@@ -1,4 +1,4 @@
-//
+ï»¿//
 
 #pragma once
 
@@ -9,32 +9,32 @@
 
 #include <glm/glm.hpp>
 
-#include "Common/GameNamespaceDecl.h"
+
 
 namespace Game::Collision::Intersect
 {
 	using namespace Game::Collision::Data;
 
-	// ŠO•”ƒCƒ“ƒ^[ƒtƒF[ƒX
+	// å¤–éƒ¨ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
 	bool Intersects(const GenericShape2D& a, const GenericShape2D& b);
 
-	// ‘g‚İ‡‚í‚¹•Ê‚Ì“à•”ˆ— (•K—v‚É‰‚¶‚Äprivate namespace detail‚É)
-	// 2D‰~‚Æ2D‰~‚Ìd‚È‚è”»’è
+	// çµ„ã¿åˆã‚ã›åˆ¥ã®å†…éƒ¨å‡¦ç† (å¿…è¦ã«å¿œã˜ã¦private namespace detailã«)
+	// 2Då††ã¨2Då††ã®é‡ãªã‚Šåˆ¤å®š
 	bool Intersects_Circle_Circle(const Circle2D& a, const Circle2D& b);
 
-	// 2D‰~‚ÆîŒ`‚Ìd‚È‚è”»’è
+	// 2Då††ã¨æ‰‡å½¢ã®é‡ãªã‚Šåˆ¤å®š
 	bool Intersects_Circle_Sector(const Circle2D& circle, const Sector2D& sector);
 
-	// 2D‰~‚Æ‹éŒ`‚Ìd‚È‚è”»’è
+	// 2Då††ã¨çŸ©å½¢ã®é‡ãªã‚Šåˆ¤å®š
 	bool Intersects_Circle_Obb(const Circle2D& circle, const Obb2D& obb);
 
-	// îŒ`‚ÆîŒ`‚Ìd‚È‚è”»’è
+	// æ‰‡å½¢ã¨æ‰‡å½¢ã®é‡ãªã‚Šåˆ¤å®š
 	bool Intersects_Sector_Sector(const Sector2D& a, const Sector2D& b);
 
-	// îŒ`‚Æ‹éŒ`‚Ìd‚È‚è”»’è
+	// æ‰‡å½¢ã¨çŸ©å½¢ã®é‡ãªã‚Šåˆ¤å®š
 	bool Intersects_Sector_Obb(const Sector2D& sector, const Obb2D& obb);
 
-	// ‹éŒ`‚Æ‹éŒ`‚Ìd‚È‚è”»’è
+	// çŸ©å½¢ã¨çŸ©å½¢ã®é‡ãªã‚Šåˆ¤å®š
 	bool Intersects_Obb_Obb(const Obb2D& a, const Obb2D& b);
 
 

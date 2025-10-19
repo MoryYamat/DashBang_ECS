@@ -1,4 +1,4 @@
-#include "CharacterMovementSystem.h"
+ï»¿#include "CharacterMovementSystem.h"
 
 #include "Engine/ECS/Component/Logic2D/Velocity2DComponent.h"
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
@@ -8,45 +8,23 @@
 #include "Game/Character/Control/Movement/Component/Intent/MovementIntentComponent.h"
 #include "Game/Character/Control/Movement/Component/Intent/FacingIntentComponent.h"
 
+#include "Engine/ECS/Ops/CoreOps.hpp"
 
-#include "Common/GameNamespaceDecl.h"
-
-// 
-void Game::Character::Movement::CharacterMovementSystem(eNsECS::EntityMgr& ecs, float deltaTime)
+// å‰Šé™¤äºˆå®šï¼šç¾åœ¨æœªä½¿ç”¨
+void Game::Character::Movement::CharacterMovementSystem(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
-	for (eNsECS::Entity e : ecs.view<
-		eNsLogic2DComp::Logic2DTransformComponent
-		, eNsLogic2DComp::Velocity2DComponent>())
-	{
-		auto& vel = ecs.get<eNsLogic2DComp::Velocity2DComponent>(e);
-		auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
+	namespace Ops = Engine::ECS::Ops;
+	namespace Comp = Engine::ECS::Component;
 
-		// ˆÊ’u‚ğ‘¬“x‚ÉŠî‚Ã‚¢‚ÄXV
+	for (Engine::ECS::Entity e : ecs.view<
+		Comp::Logic2D::Logic2DTransformComponent
+		, Comp::Logic2D::Velocity2DComponent>())
+	{
+		auto& vel = Ops::Get<Comp::Logic2D::Velocity2DComponent>(ecs, e);
+		auto& logic = Ops::Get<Comp::Logic2D::Logic2DTransformComponent>(ecs, e);
+
+		// ä½ç½®ã‚’é€Ÿåº¦ã«åŸºã¥ã„ã¦æ›´æ–°
 		logic.positionXZ += vel.velocity * deltaTime;
 
-		//for (eNsECS::Entity e2 : ecs.view<
-		//	gNsCharacterIntent::FacingIntentComponent
-		//>())
-		//{
-		//	auto& facing = ecs.get<gNsCharacterIntent::FacingIntentComponent>(e2);
-		//	logic.front = facing.front;
-		//}
 	}
 }
-
-//void Game::Character::Movement::UpdateMovement(ECS& ecs, float deltaTime)
-//{
-//	for (Entity e : ecs.view<Logic2DTransformComponent, MovementIntentComponent>())
-//	{
-//		auto& logic = ecs.get<Logic2DTransformComponent>(e);
-//		auto& intent = ecs.get<MovementIntentComponent>(e);
-//
-//		if (!intent.isActive || glm::length(intent.direction) < 0.001f)
-//			continue;
-//
-//		glm::vec2 moveDir = glm::normalize(intent.direction);
-//		logic.positionXZ += moveDir * intent.speed * deltaTime;
-//
-//		// Œü‚«XV‚Í•ÊƒƒWƒbƒN‚Å
-//	}
-//

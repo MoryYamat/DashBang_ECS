@@ -1,10 +1,10 @@
-#pragma once
+﻿#pragma once
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 #include "Engine/ECS/EntityManager.h"
 
 namespace Game::Input::Setting
 {
-	void InitSkillInputMap(eNsECS::EntityMgr& ecs);
+	void InitSkillInputMap(Engine::ECS::EntityMgr& ecs);
 }

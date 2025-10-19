@@ -1,12 +1,12 @@
-#include "InitCollisionResultBuffer.h"
+﻿#include "InitCollisionResultBuffer.h"
 
 #include "Game/Collision/Data/CollisionResultStorage.h"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 #include <cassert>
 
-void Game::Collision::Init::InitCollisionResultBuffer(eNsECS::EntityMgr& ecs)
+void Game::Collision::Init::InitCollisionResultBuffer(Engine::ECS::EntityMgr& ecs)
 {
-	auto& buffer = ecs.createResource<gNsCollData::CollisionResultBuffer>();
+	auto& buffer = ecs.createResource<Game::Collision::Data::CollisionResultBuffer>();
 }

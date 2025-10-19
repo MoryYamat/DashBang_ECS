@@ -7,22 +7,20 @@
 
 #include "Game/Collision/Data/CollisionResultStorage.h"
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
 // 
 namespace Game::Collision::System
 {
-	void UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs);
+	void UpdateCollisionResultBuffer(Engine::ECS::EntityMgr& ecs);
 
 	// ECSグローバルリソース導入後未使用(削除予定)
-	void UpdateCollisionResultStorage(eNsECS::EntityMgr& ecs, gNsCollData::CollisionResultStorage& collisionResultStorage);
+	void UpdateCollisionResultStorage(Engine::ECS::EntityMgr& ecs, Game::Collision::Data::CollisionResultStorage& collisionResultStorage);
 	
 
-	void CollisionDetectionSystem(eNsECS::EntityMgr& ecs, gNsCollData::CollisionResultStorage& collisionResultStorage);
+	void CollisionDetectionSystem(Engine::ECS::EntityMgr& ecs, Game::Collision::Data::CollisionResultStorage& collisionResultStorage);
 
 
 	// player and tile map collision detection
 
-	bool isSkillEntity(eNsECS::EntityMgr& ecs, eNsECS::Entity entity);
+	bool isSkillEntity(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity entity);
 
 }

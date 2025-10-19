@@ -1,4 +1,4 @@
-#include "SkillTrajectorySystem.h"
+Ôªø#include "SkillTrajectorySystem.h"
 
 #include "Game/Combat/Skill/Component/Attack2DAreaComponent.h"
 #include "Game/Combat/Skill/Factory/SkillTrajectoryFactory.h"
@@ -19,13 +19,13 @@
 #include <iostream>
 #include <variant>
 
-void Game::Combat::Skill::System::SkillTrajectorySystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
+void Game::Combat::Skill::System::SkillTrajectorySystem::Update(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
 	using namespace Game::Combat::Skill::Component;
 	using namespace Game::ECS::Component;
-	using namespace eNsLogic2DComp;
+	using namespace Engine::ECS::Component::Logic2D;
 
-	for (eNsECS::Entity e : ecs.view<
+	for (Engine::ECS::Entity e : ecs.view<
 		Attack2DAreaComponent,
 		SkillTrajectoryComponent,
 		Transform2DComponent,
@@ -43,7 +43,7 @@ void Game::Combat::Skill::System::SkillTrajectorySystem::Update(eNsECS::EntityMg
 				using T = std::decay_t<decltype(trajParams)>;
 				if constexpr (std::is_same_v<T, StaticTrajectory>)
 				{
-					// èàóùïsóvÅFê√ìI
+					// Âá¶ÁêÜ‰∏çË¶ÅÔºöÈùôÁöÑ
 				}
 				else if constexpr (std::is_same_v<T, LinearTrajectoryParams>)
 				{
@@ -52,14 +52,14 @@ void Game::Combat::Skill::System::SkillTrajectorySystem::Update(eNsECS::EntityMg
 				}
 				else if constexpr (std::is_same_v<T, RotateTrajectoryParams>)
 				{
-					float startRad = eNsMath::DegreesToRadians(trajParams.startAngle);
-					float endRad = eNsMath::DegreesToRadians(trajParams.endAngle);
+					float startRad = Engine::Math::DegreesToRadians(trajParams.startAngle);
+					float endRad = Engine::Math::DegreesToRadians(trajParams.endAngle);
 
 					float progress = glm::clamp(lifetime.elapsedTime / lifetime.totalLifetime, 0.0f, 1.0f);
 					float yaw = transform.rotationY + glm::mix(startRad, endRad, progress);
 					transform.rotationY = yaw;
-					transform.front = eNsLogic2DMath::CalcForwardFromYaw(yaw);
-					transform.right = eNsLogic2DMath::CalcRightFromYaw(yaw);
+					transform.front = Engine::Math::Logic2D::CalcForwardFromYaw(yaw);
+					transform.right = Engine::Math::Logic2D::CalcRightFromYaw(yaw);
 				}
 				else if constexpr (std::is_same_v<T, CurvedTrajectoryParams>)
 				{

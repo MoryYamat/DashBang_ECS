@@ -1,4 +1,4 @@
-// ƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹Àsó‹µ‚ğ•Û‚·‚éƒRƒ“ƒ|[ƒlƒ“ƒgD
+ï»¿// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«å®Ÿè¡ŒçŠ¶æ³ã‚’ä¿æŒã™ã‚‹ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆï¼
 // 
 
 #pragma once 
@@ -9,26 +9,26 @@
 
 #include <cstdint>
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Game::Combat::Skill::Component
 {
-	// ƒXƒLƒ‹’iŠK
+	// ã‚¹ã‚­ãƒ«æ®µéš
 	enum class SkillPhase
 	{
-		Casting,// ƒXƒLƒ‹‚ÌƒLƒƒƒXƒg’iŠK
-		Active,// ƒXƒLƒ‹‚ÌƒAƒNƒeƒBƒu’iŠK(UŒ‚‚È‚Ç)
-		Recovery,// ƒXƒLƒ‹‚Ìd’¼
-		Completed, // ƒXƒLƒ‹‚ÌŠ®—¹’iŠK(I—¹ó‘Ô)
-		Interrupted // ƒXƒLƒ‹‚Ì’†’f’iŠK(ƒXƒ^ƒ“‚â€–S‚È‚Ç)
+		Casting,// ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ã‚¹ãƒˆæ®µéš
+		Active,// ã‚¹ã‚­ãƒ«ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–æ®µéš(æ”»æ’ƒãªã©)
+		Recovery,// ã‚¹ã‚­ãƒ«ã®ç¡¬ç›´
+		Completed, // ã‚¹ã‚­ãƒ«ã®å®Œäº†æ®µéš(çµ‚äº†çŠ¶æ…‹)
+		Interrupted // ã‚¹ã‚­ãƒ«ã®ä¸­æ–­æ®µéš(ã‚¹ã‚¿ãƒ³ã‚„æ­»äº¡ãªã©)
 	};
 
-	// ƒXƒLƒ‹‚Ìƒ‰ƒCƒtƒ^ƒCƒ€ó‘Ô
+	// ã‚¹ã‚­ãƒ«ã®ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ çŠ¶æ…‹
 	enum class SkillLifeStatus
 	{
-		Active, // ƒXƒLƒ‹‚ªƒAƒNƒeƒBƒu‚Èó‘Ô
-		Completed, // ƒXƒLƒ‹‚ªŠ®—¹‚µ‚½ó‘Ô
-		Interrupted // ƒXƒLƒ‹‚ª’†’f‚³‚ê‚½ó‘Ô
+		Active, // ã‚¹ã‚­ãƒ«ãŒã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªçŠ¶æ…‹
+		Completed, // ã‚¹ã‚­ãƒ«ãŒå®Œäº†ã—ãŸçŠ¶æ…‹
+		Interrupted // ã‚¹ã‚­ãƒ«ãŒä¸­æ–­ã•ã‚ŒãŸçŠ¶æ…‹
 	};
 
 	struct PhaseTiming
@@ -44,65 +44,65 @@ namespace Game::Combat::Skill::Component
 		}
 	};
 
-	// Active Skill g—p‚É•t—^‚³‚ê‚éƒf[ƒ^
+	// Active Skill ä½¿ç”¨æ™‚ã«ä»˜ä¸ã•ã‚Œã‚‹ãƒ‡ãƒ¼ã‚¿
 // Data granted when using Active Skill
 	struct SkillInstanceComponent
 	{
-		eNsECS::Entity caster;
+		Engine::ECS::Entity caster;
 
 		// 
 		float timeSinceCast = 0.0f;
 
-		// «—ˆ“I‚É‚ÍCƒtƒ‰ƒO‚Å‚Í‚È‚­C**’iŠK§Œä**‚ğ“±“ü‚·‚é(1ƒXƒLƒ‹•¡”Œ`ó‚É‘Î‰‚·‚é‚½‚ß)
+		// å°†æ¥çš„ã«ã¯ï¼Œãƒ•ãƒ©ã‚°ã§ã¯ãªãï¼Œ**æ®µéšåˆ¶å¾¡**ã‚’å°å…¥ã™ã‚‹(1ã‚¹ã‚­ãƒ«è¤‡æ•°å½¢çŠ¶ã«å¯¾å¿œã™ã‚‹ãŸã‚)
 		bool hasSpawned = false;
 
-		// ƒXƒLƒ‹‚ÌID
+		// ã‚¹ã‚­ãƒ«ã®ID
 		uint16_t skillId;
 
-		SkillPhase phase = SkillPhase::Casting;// ƒXƒLƒ‹‚Ìó‘Ô’iŠK
-		std::vector<eNsECS::Entity> spawnedHitAreas; // ¶¬‚³‚ê‚½Attack2DArea‚Ö‚ÌQÆ
+		SkillPhase phase = SkillPhase::Casting;// ã‚¹ã‚­ãƒ«ã®çŠ¶æ…‹æ®µéš
+		std::vector<Engine::ECS::Entity> spawnedHitAreas; // ç”Ÿæˆã•ã‚ŒãŸAttack2DAreaã¸ã®å‚ç…§
 
 		std::unordered_map<SkillPhase, PhaseTiming> timings;
 
-		// ƒXƒLƒ‹‚Ìƒ‰ƒCƒtƒ^ƒCƒ€
+		// ã‚¹ã‚­ãƒ«ã®ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ 
 		bool isSkillCompleted = false;
 
-		// ƒXƒ^ƒ“‚â€–S‚È‚Ç‚É‚æ‚é’†’fƒtƒ‰ƒO
+		// ã‚¹ã‚¿ãƒ³ã‚„æ­»äº¡ãªã©ã«ã‚ˆã‚‹ä¸­æ–­ãƒ•ãƒ©ã‚°
 		bool isInterrupted = false;
 	};
 
 
-	// Œ»İ–¢g—pFíœ—\’è (ƒXƒLƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX‚ğƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹Àsó‹µ‚ğ•Û‚·‚éƒRƒ“ƒ|[ƒlƒ“ƒg‚ÆÄ’è‹`‚µ‚½‚½‚ß)
-	//// Active Skill g—p‚É•t—^‚³‚ê‚éƒf[ƒ^
+	// ç¾åœ¨æœªä½¿ç”¨ï¼šå‰Šé™¤äºˆå®š (ã‚¹ã‚­ãƒ«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«å®Ÿè¡ŒçŠ¶æ³ã‚’ä¿æŒã™ã‚‹ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã¨å†å®šç¾©ã—ãŸãŸã‚)
+	//// Active Skill ä½¿ç”¨æ™‚ã«ä»˜ä¸ã•ã‚Œã‚‹ãƒ‡ãƒ¼ã‚¿
 	//// Data granted when using Active Skill
 	//struct SkillInstanceComponent
 	//{
-	//	eNsECS::Entity caster;
+	//	Engine::ECS::Entity caster;
 
 	//	// 
 	//	float timeSinceCast = 0.0f;
 
-	//	// «—ˆ“I‚É‚ÍCƒtƒ‰ƒO‚Å‚Í‚È‚­C**’iŠK§Œä**‚ğ“±“ü‚·‚é(1ƒXƒLƒ‹•¡”Œ`ó‚É‘Î‰‚·‚é‚½‚ß)
+	//	// å°†æ¥çš„ã«ã¯ï¼Œãƒ•ãƒ©ã‚°ã§ã¯ãªãï¼Œ**æ®µéšåˆ¶å¾¡**ã‚’å°å…¥ã™ã‚‹(1ã‚¹ã‚­ãƒ«è¤‡æ•°å½¢çŠ¶ã«å¯¾å¿œã™ã‚‹ãŸã‚)
 	//	bool hasSpawned = false;
 
-	//	// ƒXƒLƒ‹‚ÌID
+	//	// ã‚¹ã‚­ãƒ«ã®ID
 	//	uint16_t skillId;
 
-	//	SkillPhase phase = SkillPhase::Casting;// ƒXƒLƒ‹‚Ìó‘Ô’iŠK
-	//	std::vector<eNsECS::Entity> spawnedHitAreas; // ¶¬‚³‚ê‚½Attack2DArea‚Ö‚ÌQÆ
+	//	SkillPhase phase = SkillPhase::Casting;// ã‚¹ã‚­ãƒ«ã®çŠ¶æ…‹æ®µéš
+	//	std::vector<Engine::ECS::Entity> spawnedHitAreas; // ç”Ÿæˆã•ã‚ŒãŸAttack2DAreaã¸ã®å‚ç…§
 
 	//	std::unordered_map<SkillPhase, PhaseTiming> timings;
 
-	//	// ƒXƒLƒ‹‚Ìƒ‰ƒCƒtƒ^ƒCƒ€
+	//	// ã‚¹ã‚­ãƒ«ã®ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ 
 	//	bool isSkillCompleted = false;
 
-	//	// ƒXƒ^ƒ“‚â€–S‚È‚Ç‚É‚æ‚é’†’fƒtƒ‰ƒO
+	//	// ã‚¹ã‚¿ãƒ³ã‚„æ­»äº¡ãªã©ã«ã‚ˆã‚‹ä¸­æ–­ãƒ•ãƒ©ã‚°
 	//	bool isInterrupted = false;
 
 
-	//	// ƒXƒLƒ‹‚Ìƒ‰ƒCƒtƒ^ƒCƒ€ó‘Ô
-	//	gNsSkillData::AttackLifeTimeMode attackLifeTimeMode = gNsSkillData::AttackLifeTimeMode::SyncWithSkillPhase;
-	//	float timeToLive = 0.0f; // ƒXƒLƒ‹‚Ìƒ‰ƒCƒtƒ^ƒCƒ€i•bj
+	//	// ã‚¹ã‚­ãƒ«ã®ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ çŠ¶æ…‹
+	//	Game::Combat::Skill::Data::AttackLifeTimeMode attackLifeTimeMode = Game::Combat::Skill::Data::AttackLifeTimeMode::SyncWithSkillPhase;
+	//	float timeToLive = 0.0f; // ã‚¹ã‚­ãƒ«ã®ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ï¼ˆç§’ï¼‰
 	//};
 }
 

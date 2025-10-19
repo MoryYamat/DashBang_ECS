@@ -1,4 +1,4 @@
-// A function that updates the mouse cursor state.
+ï»¿// A function that updates the mouse cursor state.
 
 #pragma once
 
@@ -10,14 +10,14 @@
 
 #include "Engine/Graphics/Renderer/RenderContext.h"
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
+
+
 
 namespace Game::Input::Analog
 {
-	// Œ»İ–¢g—pFˆÓ}‘w“±“üŒã–¢g—p (ƒ^ƒCƒgƒ‹‰æ–Ê‚È‚ÇƒQ[ƒ€ŠO‚ÌƒAƒiƒƒO“ü—Í”½‰f‚Ì‚½‚ß))
-	void Update(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, eNsGfxRender::RenderContext& renderContext);
+	// ç¾åœ¨æœªä½¿ç”¨ï¼šæ„å›³å±¤å°å…¥å¾Œæœªä½¿ç”¨ (ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢ãªã©ã‚²ãƒ¼ãƒ å¤–ã®ã‚¢ãƒŠãƒ­ã‚°å…¥åŠ›åæ˜ ã®ãŸã‚))
+	void Update(Engine::ECS::EntityMgr& ecs, const Engine::Input::RawInputState& rawInput, Engine::Graphics::Render::RenderContext& renderContext);
 
-	// íœ—\’è
-	void Update(eNsECS::EntityMgr& ecs, InputState& input, eNsGfxRender::RenderContext renderContext);
+	// å‰Šé™¤äºˆå®š
+	void Update(Engine::ECS::EntityMgr& ecs, InputState& input, Engine::Graphics::Render::RenderContext renderContext);
 }

@@ -18,13 +18,13 @@
 
 #include <iostream>
 
-Test::Actor::Test3DModel::Test3DModel(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader)
+Test::Actor::Test3DModel::Test3DModel(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader* shader)
 {
 	namespace Ops = Engine::ECS::Ops;
 	namespace Comp = Engine::ECS::Component;
-	eNsECS::Entity e = ecs.createEntity();
+	Engine::ECS::Entity e = ecs.createEntity();
 
-	eNsGfxModel::ModelData data = eNsGfxModel::AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
+	Engine::Graphics::Model::ModelData data = Engine::Graphics::Model::AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
 
 	for (const auto& mesh : data.meshes)
 	{
@@ -33,14 +33,14 @@ Test::Actor::Test3DModel::Test3DModel(eNsECS::EntityMgr& ecs, eNsGfxRender::Shad
 			<< ", hasIndices: " << mesh.hasIndices << std::endl;
 	}
 
-	eNsGfxModel::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(data);
+	Engine::Graphics::Model::ModelGPU modelGPU = Engine::Graphics::Render::GPUBufferUtils::createMeshGPUBuffers(data);
 
-	eNsCommonComp::TransformComponent transformComp;
+	Engine::ECS::Component::Common::TransformComponent transformComp;
 	transformComp.position = glm::vec3(0.0f, 0.0f, -10.0f);
 	transformComp.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	transformComp.scale = glm::vec3(0.01f);
 
-	eNsGfxComp::ShaderComponent shaderComp;
+	Engine::ECS::Component::Graphics::ShaderComponent shaderComp;
 
 	shaderComp.shader = shader;
 

@@ -1,4 +1,4 @@
-#include "MovementFeature.h"
+Ôªø#include "MovementFeature.h"
 
 #include "Game/Character/Control/Movement/System/CharacterMovementSystem.h"
 #include "Game/Character/Control/Movement/System/CharacterFacingSystem.h"
@@ -7,29 +7,28 @@
 
 #include "Game/Input/Intent/PlayerMovementIntentMapper.h"
 
-#include "Common/GameNamespaceDecl.h"
 
 // Intent
-void Game::Feature::Character::MovementFeature::UpdateMovementIntent(eNsECS::EntityMgr& ecs)
+void Game::Feature::Character::MovementFeature::UpdateMovementIntent(Engine::ECS::EntityMgr& ecs)
 {
-	gNsInputIntent::MovementIntentMappingSystem::UpdatePlayerMovementIntent(ecs);
+	Game::Input::Intent::MovementIntentMappingSystem::UpdatePlayerMovementIntent(ecs);
 }
 
-// é¿çsï\åª (Action expression)
-void Game::Feature::Character::MovementFeature::UpdateVelocity(eNsECS::EntityMgr& ecs)
+// ÂÆüË°åË°®Áèæ (Action expression)
+void Game::Feature::Character::MovementFeature::UpdateVelocity(Engine::ECS::EntityMgr& ecs)
 {
-	gNsCharacterMovement::UpdateCharacterVelocity(ecs);
+	Game::Character::Movement::UpdateCharacterVelocity(ecs);
 }
 
 
 // logic
-void Game::Feature::Character::MovementFeature::UpdateLogicFacing(eNsECS::EntityMgr& ecs)
+void Game::Feature::Character::MovementFeature::UpdateLogicFacing(Engine::ECS::EntityMgr& ecs)
 {
-	gNsCharacterMovement::UpdatePlayerFacing(ecs);
+	Game::Character::Movement::UpdatePlayerFacing(ecs);
 }
 
 // logic
-void Game::Feature::Character::MovementFeature::UpdateLogicPosition(eNsECS::EntityMgr& ecs, float deltaTime)
+void Game::Feature::Character::MovementFeature::UpdateLogicPosition(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
-	gNsCharacterMovement::CharacterMovementSystem(ecs, deltaTime);
+	Game::Character::Movement::CharacterMovementSystem(ecs, deltaTime);
 }

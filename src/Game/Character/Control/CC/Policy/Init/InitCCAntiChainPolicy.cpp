@@ -10,7 +10,7 @@ namespace Game::Character::Control::CC::Policy
 	using namespace Game::Character::FSM::CC;
 
 	// TODO: IDの自動一致機能の作成
-	void InitCCAntiChainPolicy(EntityMgr& ecs)
+	void InitCCAntiChainPolicy(Engine::ECS::EntityMgr& ecs)
 	{
 		auto& db = ecs.createResource<CCAntiChainPolicyDatabase>();
 		

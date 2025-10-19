@@ -1,5 +1,5 @@
-// Combining multiple collision-related utilities to create data
-// ƒRƒŠƒWƒ‡ƒ“‚ÉŠÖ‚·‚é•¡”‚Ìƒ†[ƒeƒBƒŠƒeƒB‚ğ‘g‚İ‡‚í‚¹‚Äƒf[ƒ^‚ğì‚é
+ï»¿// Combining multiple collision-related utilities to create data
+// ã‚³ãƒªã‚¸ãƒ§ãƒ³ã«é–¢ã™ã‚‹è¤‡æ•°ã®ãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£ã‚’çµ„ã¿åˆã‚ã›ã¦ãƒ‡ãƒ¼ã‚¿ã‚’ä½œã‚‹
 
 #pragma once
 
@@ -10,13 +10,13 @@
 
 #include <glm/glm.hpp>
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
+
+
 
 namespace Game::Collision::Extract
 {
 	std::vector<glm::ivec2> ExtractPlayerTileCollisions(
-		const gNsCollData::PlayerCollisionContext& playerCollisionCtx,
-		const eNsLogic2DComp::TileMapComponent& tileMapComp
+		const Game::Collision::Data::PlayerCollisionContext& playerCollisionCtx,
+		const Engine::ECS::Component::Logic2D::TileMapComponent& tileMapComp
 	);
 }

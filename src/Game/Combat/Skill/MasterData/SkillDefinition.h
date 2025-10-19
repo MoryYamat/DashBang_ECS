@@ -1,4 +1,4 @@
-// skill definition data structure
+ï»¿// skill definition data structure
 
 #pragma once
 #include "Game/Combat/Skill/Component/Attack2DAreaComponent.h"
@@ -19,39 +19,39 @@
 
 #include <optional>
 
-#include "Common/GameNamespaceDecl.h"
+
 
 namespace Game::Combat::Skill::Data
 {
-	// ƒXƒLƒ‹‚ÌÀsƒtƒF[ƒY‚ğ’è‹`‚·‚é—ñ‹“Œ^
+	// ã‚¹ã‚­ãƒ«ã®å®Ÿè¡Œãƒ•ã‚§ãƒ¼ã‚ºã‚’å®šç¾©ã™ã‚‹åˆ—æŒ™å‹
 	enum class SkillExecutionPhase
 	{
-		Casting,// ƒXƒLƒ‹‚ÌƒLƒƒƒXƒg’iŠK
-		Active, // ƒXƒLƒ‹‚ÌƒAƒNƒeƒBƒu’iŠK(UŒ‚‚È‚Ç)
-		Recovery,// ƒXƒLƒ‹‚Ìd’¼
-		Completed, // ƒXƒLƒ‹‚ÌŠ®—¹’iŠK(I—¹ó‘Ô)
-		Interrupted, // ƒXƒLƒ‹‚Ì’†’f’iŠK(ƒXƒ^ƒ“‚â€–S‚È‚Ç)
-		Canceled, // ƒXƒLƒ‹ƒLƒƒƒ“ƒZƒ‹
+		Casting,// ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ã‚¹ãƒˆæ®µéš
+		Active, // ã‚¹ã‚­ãƒ«ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–æ®µéš(æ”»æ’ƒãªã©)
+		Recovery,// ã‚¹ã‚­ãƒ«ã®ç¡¬ç›´
+		Completed, // ã‚¹ã‚­ãƒ«ã®å®Œäº†æ®µéš(çµ‚äº†çŠ¶æ…‹)
+		Interrupted, // ã‚¹ã‚­ãƒ«ã®ä¸­æ–­æ®µéš(ã‚¹ã‚¿ãƒ³ã‚„æ­»äº¡ãªã©)
+		Canceled, // ã‚¹ã‚­ãƒ«ã‚­ãƒ£ãƒ³ã‚»ãƒ«
 	};
 
-	// ƒXƒLƒ‹‚ÌÀsƒtƒF[ƒYƒCƒxƒ“ƒg‚ğ’è‹`‚·‚é—ñ‹“Œ^
+	// ã‚¹ã‚­ãƒ«ã®å®Ÿè¡Œãƒ•ã‚§ãƒ¼ã‚ºã‚¤ãƒ™ãƒ³ãƒˆã‚’å®šç¾©ã™ã‚‹åˆ—æŒ™å‹
 	enum class SkillExecutionEvent
 	{
-		OnEneterCasting, // ƒXƒLƒ‹‚ÌƒLƒƒƒXƒgŠJn
-		OnExitCasting, // ƒXƒLƒ‹‚ÌƒLƒƒƒXƒgI—¹
-		OnEnterActive, // ƒXƒLƒ‹‚ÌƒAƒNƒeƒBƒuŠJn
-		OnExitActive, // ƒXƒLƒ‹‚ÌƒAƒNƒeƒBƒuI—¹
-		OnEnterRecovery, // ƒXƒLƒ‹‚ÌƒŠƒJƒoƒŠ[ŠJn
-		OnExitRecovery, // ƒXƒLƒ‹‚ÌƒŠƒJƒoƒŠ[I—¹
-		OnCompleted, // ƒXƒLƒ‹‚ÌŠ®—¹
-		OnInterrupted, // ƒXƒLƒ‹‚Ì’†’f
-		OnCanceled, // ƒXƒLƒ‹‚ÌƒLƒƒƒ“ƒZƒ‹
+		OnEneterCasting, // ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ã‚¹ãƒˆé–‹å§‹
+		OnExitCasting, // ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ã‚¹ãƒˆçµ‚äº†
+		OnEnterActive, // ã‚¹ã‚­ãƒ«ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–é–‹å§‹
+		OnExitActive, // ã‚¹ã‚­ãƒ«ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–çµ‚äº†
+		OnEnterRecovery, // ã‚¹ã‚­ãƒ«ã®ãƒªã‚«ãƒãƒªãƒ¼é–‹å§‹
+		OnExitRecovery, // ã‚¹ã‚­ãƒ«ã®ãƒªã‚«ãƒãƒªãƒ¼çµ‚äº†
+		OnCompleted, // ã‚¹ã‚­ãƒ«ã®å®Œäº†
+		OnInterrupted, // ã‚¹ã‚­ãƒ«ã®ä¸­æ–­
+		OnCanceled, // ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ãƒ³ã‚»ãƒ«
 	};
 
 	enum class SkillActionType
 	{
-		None, // ƒXƒLƒ‹ƒAƒNƒVƒ‡ƒ“‚È‚µ
-		SpawnHitbox, // UŒ‚”»’è‚ğ¶¬
+		None, // ã‚¹ã‚­ãƒ«ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãªã—
+		SpawnHitbox, // æ”»æ’ƒåˆ¤å®šã‚’ç”Ÿæˆ
 	};
 }
 
@@ -59,63 +59,63 @@ namespace Game::Combat::Skill::Data
 {
 	enum class SkillCategory
 	{
-		Melee, // ‹ßÚUŒ‚ƒXƒLƒ‹
-		Ranged, // ‰“‹——£UŒ‚ƒXƒLƒ‹
-		Projectile, // ’e“¹UŒ‚ƒXƒLƒ‹
-		AreaOfEffect, // ”ÍˆÍUŒ‚ƒXƒLƒ‹
-		Summon, // ¢Š«ƒXƒLƒ‹
-		Buff, // ƒoƒtƒXƒLƒ‹
-		Debuff, // ƒfƒoƒtƒXƒLƒ‹
+		Melee, // è¿‘æ¥æ”»æ’ƒã‚¹ã‚­ãƒ«
+		Ranged, // é è·é›¢æ”»æ’ƒã‚¹ã‚­ãƒ«
+		Projectile, // å¼¾é“æ”»æ’ƒã‚¹ã‚­ãƒ«
+		AreaOfEffect, // ç¯„å›²æ”»æ’ƒã‚¹ã‚­ãƒ«
+		Summon, // å¬å–šã‚¹ã‚­ãƒ«
+		Buff, // ãƒãƒ•ã‚¹ã‚­ãƒ«
+		Debuff, // ãƒ‡ãƒãƒ•ã‚¹ã‚­ãƒ«
 	};
 }
 
 namespace Game::Combat::Skill::Data
 {
 
-	// ------------------------ƒtƒF[ƒYƒ^ƒCƒ~ƒ“ƒO’è‹`-------------------------
-	// ƒXƒLƒ‹‚ÌƒtƒF[ƒYƒ^ƒCƒ~ƒ“ƒO‚ğ’è‹`‚·‚é\‘¢‘Ì
+	// ------------------------ãƒ•ã‚§ãƒ¼ã‚ºã‚¿ã‚¤ãƒŸãƒ³ã‚°å®šç¾©-------------------------
+	// ã‚¹ã‚­ãƒ«ã®ãƒ•ã‚§ãƒ¼ã‚ºã‚¿ã‚¤ãƒŸãƒ³ã‚°ã‚’å®šç¾©ã™ã‚‹æ§‹é€ ä½“
 	struct SkillPhaseTiming
 	{
-		float castTime = 0.3f; // ƒLƒƒƒXƒgƒ^ƒCƒ€(”­¶‚Ü‚Å‚ÌŠÔ)
-		float recoveryTime = 0.4f; // ƒŠƒJƒoƒŠ[ƒ^ƒCƒ€(ƒXƒLƒ‹I—¹Œã‚Ì‘Ò‹@ŠÔ)
-		float duration = 1.0f; // ƒLƒƒƒ‰‚ª‹Z‚ğŒJ‚èo‚µ‚Ä‚¢‚éŠÔ(ƒ‚[ƒVƒ‡ƒ“‚Ì’·‚³‚È‚Ç)
+		float castTime = 0.3f; // ã‚­ãƒ£ã‚¹ãƒˆã‚¿ã‚¤ãƒ (ç™ºç”Ÿã¾ã§ã®æ™‚é–“)
+		float recoveryTime = 0.4f; // ãƒªã‚«ãƒãƒªãƒ¼ã‚¿ã‚¤ãƒ (ã‚¹ã‚­ãƒ«çµ‚äº†å¾Œã®å¾…æ©Ÿæ™‚é–“)
+		float duration = 1.0f; // ã‚­ãƒ£ãƒ©ãŒæŠ€ã‚’ç¹°ã‚Šå‡ºã—ã¦ã„ã‚‹æ™‚é–“(ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã®é•·ã•ãªã©)
 	};
 
 
-	// ------------------------Àsƒ‚ƒfƒ‹EˆÚ“®EƒLƒƒƒ“ƒZƒ‹-------------------------
-// UŒ‚”»’è‚ÌƒLƒƒƒ‰ƒNƒ^[ó‘Ô‚Æ‚Ì“¯Šú^”ñ“¯Šú
-	enum class SkillCastSyncPolicy// UŒ‚”»’è‚Ì§Œäå‘Ì‚ğƒtƒF[ƒY‚É‚ä‚¾‚Ë‚é‚©‚Ç‚¤‚©
+	// ------------------------å®Ÿè¡Œãƒ¢ãƒ‡ãƒ«ãƒ»ç§»å‹•ãƒ»ã‚­ãƒ£ãƒ³ã‚»ãƒ«-------------------------
+// æ”»æ’ƒåˆ¤å®šã®ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼çŠ¶æ…‹ã¨ã®åŒæœŸï¼éåŒæœŸ
+	enum class SkillCastSyncPolicy// æ”»æ’ƒåˆ¤å®šã®åˆ¶å¾¡ä¸»ä½“ã‚’ãƒ•ã‚§ãƒ¼ã‚ºã«ã‚†ã ã­ã‚‹ã‹ã©ã†ã‹
 	{
-		None, // “¯Šú‚È‚µ
-		Synchronous, // ƒLƒƒƒ‰ƒNƒ^[‚Ìó‘Ô‚Æ“¯Šú
-		Asynchronous // ƒLƒƒƒ‰ƒNƒ^[‚Ìó‘Ô‚Æ”ñ“¯Šú
+		None, // åŒæœŸãªã—
+		Synchronous, // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®çŠ¶æ…‹ã¨åŒæœŸ
+		Asynchronous // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®çŠ¶æ…‹ã¨éåŒæœŸ
 	};
 
-	// ƒXƒLƒ‹‚ÌˆÚ“®ƒƒbƒNƒ|ƒŠƒV[‚ğ’è‹`‚·‚é—ñ‹“Œ^
+	// ã‚¹ã‚­ãƒ«ã®ç§»å‹•ãƒ­ãƒƒã‚¯ãƒãƒªã‚·ãƒ¼ã‚’å®šç¾©ã™ã‚‹åˆ—æŒ™å‹
 	enum class SkillMovementLockPolicy
 	{
-		Free,        // Š®‘S‚É©—R‚ÉˆÚ“®‚Å‚«‚é
-		Locked,      // Š®‘S‚ÉˆÚ“®•s‰Âi‚»‚Ìê‚ÉŒÅ’èj
-		RootMotion,  // ƒAƒjƒ[ƒVƒ‡ƒ“‚ÅˆÊ’uˆÚ“®i•¨—“I‚É‚ÍˆÚ“®‚µ‚È‚¢j¦«—ˆ
-		Slide        // •ûŒü‚ÍŒÅ’è‚¾‚ªŠŠ‚é‚æ‚¤‚ÉˆÚ“®i“ËiŒn‚È‚Çj
+		Free,        // å®Œå…¨ã«è‡ªç”±ã«ç§»å‹•ã§ãã‚‹
+		Locked,      // å®Œå…¨ã«ç§»å‹•ä¸å¯ï¼ˆãã®å ´ã«å›ºå®šï¼‰
+		RootMotion,  // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã§ä½ç½®ç§»å‹•ï¼ˆç‰©ç†çš„ã«ã¯ç§»å‹•ã—ãªã„ï¼‰â€»å°†æ¥
+		Slide        // æ–¹å‘ã¯å›ºå®šã ãŒæ»‘ã‚‹ã‚ˆã†ã«ç§»å‹•ï¼ˆçªé€²ç³»ãªã©ï¼‰
 	};
 
-	// ƒXƒLƒ‹‚Ìƒ`ƒƒ[ƒWî•ñ‚ğ’è‹`‚·‚é\‘¢‘Ì
+	// ã‚¹ã‚­ãƒ«ã®ãƒãƒ£ãƒ¼ã‚¸æƒ…å ±ã‚’å®šç¾©ã™ã‚‹æ§‹é€ ä½“
 	struct SkillChargeSpecDef
 	{
-		bool isChargeSkill = false; // ƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚©‚Ç‚¤‚©
-		float chargeTime = 0.0f; // ƒ`ƒƒ[ƒWÅ‘åŠÔiƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚Ìê‡j
+		bool isChargeSkill = false; // ãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã‹ã©ã†ã‹
+		float chargeTime = 0.0f; // ãƒãƒ£ãƒ¼ã‚¸æœ€å¤§æ™‚é–“ï¼ˆãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã®å ´åˆï¼‰
 	};
 
-	// ƒXƒLƒ‹‚ÌÀsƒ‚ƒfƒ‹‚ğ’è‹`‚·‚é\‘¢‘Ì
+	// ã‚¹ã‚­ãƒ«ã®å®Ÿè¡Œãƒ¢ãƒ‡ãƒ«ã‚’å®šç¾©ã™ã‚‹æ§‹é€ ä½“
 	struct SkillExecutionModelDef
 	{
-		SkillPhaseTiming timing; // ƒtƒF[ƒYƒ^ƒCƒ~ƒ“ƒOî•ñ
-		SkillCastSyncPolicy castSyncPolicy; // ƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì“¯Šú^”ñ“¯Šúƒ|ƒŠƒV[
-		SkillCancelPhase cancelMask = SkillCancelPhase::None; // ƒLƒƒƒ“ƒZƒ‹‰Â”\‚ÈƒtƒF[ƒY‚Ìƒ}ƒXƒN
-		std::vector<int> cancelableSkillIds; // ‚±‚ÌƒXƒLƒ‹’†‚ÉƒLƒƒƒ“ƒZƒ‹‚µ‚Ä”­“®‰Â”\‚ÈƒXƒLƒ‹ID
-		SkillMovementLockPolicy movementLock = SkillMovementLockPolicy::Free; // ƒXƒLƒ‹‚ÌˆÚ“®ƒƒbƒNƒ|ƒŠƒV[
-		bool lockFacingDirection = false; // ‰r¥’†‚ÌŒü‚«ŒÅ’è
+		SkillPhaseTiming timing; // ãƒ•ã‚§ãƒ¼ã‚ºã‚¿ã‚¤ãƒŸãƒ³ã‚°æƒ…å ±
+		SkillCastSyncPolicy castSyncPolicy; // ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®åŒæœŸï¼éåŒæœŸãƒãƒªã‚·ãƒ¼
+		SkillCancelPhase cancelMask = SkillCancelPhase::None; // ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½ãªãƒ•ã‚§ãƒ¼ã‚ºã®ãƒã‚¹ã‚¯
+		std::vector<int> cancelableSkillIds; // ã“ã®ã‚¹ã‚­ãƒ«ä¸­ã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã—ã¦ç™ºå‹•å¯èƒ½ãªã‚¹ã‚­ãƒ«ID
+		SkillMovementLockPolicy movementLock = SkillMovementLockPolicy::Free; // ã‚¹ã‚­ãƒ«ã®ç§»å‹•ãƒ­ãƒƒã‚¯ãƒãƒªã‚·ãƒ¼
+		bool lockFacingDirection = false; // è© å”±ä¸­ã®å‘ãå›ºå®š
 		SkillChargeSpecDef charge;
 	};
 
@@ -124,23 +124,23 @@ namespace Game::Combat::Skill::Data
 // 
 namespace Game::Combat::Skill::Data
 {
-	// ------------------------UŒ‚d—l-------------------------
+	// ------------------------æ”»æ’ƒä»•æ§˜-------------------------
 
 
-	// ƒXƒLƒ‹‚ÌUŒ‚”»’èƒ‰ƒCƒtƒ^ƒCƒ€‚ÌŠÇ—•û–@‚ğ’è‹`‚·‚é—ñ‹“Œ^
+	// ã‚¹ã‚­ãƒ«ã®æ”»æ’ƒåˆ¤å®šãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ã®ç®¡ç†æ–¹æ³•ã‚’å®šç¾©ã™ã‚‹åˆ—æŒ™å‹
 	enum class AttackLifeTimeMode
 	{
-		SyncWithSkillPhase, // (= duration )melee‚È‚Ç
+		SyncWithSkillPhase, // (= duration )meleeãªã©
 		IndependentEntityLifetime, // Projectile
-		AttachedToChildEntity// İ’uŒ^‚È‚Ç
+		AttachedToChildEntity// è¨­ç½®å‹ãªã©
 	};
 	
 	enum class SkillDespawnCondition : uint32_t
 	{
-		TimeElapsed = 1 << 0, // ŠÔŒo‰ß‚É‚æ‚Á‚ÄÁ–Å
-		HitTarget = 1 << 1, // ‰½‚©‚É–½’†‚µ‚½‚çÁ–Å
-		HitObstacle = 1 << 2, // áŠQ•¨‚É“–‚½‚Á‚½‚çÁ–Å
-		Manual = 1 << 3, // ŠO•”‘€ì‚ÅÁ–Åi—áF¢Š«å‚Ì€–SAƒ{ƒ^ƒ“‰ğœ‚È‚Çj
+		TimeElapsed = 1 << 0, // æ™‚é–“çµŒéã«ã‚ˆã£ã¦æ¶ˆæ»…
+		HitTarget = 1 << 1, // ä½•ã‹ã«å‘½ä¸­ã—ãŸã‚‰æ¶ˆæ»…
+		HitObstacle = 1 << 2, // éšœå®³ç‰©ã«å½“ãŸã£ãŸã‚‰æ¶ˆæ»…
+		Manual = 1 << 3, // å¤–éƒ¨æ“ä½œã§æ¶ˆæ»…ï¼ˆä¾‹ï¼šå¬å–šä¸»ã®æ­»äº¡ã€ãƒœã‚¿ãƒ³è§£é™¤ãªã©ï¼‰
 
 		DefaultProjectile = TimeElapsed | HitTarget | HitObstacle,
 	};
@@ -163,24 +163,24 @@ namespace Game::Combat::Skill::Data
 	}
 
 
-	// ƒXƒLƒ‹‚Ìƒ‰ƒCƒtƒ^ƒCƒ€d—l‚ğ’è‹`‚·‚é\‘¢‘Ì
+	// ã‚¹ã‚­ãƒ«ã®ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ä»•æ§˜ã‚’å®šç¾©ã™ã‚‹æ§‹é€ ä½“
 	struct SkillLifetimeSpecDef
 	{
 		AttackLifeTimeMode hitBoxlifetimePolicy = AttackLifeTimeMode::SyncWithSkillPhase;
-		std::optional<float> duration = std::nullopt; // •K—v‚È‚ç–¾¦
-		SkillDespawnCondition despawnFlags = SkillDespawnCondition::TimeElapsed; // ƒfƒtƒHƒ‹ƒg‚ÍŠÔ
+		std::optional<float> duration = std::nullopt; // å¿…è¦ãªã‚‰æ˜ç¤º
+		SkillDespawnCondition despawnFlags = SkillDespawnCondition::TimeElapsed; // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯æ™‚é–“
 	};
 
-	// ƒXƒLƒ‹‚ÌUŒ‚d—l‚ğ’è‹`‚·‚é\‘¢‘Ì
+	// ã‚¹ã‚­ãƒ«ã®æ”»æ’ƒä»•æ§˜ã‚’å®šç¾©ã™ã‚‹æ§‹é€ ä½“
 	struct SkillAttackSpecDef
 	{
-		gNsSkillComp::SkillExecutionEvent triggerTiming = gNsSkillComp::SkillExecutionEvent::OnEnterActive; // ƒXƒLƒ‹‚ÌƒgƒŠƒK[ƒ^ƒCƒ~ƒ“ƒO
+		Game::Combat::Skill::Component::SkillExecutionEvent triggerTiming = Game::Combat::Skill::Component::SkillExecutionEvent::OnEnterActive; // ã‚¹ã‚­ãƒ«ã®ãƒˆãƒªã‚¬ãƒ¼ã‚¿ã‚¤ãƒŸãƒ³ã‚°
 
-		SkillLifetimeSpecDef lifetime; // ƒ‰ƒCƒtƒ^ƒCƒ€d—l
+		SkillLifetimeSpecDef lifetime; // ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ä»•æ§˜
 
-		gNsSkillComp::Attack2DShape shape; // Œ`ó’è‹`
-		TrajectoryType trajectoryType = gNsSkillData::TrajectoryType::None; // ‹OÕƒ^ƒCƒv
-		SkillTrajectory::TrajectoryParamsVariant trajectoryParams = gNsSkillData::SkillTrajectory::StaticTrajectory{}; // ‹OÕƒpƒ‰ƒ[ƒ^
+		Game::Combat::Skill::Component::Attack2DShape shape; // å½¢çŠ¶å®šç¾©
+		TrajectoryType trajectoryType = Game::Combat::Skill::Data::TrajectoryType::None; // è»Œè·¡ã‚¿ã‚¤ãƒ—
+		SkillTrajectory::TrajectoryParamsVariant trajectoryParams = Game::Combat::Skill::Data::SkillTrajectory::StaticTrajectory{}; // è»Œè·¡ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 	};
 
 
@@ -190,54 +190,54 @@ namespace Game::Combat::Skill::Data
 {
 	struct SkillCollisionMaskDef
 	{
-		Game::Collision::Data::Layer selfLayer = Game::Collision::Data::Layer::Skill; // ƒXƒLƒ‹©g‚ÌƒŒƒCƒ„[
-		uint32_t collidesWithMask = static_cast<uint32_t>(Game::Collision::Data::Layer::Enemy | Game::Collision::Data::Layer::Neutral); // Õ“Ë‚·‚éƒŒƒCƒ„[ƒ}ƒXƒNiƒfƒtƒHƒ‹ƒg‚Í“G‚Ì‚İj
+		Game::Collision::Data::Layer selfLayer = Game::Collision::Data::Layer::Skill; // ã‚¹ã‚­ãƒ«è‡ªèº«ã®ãƒ¬ã‚¤ãƒ¤ãƒ¼
+		uint32_t collidesWithMask = static_cast<uint32_t>(Game::Collision::Data::Layer::Enemy | Game::Collision::Data::Layer::Neutral); // è¡çªã™ã‚‹ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒã‚¹ã‚¯ï¼ˆãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯æ•µã®ã¿ï¼‰
 	};
 
-	// “–‚½‚Á‚½‘Šè‚ÉŒø‰Ê‚ğ—^‚¦‚éğŒ(ŠÖŒW«ƒx[ƒX)
+	// å½“ãŸã£ãŸç›¸æ‰‹ã«åŠ¹æœã‚’ä¸ãˆã‚‹æ¡ä»¶(é–¢ä¿‚æ€§ãƒ™ãƒ¼ã‚¹)
 	enum class EffectTargetFilter
 	{
-		EnemyOnly,// “G‚Ì‚İ
-		AllyOnly,// –¡•û‚Ì‚İ
-		SelfOnly,// ©•ª©g‚Ì‚İ
-		All,// ‘S‚Ä‚Ì‘ÎÛ
-		AllExceptSelf // ©•ªˆÈŠO‚Ì‘S‚Ä
+		EnemyOnly,// æ•µã®ã¿
+		AllyOnly,// å‘³æ–¹ã®ã¿
+		SelfOnly,// è‡ªåˆ†è‡ªèº«ã®ã¿
+		All,// å…¨ã¦ã®å¯¾è±¡
+		AllExceptSelf // è‡ªåˆ†ä»¥å¤–ã®å…¨ã¦
 	};
 
-	// ƒXƒLƒ‹‚ÌŒø‰Ê‘ÎÛ‚ğ’è‹`‚·‚é\‘¢‘Ì
+	// ã‚¹ã‚­ãƒ«ã®åŠ¹æœå¯¾è±¡ã‚’å®šç¾©ã™ã‚‹æ§‹é€ ä½“
 	struct SkillEffectTargetDef
 	{
-		EffectTargetFilter targetFilter = EffectTargetFilter::EnemyOnly; // Œø‰Ê‚ğ—^‚¦‚é‘ÎÛ‚ÌƒtƒBƒ‹ƒ^[
-		SkillCollisionMaskDef collisionMask; // Õ“Ëƒ}ƒXƒN’è‹`
+		EffectTargetFilter targetFilter = EffectTargetFilter::EnemyOnly; // åŠ¹æœã‚’ä¸ãˆã‚‹å¯¾è±¡ã®ãƒ•ã‚£ãƒ«ã‚¿ãƒ¼
+		SkillCollisionMaskDef collisionMask; // è¡çªãƒã‚¹ã‚¯å®šç¾©
 	};
 }
 
 namespace Game::Combat::Skill::Data
 {
-	// -------------------------ƒXƒLƒ‹g—pó‘ÔŒø‰Ê(ƒK[ƒhEƒA[ƒ}[)-------------------------
+	// -------------------------ã‚¹ã‚­ãƒ«ä½¿ç”¨çŠ¶æ…‹åŠ¹æœ(ã‚¬ãƒ¼ãƒ‰ãƒ»ã‚¢ãƒ¼ãƒãƒ¼)-------------------------
 
-	// ƒX[ƒp[ƒA[ƒ}[‚Ìí—Ş
+	// ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼ã®ç¨®é¡
 	enum class SkillSuperArmorType
 	{
-		None, // ƒX[ƒp[ƒA[ƒ}[‚È‚µ
-		Invincible, // –³“Gó‘Ô
-		Unbreakable, // ƒuƒŒƒCƒN•s‰Â‚ÈƒX[ƒp[ƒA[ƒ}[
-		Breakable // ƒuƒŒƒCƒN‰Â”\‚ÈƒX[ƒp[ƒA[ƒ}[
+		None, // ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼ãªã—
+		Invincible, // ç„¡æ•µçŠ¶æ…‹
+		Unbreakable, // ãƒ–ãƒ¬ã‚¤ã‚¯ä¸å¯ãªã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼
+		Breakable // ãƒ–ãƒ¬ã‚¤ã‚¯å¯èƒ½ãªã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼
 	};
 
-	// ƒK[ƒh‚Ì—L–³
+	// ã‚¬ãƒ¼ãƒ‰ã®æœ‰ç„¡
 	enum class SkillGuardType
 	{
-		None, // ƒK[ƒh‚È‚µ
-		ForwardGuard, // ‘O•ûƒK[ƒh
-		BackwardGuard // Œã•ûƒK[ƒh
+		None, // ã‚¬ãƒ¼ãƒ‰ãªã—
+		ForwardGuard, // å‰æ–¹ã‚¬ãƒ¼ãƒ‰
+		BackwardGuard // å¾Œæ–¹ã‚¬ãƒ¼ãƒ‰
 	};
 
-	// ƒXƒLƒ‹‚ÌƒA[ƒ}[î•ñ‚ğ’è‹`‚·‚é\‘¢‘Ì
+	// ã‚¹ã‚­ãƒ«ã®ã‚¢ãƒ¼ãƒãƒ¼æƒ…å ±ã‚’å®šç¾©ã™ã‚‹æ§‹é€ ä½“
 	struct SkillDefenseDef
 	{
-		SkillSuperArmorType superArmorType = SkillSuperArmorType::None; // ƒX[ƒp[ƒA[ƒ}[‚Ìí—Ş
-		SkillGuardType guardType = SkillGuardType::None; // ƒK[ƒh‚Ì—L–³
+		SkillSuperArmorType superArmorType = SkillSuperArmorType::None; // ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼ã®ç¨®é¡
+		SkillGuardType guardType = SkillGuardType::None; // ã‚¬ãƒ¼ãƒ‰ã®æœ‰ç„¡
 	};
 
 }
@@ -250,125 +250,125 @@ namespace Game::Combat::Skill::Data
 
 namespace Game::Combat::Skill::Data
 {
-	// -------------------------ƒqƒbƒgŒø‰Ê(‘¦(ƒ_ƒ[ƒWEƒXƒ^ƒ“‚È‚Ç))-------------------------
-	// ƒqƒbƒg‚ÌŒø‰Ê
+	// -------------------------ãƒ’ãƒƒãƒˆåŠ¹æœ(å³æ™‚(ãƒ€ãƒ¡ãƒ¼ã‚¸ãƒ»ã‚¹ã‚¿ãƒ³ãªã©))-------------------------
+	// ãƒ’ãƒƒãƒˆæ™‚ã®åŠ¹æœ
 	enum class OnHitEffectType
 	{
-		None, // Œø‰Ê‚È‚µ
-		Stun, // ƒXƒ^ƒ“
-		Knockback, // ƒmƒbƒNƒoƒbƒN
-		Knockdown, // ƒmƒbƒNƒ_ƒEƒ“
+		None, // åŠ¹æœãªã—
+		Stun, // ã‚¹ã‚¿ãƒ³
+		Knockback, // ãƒãƒƒã‚¯ãƒãƒƒã‚¯
+		Knockdown, // ãƒãƒƒã‚¯ãƒ€ã‚¦ãƒ³
 	};
 
-	// -------------------------ƒ_ƒ[ƒW-------------------------
+	// -------------------------ãƒ€ãƒ¡ãƒ¼ã‚¸-------------------------
 	enum class SkillDamageType
 	{
-		None, // ƒ_ƒ[ƒW‚È‚µ
-		Physical, // •¨—ƒ_ƒ[ƒW
-		Magical, // –‚–@ƒ_ƒ[ƒW
-		Pure // ƒsƒ…ƒAƒ_ƒ[ƒWi–hŒä–³‹j
+		None, // ãƒ€ãƒ¡ãƒ¼ã‚¸ãªã—
+		Physical, // ç‰©ç†ãƒ€ãƒ¡ãƒ¼ã‚¸
+		Magical, // é­”æ³•ãƒ€ãƒ¡ãƒ¼ã‚¸
+		Pure // ãƒ”ãƒ¥ã‚¢ãƒ€ãƒ¡ãƒ¼ã‚¸ï¼ˆé˜²å¾¡ç„¡è¦–ï¼‰
 	};
 
 	struct SkillDamageDef
 	{
-		OnHitEffectType onHitEffect = OnHitEffectType::None; // ƒqƒbƒg‚ÌŒø‰ÊiƒXƒ^ƒ“AƒmƒbƒNƒoƒbƒN‚È‚Çj
-		SkillDamageType damageType = SkillDamageType::None; // ƒ_ƒ[ƒWƒ^ƒCƒvi•¨—A–‚–@Aƒsƒ…ƒA‚È‚Çj
-		float baseDamage = 0.0f; // Šî–{ƒ_ƒ[ƒW
-		float scalingFactor = 1.0f; // ƒXƒP[ƒŠƒ“ƒOŒW”iƒŒƒxƒ‹‚âƒXƒe[ƒ^ƒX‚É‰‚¶‚Ä•Ï‰»‚·‚éj
-		bool isPercentBased = false; // ƒp[ƒZƒ“ƒgƒx[ƒX‚Ìƒ_ƒ[ƒW‚©‚Ç‚¤‚©i—áFHP‚ÌŠ„‡ƒ_ƒ[ƒW‚È‚Çj
+		OnHitEffectType onHitEffect = OnHitEffectType::None; // ãƒ’ãƒƒãƒˆæ™‚ã®åŠ¹æœï¼ˆã‚¹ã‚¿ãƒ³ã€ãƒãƒƒã‚¯ãƒãƒƒã‚¯ãªã©ï¼‰
+		SkillDamageType damageType = SkillDamageType::None; // ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¿ã‚¤ãƒ—ï¼ˆç‰©ç†ã€é­”æ³•ã€ãƒ”ãƒ¥ã‚¢ãªã©ï¼‰
+		float baseDamage = 0.0f; // åŸºæœ¬ãƒ€ãƒ¡ãƒ¼ã‚¸
+		float scalingFactor = 1.0f; // ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°ä¿‚æ•°ï¼ˆãƒ¬ãƒ™ãƒ«ã‚„ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã«å¿œã˜ã¦å¤‰åŒ–ã™ã‚‹ï¼‰
+		bool isPercentBased = false; // ãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆãƒ™ãƒ¼ã‚¹ã®ãƒ€ãƒ¡ãƒ¼ã‚¸ã‹ã©ã†ã‹ï¼ˆä¾‹ï¼šHPã®å‰²åˆãƒ€ãƒ¡ãƒ¼ã‚¸ãªã©ï¼‰
 	};
 
 }
 
 namespace Game::Combat::Skill::Data
 {
-	// ƒXƒLƒ‹ƒqƒbƒgŒp‘±Œø‰Ê
+	// ã‚¹ã‚­ãƒ«ãƒ’ãƒƒãƒˆç¶™ç¶šåŠ¹æœ
 
 	enum class EffectApplicationTarget
 	{
-		Caster,// ƒXƒLƒ‹‚ğg—p‚µ‚½ƒLƒƒƒXƒ^[©g
-		Target,// ƒXƒLƒ‹‚Ì‘ÎÛi“G‚â–¡•ûj
-		AreaOfEffect, // ”ÍˆÍ“à‚Ì‘S‚Ä‚ÌƒGƒ“ƒeƒBƒeƒB
-		AreaAroundHitPoint,	// ƒqƒbƒgƒ|ƒCƒ“ƒgü•Ó‚ÌƒGƒ“ƒeƒBƒeƒBi”ÍˆÍUŒ‚‚È‚Çj
+		Caster,// ã‚¹ã‚­ãƒ«ã‚’ä½¿ç”¨ã—ãŸã‚­ãƒ£ã‚¹ã‚¿ãƒ¼è‡ªèº«
+		Target,// ã‚¹ã‚­ãƒ«ã®å¯¾è±¡ï¼ˆæ•µã‚„å‘³æ–¹ï¼‰
+		AreaOfEffect, // ç¯„å›²å†…ã®å…¨ã¦ã®ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£
+		AreaAroundHitPoint,	// ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆå‘¨è¾ºã®ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ï¼ˆç¯„å›²æ”»æ’ƒãªã©ï¼‰
 	};
 
-	// -------------------------ƒoƒtŒn-------------------------
+	// -------------------------ãƒãƒ•ç³»-------------------------
 	enum class SkillStatusBuffType
 	{
-		None, // ƒoƒt‚È‚µ
-		AttackUp, // UŒ‚—ÍƒAƒbƒv
-		DefenseUp, // –hŒä—ÍƒAƒbƒv
-		ManaRegen, // ƒ}ƒi‰ñ•œ‘¬“xƒAƒbƒv
-		StaminaRegen, // ƒXƒ^ƒ~ƒi‰ñ•œ‘¬“xƒAƒbƒv
-		CriticalHitChanceUp, // ƒNƒŠƒeƒBƒJƒ‹ƒqƒbƒg—¦ƒAƒbƒv
-		MovementSpeedUp, // ˆÚ“®‘¬“xƒAƒbƒv
+		None, // ãƒãƒ•ãªã—
+		AttackUp, // æ”»æ’ƒåŠ›ã‚¢ãƒƒãƒ—
+		DefenseUp, // é˜²å¾¡åŠ›ã‚¢ãƒƒãƒ—
+		ManaRegen, // ãƒãƒŠå›å¾©é€Ÿåº¦ã‚¢ãƒƒãƒ—
+		StaminaRegen, // ã‚¹ã‚¿ãƒŸãƒŠå›å¾©é€Ÿåº¦ã‚¢ãƒƒãƒ—
+		CriticalHitChanceUp, // ã‚¯ãƒªãƒ†ã‚£ã‚«ãƒ«ãƒ’ãƒƒãƒˆç‡ã‚¢ãƒƒãƒ—
+		MovementSpeedUp, // ç§»å‹•é€Ÿåº¦ã‚¢ãƒƒãƒ—
 	};
 
-	// ƒoƒtŒn‚ÌƒXƒe[ƒ^ƒX•ÏX‚Ìƒ^[ƒQƒbƒg‚ğ’è‹`‚·‚é—ñ‹“Œ^
+	// ãƒãƒ•ç³»ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å¤‰æ›´ã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’å®šç¾©ã™ã‚‹åˆ—æŒ™å‹
 	enum class StatusEffectTargetStat
 	{
-		None, // ‘ÎÛ‚È‚µ
-		Health, // ƒwƒ‹ƒX
-		Mana, // ƒ}ƒi
-		Stamina, // ƒXƒ^ƒ~ƒi
-		AttackPower, // UŒ‚—Í
-		DefensePower, // –hŒä—Í
-		CriticalHitChance, // ƒNƒŠƒeƒBƒJƒ‹ƒqƒbƒg—¦
+		None, // å¯¾è±¡ãªã—
+		Health, // ãƒ˜ãƒ«ã‚¹
+		Mana, // ãƒãƒŠ
+		Stamina, // ã‚¹ã‚¿ãƒŸãƒŠ
+		AttackPower, // æ”»æ’ƒåŠ›
+		DefensePower, // é˜²å¾¡åŠ›
+		CriticalHitChance, // ã‚¯ãƒªãƒ†ã‚£ã‚«ãƒ«ãƒ’ãƒƒãƒˆç‡
 
-		MovementSpeed, // ˆÚ“®‘¬“x
+		MovementSpeed, // ç§»å‹•é€Ÿåº¦
 	};
 
-	// ƒXƒLƒ‹‚Ìƒoƒt‚Ìd—l‚ğ’è‹`‚·‚é\‘¢‘Ì
+	// ã‚¹ã‚­ãƒ«ã®ãƒãƒ•ã®ä»•æ§˜ã‚’å®šç¾©ã™ã‚‹æ§‹é€ ä½“
 	struct BuffModifierDef
 	{
-		SkillStatusBuffType buffType = SkillStatusBuffType::None; // ƒoƒt‚Ìí—ŞiUŒ‚—ÍƒAƒbƒvA–hŒä—ÍƒAƒbƒv‚È‚Çj
-		StatusEffectTargetStat targetStat = StatusEffectTargetStat::None; // ‘ÎÛ‚ÌƒXƒe[ƒ^ƒX
-		float flatBonus = 0.0f; // ƒtƒ‰ƒbƒg‚Èƒ{[ƒiƒXi—áF+10j
-		float percentBonus = 0.0f; // ƒp[ƒZƒ“ƒgƒx[ƒX‚Ìƒ{[ƒiƒXi—áF+20%j
-		bool isMultiplicative = false; // æZƒ{[ƒiƒX‚©‚Ç‚¤‚©i—áFUŒ‚—ÍƒAƒbƒv‚ªæZ‚³‚ê‚é‚©‚Ç‚¤‚©j
-		float duration = 10.0f; // ƒoƒt‚Ì‘±ŠÔi•bj
+		SkillStatusBuffType buffType = SkillStatusBuffType::None; // ãƒãƒ•ã®ç¨®é¡ï¼ˆæ”»æ’ƒåŠ›ã‚¢ãƒƒãƒ—ã€é˜²å¾¡åŠ›ã‚¢ãƒƒãƒ—ãªã©ï¼‰
+		StatusEffectTargetStat targetStat = StatusEffectTargetStat::None; // å¯¾è±¡ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+		float flatBonus = 0.0f; // ãƒ•ãƒ©ãƒƒãƒˆãªãƒœãƒ¼ãƒŠã‚¹ï¼ˆä¾‹ï¼š+10ï¼‰
+		float percentBonus = 0.0f; // ãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆãƒ™ãƒ¼ã‚¹ã®ãƒœãƒ¼ãƒŠã‚¹ï¼ˆä¾‹ï¼š+20%ï¼‰
+		bool isMultiplicative = false; // ä¹—ç®—ãƒœãƒ¼ãƒŠã‚¹ã‹ã©ã†ã‹ï¼ˆä¾‹ï¼šæ”»æ’ƒåŠ›ã‚¢ãƒƒãƒ—ãŒä¹—ç®—ã•ã‚Œã‚‹ã‹ã©ã†ã‹ï¼‰
+		float duration = 10.0f; // ãƒãƒ•ã®æŒç¶šæ™‚é–“ï¼ˆç§’ï¼‰
 	};
 
 	struct BuffEffectDef
 	{
-		std::string buffName; // ƒoƒt‚Ì–¼‘O
-		std::vector<BuffModifierDef> modifiers; // ƒoƒt‚ÌƒXƒe[ƒ^ƒX•ÏX‚ÌƒŠƒXƒg
-		EffectApplicationTarget applyTo = EffectApplicationTarget::Caster; // Œø‰Ê‚ğ“K—p‚·‚é‘ÎÛiƒLƒƒƒXƒ^[Aƒ^[ƒQƒbƒgA”ÍˆÍ‚È‚Çj
+		std::string buffName; // ãƒãƒ•ã®åå‰
+		std::vector<BuffModifierDef> modifiers; // ãƒãƒ•ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å¤‰æ›´ã®ãƒªã‚¹ãƒˆ
+		EffectApplicationTarget applyTo = EffectApplicationTarget::Caster; // åŠ¹æœã‚’é©ç”¨ã™ã‚‹å¯¾è±¡ï¼ˆã‚­ãƒ£ã‚¹ã‚¿ãƒ¼ã€ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã€ç¯„å›²ãªã©ï¼‰
 	};
 
 
 
-	// -------------------------ƒfƒoƒtŒn-------------------------
+	// -------------------------ãƒ‡ãƒãƒ•ç³»-------------------------
 
-	// •t—^‚·‚éó‘ÔˆÙí‚Ìí—Ş
+	// ä»˜ä¸ã™ã‚‹çŠ¶æ…‹ç•°å¸¸ã®ç¨®é¡
 	enum class SkillStatusDebuffType
 	{
-		None, // ó‘ÔˆÙí‚È‚µ
-		Poison, // “Å
-		Burn, // ‰Î
-		Frost, // “€Œ‹
-		Silence, // ’¾–Ù
-		Slow, // ƒXƒ[
-		DefenseDown, // –hŒäƒ_ƒEƒ“
+		None, // çŠ¶æ…‹ç•°å¸¸ãªã—
+		Poison, // æ¯’
+		Burn, // ç«å‚·
+		Frost, // å‡çµ
+		Silence, // æ²ˆé»™
+		Slow, // ã‚¹ãƒ­ãƒ¼
+		DefenseDown, // é˜²å¾¡ãƒ€ã‚¦ãƒ³
 	};
 
-	// ƒfƒoƒtŒn‚ÌƒXƒe[ƒ^ƒX•ÏX‚Ìƒ^[ƒQƒbƒg‚ğ’è‹`‚·‚é—ñ‹“Œ^
+	// ãƒ‡ãƒãƒ•ç³»ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å¤‰æ›´ã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’å®šç¾©ã™ã‚‹åˆ—æŒ™å‹
 	struct DebuffModifierDef
 	{
-		SkillStatusDebuffType debuffType = SkillStatusDebuffType::None; // ƒfƒoƒt‚Ìí—Şi“ÅA‰ÎA“€Œ‹‚È‚Çj
-		StatusEffectTargetStat targetStat = StatusEffectTargetStat::None; // ‘ÎÛ‚ÌƒXƒe[ƒ^ƒX
-		float flatPenalty = 0.0f; // ƒtƒ‰ƒbƒg‚Èƒyƒiƒ‹ƒeƒBi—áF-10j
-		float percentPenalty = 0.0f; // ƒp[ƒZƒ“ƒgƒx[ƒX‚Ìƒyƒiƒ‹ƒeƒBi—áF-20%j
-		bool isMultiplicative = false; // æZƒyƒiƒ‹ƒeƒB‚©‚Ç‚¤‚©i—áF–hŒä—Íƒ_ƒEƒ“‚ªæZ‚³‚ê‚é‚©‚Ç‚¤‚©j
-		float duration = 10.0f; // ƒfƒoƒt‚Ì‘±ŠÔi•bj
+		SkillStatusDebuffType debuffType = SkillStatusDebuffType::None; // ãƒ‡ãƒãƒ•ã®ç¨®é¡ï¼ˆæ¯’ã€ç«å‚·ã€å‡çµãªã©ï¼‰
+		StatusEffectTargetStat targetStat = StatusEffectTargetStat::None; // å¯¾è±¡ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+		float flatPenalty = 0.0f; // ãƒ•ãƒ©ãƒƒãƒˆãªãƒšãƒŠãƒ«ãƒ†ã‚£ï¼ˆä¾‹ï¼š-10ï¼‰
+		float percentPenalty = 0.0f; // ãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆãƒ™ãƒ¼ã‚¹ã®ãƒšãƒŠãƒ«ãƒ†ã‚£ï¼ˆä¾‹ï¼š-20%ï¼‰
+		bool isMultiplicative = false; // ä¹—ç®—ãƒšãƒŠãƒ«ãƒ†ã‚£ã‹ã©ã†ã‹ï¼ˆä¾‹ï¼šé˜²å¾¡åŠ›ãƒ€ã‚¦ãƒ³ãŒä¹—ç®—ã•ã‚Œã‚‹ã‹ã©ã†ã‹ï¼‰
+		float duration = 10.0f; // ãƒ‡ãƒãƒ•ã®æŒç¶šæ™‚é–“ï¼ˆç§’ï¼‰
 	};
 
-	// ƒXƒLƒ‹‚Ìƒfƒoƒt‚Ìd—l‚ğ’è‹`‚·‚é\‘¢‘Ì
+	// ã‚¹ã‚­ãƒ«ã®ãƒ‡ãƒãƒ•ã®ä»•æ§˜ã‚’å®šç¾©ã™ã‚‹æ§‹é€ ä½“
 	struct DebuffEffectDef
 	{
-		std::string debuffName; // ƒfƒoƒt‚Ì–¼‘O
-		std::vector<DebuffModifierDef> modifiers; // ƒfƒoƒt‚ÌƒXƒe[ƒ^ƒX•ÏX‚ÌƒŠƒXƒg
-		EffectApplicationTarget applyTo = EffectApplicationTarget::Caster; // Œø‰Ê‚ğ“K—p‚·‚é‘ÎÛiƒLƒƒƒXƒ^[Aƒ^[ƒQƒbƒgA”ÍˆÍ‚È‚Çj
+		std::string debuffName; // ãƒ‡ãƒãƒ•ã®åå‰
+		std::vector<DebuffModifierDef> modifiers; // ãƒ‡ãƒãƒ•ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å¤‰æ›´ã®ãƒªã‚¹ãƒˆ
+		EffectApplicationTarget applyTo = EffectApplicationTarget::Caster; // åŠ¹æœã‚’é©ç”¨ã™ã‚‹å¯¾è±¡ï¼ˆã‚­ãƒ£ã‚¹ã‚¿ãƒ¼ã€ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã€ç¯„å›²ãªã©ï¼‰
 	};
 }
 
@@ -376,126 +376,126 @@ namespace Game::Combat::Skill::Data
 namespace Game::Combat::Skill::Data
 {
 
-	// -------------------------ƒŠƒ\[ƒX-------------------------
+	// -------------------------ãƒªã‚½ãƒ¼ã‚¹-------------------------
 
-	// ƒXƒLƒ‹‚Ìg—pƒRƒXƒg‚ğ’è‹`‚·‚é\‘¢‘Ì
+	// ã‚¹ã‚­ãƒ«ã®ä½¿ç”¨ã‚³ã‚¹ãƒˆã‚’å®šç¾©ã™ã‚‹æ§‹é€ ä½“
 	struct SkillCostDef
 	{
-		float manaCost = 0.0f; // ƒ}ƒiƒRƒXƒg
-		float staminaCost = 0.0f; // ƒXƒ^ƒ~ƒiƒRƒXƒg
-		float healthCost = 0.0f; // ƒwƒ‹ƒXƒRƒXƒg
+		float manaCost = 0.0f; // ãƒãƒŠã‚³ã‚¹ãƒˆ
+		float staminaCost = 0.0f; // ã‚¹ã‚¿ãƒŸãƒŠã‚³ã‚¹ãƒˆ
+		float healthCost = 0.0f; // ãƒ˜ãƒ«ã‚¹ã‚³ã‚¹ãƒˆ
 	};
 }
 
 namespace Game::Combat::Skill::Data
 {
-	// Fixme: ¢Š«•¨‚Í“Áê‚Èˆ—ƒtƒ[‚É‚È‚é‚Æv‚í‚ê‚é‚Ì‚ÅCÄl‚Ì—]’n‚ ‚èDƒXƒLƒ‹’è‹`‚ª‘å‹K–Í‚É‚È‚é
+	// Fixme: å¬å–šç‰©ã¯ç‰¹æ®Šãªå‡¦ç†ãƒ•ãƒ­ãƒ¼ã«ãªã‚‹ã¨æ€ã‚ã‚Œã‚‹ã®ã§ï¼Œå†è€ƒã®ä½™åœ°ã‚ã‚Šï¼ã‚¹ã‚­ãƒ«å®šç¾©ãŒå¤§è¦æ¨¡ã«ãªã‚‹
 	enum class SummonFollowType
 	{
-		Fixed, // ŒÅ’èˆÊ’u‚É—¯‚Ü‚é
-		Follow, // ƒvƒŒƒCƒ„[‚ğ’Ç]‚·‚é
-		Guard, // w’èˆÊ’u‚ğƒK[ƒh‚·‚é
-		Patrol // w’èƒpƒgƒ[ƒ‹ƒ‹[ƒg‚ğ„‰ñ‚·‚é
+		Fixed, // å›ºå®šä½ç½®ã«ç•™ã¾ã‚‹
+		Follow, // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è¿½å¾“ã™ã‚‹
+		Guard, // æŒ‡å®šä½ç½®ã‚’ã‚¬ãƒ¼ãƒ‰ã™ã‚‹
+		Patrol // æŒ‡å®šãƒ‘ãƒˆãƒ­ãƒ¼ãƒ«ãƒ«ãƒ¼ãƒˆã‚’å·¡å›ã™ã‚‹
 	};
 
 	struct SkillSummonSpecDef
 	{
-		std::string summonEntityPrototypeId; // ¢Š«‚·‚éƒGƒ“ƒeƒBƒeƒB‚Ìƒvƒƒgƒ^ƒCƒvID
-		float summonDuration = 10.0f; // ¢Š«•¨‚Ì‘±ŠÔi•bj
-		SummonFollowType followType = SummonFollowType::Fixed; // ¢Š«•¨‚ÌƒtƒHƒ[ƒ^ƒCƒv
+		std::string summonEntityPrototypeId; // å¬å–šã™ã‚‹ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ã®ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—ID
+		float summonDuration = 10.0f; // å¬å–šç‰©ã®æŒç¶šæ™‚é–“ï¼ˆç§’ï¼‰
+		SummonFollowType followType = SummonFollowType::Fixed; // å¬å–šç‰©ã®ãƒ•ã‚©ãƒ­ãƒ¼ã‚¿ã‚¤ãƒ—
 	};
 
 }
 
-// ƒXƒLƒ‹î•ñ’è‹`
+// ã‚¹ã‚­ãƒ«æƒ…å ±å®šç¾©
 namespace Game::Combat::Skill::Data
 {
-	// ƒXƒLƒ‹’è‹`\‘¢‘Ì
+	// ã‚¹ã‚­ãƒ«å®šç¾©æ§‹é€ ä½“
 	struct SkillDefinition
 	{
-		int id = 0; // ˆêˆÓ‚ÌID
-		std::string name; // –¼‘O
-		SkillCategory category = SkillCategory::Melee; // ƒXƒLƒ‹‚ÌƒJƒeƒSƒŠ
+		int id = 0; // ä¸€æ„ã®ID
+		std::string name; // åå‰
+		SkillCategory category = SkillCategory::Melee; // ã‚¹ã‚­ãƒ«ã®ã‚«ãƒ†ã‚´ãƒª
 
-		SkillExecutionModelDef execution; // ƒXƒLƒ‹‚ÌÀsƒ‚ƒfƒ‹
+		SkillExecutionModelDef execution; // ã‚¹ã‚­ãƒ«ã®å®Ÿè¡Œãƒ¢ãƒ‡ãƒ«
 
-		// ƒXƒLƒ‹UŒ‚d—l(ƒXƒLƒ‹Œ`óE‹OÕ)
-		SkillAttackSpecDef attackSpec; // ƒXƒLƒ‹‚ÌUŒ‚d—l
+		// ã‚¹ã‚­ãƒ«æ”»æ’ƒä»•æ§˜(ã‚¹ã‚­ãƒ«å½¢çŠ¶ãƒ»è»Œè·¡)
+		SkillAttackSpecDef attackSpec; // ã‚¹ã‚­ãƒ«ã®æ”»æ’ƒä»•æ§˜
 
-		// ƒXƒLƒ‹‚Ì–hŒäd—l(ƒX[ƒp[ƒA[ƒ}[EƒK[ƒh)
-		SkillDefenseDef defense; // ƒXƒLƒ‹‚Ì–hŒäd—l
+		// ã‚¹ã‚­ãƒ«ã®é˜²å¾¡ä»•æ§˜(ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼ãƒ»ã‚¬ãƒ¼ãƒ‰)
+		SkillDefenseDef defense; // ã‚¹ã‚­ãƒ«ã®é˜²å¾¡ä»•æ§˜
 
-		// ’N‚ÉŒø‰Ê‚ğ—^‚¦‚é‚©(Õ“Ëƒ}ƒXƒNE‘ÎÛƒtƒBƒ‹ƒ^[)iUŒ‚F“GCƒoƒtF–¡•ûj
-		SkillEffectTargetDef effectTarget; // ƒXƒLƒ‹‚ÌŒø‰Ê‘ÎÛ’è‹`
+		// èª°ã«åŠ¹æœã‚’ä¸ãˆã‚‹ã‹(è¡çªãƒã‚¹ã‚¯ãƒ»å¯¾è±¡ãƒ•ã‚£ãƒ«ã‚¿ãƒ¼)ï¼ˆæ”»æ’ƒï¼šæ•µï¼Œãƒãƒ•ï¼šå‘³æ–¹ï¼‰
+		SkillEffectTargetDef effectTarget; // ã‚¹ã‚­ãƒ«ã®åŠ¹æœå¯¾è±¡å®šç¾©
 
-		// ƒŠƒ\[ƒXƒRƒXƒg
-		SkillCostDef cost; // ƒXƒLƒ‹‚Ìg—pƒRƒXƒg
+		// ãƒªã‚½ãƒ¼ã‚¹ã‚³ã‚¹ãƒˆ
+		SkillCostDef cost; // ã‚¹ã‚­ãƒ«ã®ä½¿ç”¨ã‚³ã‚¹ãƒˆ
 
-		// ƒqƒbƒg‘¦Œø‰Ê(ƒ_ƒ[ƒWECC)
-		SkillDamageDef damage; // ƒXƒLƒ‹‚Ìƒ_ƒ[ƒWî•ñ
+		// ãƒ’ãƒƒãƒˆæ™‚å³æ™‚åŠ¹æœ(ãƒ€ãƒ¡ãƒ¼ã‚¸ãƒ»CC)
+		SkillDamageDef damage; // ã‚¹ã‚­ãƒ«ã®ãƒ€ãƒ¡ãƒ¼ã‚¸æƒ…å ±
 
-		// ƒoƒtEƒfƒoƒt
-		BuffEffectDef buffEffect; // ƒXƒLƒ‹‚ÌƒoƒtŒø‰Ê
-		DebuffEffectDef debuffEffect; // ƒXƒLƒ‹‚ÌƒfƒoƒtŒø‰Ê
+		// ãƒãƒ•ãƒ»ãƒ‡ãƒãƒ•
+		BuffEffectDef buffEffect; // ã‚¹ã‚­ãƒ«ã®ãƒãƒ•åŠ¹æœ
+		DebuffEffectDef debuffEffect; // ã‚¹ã‚­ãƒ«ã®ãƒ‡ãƒãƒ•åŠ¹æœ
 
 		// std::optional<SkillSummonSpecDef> summonSpec;
 
-		float cooldown = 1.0f; // ƒXƒLƒ‹‚ÌÄg—p‘Ò‹@ŠÔ
+		float cooldown = 1.0f; // ã‚¹ã‚­ãƒ«ã®å†ä½¿ç”¨å¾…æ©Ÿæ™‚é–“
 	};
 
-	//// ƒXƒLƒ‹î•ñ’è‹`
+	//// ã‚¹ã‚­ãƒ«æƒ…å ±å®šç¾©
 	//struct SkillDefinition
 	//{
-	//	int id = 0;// ˆêˆÓ‚ÌID
-	//	std::string name;// –¼‘O
+	//	int id = 0;// ä¸€æ„ã®ID
+	//	std::string name;// åå‰
 
-	//	float castTime = 0.3f;// ƒLƒƒƒXƒgƒ^ƒCƒ€(”­¶‚Ü‚Å‚ÌŠÔ)
-	//	float recoveryTime = 0.4f;// ƒXƒLƒ‹
-	//	float duration = 1.0f;// ƒXƒLƒ‹–{‘Ì‚Ì‘±ŠÔ	
-	//	float cooldown = 1.0f;// ƒXƒLƒ‹‚ÌÄg—p‘Ò‹@ŠÔ
+	//	float castTime = 0.3f;// ã‚­ãƒ£ã‚¹ãƒˆã‚¿ã‚¤ãƒ (ç™ºç”Ÿã¾ã§ã®æ™‚é–“)
+	//	float recoveryTime = 0.4f;// ã‚¹ã‚­ãƒ«
+	//	float duration = 1.0f;// ã‚¹ã‚­ãƒ«æœ¬ä½“ã®æŒç¶šæ™‚é–“	
+	//	float cooldown = 1.0f;// ã‚¹ã‚­ãƒ«ã®å†ä½¿ç”¨å¾…æ©Ÿæ™‚é–“
 
-	//	// ”pŠü—\’è‚Ìƒtƒ‰ƒO
+	//	// å»ƒæ£„äºˆå®šã®ãƒ•ãƒ©ã‚°
 	//	bool canBeInterruptedDuringCast = true;
 	//	bool canBeInterruptedDuringActive = false;
 	//	bool canBeInterruptedDuringRecovery = true;
 
-	//	gNsSkillComp::Attack2DShape shape;// Œ`ó’è‹`
+	//	Game::Combat::Skill::Component::Attack2DShape shape;// å½¢çŠ¶å®šç¾©
 
-	//	// ‹OÕƒf[ƒ^
-	//	TrajectoryType trajectoryType = gNsSkillData::TrajectoryType::None;// ‹OÕƒ^ƒCƒv
-	//	SkillTrajectory::TrajectoryParamsVariant trajectoryParams = gNsSkillData::SkillTrajectory::StaticTrajectory{};// ‹OÕƒpƒ‰ƒ[ƒ^
+	//	// è»Œè·¡ãƒ‡ãƒ¼ã‚¿
+	//	TrajectoryType trajectoryType = Game::Combat::Skill::Data::TrajectoryType::None;// è»Œè·¡ã‚¿ã‚¤ãƒ—
+	//	SkillTrajectory::TrajectoryParamsVariant trajectoryParams = Game::Combat::Skill::Data::SkillTrajectory::StaticTrajectory{};// è»Œè·¡ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 
-	//	// ƒXƒLƒ‹‚Ì“r’†ƒLƒƒƒ“ƒZƒ‹‰Â”Û
-	//	SkillCancelPhase cancelBehavior = SkillCancelPhase::None; // ƒLƒƒƒ“ƒZƒ‹‰Â”\‚ÈƒtƒF[ƒY
+	//	// ã‚¹ã‚­ãƒ«ã®é€”ä¸­ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯å¦
+	//	SkillCancelPhase cancelBehavior = SkillCancelPhase::None; // ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½ãªãƒ•ã‚§ãƒ¼ã‚º
 
-	//	std::vector<int> cancelableSkillIds = {}; // ‚±‚ÌƒXƒLƒ‹’†‚ÉƒLƒƒƒ“ƒZƒ‹‚µ‚Ä”­“®‰Â”\‚ÈƒXƒLƒ‹ID
+	//	std::vector<int> cancelableSkillIds = {}; // ã“ã®ã‚¹ã‚­ãƒ«ä¸­ã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã—ã¦ç™ºå‹•å¯èƒ½ãªã‚¹ã‚­ãƒ«ID
 
-	//	// ƒXƒLƒ‹‚ÌƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì“¯Šú^”ñ“¯Šú
+	//	// ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®åŒæœŸï¼éåŒæœŸ
 	//	SkillCastSyncType castSyncType = SkillCastSyncType::Synchronous;
 
-	//	// ƒX[ƒp[ƒA[ƒ}[‚Ìí—Ş
+	//	// ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼ã®ç¨®é¡
 	//	SkillSuperArmorType superArmorType = SkillSuperArmorType::None;
 
-	//	// ƒK[ƒh‚Ì—L–³
+	//	// ã‚¬ãƒ¼ãƒ‰ã®æœ‰ç„¡
 	//	SkillGuardType guardType = SkillGuardType::None;
 
-	//	// ƒqƒbƒg‚ÌŒø‰Ê
+	//	// ãƒ’ãƒƒãƒˆæ™‚ã®åŠ¹æœ
 	//	OnHitEffectType onHitEffect = OnHitEffectType::None;
 
-	//	// •t—^‚·‚éó‘ÔˆÙí‚Ìí—Ş
+	//	// ä»˜ä¸ã™ã‚‹çŠ¶æ…‹ç•°å¸¸ã®ç¨®é¡
 	//	SkillStatusEffectType statusEffectType = SkillStatusEffectType::None;
 
-	//	// ƒXƒLƒ‹ƒRƒXƒg
-	//	float manaCost = 0.0f; // ƒ}ƒiƒRƒXƒg
-	//	float staminaCost = 0.0f; // ƒXƒ^ƒ~ƒiƒRƒXƒg
-	//	float healthCost = 0.0f; // ƒwƒ‹ƒXƒRƒXƒg
+	//	// ã‚¹ã‚­ãƒ«ã‚³ã‚¹ãƒˆ
+	//	float manaCost = 0.0f; // ãƒãƒŠã‚³ã‚¹ãƒˆ
+	//	float staminaCost = 0.0f; // ã‚¹ã‚¿ãƒŸãƒŠã‚³ã‚¹ãƒˆ
+	//	float healthCost = 0.0f; // ãƒ˜ãƒ«ã‚¹ã‚³ã‚¹ãƒˆ
 
-	//	// ‰r¥’†‚ÌŒü‚«ŒÅ’è
-	//	bool lockFacingDirection = false; // ‰r¥’†‚ÉŒü‚«‚ğŒÅ’è‚·‚é‚©‚Ç‚¤‚©
+	//	// è© å”±ä¸­ã®å‘ãå›ºå®š
+	//	bool lockFacingDirection = false; // è© å”±ä¸­ã«å‘ãã‚’å›ºå®šã™ã‚‹ã‹ã©ã†ã‹
 
-	//	// ƒ`ƒƒ[ƒW®ƒXƒLƒ‹
-	//	bool isChargeSkill = false; // ƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚©‚Ç‚¤‚©
-	//	float chargeTime = 0.0f; // ƒ`ƒƒ[ƒWŠÔiƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚Ìê‡j
+	//	// ãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«
+	//	bool isChargeSkill = false; // ãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã‹ã©ã†ã‹
+	//	float chargeTime = 0.0f; // ãƒãƒ£ãƒ¼ã‚¸æ™‚é–“ï¼ˆãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã®å ´åˆï¼‰
 	//};
 }
 

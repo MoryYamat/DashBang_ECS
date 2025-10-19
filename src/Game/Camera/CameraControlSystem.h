@@ -1,4 +1,4 @@
-// update transformcomponent -> stateless
+﻿// update transformcomponent -> stateless
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"
@@ -9,12 +9,10 @@
 
 #include "Game/Input/InputState.h"
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
 
 namespace Game::Camera::Input
 {
-	void UpdateCamera(eNsECS::EntityMgr& ecs, gNsInput::InputState& input, float deltaTime);
+	void UpdateCamera(Engine::ECS::EntityMgr& ecs, Game::Input::InputState& input, float deltaTime);
 
-	void updateCameraVector(eNsCamComp::CameraComponent& cameraComp);
+	void updateCameraVector(Engine::ECS::Component::Camera::CameraComponent& cameraComp);
 }

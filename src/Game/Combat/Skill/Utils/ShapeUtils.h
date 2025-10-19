@@ -1,5 +1,5 @@
-// Functions that create shape information in the world from local shape information and TransformComponent
-// Œ`óƒ[ƒJƒ‹î•ñ‚ÆTransformComponent‚©‚çƒ[ƒ‹ƒhã‚Å‚ÌŒ`óî•ñ‚ğì¬‚·‚éŠÖ”ŒQ
+ï»¿// Functions that create shape information in the world from local shape information and TransformComponent
+// å½¢çŠ¶ãƒ­ãƒ¼ã‚«ãƒ«æƒ…å ±ã¨TransformComponentã‹ã‚‰ãƒ¯ãƒ¼ãƒ«ãƒ‰ä¸Šã§ã®å½¢çŠ¶æƒ…å ±ã‚’ä½œæˆã™ã‚‹é–¢æ•°ç¾¤
 
 
 #pragma once
@@ -10,20 +10,20 @@
 
 #include <GLM/glm.hpp>
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common//GameNamespaceDecl.h"
+
+
 
 namespace Game::Combat::Skill::Utils
 {
 	// A function that calculates the world shape using local 2D shape information and world transformation information.
-	// ƒ[ƒJƒ‹2DŒ`óî•ñ‚Æƒ[ƒ‹ƒh•ÏŠ·î•ñ‚ğ—p‚¢‚ÄCƒ[ƒ‹ƒhŒ`ó‚ğŒvZ‚·‚éŠÖ”
-	gNsSkillComp::Attack2DShape ComputeWorldShape(const gNsSkillComp::Attack2DShape& localShape, const eNsLogic2DComp::Transform2DComponent& transform);
+	// ãƒ­ãƒ¼ã‚«ãƒ«2Då½¢çŠ¶æƒ…å ±ã¨ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›æƒ…å ±ã‚’ç”¨ã„ã¦ï¼Œãƒ¯ãƒ¼ãƒ«ãƒ‰å½¢çŠ¶ã‚’è¨ˆç®—ã™ã‚‹é–¢æ•°
+	Game::Combat::Skill::Component::Attack2DShape ComputeWorldShape(const Game::Combat::Skill::Component::Attack2DShape& localShape, const Engine::ECS::Component::Logic2D::Transform2DComponent& transform);
 
-	gNsSkillComp::Circle2DAttack ComputeWorldCircle(const gNsSkillComp::Circle2DAttack& local, const eNsLogic2DComp::Transform2DComponent& transform);
+	Game::Combat::Skill::Component::Circle2DAttack ComputeWorldCircle(const Game::Combat::Skill::Component::Circle2DAttack& local, const Engine::ECS::Component::Logic2D::Transform2DComponent& transform);
 
-	gNsSkillComp::Sector2DAttack ComputeWolrdSector(const gNsSkillComp::Sector2DAttack& local, const eNsLogic2DComp::Transform2DComponent& transform);
+	Game::Combat::Skill::Component::Sector2DAttack ComputeWolrdSector(const Game::Combat::Skill::Component::Sector2DAttack& local, const Engine::ECS::Component::Logic2D::Transform2DComponent& transform);
 
-	gNsSkillComp::Rectangle2DAttack ComputeWorldRectangle(const gNsSkillComp::Rectangle2DAttack& local, const eNsLogic2DComp::Transform2DComponent& transform);
+	Game::Combat::Skill::Component::Rectangle2DAttack ComputeWorldRectangle(const Game::Combat::Skill::Component::Rectangle2DAttack& local, const Engine::ECS::Component::Logic2D::Transform2DComponent& transform);
 
 	//glm::vec2 GetWorldPosition();
 }

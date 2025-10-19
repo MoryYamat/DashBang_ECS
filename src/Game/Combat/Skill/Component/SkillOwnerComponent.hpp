@@ -2,7 +2,7 @@
 
 #include "Engine/ECS/Entity.h"
 
-#include "Common/EngineNamespaceDecl.h"
+
 #include <cstdint>
 
 namespace Game::Combat::Skill::Component

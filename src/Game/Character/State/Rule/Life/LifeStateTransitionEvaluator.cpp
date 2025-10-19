@@ -1,4 +1,4 @@
-#include "LifeStateTransitionEvaluator.hpp"
+ï»¿#include "LifeStateTransitionEvaluator.hpp"
  
 #include "Engine/Debug/DebugUtils.h"
 
@@ -6,9 +6,9 @@
 
 bool Game::Character::State::Life::AreConditionsMet
 (
-	const gNsCharaLifeState::CharacterLifeStateComponent& lifeComp,// Œ»İ–¢g—p current / previous ‚ğg‚¤ê‡‚Í•K—v
-	const gNsCharacterStats::CharacterStatsComponent& statsComp,
-	const std::vector<gNsCharaLifeState::TransitionCondition>& conditions
+	const Game::Character::State::Life::CharacterLifeStateComponent& lifeComp,// ç¾åœ¨æœªä½¿ç”¨ current / previous ã‚’ä½¿ã†å ´åˆã¯å¿…è¦
+	const Game::Character::Stats::CharacterStatsComponent& statsComp,
+	const std::vector<Game::Character::State::Life::TransitionCondition>& conditions
 )
 {
 	for (const auto& cond : conditions)
@@ -21,23 +21,23 @@ bool Game::Character::State::Life::AreConditionsMet
 
 bool Game::Character::State::Life::EvaluateCondition
 (
-	const gNsCharaLifeState::CharacterLifeStateComponent& lifeComp,// Œ»İ–¢g—p current / previous ‚ğg‚¤ê‡‚Í•K—v
-	const gNsCharacterStats::CharacterStatsComponent& statsComp,
-	const gNsCharaLifeState::TransitionCondition& condition
+	const Game::Character::State::Life::CharacterLifeStateComponent& lifeComp,// ç¾åœ¨æœªä½¿ç”¨ current / previous ã‚’ä½¿ã†å ´åˆã¯å¿…è¦
+	const Game::Character::Stats::CharacterStatsComponent& statsComp,
+	const Game::Character::State::Life::TransitionCondition& condition
 )
 {
 	// DEBUG_LOG("here");
 
-	// ‚±‚±‚Ìƒn[ƒhƒR[ƒh‚ÍÅ“K‰»‚Å‚«‚È‚¢‚©HFƒfƒBƒXƒpƒbƒ`ƒƒ‚ÌÀ‘•‚È‚Ç
-	// ‚±‚±‚Ìƒn[ƒhƒR[ƒh‚ÍÅ“K‰»‚Å‚«‚È‚¢‚©HFƒfƒBƒXƒpƒbƒ`ƒƒ‚ÌÀ‘•‚È‚Ç
-	// ‚±‚±‚Ìƒn[ƒhƒR[ƒh‚ÍÅ“K‰»‚Å‚«‚È‚¢‚©HFƒfƒBƒXƒpƒbƒ`ƒƒ‚ÌÀ‘•‚È‚Ç
+	// ã“ã“ã®ãƒãƒ¼ãƒ‰ã‚³ãƒ¼ãƒ‰ã¯æœ€é©åŒ–ã§ããªã„ã‹ï¼Ÿï¼šãƒ‡ã‚£ã‚¹ãƒ‘ãƒƒãƒãƒ£ã®å®Ÿè£…ãªã©
+	// ã“ã“ã®ãƒãƒ¼ãƒ‰ã‚³ãƒ¼ãƒ‰ã¯æœ€é©åŒ–ã§ããªã„ã‹ï¼Ÿï¼šãƒ‡ã‚£ã‚¹ãƒ‘ãƒƒãƒãƒ£ã®å®Ÿè£…ãªã©
+	// ã“ã“ã®ãƒãƒ¼ãƒ‰ã‚³ãƒ¼ãƒ‰ã¯æœ€é©åŒ–ã§ããªã„ã‹ï¼Ÿï¼šãƒ‡ã‚£ã‚¹ãƒ‘ãƒƒãƒãƒ£ã®å®Ÿè£…ãªã©
 	switch (condition.type)
 	{
 	case TransitionConditionType::HPIsZeroOrLess:
 		return statsComp.currentHP <= 0.0f;
 
 	case TransitionConditionType::ExplicitReviveFlag:
-		// –¾¦“I‚É‰½‚©ŠO•”‚Ì revive ƒtƒ‰ƒO‚ª—§‚Á‚Ä‚éê‡i–¢À‘•‚È‚çí‚É falsej
+		// æ˜ç¤ºçš„ã«ä½•ã‹å¤–éƒ¨ã® revive ãƒ•ãƒ©ã‚°ãŒç«‹ã£ã¦ã‚‹å ´åˆï¼ˆæœªå®Ÿè£…ãªã‚‰å¸¸ã« falseï¼‰
 		return false;
 
 	default:

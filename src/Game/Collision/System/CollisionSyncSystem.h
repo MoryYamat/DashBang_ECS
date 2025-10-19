@@ -1,14 +1,14 @@
-// inside Logic Layer 
+ï»¿// inside Logic Layer 
 
 
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
-// Collisionî•ñ‚ğƒ[ƒJƒ‹Œ`óî•ñ‚É‚µ‚½‚½‚ßC–¢g—p(íœ—\’è)
+
+// Collisionæƒ…å ±ã‚’ãƒ­ãƒ¼ã‚«ãƒ«å½¢çŠ¶æƒ…å ±ã«ã—ãŸãŸã‚ï¼Œæœªä½¿ç”¨(å‰Šé™¤äºˆå®š)
 namespace Game::Collision::System
 {
-	void CollisionSyncSystem(eNsECS::EntityMgr& ecs);
+	void CollisionSyncSystem(Engine::ECS::EntityMgr& ecs);
 }

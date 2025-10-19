@@ -22,40 +22,40 @@
 // control
 #include "Game/00_Feature/Character/Control/CC/CharacterCCFeature.hpp"
 
-#include "Common/GameNamespaceDecl.h"
 
-void Game::Layer::InitializeLayerFeature::DelayedInitialzation(eNsECS::EntityMgr& ecs)
+
+void Game::Layer::InitializeLayerFeature::DelayedInitialzation(Engine::ECS::EntityMgr& ecs)
 {
 	// --------------------- 初期化順に注意 --------------------- 
 	
-	gNsFeature::System::WorldClockFeature::Init(ecs);
+	Game::Feature::System::WorldClockFeature::Init(ecs);
 
 	// InputAction(抽象入力)の割り当て初期化
-	gNsFeature::Setting::InputFeature::InitInputMapping(ecs);
+	Game::Feature::Setting::InputFeature::InitInputMapping(ecs);
 
-	// スキルスロット(gNsSkillData::SkillSlot)とInputAction(抽象入力)の割り当て初期化
-	gNsFeature::Setting::InputFeature::InitSkillInputMapping(ecs);
+	// スキルスロット(Game::Combat::Skill::Data::SkillSlot)とInputAction(抽象入力)の割り当て初期化
+	Game::Feature::Setting::InputFeature::InitSkillInputMapping(ecs);
 
 	// スキルデータベース/定義初期化
-	gNsFeature::Combat::SkillFeature::InitializeSkillDatabase(ecs);
+	Game::Feature::Combat::SkillFeature::InitializeSkillDatabase(ecs);
 
-	gNsFeature::Character::FSM::CCFSMFeature::InitCCFSMDefinitionDatabase(ecs);
+	Game::Feature::Character::FSM::CCFSMFeature::InitCCFSMDefinitionDatabase(ecs);
 
 	// HitEvent
-	gNsFeature::Combat::HitEventFeature::InitializeHitEventDatabase(ecs);
+	Game::Feature::Combat::HitEventFeature::InitializeHitEventDatabase(ecs);
 
 	// Collision Result Buffer
-	gNsFeature::CollisionFeature::InitCollisionBuffer(ecs);
+	Game::Feature::CollisionFeature::InitCollisionBuffer(ecs);
 
 	// CharacterStateTransitionデータベース初期化
-	gNsFeature::Character::StateFeature::InitTransitionDatabase(ecs);
+	Game::Feature::Character::StateFeature::InitTransitionDatabase(ecs);
 
 	// MovementFSMの定義を初期化
-	gNsFeature::Character::FSM::MovementFSMFeature::InitializeMovementFSMDefinition(ecs);
+	Game::Feature::Character::FSM::MovementFSMFeature::InitializeMovementFSMDefinition(ecs);
 
 
 	// AntichainPolicy初期化
-	gNsFeature::Character::CharacterCCFeature::InitCCAntiChainPolicy(ecs);
+	Game::Feature::Character::CharacterCCFeature::InitCCAntiChainPolicy(ecs);
 
 	// animation
 	Game::Feature::Character::Animation::CharacterAnimationFeature::InitProfileDatabase(ecs);// locomotion

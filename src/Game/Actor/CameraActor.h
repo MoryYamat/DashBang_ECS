@@ -1,9 +1,8 @@
-// Camera
+﻿// Camera
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Game::Actor::Camera
 {
@@ -11,7 +10,7 @@ namespace Game::Actor::Camera
 	{
 	public:
 
-		CameraActor(eNsECS::EntityMgr& ecs);
+		CameraActor(Engine::ECS::EntityMgr& ecs);
 
 	private:
 

@@ -1,4 +1,4 @@
-#include "CharacterStateFeature.hpp"
+ï»¿#include "CharacterStateFeature.hpp"
 
 // life state
 #include "Game/Character/State/Init/InitCharaStateTransitionDatabase.hpp"
@@ -17,37 +17,37 @@
 
 #include "Game/Character/State/System/Action/Skill/CharacterSkillExecutionResetSystem.hpp"
 
-#include "Common/GameNamespaceDecl.h"
 
-void Game::Feature::Character::StateFeature::InitTransitionDatabase(eNsECS::EntityMgr& ecs)
+
+void Game::Feature::Character::StateFeature::InitTransitionDatabase(Engine::ECS::EntityMgr& ecs)
 {
 	// life
-	gNsCharaLifeState::InitLifeStateTransitionDatabase(ecs);
+	Game::Character::State::Life::InitLifeStateTransitionDatabase(ecs);
 
 	// movement
-	gNsCharaMoveState::InitCharaMovementStateTransitionDatabase(ecs);
+	Game::Character::State::Movement::InitCharaMovementStateTransitionDatabase(ecs);
 
 	// action
-	gNsCharaActionState::InitCharaActionStateTransitionDatabase(ecs);
+	Game::Character::State::Action::InitCharaActionStateTransitionDatabase(ecs);
 }
 
-void Game::Feature::Character::StateFeature::UpdateCharacterState(eNsECS::EntityMgr& ecs, float deltaTime)
+void Game::Feature::Character::StateFeature::UpdateCharacterState(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
 	// Life
-	gNsCharaLifeState::LifeStateSystem::UpdateStates(ecs);
+	Game::Character::State::Life::LifeStateSystem::UpdateStates(ecs);
 
 	// movement
-	gNsCharaMoveState::MovementStateSystem::UpdateStates(ecs, deltaTime);
+	Game::Character::State::Movement::MovementStateSystem::UpdateStates(ecs, deltaTime);
 
 	// action
-	gNsCharaActionState::ActionStateSystem::UpdateStates(ecs, deltaTime);
+	Game::Character::State::Action::ActionStateSystem::UpdateStates(ecs, deltaTime);
 }
 
-void Game::Feature::Character::StateFeature::UPdateCharacterSkillExecutionState(eNsECS::EntityMgr& ecs, float deltaTime)
+void Game::Feature::Character::StateFeature::UPdateCharacterSkillExecutionState(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
-	// ƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹Àsó‘Ô‚ğƒŠƒZƒbƒg‚·‚é (ƒXƒLƒ‹‚ğŠ®—¹C‚à‚µ‚­‚Í”­“®‚µ‚Ä‚¢‚È‚¢ê‡)
-	gNsCharaActionState::CharacterSkillExecutionResetSystem::ResetSkillExecutionState(ecs, deltaTime);
+	// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«å®Ÿè¡ŒçŠ¶æ…‹ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹ (ã‚¹ã‚­ãƒ«ã‚’å®Œäº†ï¼Œã‚‚ã—ãã¯ç™ºå‹•ã—ã¦ã„ãªã„å ´åˆ)
+	Game::Character::State::Action::CharacterSkillExecutionResetSystem::ResetSkillExecutionState(ecs, deltaTime);
 
-	// ƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹Àsó‘Ô‚ğXV‚·‚é
-	gNsCharaActionState::UpdateCharacterSkillExecutionStateFromInstance(ecs, deltaTime);
+	// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«å®Ÿè¡ŒçŠ¶æ…‹ã‚’æ›´æ–°ã™ã‚‹
+	Game::Character::State::Action::UpdateCharacterSkillExecutionStateFromInstance(ecs, deltaTime);
 }

@@ -20,7 +20,7 @@
 // TODO: `SkillExecutionComponent`をアクターが保持する情報にする
 // TODO: `SkillExecutionComponent`の生成をFSMHook化する(SkillExecutionSetUpHookなど)
 // TODO: TransitionRequestの`Priority`制御の実装
-void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMgr& ecs)
+void Game::Character::Control::Skill::UpdateSkillResolverSystem(Engine::ECS::EntityMgr& ecs)
 {
 	using namespace Game::Character::Control::Skill;
 	using namespace Game::Combat::Skill::Component;
@@ -35,7 +35,7 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 	auto& db = ecs.getResource<SkillDatabase>();
 
 
-	for (eNsECS::Entity e : ecs.view<
+	for (Engine::ECS::Entity e : ecs.view<
 		Logic2DTransformComponent,
 		SkillIntentComponent,
 		SkillSlotAssignmentComponent,
@@ -43,10 +43,10 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 		>()
 		)
 	{
-		auto& intent = ecs.get<SkillIntentComponent>(e);
-		auto& slotAssign = ecs.get<SkillSlotAssignmentComponent>(e);
-		auto& state = ecs.get<SkillStateComponent>(e);
-		auto& logic = ecs.get<Logic2DTransformComponent>(e);
+		auto& intent = Ops::Get<SkillIntentComponent>(ecs, e);
+		auto& slotAssign = Ops::Get<SkillSlotAssignmentComponent>(ecs,e);
+		auto& state = Ops::Get<SkillStateComponent>(ecs, e);
+		auto& logic = Ops::Get<Logic2DTransformComponent>(ecs, e);
 
 		// intentがない場合：スキップ
 		if (!intent.isActive) continue;
@@ -73,7 +73,7 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 
 
 			// skillExecutionComponent生成
-			// eNsECS::Entity eSkill = ecs.createEntity();
+			// Engine::ECS::Entity eSkill = ecs.createEntity();
 			if (!ecs.hasComponent<SkillExecutionContextComponent>(e))
 			{
 				Ops::Add<Game::Combat::Skill::Component::SkillExecutionContextComponent>
@@ -124,8 +124,8 @@ void Game::Character::Control::Skill::UpdateSkillResolverSystem(eNsECS::EntityMg
 }
 
 bool Game::Character::Control::Skill::canTriggerSkill(
-	const gNsSkillFSM::StateModel::SkillStateComponent& state,
-	const gNsSkillData::SkillEntry& entry
+	const Game::Combat::Skill::FSM::StateModel::SkillStateComponent& state,
+	const Game::Combat::Skill::Data::SkillEntry& entry
 )
 {
 	using namespace Game::Combat::Skill::FSM;
@@ -137,29 +137,3 @@ bool Game::Character::Control::Skill::canTriggerSkill(
 	return cond->evaluate(state, def);
 }
 
-// 廃止予定：型ベースFSM実装後
-// 効率問題：すぐには問題にならないが、将来的にキャッシュを検討する
-// キャラクターのスキルの意図を反映するかしないか判定するシステム
-void Game::Character::Control::Skill::UpdateCharacterSkillIntentResovlver(eNsECS::EntityMgr& ecs)
-{
-	for (eNsECS::Entity e : ecs.view<
-		gNsCharacterControlSkill::SkillIntentComponent,
-		gNsSkillComp::SkillSlotAssignmentComponent,
-		gNsCharacterState::Action::CharacterActionStateComponent>())
-	{
-		auto& intent = ecs.get<gNsCharacterControlSkill::SkillIntentComponent>(e);
-		const auto& state = ecs.get<gNsCharacterState::Action::CharacterActionStateComponent>(e);
-
-		// 仮判定：スキル発動できる状態でなければintent を無効か
-		if (state.current == gNsCharaActionState::ActionState::None)
-		{
-			// 発動可能状態ならintentはそのまま
-		}
-		else
-		{
-			// スキル発動可能状態ならintent を無効化
-			intent.isActive = false;
-			intent.requestedSlots.clear();
-		}
-	}
-}

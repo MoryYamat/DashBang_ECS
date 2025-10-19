@@ -44,7 +44,7 @@
 #include <iostream>
 
 // 現役
-void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs)
+void Game::Collision::System::UpdateCollisionResultBuffer(Engine::ECS::EntityMgr& ecs)
 {
 	using namespace Engine::Time;
 	using namespace Game::Collision::Data;
@@ -58,11 +58,11 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 
 	using namespace Game::Combat::Skill::API::External;
 
-	// assert(ecs.hasResource<gNsCollData::CollisionResultBuffer>() && "CollisionResultBuffer not initialized");
-	// if(!ecs.hasResource< gNsCollData::CollisionResultBuffer>()) return;
+	// assert(ecs.hasResource<Game::Collision::Data::CollisionResultBuffer>() && "CollisionResultBuffer not initialized");
+	// if(!ecs.hasResource< Game::Collision::Data::CollisionResultBuffer>()) return;
 	const auto& clock = ecs.getResource<WorldClockData>();
 	auto& hitDb = ecs.getResource<HitEventDatabase>();
-	auto& buffer = ecs.getResource<gNsCollData::CollisionResultBuffer>();
+	auto& buffer = ecs.getResource<Game::Collision::Data::CollisionResultBuffer>();
 	// auto& bus = ecs.getResource<ContactBus>();
 	// std::cout << "[CollisionDetectionSystem.cpp()]Collision Count: " << buffer.results.size() << std::endl;
 
@@ -71,51 +71,51 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 	// bus.clear();
 
 	//auto entities = ecs.view <
-	//	eNsLogic2DComp::CollisionComponent,
-	//	gNsCollComp::CollisionMaskComponent,
-	//	eNsLogic2DComp::Logic2DTransformComponent>();
+	//	Engine::ECS::Component::Logic2D::CollisionComponent,
+	//	Game::Collision::Component::CollisionMaskComponent,
+	//	Engine::ECS::Component::Logic2D::Logic2DTransformComponent>();
 
 	// Must=>And , Any=>OR
-	// using Must = std::tuple<gNsCollComp::CollisionMaskComponent, eNsLogic2DComp::CollisionComponent>;
-	using Must = std::tuple<gNsCollComp::CollisionMaskComponent>;
+	// using Must = std::tuple<Game::Collision::Component::CollisionMaskComponent, Engine::ECS::Component::Logic2D::CollisionComponent>;
+	using Must = std::tuple<Game::Collision::Component::CollisionMaskComponent>;
 
-	using Any = std::tuple<eNsLogic2DComp::Logic2DTransformComponent, eNsLogic2DComp::Transform2DComponent>;
+	using Any = std::tuple<Engine::ECS::Component::Logic2D::Logic2DTransformComponent, Engine::ECS::Component::Logic2D::Transform2DComponent>;
 
-	auto entities = ecs.view(eNsECS::EntityMgr::FilterSpec<Must, Any>{});
+	auto entities = ecs.view(Engine::ECS::EntityMgr::FilterSpec<Must, Any>{});
 
 	// スキル発生時にTransform2DComponentを検索できていない
 	//for (auto e : entities)
 	//{
 	//	std::cout << "Entity: " << e.id << std::endl;
-	//	std::cout << "  Has Mask: " << ecs.hasComponent<gNsCollComp::CollisionMaskComponent>(e) << std::endl;
-	//	std::cout << "  Has Collider: " << ecs.hasComponent<eNsLogic2DComp::CollisionComponent>(e) << std::endl;
-	//	std::cout << "  Has Logic2DTransform: " << ecs.hasComponent<eNsLogic2DComp::Logic2DTransformComponent>(e) << std::endl;
-	//	std::cout << "  Has Transform2D: " << ecs.hasComponent<eNsLogic2DComp::Transform2DComponent>(e) << std::endl;
+	//	std::cout << "  Has Mask: " << ecs.hasComponent<Game::Collision::Component::CollisionMaskComponent>(e) << std::endl;
+	//	std::cout << "  Has Collider: " << ecs.hasComponent<Engine::ECS::Component::Logic2D::CollisionComponent>(e) << std::endl;
+	//	std::cout << "  Has Logic2DTransform: " << ecs.hasComponent<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(e) << std::endl;
+	//	std::cout << "  Has Transform2D: " << ecs.hasComponent<Engine::ECS::Component::Logic2D::Transform2DComponent>(e) << std::endl;
 	//}
 
 	for (size_t i = 0; i < entities.size(); ++i)
 	{
 		for (size_t j = i + 1; j < entities.size(); ++j)
 		{
-			eNsECS::Entity eA = entities[i];
-			eNsECS::Entity eB = entities[j];
+			Engine::ECS::Entity eA = entities[i];
+			Engine::ECS::Entity eB = entities[j];
 
 
-			auto& maskA = ecs.get<gNsCollComp::CollisionMaskComponent>(eA);
-			auto& maskB = ecs.get<gNsCollComp::CollisionMaskComponent>(eB);
+			auto& maskA = ecs.get<Game::Collision::Component::CollisionMaskComponent>(eA);
+			auto& maskB = ecs.get<Game::Collision::Component::CollisionMaskComponent>(eB);
 
 
 			// std::cout << "[CollisionDetectionSystem.cpp()]: before mask judge\n";
 			// 
 
 			// カテゴリ両想い判定
-			if (!gNsCollComp::shouldCollideWithCat(maskA, maskB))
+			if (!Game::Collision::Component::shouldCollideWithCat(maskA, maskB))
 				continue;
 
 			// Relation 両想い 
-			const auto rab = gNsCollComp::computeRelation(ecs, eA, eB);
-			const auto rba = gNsCollComp::computeRelation(ecs, eB, eA);
-			if (!gNsCollComp::shouldCollideWithRel(maskA, maskB, rab, rba)) continue;
+			const auto rab = Game::Collision::Component::computeRelation(ecs, eA, eB);
+			const auto rba = Game::Collision::Component::computeRelation(ecs, eB, eA);
+			if (!Game::Collision::Component::shouldCollideWithRel(maskA, maskB, rab, rba)) continue;
 
 			// 衝突判定済みかどうかの記録(memo)を確認
 			const bool aIsSkill = isSkillEntity(ecs, eA);
@@ -129,9 +129,9 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 
 
 			// 判定用一般化形状変換
-			auto shapeA = gNsCollConvert::MakeGenericShape2D(eA, ecs);
-			auto shapeB = gNsCollConvert::MakeGenericShape2D(eB, ecs);
-			if (!gNsCollIntersect::Intersects(shapeA, shapeB)) continue;
+			auto shapeA = Game::Collision::Convert::MakeGenericShape2D(eA, ecs);
+			auto shapeB = Game::Collision::Convert::MakeGenericShape2D(eB, ecs);
+			if (!Game::Collision::Intersect::Intersects(shapeA, shapeB)) continue;
 
 			//std::visit([](auto&& s) {
 			//	std::cout << "[shapeA] type: " << typeid(s).name() << std::endl;
@@ -144,17 +144,17 @@ void Game::Collision::System::UpdateCollisionResultBuffer(eNsECS::EntityMgr& ecs
 
 			// バッファへ追加
 				// 仮のContactInfo（後で精密な法線・深度が必要になれば拡張）
-			gNsCollData::ContactInfo info{ //.contactNormal = glm::normalize(transB.positionXZ - transA.positionXZ), 
+			Game::Collision::Data::ContactInfo info{ //.contactNormal = glm::normalize(transB.positionXZ - transA.positionXZ), 
 				.penetrationDepth = 0.0f };
 			// std::cout << "[CollisionDetectionSystem]: collider detcted" << std::endl;
 			// バッファ追加
-			buffer.add(gNsCollData::CollisionResult{ eA, eB, info });
+			buffer.add(Game::Collision::Data::CollisionResult{ eA, eB, info });
 
 
 			// FIXME isSkillEntityの再利用
 			// =================================================================
 			// Skill & target について
-			eNsECS::Entity skillEnt{}, targetEnt{};
+			Engine::ECS::Entity skillEnt{}, targetEnt{};
 			SkillOwnerComponent meta{};
 			if (isSkillEntity(ecs, eA) && !isSkillEntity(ecs, eB))
 			{
@@ -205,7 +205,7 @@ namespace Game::Collision::System
 	using namespace Game::Combat::Skill::Component;
 
 	// TODO: 関数の場所整理
-	bool isSkillEntity(eNsECS::EntityMgr& ecs, eNsECS::Entity entity)
+	bool isSkillEntity(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity entity)
 	{
 		return ecs.hasComponent<SkillOwnerComponent>(entity);
 	}
@@ -214,14 +214,14 @@ namespace Game::Collision::System
 
 
 
-void Game::Collision::System::UpdateCollisionResultStorage(eNsECS::EntityMgr& ecs, gNsCollData::CollisionResultStorage& collisionResultStorage)
+void Game::Collision::System::UpdateCollisionResultStorage(Engine::ECS::EntityMgr& ecs, Game::Collision::Data::CollisionResultStorage& collisionResultStorage)
 {
 	//Game::Collision::Data::PlayerCollisionContext playerCollisionCtx;
 
-	//for (eNsECS::Entity e : ecs.view<gNsTags::PlayerCharacterTag, eNsLogic2DComp::Logic2DTransformComponent, eNsLogic2DComp::CollisionComponent>())
+	//for (Engine::ECS::Entity e : ecs.view<Game::ECS::Tags::PlayerCharacterTag, Engine::ECS::Component::Logic2D::Logic2DTransformComponent, Engine::ECS::Component::Logic2D::CollisionComponent>())
 	//{
-	//	const auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
-	//	const auto& logic2DComp = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
+	//	const auto& collisionComp = ecs.get<Engine::ECS::Component::Logic2D::CollisionComponent>(e);
+	//	const auto& logic2DComp = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(e);
 
 	//	// 更新 (名残，形状情報／変換情報の明確な責務分離後未使用)
 	//	playerCollisionCtx.center = logic2DComp.positionXZ;
@@ -231,10 +231,10 @@ void Game::Collision::System::UpdateCollisionResultStorage(eNsECS::EntityMgr& ec
 	//	break;
 	//}
 
-	//eNsLogic2DComp::TileMapComponent tileMapComp;
-	//for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::TileMapComponent>())
+	//Engine::ECS::Component::Logic2D::TileMapComponent tileMapComp;
+	//for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Logic2D::TileMapComponent>())
 	//{
-	//	tileMapComp = ecs.get<eNsLogic2DComp::TileMapComponent>(e);
+	//	tileMapComp = ecs.get<Engine::ECS::Component::Logic2D::TileMapComponent>(e);
 
 	//	std::vector<glm::ivec2> hitTileIndices = Game::Collision::Extract::ExtractPlayerTileCollisions(playerCollisionCtx, tileMapComp);
 
@@ -246,7 +246,7 @@ void Game::Collision::System::UpdateCollisionResultStorage(eNsECS::EntityMgr& ec
 
 
 
-void Game::Collision::System::CollisionDetectionSystem(eNsECS::EntityMgr& ecs, gNsCollData::CollisionResultStorage& collisionResultStorage)
+void Game::Collision::System::CollisionDetectionSystem(Engine::ECS::EntityMgr& ecs, Game::Collision::Data::CollisionResultStorage& collisionResultStorage)
 {
 
 }

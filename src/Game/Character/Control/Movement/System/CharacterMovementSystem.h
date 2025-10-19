@@ -1,15 +1,14 @@
-// ó‘Ô CharacterStateComponent ‚ÉŠî‚Ã‚¢‚ÄƒLƒƒƒ‰ƒNƒ^[‚ÌˆÚ“®EŒü‚«XV‚ğs‚¤ƒVƒXƒeƒ€
+ï»¿// çŠ¶æ…‹ CharacterStateComponent ã«åŸºã¥ã„ã¦ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ç§»å‹•ãƒ»å‘ãæ›´æ–°ã‚’è¡Œã†ã‚·ã‚¹ãƒ†ãƒ 
 
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
-// character state‚ÉŠî‚Ã‚¢‚ÄƒLƒƒƒ‰ƒNƒ^[‚ÌˆÚ“®^Œü‚«XV
+// character stateã«åŸºã¥ã„ã¦ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ç§»å‹•ï¼å‘ãæ›´æ–°
 namespace Game::Character::Movement
 {
 
-	void CharacterMovementSystem(eNsECS::EntityMgr& ecs, float deltaTime);
+	void CharacterMovementSystem(Engine::ECS::EntityMgr& ecs, float deltaTime);
 	//void UpdateMovement(ECS& ecs, float deltaTime);
 }

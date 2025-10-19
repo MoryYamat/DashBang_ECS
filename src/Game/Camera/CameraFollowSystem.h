@@ -1,4 +1,4 @@
-// Camera Follow system
+ï»¿// Camera Follow system
 
 #pragma once
 #include "Engine/ECS/EntityManager.h"
@@ -8,26 +8,25 @@
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 #include "Engine/ECS/Component/Camera/FollowCameraComponent.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
 // Camera Following System
 namespace Game::Camera
 {
-	void Update(eNsECS::EntityMgr& ecs, float deltaTime);
+	void Update(Engine::ECS::EntityMgr& ecs, float deltaTime);
 
 
 
-	// •s—v‚©‚àiƒJƒƒ‰‚ÌˆÊ’u‚ªƒ‚ƒfƒ‹‚Ì³–ÊƒxƒNƒgƒ‹‚Ì‘ÎŠp•ûŒü‚É‚­‚é‚æ‚¤‚ÉƒJƒƒ‰‚ÌˆÊ’u‚ÆŒü‚«‚ğ‰Šú‰»‚·‚éƒeƒ“ƒvƒŒ[ƒgj
+	// ä¸è¦ã‹ã‚‚ï¼ˆã‚«ãƒ¡ãƒ©ã®ä½ç½®ãŒãƒ¢ãƒ‡ãƒ«ã®æ­£é¢ãƒ™ã‚¯ãƒˆãƒ«ã®å¯¾è§’æ–¹å‘ã«ãã‚‹ã‚ˆã†ã«ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã¨å‘ãã‚’åˆæœŸåŒ–ã™ã‚‹ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆï¼‰
 	void setFollowCameraGetFront(
-		eNsCamComp::FollowCameraComponent& followCamComp
-		, eNsLogic2DComp::Logic2DTransformComponent& targetLogic2DTransform
+		Engine::ECS::Component::Camera::FollowCameraComponent& followCamComp
+		, Engine::ECS::Component::Logic2D::Logic2DTransformComponent& targetLogic2DTransform
 	);
 	
-	// ‚±‚Á‚¿‚Í•K—v‚©‚à
+	// ã“ã£ã¡ã¯å¿…è¦ã‹ã‚‚
 	void setCameraVectors(
-		eNsCamComp::CameraComponent& camComp
-		, eNsCommonComp::TransformComponent& camTransform
-		, eNsCommonComp::TransformComponent& targetTransformComp
+		Engine::ECS::Component::Camera::CameraComponent& camComp
+		, Engine::ECS::Component::Common::TransformComponent& camTransform
+		, Engine::ECS::Component::Common::TransformComponent& targetTransformComp
 	);
 
 };

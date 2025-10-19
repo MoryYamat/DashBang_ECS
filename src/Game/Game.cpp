@@ -181,7 +181,7 @@ bool GameApp::GameApp::Initialize()
 	glEnable(GL_FRAMEBUFFER_SRGB);// sRGB
 
 	// ShaderInit
-	// mShader = new eNsGfxRender::Shader("shaders/basic.vertex.glsl", "shaders/basic.fragment.glsl");
+	// mShader = new Engine::Graphics::Render::Shader("shaders/basic.vertex.glsl", "shaders/basic.fragment.glsl");
 
 	// Log
 	// std::cout << "[Game.cpp (Initialize)]: Application initialization completed successfully" << std::endl;
@@ -198,7 +198,7 @@ bool GameApp::GameApp::Initialize()
 	// InitializeSkills();
 
 	// 遅らせ初期化
-	gNsLayer::InitializeLayerFeature::DelayedInitialzation(mECS);
+	Game::Layer::InitializeLayerFeature::DelayedInitialzation(mECS);
 
 	loadData();
 
@@ -228,30 +228,30 @@ void GameApp::GameApp::updateGameLogics()
 
 
 	// delete PendingDestroyComponent
-	eNsECS::GrobalSystem::RunCleanup(mECS);
+	Engine::ECS::GrobalSystem::RunCleanup(mECS);
 
 
 
 	// Input
 	mInput->Update();
  
-	const eNsInput::RawInputState& input = mInput->GetRawInput();
+	const Engine::Input::RawInputState& input = mInput->GetRawInput();
 	if (input.keyState.count(GLFW_KEY_ESCAPE) && input.keyState.at(GLFW_KEY_ESCAPE)) {
 		mIsRunning = false;
 	}
 
 	// ECSのグローバルリソースからMappingを取得して，InputActionComponentを変更するように修正する
 	// 修正済みのため削除予定
-	// gNsInput::InputRouterSystem(mECS, mInputManager->GetRawInput(), mInputMapping);
+	// Game::Input::InputRouterSystem(mECS, mInputManager->GetRawInput(), mInputMapping);
 	// InputRouter
-	gNsInput::InputRouterSystem(mECS, mInput->GetRawInput());
-	gNsInput::Analog::RouteAnalogInput(mECS, mInput->GetRawInput(), mRenderCtx);
+	Game::Input::InputRouterSystem(mECS, mInput->GetRawInput());
+	Game::Input::Analog::RouteAnalogInput(mECS, mInput->GetRawInput(), mRenderCtx);
 
 	// 2D (Logic)-> 3D (Drawing)
-	eNsSyncL2T::Apply2DToTransform(mECS, deltaTime);
+	Engine::Sync::LogicToTransformSystem::Apply2DToTransform(mECS, deltaTime);
 
 	// カメラ
-	gNsCam::Update(mECS, deltaTime);
+	Game::Camera::Update(mECS, deltaTime);
 	// GameSystemInput::UpdateCamera(mEcs, mInputState, mDeltaTime);
 
 	GameApp::updateContext();
@@ -259,16 +259,16 @@ void GameApp::GameApp::updateGameLogics()
 	Game::Collision::System::UpdateCollisionResultStorage(mECS, mCollisionResults);
 
 	// Update from the top layer	
-	gNsLayer::IntentLayerFeature::Update(mECS);
+	Game::Layer::IntentLayerFeature::Update(mECS);
 
 	// Resolver Layer
-	gNsLayer::ResolverLayerFeature::Update(mECS);
+	Game::Layer::ResolverLayerFeature::Update(mECS);
 
 	// state layer
-	gNsLayer::StateLayerFeature::Update(mECS, deltaTime);
+	Game::Layer::StateLayerFeature::Update(mECS, deltaTime);
 
 	// Logic Layer
-	gNsLayer::LogicLayerFeature::Update(mECS, deltaTime);
+	Game::Layer::LogicLayerFeature::Update(mECS, deltaTime);
 
 	// Anim Layer
 	// locomotion
@@ -292,7 +292,7 @@ void GameApp::GameApp::generateOutputs()
 	// An algorithm is needed to set the shader for each object.
 	// RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
 	// draw Layer へ移動
-	eNsGfxRender::RenderSystem(mECS, *mShader, mWindow->GetAspect(), mRenderCtx);
+	Engine::Graphics::Render::RenderSystem(mECS, *mShader, mWindow->GetAspect(), mRenderCtx);
 
 	// Draw Layerへ移動
 	Engine::Debug::Drawing::Logic2D::Draw(mECS, mRenderCtx, mCollisionResults);
@@ -322,21 +322,21 @@ void GameApp::GameApp::spawnAllActors()
 
 //Test3DModel test3d = Test3DModel(mEcs, mShader);
 
-	gNsActorPlayer::PlayerCharacter player = gNsActorPlayer::PlayerCharacter(mECS, mShader.get());
+	Game::Actor::Player::PlayerCharacter player = Game::Actor::Player::PlayerCharacter(mECS, mShader.get());
 
-	gNsActorCam::FollowCameraActor followCam = gNsActorCam::FollowCameraActor(mECS);
+	Game::Actor::Camera::FollowCameraActor followCam = Game::Actor::Camera::FollowCameraActor(mECS);
 
-	gNsActorAnalogInput::MouseCursorActor mouseCursor = gNsActorAnalogInput::MouseCursorActor(mECS);
+	Game::Actor::AnalogInput::MouseCursorActor mouseCursor = Game::Actor::AnalogInput::MouseCursorActor(mECS);
 
 	// TileMapActor tilemap = TileMapActor(mEcs);
 	// TestRockActor testRock = TestRockActor(mEcs, mShader);
 
 
-	gNsActorMap::TestBaseTerrainActor testTerrainMap = gNsActorMap::TestBaseTerrainActor(mECS, mShader.get());
+	Game::Actor::Map::TestBaseTerrainActor testTerrainMap = Game::Actor::Map::TestBaseTerrainActor(mECS, mShader.get());
 
-	gNsActorMap::TestRockActor testRock = gNsActorMap::TestRockActor(mECS, mShader.get());
+	Game::Actor::Map::TestRockActor testRock = Game::Actor::Map::TestRockActor(mECS, mShader.get());
 
-	gNsActor::TestObject testObj = gNsActor::TestObject(mECS, mShader.get());
+	Game::Actor::TestObject testObj = Game::Actor::TestObject(mECS, mShader.get());
 
 	// CameraActor camActor = CameraActor(mEcs);
 
@@ -357,13 +357,13 @@ void GameApp::GameApp::RunInitializationPhase()
 	//	InitSystem<FollowCameraComponent>::Init(followCamComp, mEcs, e);
 	//}
 
-	eNsECSInitComp::ApplyAllDeferredInitializations<
-		eNsLogic2DComp::TileMapComponent,
-		eNsCamComp::FollowCameraComponent
+	Engine::ECS::Meta::Init::ApplyAllDeferredInitializations<
+		Engine::ECS::Component::Logic2D::TileMapComponent,
+		Engine::ECS::Component::Camera::FollowCameraComponent
 	// コンテキスト情報を渡す．
 	>(mECS, *mWindow);
 
-	gNsInit::Input::InputBindingInitializationSystem(mECS);
+	Game::Init::Input::InputBindingInitializationSystem(mECS);
 }
 
 void GameApp::GameApp::updateContext()

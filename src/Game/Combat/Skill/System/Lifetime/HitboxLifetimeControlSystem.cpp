@@ -12,7 +12,7 @@
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 
 // 今後 hitboxEffect 自体をFSM化する場合(改良必要になる)
-void Game::Combat::Skill::System::HitboxLifetimeControlSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
+void Game::Combat::Skill::System::HitboxLifetimeControlSystem::Update(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
 	using namespace Game::Combat::Skill::Component;
 	using namespace Game::Combat::Skill::Database;
@@ -22,7 +22,7 @@ void Game::Combat::Skill::System::HitboxLifetimeControlSystem::Update(eNsECS::En
 
 	auto& db = ecs.getResource<SkillDatabase>();
 
-	for (eNsECS::Entity e : ecs.view<
+	for (Engine::ECS::Entity e : ecs.view<
 		SkillOwnerComponent,
 		LifetimeComponent
 	>())

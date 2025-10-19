@@ -1,4 +1,4 @@
-//
+ï»¿//
 #include "UpdateSkillLifetimes.h"
 
 #include "Game/Combat/Skill/Component/Attack2DAreaComponent.h"
@@ -9,24 +9,24 @@
 #include <vector>
 
 
-// íœ—\’èFŒ^ƒx[ƒXFSM“±“üŒã”p~—\’è
-void Game::Combat::Skill::System::CleanUpCompletedSkills(eNsECS::EntityMgr& ecs)
+// å‰Šé™¤äºˆå®šï¼šå‹ãƒ™ãƒ¼ã‚¹FSMå°å…¥å¾Œå»ƒæ­¢äºˆå®š
+void Game::Combat::Skill::System::CleanUpCompletedSkills(Engine::ECS::EntityMgr& ecs)
 {
-	//std::vector<eNsECS::Entity> toDestroyInstances;
-	//std::vector<eNsECS::Entity> toDestroyHitAreas;
+	//std::vector<Engine::ECS::Entity> toDestroyInstances;
+	//std::vector<Engine::ECS::Entity> toDestroyHitAreas;
 
-	//// ƒpƒtƒH[ƒ}ƒ“ƒX‚ÉŠÖ‚·‚éŒœ”O (Ä‚Ñ‘SƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ’Tõ‚µ‚Ä‚¢‚é)-> ‰ğŒˆô1. CleanUpCompletedSkill(Entity e)‚Æ‚µ‚ÄÄ’Tõ‚ğ”ğ‚¯‚é
-	//// ƒpƒtƒH[ƒ}ƒ“ƒX‚ÉŠÖ‚·‚éŒœ”O (Ä‚Ñ‘SƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ’Tõ‚µ‚Ä‚¢‚é)-> ‰ğŒˆô2. ecs.addComponent(e, PendingDestroyComponent{});‚Æ‚µ‚Ä DestroySystem‚É“‡‚·‚é
-	//// ƒpƒtƒH[ƒ}ƒ“ƒX‚ÉŠÖ‚·‚éŒœ”O (Ä‚Ñ‘SƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ’Tõ‚µ‚Ä‚¢‚é)
-	//for (eNsECS::Entity e : ecs.view<gNsSkillComp::SkillInstanceComponent>())
+	//// ãƒ‘ãƒ•ã‚©ãƒ¼ãƒãƒ³ã‚¹ã«é–¢ã™ã‚‹æ‡¸å¿µ (å†ã³å…¨ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’æ¢ç´¢ã—ã¦ã„ã‚‹)-> è§£æ±ºç­–1. CleanUpCompletedSkill(Entity e)ã¨ã—ã¦å†æ¢ç´¢ã‚’é¿ã‘ã‚‹
+	//// ãƒ‘ãƒ•ã‚©ãƒ¼ãƒãƒ³ã‚¹ã«é–¢ã™ã‚‹æ‡¸å¿µ (å†ã³å…¨ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’æ¢ç´¢ã—ã¦ã„ã‚‹)-> è§£æ±ºç­–2. ecs.addComponent(e, PendingDestroyComponent{});ã¨ã—ã¦ DestroySystemã«çµ±åˆã™ã‚‹
+	//// ãƒ‘ãƒ•ã‚©ãƒ¼ãƒãƒ³ã‚¹ã«é–¢ã™ã‚‹æ‡¸å¿µ (å†ã³å…¨ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’æ¢ç´¢ã—ã¦ã„ã‚‹)
+	//for (Engine::ECS::Entity e : ecs.view<Game::Combat::Skill::Component::SkillInstanceComponent>())
 	//{
-	//	auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(e);
+	//	auto& skillInstance = ecs.get<Game::Combat::Skill::Component::SkillInstanceComponent>(e);
 
-	//	if (skillInstance.phase == gNsSkillComp::SkillPhase::Completed)
+	//	if (skillInstance.phase == Game::Combat::Skill::Component::SkillPhase::Completed)
 	//	{
 	//		toDestroyInstances.push_back(e);
 
-	//		for (eNsECS::Entity hitArea : skillInstance.spawnedHitAreas)
+	//		for (Engine::ECS::Entity hitArea : skillInstance.spawnedHitAreas)
 	//		{
 	//			toDestroyHitAreas.push_back(hitArea);
 	//		}
@@ -34,7 +34,7 @@ void Game::Combat::Skill::System::CleanUpCompletedSkills(eNsECS::EntityMgr& ecs)
 
 	//}
 
-	//for (eNsECS::Entity e : toDestroyHitAreas)
+	//for (Engine::ECS::Entity e : toDestroyHitAreas)
 	//{
 	//	if (ecs.isAlive(e)) {
 	//		ecs.destroyEntity(e);
@@ -42,7 +42,7 @@ void Game::Combat::Skill::System::CleanUpCompletedSkills(eNsECS::EntityMgr& ecs)
 	//	}
 	//}
 
-	//for (eNsECS::Entity e : toDestroyInstances)
+	//for (Engine::ECS::Entity e : toDestroyInstances)
 	//{
 	//	if (ecs.isAlive(e)) {
 	//		ecs.destroyEntity(e);
@@ -52,36 +52,36 @@ void Game::Combat::Skill::System::CleanUpCompletedSkills(eNsECS::EntityMgr& ecs)
 }
 
 
-// íœ—\’èFŒ^ƒx[ƒXFSM“±“üŒã”p~—\’è
-void Game::Combat::Skill::System::UpdateSkillLifetimes(eNsECS::EntityMgr& ecs, float deltaTime, gNsSkillData::SkillDatabase& skillDB)
+// å‰Šé™¤äºˆå®šï¼šå‹ãƒ™ãƒ¼ã‚¹FSMå°å…¥å¾Œå»ƒæ­¢äºˆå®š
+void Game::Combat::Skill::System::UpdateSkillLifetimes(Engine::ECS::EntityMgr& ecs, float deltaTime, Game::Combat::Skill::Data::SkillDatabase& skillDB)
 {
 	//updateAttack2DAreaCompLifetimes(ecs, deltaTime);
 	//updateSkillInstanceCompLifetimes(ecs, deltaTime, skillDB);
 }
 
 
-// íœ—\’èFŒ^ƒx[ƒXFSM“±“üŒã”p~—\’è
-void Game::Combat::Skill::System::updateAttack2DAreaCompLifetimes(eNsECS::EntityMgr& ecs, float deltaTime)
+// å‰Šé™¤äºˆå®šï¼šå‹ãƒ™ãƒ¼ã‚¹FSMå°å…¥å¾Œå»ƒæ­¢äºˆå®š
+void Game::Combat::Skill::System::updateAttack2DAreaCompLifetimes(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
-	//std::vector<eNsECS::Entity> toDestroy;
+	//std::vector<Engine::ECS::Entity> toDestroy;
 
-	//for (eNsECS::Entity e : ecs.view<gNsSkillComp::Attack2DAreaComponent>())
+	//for (Engine::ECS::Entity e : ecs.view<Game::Combat::Skill::Component::Attack2DAreaComponent>())
 	//{
-	//	auto& area = ecs.get<gNsSkillComp::Attack2DAreaComponent>(e);
-	//	// lifetime ‚ğXV
+	//	auto& area = ecs.get<Game::Combat::Skill::Component::Attack2DAreaComponent>(e);
+	//	// lifetime ã‚’æ›´æ–°
 	//	area.lifetime -= deltaTime;
 
 	//	// std::cout << "[UpdateSkillLifetimes.cpp(update)] skill lifetme: " << area.lifetime << std::endl;
 
-	//	// lifetime‚ªØ‚ê‚½Entity‚ğûW
+	//	// lifetimeãŒåˆ‡ã‚ŒãŸEntityã‚’åé›†
 	//	if (area.lifetime <= 0.0f)
 	//	{
 	//		toDestroy.push_back(e);
 	//	}
 	//}
 
-	//// ŠY“–Entity ‚ğ‚·‚×‚Äíœ
-	//for (eNsECS::Entity e : toDestroy)
+	//// è©²å½“Entity ã‚’ã™ã¹ã¦å‰Šé™¤
+	//for (Engine::ECS::Entity e : toDestroy)
 	//{
 	//	std::cout << "[SkillLifetime] SkillInstanceComponent expired and removed: " << e.id << std::endl;
 	//	ecs.destroyEntity(e);
@@ -89,17 +89,17 @@ void Game::Combat::Skill::System::updateAttack2DAreaCompLifetimes(eNsECS::Entity
 }
 
 
-// íœ—\’èFŒ^ƒx[ƒXFSM“±“üŒã”p~—\’è
-void Game::Combat::Skill::System::updateSkillInstanceCompLifetimes(eNsECS::EntityMgr& ecs, float deltaTime, gNsSkillData::SkillDatabase& skillDB)
+// å‰Šé™¤äºˆå®šï¼šå‹ãƒ™ãƒ¼ã‚¹FSMå°å…¥å¾Œå»ƒæ­¢äºˆå®š
+void Game::Combat::Skill::System::updateSkillInstanceCompLifetimes(Engine::ECS::EntityMgr& ecs, float deltaTime, Game::Combat::Skill::Data::SkillDatabase& skillDB)
 {
-	//std::vector<eNsECS::Entity> toDestroy;
+	//std::vector<Engine::ECS::Entity> toDestroy;
 
-	//for (eNsECS::Entity e : ecs.view<gNsSkillComp::SkillInstanceComponent>())
+	//for (Engine::ECS::Entity e : ecs.view<Game::Combat::Skill::Component::SkillInstanceComponent>())
 	//{
-	//	auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(e);
+	//	auto& skillInstance = ecs.get<Game::Combat::Skill::Component::SkillInstanceComponent>(e);
 	//	skillInstance.timeSinceCast += deltaTime;
 
-	//	const gNsSkillData::SkillDefinition& def = skillDB.Get(skillInstance.skillId);
+	//	const Game::Combat::Skill::Data::SkillDefinition& def = skillDB.Get(skillInstance.skillId);
 
 	//	if (skillInstance.timeSinceCast >= def.attackSpec.lifetime.duration)
 	//	{
@@ -107,7 +107,7 @@ void Game::Combat::Skill::System::updateSkillInstanceCompLifetimes(eNsECS::Entit
 	//	}
 	//}
 
-	//for (eNsECS::Entity e: toDestroy)
+	//for (Engine::ECS::Entity e: toDestroy)
 	//{
 	//	{
 	//		std::cout << "[SkillLifetime] SkillInstanceComponent expired and removed: " << e.id << std::endl;

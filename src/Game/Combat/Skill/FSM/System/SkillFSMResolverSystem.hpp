@@ -28,9 +28,9 @@ namespace Game::Combat::Skill::FSM::System
 
 		//static void tryTriggerEffect(
 		//	const SkillEffectHook& hook,
-		//	eNsECS::EntityMgr& ecs,
-		//	eNsECS::Entity eExec,
-		//	eNsECS::Entity caster,
+		//	Engine::ECS::EntityMgr& ecs,
+		//	Engine::ECS::Entity eExec,
+		//	Engine::ECS::Entity caster,
 		//	const SkillDef& def,
 		//	const SkillFSMContext& ctx,
 		//	std::type_index current,

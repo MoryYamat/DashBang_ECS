@@ -22,7 +22,7 @@
 
 #include <cstdint>
 
-#include "Common/GameNamespaceDecl.h"
+
 
 namespace Game::Combat::Skill::Def
 {
@@ -33,8 +33,8 @@ namespace Game::Combat::Skill::Def
 	struct SpawnHitArea
 	{
 		std::optional<float> duration = std::nullopt; // 必要なら明示
-		gNsSkillComp::Attack2DShape shape;// 攻撃判定の形状
-		gNsSkillData::SkillTrajectory::TrajectoryParamsVariant trajectoryParams; // 軌跡パラメータ
+		Game::Combat::Skill::Component::Attack2DShape shape;// 攻撃判定の形状
+		Game::Combat::Skill::Data::SkillTrajectory::TrajectoryParamsVariant trajectoryParams; // 軌跡パラメータ
 
 		// Activeフェーズに同期して寿命終了するか
 		bool syncWithActivePhase = false;

@@ -1,11 +1,11 @@
-// íœ—\’èFFSMƒVƒXƒeƒ€À‘•Œã”p~
+ï»¿// å‰Šé™¤äºˆå®šï¼šFSMã‚·ã‚¹ãƒ†ãƒ å®Ÿè£…å¾Œå»ƒæ­¢
 
 #include "UpdateSkillPhase.h"
 
 #include "Game/Combat/Skill/System/SkillCastingSystem.h"
 #include "Game/Combat/Skill/System/UpdateSkillLifetimes.h"
 
-// íœ—\’è
+// å‰Šé™¤äºˆå®š
 #include "Game/Combat/Skill/Component/SkillInstanceComponent.h"
 
 #include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
@@ -17,15 +17,15 @@
 #include "Engine/ECS/EntityUtils/EntityUtils.h"
 
 
-// íœ—\’èFFSMÀ‘•Œã”p~—\’è
-// Fixme: ƒXƒLƒ‹‚Ìí—Ş‚É‚æ‚Á‚ÄSkillPhase‚ÌXVˆ—‚ğ•ª‚¯‚é•K—v‚ª‚ ‚é‚©‚à‚µ‚ê‚È‚¢
-void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float deltaTime)
+// å‰Šé™¤äºˆå®šï¼šFSMå®Ÿè£…å¾Œå»ƒæ­¢äºˆå®š
+// Fixme: ã‚¹ã‚­ãƒ«ã®ç¨®é¡ã«ã‚ˆã£ã¦SkillPhaseã®æ›´æ–°å‡¦ç†ã‚’åˆ†ã‘ã‚‹å¿…è¦ãŒã‚ã‚‹ã‹ã‚‚ã—ã‚Œãªã„
+void Game::Combat::Skill::System::UpdateSkillPhase(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
-	//gNsSkillData::SkillDatabase& skillDB = ecs.getResource<gNsSkillData::SkillDatabase>();
+	//Game::Combat::Skill::Data::SkillDatabase& skillDB = ecs.getResource<Game::Combat::Skill::Data::SkillDatabase>();
 
-	//for (eNsECS::Entity e : ecs.view<gNsSkillComp::SkillExecutionComponent>())
+	//for (Engine::ECS::Entity e : ecs.view<Game::Combat::Skill::Component::SkillExecutionComponent>())
 	//{
-	//	auto& execution = ecs.get<gNsSkillComp::SkillExecutionComponent>(e);
+	//	auto& execution = ecs.get<Game::Combat::Skill::Component::SkillExecutionComponent>(e);
 	//	const auto& def = skillDB.Get(execution.skillId);
 
 	//	execution.timeSinceCast += deltaTime;
@@ -33,45 +33,45 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 
 	//	switch (execution.currentPhase)
 	//	{
-	//	case gNsSkillComp::SkillExecutionPhase::Casting:
-	//		// ’†ŠÔŒvZ®‚Ì“±“ü‚É‚æ‚éƒLƒƒƒ‰ƒNƒ^[ƒXƒe[ƒ^ƒX‚Ì”½‰f‚àŒŸ“¢
+	//	case Game::Combat::Skill::Component::SkillExecutionPhase::Casting:
+	//		// ä¸­é–“è¨ˆç®—å¼ã®å°å…¥ã«ã‚ˆã‚‹ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®åæ˜ ã‚‚æ¤œè¨
 	//		if (execution.phaseElapsedTime >= def.execution.timing.castTime)
 	//		{
-	//			execution.currentPhase = gNsSkillComp::SkillExecutionPhase::Active;
-	//			execution.phaseElapsedTime = 0.0f;// ƒŠƒZƒbƒg
-	//			// gNsSkillSystem::spawnSkillHitArea(ecs, skillDB, e);// UŒ‚”ÍˆÍ¶¬
+	//			execution.currentPhase = Game::Combat::Skill::Component::SkillExecutionPhase::Active;
+	//			execution.phaseElapsedTime = 0.0f;// ãƒªã‚»ãƒƒãƒˆ
+	//			// Game::Combat::Skill::System::spawnSkillHitArea(ecs, skillDB, e);// æ”»æ’ƒç¯„å›²ç”Ÿæˆ
 	//		}
 	//		break;
 
-	//	case gNsSkillComp::SkillExecutionPhase::Active:
+	//	case Game::Combat::Skill::Component::SkillExecutionPhase::Active:
 	//		if (execution.phaseElapsedTime >= def.execution.timing.duration)
 	//		{
-	//			execution.currentPhase = gNsSkillComp::SkillExecutionPhase::Recovery;
+	//			execution.currentPhase = Game::Combat::Skill::Component::SkillExecutionPhase::Recovery;
 	//			execution.phaseElapsedTime = 0.0f;
 	//		}
 	//		break;
 
-	//	case gNsSkillComp::SkillExecutionPhase::Recovery:
+	//	case Game::Combat::Skill::Component::SkillExecutionPhase::Recovery:
 	//		if (execution.phaseElapsedTime >= def.execution.timing.recoveryTime)
 	//		{
-	//			execution.currentPhase = gNsSkillComp::SkillExecutionPhase::Completed;
+	//			execution.currentPhase = Game::Combat::Skill::Component::SkillExecutionPhase::Completed;
 	//		}
 	//		break;
 
-	//	case gNsSkillComp::SkillExecutionPhase::Completed:
-	//	case gNsSkillComp::SkillExecutionPhase::Canceled:
-	//	case gNsSkillComp::SkillExecutionPhase::Interrupted:
-	//		// «««ŒÃ‚ÌŠÖ”(íœ—\’è)«««
+	//	case Game::Combat::Skill::Component::SkillExecutionPhase::Completed:
+	//	case Game::Combat::Skill::Component::SkillExecutionPhase::Canceled:
+	//	case Game::Combat::Skill::Component::SkillExecutionPhase::Interrupted:
+	//		// â†“â†“â†“å¤ã®é–¢æ•°(å‰Šé™¤äºˆå®š)â†“â†“â†“
 	//		// SkillSystem::Lifetime::CleanUpCompletedSkills(ecs);
 
 	//		std::cout << "[UpdateSkillPhase.cpp(Completed Skill)] entity id " << execution.skillId << std::endl;
 	//		
-	//		// FixMe: ‚±‚ÌMark‚à•Ê‚ÌƒVƒXƒeƒ€‚©‚çs‚¦‚Î‚¢‚¢‚Æv‚¤D‚Â‚Ü‚è‚±‚±‚ÍPhase‚ğXV‚·‚é‚¾‚¯‚ÌƒVƒXƒeƒ€‚É‚·‚ê‚Î‚¢‚¢
-	//		//eNsECS::EntityUtils::MarkForPendingDestroy(ecs, e); // ƒXƒLƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX‚ğíœ
+	//		// FixMe: ã“ã®Markã‚‚åˆ¥ã®ã‚·ã‚¹ãƒ†ãƒ ã‹ã‚‰è¡Œãˆã°ã„ã„ã¨æ€ã†ï¼ã¤ã¾ã‚Šã“ã“ã¯Phaseã‚’æ›´æ–°ã™ã‚‹ã ã‘ã®ã‚·ã‚¹ãƒ†ãƒ ã«ã™ã‚Œã°ã„ã„
+	//		//Engine::ECS::EntityUtils::MarkForPendingDestroy(ecs, e); // ã‚¹ã‚­ãƒ«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å‰Šé™¤
 
 
 
-	//		// eNsECS::EntityUtils::MarkForPendingDestroyWithChildren(ecs, e, instance.spawnedHitAreas);
+	//		// Engine::ECS::EntityUtils::MarkForPendingDestroyWithChildren(ecs, e, instance.spawnedHitAreas);
 
 
 	//		// addPendingDestroyComp(ecs, e, instance);
@@ -83,59 +83,59 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 	//}
 }
 
-// ”p~—\’èFSkillInstanceComponent‚Ì”p~‚É”º‚¤
-// Fixme: ƒXƒLƒ‹‚Ìí—Ş‚É‚æ‚Á‚ÄSkillPhase‚ÌXVˆ—‚ğ•ª‚¯‚é•K—v‚ª‚ ‚é‚©‚à‚µ‚ê‚È‚¢
-//void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float deltaTime)
+// å»ƒæ­¢äºˆå®šï¼šSkillInstanceComponentã®å»ƒæ­¢ã«ä¼´ã†
+// Fixme: ã‚¹ã‚­ãƒ«ã®ç¨®é¡ã«ã‚ˆã£ã¦SkillPhaseã®æ›´æ–°å‡¦ç†ã‚’åˆ†ã‘ã‚‹å¿…è¦ãŒã‚ã‚‹ã‹ã‚‚ã—ã‚Œãªã„
+//void Game::Combat::Skill::System::UpdateSkillPhase(Engine::ECS::EntityMgr& ecs, float deltaTime)
 //{
-//	gNsSkillData::SkillDatabase& skillDB = ecs.getResource<gNsSkillData::SkillDatabase>();
+//	Game::Combat::Skill::Data::SkillDatabase& skillDB = ecs.getResource<Game::Combat::Skill::Data::SkillDatabase>();
 //
-//	for (eNsECS::Entity e : ecs.view<gNsSkillComp::SkillInstanceComponent>())
+//	for (Engine::ECS::Entity e : ecs.view<Game::Combat::Skill::Component::SkillInstanceComponent>())
 //	{
-//		auto& instance = ecs.get<gNsSkillComp::SkillInstanceComponent>(e);
+//		auto& instance = ecs.get<Game::Combat::Skill::Component::SkillInstanceComponent>(e);
 //		const auto& def = skillDB.Get(instance.skillId);
 //
 //		instance.timeSinceCast += deltaTime;
 //
 //		switch (instance.phase)
 //		{
-//		case gNsSkillComp::SkillPhase::Casting:
+//		case Game::Combat::Skill::Component::SkillPhase::Casting:
 //			if (instance.timeSinceCast >= def.execution.timing.castTime && !instance.hasSpawned)
 //			{
-//				instance.phase = gNsSkillComp::SkillPhase::Active;
-//				instance.timeSinceCast = 0.0f;// ƒŠƒZƒbƒg
-//				gNsSkillSystem::spawnSkillHitArea(ecs, skillDB, e);// UŒ‚”ÍˆÍ¶¬
+//				instance.phase = Game::Combat::Skill::Component::SkillPhase::Active;
+//				instance.timeSinceCast = 0.0f;// ãƒªã‚»ãƒƒãƒˆ
+//				Game::Combat::Skill::System::spawnSkillHitArea(ecs, skillDB, e);// æ”»æ’ƒç¯„å›²ç”Ÿæˆ
 //				instance.hasSpawned = true;
 //			}
 //			break;
 //
-//		case gNsSkillComp::SkillPhase::Active:
+//		case Game::Combat::Skill::Component::SkillPhase::Active:
 //			if (instance.timeSinceCast >= def.execution.timing.duration)
 //			{
-//				instance.phase = gNsSkillComp::SkillPhase::Recovery;
+//				instance.phase = Game::Combat::Skill::Component::SkillPhase::Recovery;
 //				instance.timeSinceCast = 0.0f;
 //			}
 //			break;
 //
-//		case gNsSkillComp::SkillPhase::Recovery:
+//		case Game::Combat::Skill::Component::SkillPhase::Recovery:
 //			if (instance.timeSinceCast >= def.execution.timing.recoveryTime)
 //			{
-//				instance.phase = gNsSkillComp::SkillPhase::Completed;
+//				instance.phase = Game::Combat::Skill::Component::SkillPhase::Completed;
 //			}
 //			break;
 //
-//		case gNsSkillComp::SkillPhase::Completed:
-//			// «««ŒÃ‚ÌŠÖ”(íœ—\’è)«««
+//		case Game::Combat::Skill::Component::SkillPhase::Completed:
+//			// â†“â†“â†“å¤ã®é–¢æ•°(å‰Šé™¤äºˆå®š)â†“â†“â†“
 //			// SkillSystem::Lifetime::CleanUpCompletedSkills(ecs);
 //			
 //			if (!instance.isSkillCompleted && !IsSkillInterrupted(instance, ecs))
 //			{
 //				std::cout << "[UpdateSkillPhase.cpp(Completed Skill)] entity id " << instance.skillId << std::endl;
-//				instance.isSkillCompleted = true; // ƒtƒ‰ƒO‚ğ—§‚Ä‚Äd•¡íœ–h~
-//				eNsECS::EntityUtils::MarkForPendingDestroy(ecs, e); // ƒXƒLƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX‚ğíœ
+//				instance.isSkillCompleted = true; // ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã¦é‡è¤‡å‰Šé™¤é˜²æ­¢
+//				Engine::ECS::EntityUtils::MarkForPendingDestroy(ecs, e); // ã‚¹ã‚­ãƒ«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å‰Šé™¤
 //			}
 //
 //
-//			// eNsECS::EntityUtils::MarkForPendingDestroyWithChildren(ecs, e, instance.spawnedHitAreas);
+//			// Engine::ECS::EntityUtils::MarkForPendingDestroyWithChildren(ecs, e, instance.spawnedHitAreas);
 //
 //
 //			// addPendingDestroyComp(ecs, e, instance);
@@ -148,77 +148,77 @@ void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float
 //}
 
 // 
-bool Game::Combat::Skill::System::AllAttacksDestroyed(eNsECS::EntityMgr& ecs, const gNsSkillComp::SkillInstanceComponent& instance)
+bool Game::Combat::Skill::System::AllAttacksDestroyed(Engine::ECS::EntityMgr& ecs, const Game::Combat::Skill::Component::SkillInstanceComponent& instance)
 {
-	for (const eNsECS::Entity& hitArea : instance.spawnedHitAreas)
+	for (const Engine::ECS::Entity& hitArea : instance.spawnedHitAreas)
 	{
-		if (ecs.isAlive(hitArea) && ecs.hasComponent<gNsSkillComp::Attack2DAreaComponent>(hitArea))
+		if (ecs.isAlive(hitArea) && ecs.hasComponent<Game::Combat::Skill::Component::Attack2DAreaComponent>(hitArea))
 		{
-			return false; // ‚Ü‚¾UŒ‚ƒGƒŠƒA‚ª‘¶İ‚·‚é
+			return false; // ã¾ã æ”»æ’ƒã‚¨ãƒªã‚¢ãŒå­˜åœ¨ã™ã‚‹
 		}
 	}
-	return true; // ‚·‚×‚Ä‚ÌUŒ‚ƒGƒŠƒA‚ªíœ‚³‚ê‚½
+	return true; // ã™ã¹ã¦ã®æ”»æ’ƒã‚¨ãƒªã‚¢ãŒå‰Šé™¤ã•ã‚ŒãŸ
 }
 
-// ƒXƒLƒ‹’†’f‚Ì”»’è (¡ŒãŠg’£‚·‚é)
-bool Game::Combat::Skill::System::IsSkillInterrupted(const gNsSkillComp::SkillInstanceComponent& instance, eNsECS::EntityMgr& ecs)
+// ã‚¹ã‚­ãƒ«ä¸­æ–­ã®åˆ¤å®š (ä»Šå¾Œæ‹¡å¼µã™ã‚‹)
+bool Game::Combat::Skill::System::IsSkillInterrupted(const Game::Combat::Skill::Component::SkillInstanceComponent& instance, Engine::ECS::EntityMgr& ecs)
 {
-	// ƒLƒƒƒXƒ^[‚ÌƒGƒ“ƒeƒBƒeƒB‚ª¶‘¶‚µ‚Ä‚¢‚é‚©Šm”F
+	// ã‚­ãƒ£ã‚¹ã‚¿ãƒ¼ã®ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ãŒç”Ÿå­˜ã—ã¦ã„ã‚‹ã‹ç¢ºèª
 	if (!ecs.isAlive(instance.caster)) return true;
 	if (instance.isInterrupted) return true;
 
-	//// ƒLƒƒƒXƒ^[‚ªƒXƒ^ƒ“‚â’†’fó‘Ô‚©Šm”F
+	//// ã‚­ãƒ£ã‚¹ã‚¿ãƒ¼ãŒã‚¹ã‚¿ãƒ³ã‚„ä¸­æ–­çŠ¶æ…‹ã‹ç¢ºèª
 	//if (ecs.hasComponent<gNsStateComp::CharacterStateComponent>(instance.caster))
 	//{
 	//	const auto& state = ecs.get<gNsStateComp::CharacterStateComponent>(instance.caster);
-	//	return state.isStunned || state.isInterrupted; // ó‘Ô‚É‚æ‚Á‚Ä‚Í’†’fˆµ‚¢‚É‚·‚é
+	//	return state.isStunned || state.isInterrupted; // çŠ¶æ…‹ã«ã‚ˆã£ã¦ã¯ä¸­æ–­æ‰±ã„ã«ã™ã‚‹
 	//}
 
 	return false;
 }
 
-// ƒXƒLƒ‹‚Ìõ–½ŠÇ—ƒVƒXƒeƒ€(ECS‚ÌƒOƒ[ƒoƒ‹ƒŠƒ\[ƒX“±“üŒã”p~(Œ»İ–¢g—p))
-void Game::Combat::Skill::System::UpdateSkillPhase(eNsECS::EntityMgr& ecs, float deltaTime, gNsSkillData::SkillDatabase& skillDB)
+// ã‚¹ã‚­ãƒ«ã®å¯¿å‘½ç®¡ç†ã‚·ã‚¹ãƒ†ãƒ (ECSã®ã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒªã‚½ãƒ¼ã‚¹å°å…¥å¾Œå»ƒæ­¢(ç¾åœ¨æœªä½¿ç”¨))
+void Game::Combat::Skill::System::UpdateSkillPhase(Engine::ECS::EntityMgr& ecs, float deltaTime, Game::Combat::Skill::Data::SkillDatabase& skillDB)
 {
-	for (eNsECS::Entity e : ecs.view<gNsSkillComp::SkillInstanceComponent>())
+	for (Engine::ECS::Entity e : ecs.view<Game::Combat::Skill::Component::SkillInstanceComponent>())
 	{
-		auto& instance = ecs.get<gNsSkillComp::SkillInstanceComponent>(e);
+		auto& instance = ecs.get<Game::Combat::Skill::Component::SkillInstanceComponent>(e);
 		const auto& def = skillDB.Get(instance.skillId);
 
 		instance.timeSinceCast += deltaTime;
 
 		switch (instance.phase)
 		{
-		case gNsSkillComp::SkillPhase::Casting:
+		case Game::Combat::Skill::Component::SkillPhase::Casting:
 			if (instance.timeSinceCast >= def.execution.timing.castTime)
 			{
-				instance.phase = gNsSkillComp::SkillPhase::Active;
-				instance.timeSinceCast = 0.0f;// ƒŠƒZƒbƒg
-				gNsSkillSystem::SpawnSkillHitArea(ecs, skillDB);// UŒ‚”ÍˆÍ¶¬
+				instance.phase = Game::Combat::Skill::Component::SkillPhase::Active;
+				instance.timeSinceCast = 0.0f;// ãƒªã‚»ãƒƒãƒˆ
+				Game::Combat::Skill::System::SpawnSkillHitArea(ecs, skillDB);// æ”»æ’ƒç¯„å›²ç”Ÿæˆ
 			}
 			break;
 
-		case gNsSkillComp::SkillPhase::Active:
+		case Game::Combat::Skill::Component::SkillPhase::Active:
 			if (instance.timeSinceCast >= def.execution.timing.duration)
 			{
-				instance.phase = gNsSkillComp::SkillPhase::Recovery;
+				instance.phase = Game::Combat::Skill::Component::SkillPhase::Recovery;
 				instance.timeSinceCast = 0.0f;
 			}
 			break;
 
-		case gNsSkillComp::SkillPhase::Recovery:
+		case Game::Combat::Skill::Component::SkillPhase::Recovery:
 			if (instance.timeSinceCast >= def.execution.timing.recoveryTime)
 			{
-				instance.phase = gNsSkillComp::SkillPhase::Completed;
+				instance.phase = Game::Combat::Skill::Component::SkillPhase::Completed;
 			}
 			break;
 
-		case gNsSkillComp::SkillPhase::Completed:
-			// «««ŒÃ‚ÌŠÖ”(íœ—\’è)«««
+		case Game::Combat::Skill::Component::SkillPhase::Completed:
+			// â†“â†“â†“å¤ã®é–¢æ•°(å‰Šé™¤äºˆå®š)â†“â†“â†“
 			// SkillSystem::Lifetime::CleanUpCompletedSkills(ecs);
 			std::cout << "[UpdateSkillPhase.cpp(Completed Skill)] entity id " << instance.skillId << std::endl;
 			
-			eNsECS::EntityUtils::MarkForPendingDestroyWithChildren(ecs, e, instance.spawnedHitAreas);
+			Engine::ECS::EntityUtils::MarkForPendingDestroyWithChildren(ecs, e, instance.spawnedHitAreas);
 			
 			// addPendingDestroyComp(ecs, e, instance);
 

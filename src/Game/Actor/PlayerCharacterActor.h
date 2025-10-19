@@ -1,4 +1,4 @@
-// test player character actor
+﻿// test player character actor
 // Class that creates an entity
 
 #pragma once
@@ -7,15 +7,13 @@
 
 #include "Engine/Graphics/Renderer/Shader.h"
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
 
 namespace Game::Actor::Player
 {
 	class PlayerCharacter
 	{
 	public:
-		PlayerCharacter(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader);
+		PlayerCharacter(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader* shader);
 
 		~PlayerCharacter();
 

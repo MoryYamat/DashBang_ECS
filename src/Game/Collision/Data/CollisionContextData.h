@@ -1,4 +1,4 @@
-// Setting context data for single search
+﻿// Setting context data for single search
 
 #pragma once
 
@@ -8,7 +8,7 @@
 
 #include <optional>
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Game::Collision::Data
 {
@@ -16,7 +16,7 @@ namespace Game::Collision::Data
 	{
 		glm::vec2 center;
 		float radius;
-		std::optional<eNsECS::Entity> playerEntity;
+		std::optional<Engine::ECS::Entity> playerEntity;
 
 		PlayerCollisionContext(
 
@@ -27,6 +27,6 @@ namespace Game::Collision::Data
 	struct TileCollisionContext
 	{
 		glm::ivec2 tileIndex;
-		std::optional<eNsECS::Entity> tileEntity;
+		std::optional<Engine::ECS::Entity> tileEntity;
 	};
 }

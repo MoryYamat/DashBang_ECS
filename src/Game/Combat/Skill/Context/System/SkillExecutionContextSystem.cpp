@@ -1,7 +1,7 @@
-#include "SkillExecutionContextSystem.hpp"
+﻿#include "SkillExecutionContextSystem.hpp"
 
 
-void Game::Combat::Skill::Context::SkillExecutionContextSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
+void Game::Combat::Skill::Context::SkillExecutionContextSystem::Update(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
 
 }

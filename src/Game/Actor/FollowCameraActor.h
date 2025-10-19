@@ -1,4 +1,4 @@
-// A camera actor that follows the PlayerCharacter
+ï»¿// A camera actor that follows the PlayerCharacter
 
 #pragma once
 
@@ -9,26 +9,25 @@
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 #include "Engine/ECS/Component/Camera/FollowCameraComponent.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Game::Actor::Camera
 {
 	class FollowCameraActor
 	{
 	public:
-		FollowCameraActor(eNsECS::EntityMgr& ecs);
+		FollowCameraActor(Engine::ECS::EntityMgr& ecs);
 
 
 	private:
 
-		// Œ»İ–¢g—p
-		// iƒJƒƒ‰‚ÌˆÊ’u‚ªƒ‚ƒfƒ‹‚Ì³–ÊƒxƒNƒgƒ‹‚Ì‘ÎŠp•ûŒü‚É‚­‚é‚æ‚¤‚ÉƒJƒƒ‰‚ÌˆÊ’u‚ÆŒü‚«‚ğ‰Šú‰»‚·‚éƒeƒ“ƒvƒŒ[ƒgji‚Ù‚ÚƒfƒoƒbƒO—pj
-		void initializeFollowCameraGetFront(eNsCamComp::FollowCameraComponent& followCamComp
-			, eNsLogic2DComp::Logic2DTransformComponent& targetLogic2DTransform);
+		// ç¾åœ¨æœªä½¿ç”¨
+		// ï¼ˆã‚«ãƒ¡ãƒ©ã®ä½ç½®ãŒãƒ¢ãƒ‡ãƒ«ã®æ­£é¢ãƒ™ã‚¯ãƒˆãƒ«ã®å¯¾è§’æ–¹å‘ã«ãã‚‹ã‚ˆã†ã«ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã¨å‘ãã‚’åˆæœŸåŒ–ã™ã‚‹ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆï¼‰ï¼ˆã»ã¼ãƒ‡ãƒãƒƒã‚°ç”¨ï¼‰
+		void initializeFollowCameraGetFront(Engine::ECS::Component::Camera::FollowCameraComponent& followCamComp
+			, Engine::ECS::Component::Logic2D::Logic2DTransformComponent& targetLogic2DTransform);
 
-		void initializeCameraVectors(eNsCamComp::CameraComponent& camComp
-			, eNsCommonComp::TransformComponent& camTransform
-			, eNsCommonComp::TransformComponent& targetTransformComp);
+		void initializeCameraVectors(Engine::ECS::Component::Camera::CameraComponent& camComp
+			, Engine::ECS::Component::Common::TransformComponent& camTransform
+			, Engine::ECS::Component::Common::TransformComponent& targetTransformComp);
 
 	};
 }

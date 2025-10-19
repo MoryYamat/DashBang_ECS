@@ -1,4 +1,4 @@
-// –ˆƒtƒŒ[ƒ€ Transform2DComponent ‚ğXV‚·‚éƒVƒXƒeƒ€
+ï»¿// æ¯ãƒ•ãƒ¬ãƒ¼ãƒ  Transform2DComponent ã‚’æ›´æ–°ã™ã‚‹ã‚·ã‚¹ãƒ†ãƒ 
 // A system that updates the Transform2DComponent every frame
 
 
@@ -8,8 +8,8 @@
 
 #include "Engine/ECS/Component/Logic2D/Transform2DComponent.h"
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
+
+
 
 namespace Game::Combat::Skill::System
 {
@@ -17,7 +17,7 @@ namespace Game::Combat::Skill::System
 	{
 	public:
 
-		static void Update(eNsECS::EntityMgr& ecs, float deltaTime);
+		static void Update(Engine::ECS::EntityMgr& ecs, float deltaTime);
 	};
 }
 

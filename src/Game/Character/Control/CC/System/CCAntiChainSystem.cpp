@@ -22,7 +22,7 @@ namespace Game::Character::Control::CC
 	using namespace Game::Character::FSM::CC;
 	using namespace Game::Character::FSM::CC::StateModel;
 
-	void CCAntiChainSystem(EntityMgr& ecs)
+	void CCAntiChainSystem(Engine::ECS::EntityMgr& ecs)
 	{
 		// 時刻とポリシー取得
 		const auto& clock = ecs.getResource<WorldClockData>();

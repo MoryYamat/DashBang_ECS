@@ -1,31 +1,31 @@
-#include "TestCircleTileMapCollisionHighlight.h"
+ï»¿#include "TestCircleTileMapCollisionHighlight.h"
 
 #include "Engine/Physics/Logic2D/DetectionFunctions.h"
 
 #include "Engine/Debug/DebugUtils.h"
 
 //void Game::Collision::Utils::TestCircleTileMapCollisionHighlight(
-//	const eNsLogic2DComp::CollisionComponent& collisionComp,
-//	const eNsLogic2DComp::TileMapComponent& tileMapComp
+//	const Engine::ECS::Component::Logic2D::CollisionComponent& collisionComp,
+//	const Engine::ECS::Component::Logic2D::TileMapComponent& tileMapComp
 //)
 //{
-//	// ‰~‚Å‚È‚¯‚ê‚ÎƒXƒLƒbƒv
-//	if (collisionComp.collider.type != eNsLogic2DComp::ColliderType::Circle2D)
+//	// å††ã§ãªã‘ã‚Œã°ã‚¹ã‚­ãƒƒãƒ—
+//	if (collisionComp.collider.type != Engine::ECS::Component::Logic2D::ColliderType::Circle2D)
 //		return;
 //
 //	const glm::vec2& center = collisionComp.collider.circle2D.center;
 //	float radius = collisionComp.collider.circle2D.radius;
 //
-//	// ‰~‚Ì’†S‚ğTileMapã‚Ìƒ[ƒJƒ‹À•W‚É•ÏŠ·
+//	// å††ã®ä¸­å¿ƒã‚’TileMapä¸Šã®ãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™ã«å¤‰æ›
 //	glm::vec2 relative = center - tileMapComp.origin;
 //
-//	// ƒ^ƒCƒ‹ƒCƒ“ƒfƒbƒNƒX”ÍˆÍ(•t‹ß‚Ìƒ^ƒCƒ‹‚¾‚¯)
+//	// ã‚¿ã‚¤ãƒ«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ç¯„å›²(ä»˜è¿‘ã®ã‚¿ã‚¤ãƒ«ã ã‘)
 //	int colStart = static_cast<int>(std::floor((relative.x - radius) / tileMapComp.tileSize)) - 1;
 //	int colEnd = static_cast<int>(std::ceil((relative.x + radius) / tileMapComp.tileSize)) + 1;
 //	int rowStart = static_cast<int>(std::floor((relative.y - radius) / tileMapComp.tileSize)) - 1;
 //	int rowEnd = static_cast<int>(std::ceil((relative.y + radius) / tileMapComp.tileSize)) + 1;
 //
-//	// ”ÍˆÍƒNƒ‰ƒ“ƒv(ˆÀ‘S‚Éƒ^ƒCƒ‹ƒAƒNƒZƒX)
+//	// ç¯„å›²ã‚¯ãƒ©ãƒ³ãƒ—(å®‰å…¨ã«ã‚¿ã‚¤ãƒ«ã‚¢ã‚¯ã‚»ã‚¹)
 //	colStart = std::max(0, colStart);
 //	colEnd = std::min(tileMapComp.numCols - 1, colEnd);
 //	rowStart = std::max(0, rowStart);
@@ -38,10 +38,10 @@
 //			glm::vec2 tileMin = tileMapComp.origin + glm::vec2(col, row) * tileMapComp.tileSize;
 //			glm::vec2 tileMax = tileMin + glm::vec2(tileMapComp.tileSize);
 //
-//			if (eNsPhys2DColl::CheckCircleAABBIntersection(center, radius, tileMin, tileMax))
+//			if (Engine::Physics::Logic2D::Collision::CheckCircleAABBIntersection(center, radius, tileMin, tileMax))
 //			{
-//				// Œğ·‚µ‚Ä‚¢‚éƒ^ƒCƒ‹‚ğÔ‚Å•`‰æiY‚ğ­‚µ•‚‚©‚¹‚é‚Æ‹”F«UPj
-//				eNsDebugDraw::DrawTileOutline(tileMin, tileMax, glm::vec3(1.0f, 0.0f, 0.0f));
+//				// äº¤å·®ã—ã¦ã„ã‚‹ã‚¿ã‚¤ãƒ«ã‚’èµ¤ã§æç”»ï¼ˆYã‚’å°‘ã—æµ®ã‹ã›ã‚‹ã¨è¦–èªæ€§UPï¼‰
+//				Engine::Debug::Drawing::DrawTileOutline(tileMin, tileMax, glm::vec3(1.0f, 0.0f, 0.0f));
 //			}
 //		}
 //	}

@@ -1,6 +1,6 @@
-// 
+ï»¿// 
 
-// Attack2DAreaComponenti‚È‚ÇƒXƒLƒ‹‚ÌŒø‰Ê‚Æ‚µ‚Ä¶¬‚³‚ê‚½ƒGƒ“ƒeƒBƒeƒBj ‚Ì lifetime ‚ğŠÇ—EI—¹‚³‚¹‚éˆ—
+// Attack2DAreaComponentï¼ˆãªã©ã‚¹ã‚­ãƒ«ã®åŠ¹æœã¨ã—ã¦ç”Ÿæˆã•ã‚ŒãŸã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ï¼‰ ã® lifetime ã‚’ç®¡ç†ãƒ»çµ‚äº†ã•ã›ã‚‹å‡¦ç†
 
 #pragma once
 
@@ -9,28 +9,28 @@
 
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
 
 
-// (íœ—\’è) Entity‚Íƒtƒ‰ƒOŠÇ—‚Æíœ‚ğGlobalSystem‚Ås‚¤‚½‚ß–¢g—p (Œ»İ–¢g—p)
-// (íœ—\’è) Entity‚Íƒtƒ‰ƒOŠÇ—‚Æíœ‚ğGlobalSystem‚Ås‚¤‚½‚ß–¢g—p (Œ»İ–¢g—p)
-// (íœ—\’è) Entity‚Íƒtƒ‰ƒOŠÇ—‚Æíœ‚ğGlobalSystem‚Ås‚¤‚½‚ß–¢g—p (Œ»İ–¢g—p)
-// (íœ—\’è) Entity‚Íƒtƒ‰ƒOŠÇ—‚Æíœ‚ğGlobalSystem‚Ås‚¤‚½‚ß–¢g—p (Œ»İ–¢g—p)
+
+
+// (å‰Šé™¤äºˆå®š) Entityã¯ãƒ•ãƒ©ã‚°ç®¡ç†ã¨å‰Šé™¤ã‚’GlobalSystemã§è¡Œã†ãŸã‚æœªä½¿ç”¨ (ç¾åœ¨æœªä½¿ç”¨)
+// (å‰Šé™¤äºˆå®š) Entityã¯ãƒ•ãƒ©ã‚°ç®¡ç†ã¨å‰Šé™¤ã‚’GlobalSystemã§è¡Œã†ãŸã‚æœªä½¿ç”¨ (ç¾åœ¨æœªä½¿ç”¨)
+// (å‰Šé™¤äºˆå®š) Entityã¯ãƒ•ãƒ©ã‚°ç®¡ç†ã¨å‰Šé™¤ã‚’GlobalSystemã§è¡Œã†ãŸã‚æœªä½¿ç”¨ (ç¾åœ¨æœªä½¿ç”¨)
+// (å‰Šé™¤äºˆå®š) Entityã¯ãƒ•ãƒ©ã‚°ç®¡ç†ã¨å‰Šé™¤ã‚’GlobalSystemã§è¡Œã†ãŸã‚æœªä½¿ç”¨ (ç¾åœ¨æœªä½¿ç”¨)
 namespace Game::Combat::Skill::System
 {
-	void CleanUpCompletedSkills(eNsECS::EntityMgr& ecs);
+	void CleanUpCompletedSkills(Engine::ECS::EntityMgr& ecs);
 
-	void UpdateSkillLifetimes(eNsECS::EntityMgr& ecs, float deltaTime, gNsSkillData::SkillDatabase& skillDB);
+	void UpdateSkillLifetimes(Engine::ECS::EntityMgr& ecs, float deltaTime, Game::Combat::Skill::Data::SkillDatabase& skillDB);
 
-	// ƒXƒLƒ‹ó‘Ô“±“ü‘O(ÅV)
-	void updateAttack2DAreaCompLifetimes(eNsECS::EntityMgr& ecs, float deltaTime);
-	// “±“üŒã
+	// ã‚¹ã‚­ãƒ«çŠ¶æ…‹å°å…¥å‰(æœ€æ–°)
+	void updateAttack2DAreaCompLifetimes(Engine::ECS::EntityMgr& ecs, float deltaTime);
+	// å°å…¥å¾Œ
 	// void updateAttack2DAreaCompLifetimes(ECS& ecs);
 
-	// ƒXƒLƒ‹ó‘Ô“±“ü‘O
-	void updateSkillInstanceCompLifetimes(eNsECS::EntityMgr& ecs, float deltaTime, gNsSkillData::SkillDatabase& skillDB);
-	// ƒXƒLƒ‹ó‘Ô“±“üŒã(ÅV)
+	// ã‚¹ã‚­ãƒ«çŠ¶æ…‹å°å…¥å‰
+	void updateSkillInstanceCompLifetimes(Engine::ECS::EntityMgr& ecs, float deltaTime, Game::Combat::Skill::Data::SkillDatabase& skillDB);
+	// ã‚¹ã‚­ãƒ«çŠ¶æ…‹å°å…¥å¾Œ(æœ€æ–°)
 	// void updateSkillInstanceCompLifetimes(ECS& ecs);
 
 }

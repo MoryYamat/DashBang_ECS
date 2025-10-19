@@ -18,8 +18,7 @@
 // modifier
 #include "Game/Combat/Skill/FSM/Modifier/Movement/MovementSpeedModifier.hpp"
 
-
-#include "Common/EngineNamespaceDecl.h"
+#include "Game/Common/Logic/FSM/Query/FSMQuery.hpp"
 
 #include <iostream>
 
@@ -37,7 +36,7 @@ namespace Game::Character::FSM::Movement::Effect::FSMScoped
 	struct ApplyMovementVelocityFSM : IFSMScopedEffect
 	{
 
-		void update(eNsECS::EntityMgr& ecs, eNsECS::Entity entity, const MovementFSMContext& ctx, float deltaTime) const override
+		void update(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity entity, const MovementFSMContext& ctx, float deltaTime) const override
 		{
 			const auto& clock = Engine::Time::worldClock(ecs);
 

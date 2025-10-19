@@ -1,7 +1,7 @@
-#pragma once
+﻿#pragma once
 
 
-#include "Common/GameNamespaceDecl.h"
+
 
 
 namespace Game::Character::FSM::Movement

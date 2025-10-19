@@ -1,14 +1,14 @@
-// SkillExecutionComponent‚ª“Á’è‚Ìphase‚É“’B‚µ‚½‚Æ‚«‚ÉCUŒ‚”»’è‚ğ¶¬‚·‚éƒVƒXƒeƒ€
+ï»¿// SkillExecutionComponentãŒç‰¹å®šã®phaseã«åˆ°é”ã—ãŸã¨ãã«ï¼Œæ”»æ’ƒåˆ¤å®šã‚’ç”Ÿæˆã™ã‚‹ã‚·ã‚¹ãƒ†ãƒ 
 
 
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
-// íœ—\’èFFSM“±“üŒã”p~
+
+// å‰Šé™¤äºˆå®šï¼šFSMå°å…¥å¾Œå»ƒæ­¢
 namespace Game::Combat::Skill::System
 {
-	void SpawnSkillHitAreas(eNsECS::EntityMgr& ecs);
+	void SpawnSkillHitAreas(Engine::ECS::EntityMgr& ecs);
 }

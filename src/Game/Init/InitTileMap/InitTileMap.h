@@ -1,4 +1,4 @@
-// Initialize logical data from drawing data
+ï»¿// Initialize logical data from drawing data
 
 #pragma once
 
@@ -13,31 +13,31 @@
 
 #include <string>
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Game::Init::Logic2D
 {
-	// BaseMeshƒf[ƒ^A˜_—ƒf[ƒ^Aİ’èƒ^ƒCƒ‹ƒTƒCƒY‚©‚çTileMapComponent‚ğ‰Šú‰»‚·‚éŠÖ”
-	eNsLogic2DComp::TileMapComponent InitTileMapFromBounds(
-		const eNsCommonComp::TransformComponent& transformComp
-		, const eNsGfxModel::ModelData& modelData
-		, const eNsLogic2DComp::Logic2DTransformComponent& logic2DComp
+	// BaseMeshãƒ‡ãƒ¼ã‚¿ã€è«–ç†ãƒ‡ãƒ¼ã‚¿ã€è¨­å®šã‚¿ã‚¤ãƒ«ã‚µã‚¤ã‚ºã‹ã‚‰TileMapComponentã‚’åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
+	Engine::ECS::Component::Logic2D::TileMapComponent InitTileMapFromBounds(
+		const Engine::ECS::Component::Common::TransformComponent& transformComp
+		, const Engine::Graphics::Model::ModelData& modelData
+		, const Engine::ECS::Component::Logic2D::Logic2DTransformComponent& logic2DComp
 		, float tileSize = 1.0f);
 
-	// İ’èÏ‚İ‚ÌTileMapComponent‚Ì“à—e‚©‚çtiless—ñ(”z—ñ)‚ğ‰Šú‰»‚·‚éŠÖ”
-	void InitTileMapTiles(eNsLogic2DComp::TileMapComponent& tileMapComp);
+	// è¨­å®šæ¸ˆã¿ã®TileMapComponentã®å†…å®¹ã‹ã‚‰tilesè¡Œåˆ—(é…åˆ—)ã‚’åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
+	void InitTileMapTiles(Engine::ECS::Component::Logic2D::TileMapComponent& tileMapComp);
 
-	// ƒ‚ƒfƒ‹‚Ì‰ñ“]‚ğl—¶‚µ‚½ƒ[ƒ‹ƒhÀ•W‚É‚¨‚¯‚éÅ‘å^Å¬‚Ì“_‚Ì‹éŒ`À•W‚ğ‹‚ß‚éŠÖ”
-	glm::vec2 GetModelWorldAABBSizeXZ(const eNsCommonComp::TransformComponent& transformComp, const eNsGfxModel::ModelData& modelData);
+	// ãƒ¢ãƒ‡ãƒ«ã®å›è»¢ã‚’è€ƒæ…®ã—ãŸãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«ãŠã‘ã‚‹æœ€å¤§ï¼æœ€å°ã®ç‚¹ã®çŸ©å½¢åº§æ¨™ã‚’æ±‚ã‚ã‚‹é–¢æ•°
+	glm::vec2 GetModelWorldAABBSizeXZ(const Engine::ECS::Component::Common::TransformComponent& transformComp, const Engine::Graphics::Model::ModelData& modelData);
 
-	// Å‘å^Å¬À•W‚Ì8“_ ‚ğ•Ô‚·ŠÖ”
+	// æœ€å¤§ï¼æœ€å°åº§æ¨™ã®8ç‚¹ ã‚’è¿”ã™é–¢æ•°
 	glm::vec3 GetAABBCorner(glm::vec3 min, glm::vec3 max, int i);
 
-	// ˜_—ƒ^ƒCƒ‹ƒ}ƒbƒv‚ÌŒ´“_‚Ìƒ[ƒ‹ƒhÀ•W‚É‚¨‚¯‚éˆÊ’u‚ğ‹‚ß‚é
-	glm::vec2 ComputeTileMapOriginFromModel(const eNsCommonComp::TransformComponent& transformComp, const eNsGfxModel::ModelData& modelData);
+	// è«–ç†ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—ã®åŸç‚¹ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«ãŠã‘ã‚‹ä½ç½®ã‚’æ±‚ã‚ã‚‹
+	glm::vec2 ComputeTileMapOriginFromModel(const Engine::ECS::Component::Common::TransformComponent& transformComp, const Engine::Graphics::Model::ModelData& modelData);
 
 
-	// ’†S“_‚ªTerrainMesh‚ÌAABB“à‚É‚ ‚é‚©ƒ`ƒFƒbƒN‚·‚é—p‚ÌŠÖ”
+	// ä¸­å¿ƒç‚¹ãŒTerrainMeshã®AABBå†…ã«ã‚ã‚‹ã‹ãƒã‚§ãƒƒã‚¯ã™ã‚‹ç”¨ã®é–¢æ•°
 	//bool isInsideTerrainDrawBounds(glm::vec2 pointXZ, const ModelData& modelData);
 
 	// to init to walkable attribution by terrain mesh
@@ -47,9 +47,9 @@ namespace Game::Init::Logic2D
 // For set tile attributes
 namespace Game::Init::Logic2D
 {
-	// áŠQ•¨ƒAƒNƒ^[‚Æ‚©‚Ô‚éƒ^ƒCƒ‹ƒ}ƒbƒv‚Ì‘®«‚ğ`unWalkable`‚Öİ’è‚·‚é
-	void ApplyObstacleCollidersToTileMap(eNsECS::EntityMgr& ecs, eNsLogic2DComp::TileMapComponent& tileMapComp);
+	// éšœå®³ç‰©ã‚¢ã‚¯ã‚¿ãƒ¼ã¨ã‹ã¶ã‚‹ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—ã®å±æ€§ã‚’`unWalkable`ã¸è¨­å®šã™ã‚‹
+	void ApplyObstacleCollidersToTileMap(Engine::ECS::EntityMgr& ecs, Engine::ECS::Component::Logic2D::TileMapComponent& tileMapComp);
 
-	// ’†‹ó‚É‚ ‚éƒ^ƒCƒ‹ƒ}ƒbƒv‚Ì‘®«‚ğ`unWalkable`‚Öİ’è
-	void MaskUncoveredTilesByTerrainOBB(eNsECS::EntityMgr& ecs, eNsLogic2DComp::TileMapComponent& tileMapComp);
+	// ä¸­ç©ºã«ã‚ã‚‹ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—ã®å±æ€§ã‚’`unWalkable`ã¸è¨­å®š
+	void MaskUncoveredTilesByTerrainOBB(Engine::ECS::EntityMgr& ecs, Engine::ECS::Component::Logic2D::TileMapComponent& tileMapComp);
 }

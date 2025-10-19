@@ -1,22 +1,22 @@
-#include "InputBindingInit.h"
+﻿#include "InputBindingInit.h"
 
 #include "Engine/ECS/Component/Input/AnalogInputComponent.h"
 #include "Engine/ECS/Component/Input/InputBindingComponent.h"
 
 #include "Game/ECS/Tags/CharacterAttribTags.h"
 
-#include "Common/GameNamespaceDecl.h"
 
-void Game::Init::Input::InputBindingInitializationSystem(eNsECS::EntityMgr& ecs)
+
+void Game::Init::Input::InputBindingInitializationSystem(Engine::ECS::EntityMgr& ecs)
 {
-	for (eNsECS::Entity cursor : ecs.view<
-		eNsInputComp::AnalogInputComponent,
-		eNsInputComp::InputBindingComponent>())
+	for (Engine::ECS::Entity cursor : ecs.view<
+		Engine::ECS::Component::Input::AnalogInputComponent,
+		Engine::ECS::Component::Input::InputBindingComponent>())
 	{
-		auto& binding = ecs.get<eNsInputComp::InputBindingComponent>(cursor);
+		auto& binding = ecs.get<Engine::ECS::Component::Input::InputBindingComponent>(cursor);
 
-		for (eNsECS::Entity Player : ecs.view<
-			gNsTags::PlayerCharacterTag>())
+		for (Engine::ECS::Entity Player : ecs.view<
+			Game::ECS::Tags::PlayerCharacterTag>())
 		{
 			binding.controllingEntity = Player;
 

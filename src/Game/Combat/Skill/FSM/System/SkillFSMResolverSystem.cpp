@@ -17,7 +17,7 @@
 // TODO: eExecとeCasterは同じになったので不要な処理あり，改善してもよいが後回し
 // TODO: リクエストを一定時間キューに保持しておきたい場合や，リクエストに「有効期間」や「依存関係」がある場合.requests.clear()では不可
 // TODO: 優先度が同じ場合のルールが未定義(先に来たほうを採用している)
-void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
+void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
 	using namespace Game::Combat::Skill::Component;
 	using namespace Game::Combat::Skill::Database;
@@ -31,7 +31,7 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::En
 	auto& db = ecs.getResource<SkillDatabase>();
 
 	// 
-	for (eNsECS::Entity caster : ecs.view<
+	for (Engine::ECS::Entity caster : ecs.view<
 		SkillExecutionContextComponent,
 		SkillFSMTransitionRequestComponent,
 		SkillStateComponent,
@@ -123,9 +123,9 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::Update(eNsECS::En
 
 
 void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerEffect(
-	eNsECS::EntityMgr& ecs,
+	Engine::ECS::EntityMgr& ecs,
 	const SkillEffectHook& hook,
-	const eNsECS::Entity caster,
+	const Engine::ECS::Entity caster,
 	const SkillDef& def,
 	const SkillFSMContext& ctx,
 	const std::type_index& current,
@@ -164,8 +164,8 @@ void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerEffect(
 // FIXME:ともかく情報の構造から実装の依存関係を整理する必要がある
 void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerReset
 (
-	eNsECS::EntityMgr& ecs,
-	const eNsECS::Entity caster,
+	Engine::ECS::EntityMgr& ecs,
+	const Engine::ECS::Entity caster,
 	const SkillFSMDefinition& fsm,
 	const SkillDef& def,
 	const SkillFSMContext& ctx,
@@ -264,9 +264,9 @@ namespace Game::Combat::Skill::FSM::System
 // FIXME: SkillExecutionComponentの常駐化にともなう設計変更が必要
 //void Game::Combat::Skill::FSM::System::SkillFSMResolverSystem::tryTriggerEffect(
 //	const SkillEffectHook& hook,
-//	eNsECS::EntityMgr& ecs,
-//	eNsECS::Entity eExec,
-//	eNsECS::Entity caster,
+//	Engine::ECS::EntityMgr& ecs,
+//	Engine::ECS::Entity eExec,
+//	Engine::ECS::Entity caster,
 //	const SkillDef& def,
 //	const SkillFSMContext& ctx,
 //	std::type_index current,

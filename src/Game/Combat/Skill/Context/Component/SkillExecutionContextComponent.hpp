@@ -1,28 +1,28 @@
-#pragma once 
+ï»¿#pragma once 
 
 #include "Engine/ECS/Entity.h"
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 #include <vector>
 
 namespace Game::Combat::Skill::Context
 {
-	// ƒXƒLƒ‹Àsó‹µ‚ğ•Û‚·‚éƒRƒ“ƒ|[ƒlƒ“ƒg
+	// ã‚¹ã‚­ãƒ«å®Ÿè¡ŒçŠ¶æ³ã‚’ä¿æŒã™ã‚‹ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
 	struct SkillExecutionContextComponent
 	{
-		eNsECS::Entity caster = eNsECS::Entity::INVALID; // ƒXƒLƒ‹‚ğ”­“®‚µ‚½ƒLƒƒƒXƒ^[
-		eNsECS::Entity skillInstance = eNsECS::Entity::INVALID; // SkillInstance‚ÌEntityQÆ
-		eNsECS::Entity spawnedHitArea = eNsECS::Entity::INVALID; // ƒXƒLƒ‹‚ÌƒqƒbƒgƒGƒŠƒA(UŒ‚”ÍˆÍ)‚ÌEntity
-		//std::vector<eNsECS::Entity> spawnedHitAreas; // ƒXƒLƒ‹‚ÌƒqƒbƒgƒGƒŠƒA(UŒ‚”ÍˆÍ)‚ÌEntityƒŠƒXƒg
+		Engine::ECS::Entity caster = Engine::ECS::Entity::INVALID; // ã‚¹ã‚­ãƒ«ã‚’ç™ºå‹•ã—ãŸã‚­ãƒ£ã‚¹ã‚¿ãƒ¼
+		Engine::ECS::Entity skillInstance = Engine::ECS::Entity::INVALID; // SkillInstanceã®Entityå‚ç…§
+		Engine::ECS::Entity spawnedHitArea = Engine::ECS::Entity::INVALID; // ã‚¹ã‚­ãƒ«ã®ãƒ’ãƒƒãƒˆã‚¨ãƒªã‚¢(æ”»æ’ƒç¯„å›²)ã®Entity
+		//std::vector<Engine::ECS::Entity> spawnedHitAreas; // ã‚¹ã‚­ãƒ«ã®ãƒ’ãƒƒãƒˆã‚¨ãƒªã‚¢(æ”»æ’ƒç¯„å›²)ã®Entityãƒªã‚¹ãƒˆ
 
-		bool cancelOnInterrupt = false; // ƒXƒ^ƒ“E€–S‚È‚Ç‚ÅƒXƒLƒ‹‚ğ’†’f‚·‚é‚×‚«‚©
-		bool cancelOnSkillCancel = false; // ƒLƒƒƒ‰ƒNƒ^[‚ÌƒLƒƒƒ“ƒZƒ‹‚ÅƒXƒLƒ‹‚ğ‚ğ’†’f‚·‚é‚×‚«‚©
+		bool cancelOnInterrupt = false; // ã‚¹ã‚¿ãƒ³ãƒ»æ­»äº¡ãªã©ã§ã‚¹ã‚­ãƒ«ã‚’ä¸­æ–­ã™ã‚‹ã¹ãã‹
+		bool cancelOnSkillCancel = false; // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã§ã‚¹ã‚­ãƒ«ã‚’ã‚’ä¸­æ–­ã™ã‚‹ã¹ãã‹
 
-		bool isMarkedForCancel = false; // ƒVƒXƒeƒ€‘¤‚©‚ç‚ÌƒLƒƒƒ“ƒZƒ‹—v‹ƒtƒ‰ƒO
-		bool hasForceEnded = false; // Š®‘S‚ÉI—¹‚µ‚½‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO
+		bool isMarkedForCancel = false; // ã‚·ã‚¹ãƒ†ãƒ å´ã‹ã‚‰ã®ã‚­ãƒ£ãƒ³ã‚»ãƒ«è¦æ±‚ãƒ•ãƒ©ã‚°
+		bool hasForceEnded = false; // å®Œå…¨ã«çµ‚äº†ã—ãŸã‹ã©ã†ã‹ã®ãƒ•ãƒ©ã‚°
 
-		// optional:ÅŒã‚ÌƒtƒF[ƒY‚È‚Ç‚É‘Î‰‚·‚é‚½‚ß‚Ìƒ^ƒCƒ}[
+		// optional:æœ€å¾Œã®ãƒ•ã‚§ãƒ¼ã‚ºãªã©ã«å¯¾å¿œã™ã‚‹ãŸã‚ã®ã‚¿ã‚¤ãƒãƒ¼
 		float timeSinceStart = 0.0f; 
 
 

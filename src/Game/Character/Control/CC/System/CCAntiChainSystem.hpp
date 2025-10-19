@@ -4,7 +4,6 @@
 
 namespace Game::Character::Control::CC
 {
-	using namespace Engine::ECS;
-
-	void CCAntiChainSystem(EntityMgr& ecs);
+	
+	void CCAntiChainSystem(Engine::ECS::EntityMgr& ecs);
 }

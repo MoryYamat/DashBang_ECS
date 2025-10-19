@@ -7,15 +7,15 @@
 
 #include <GLM/glm.hpp>
 
-#include "Common/GameNamespaceDecl.h"
+
 
 namespace Game::Collision::Utils
 {
 
 	//// 2つのエンティティが衝突判定すべきかを判定
 	//inline bool shouldCollide(
-	//	const gNsCollComp::CollisionMaskComponent& a,
-	//	const gNsCollComp::CollisionMaskComponent& b
+	//	const Game::Collision::Component::CollisionMaskComponent& a,
+	//	const Game::Collision::Component::CollisionMaskComponent& b
 	//)
 	//{
 	//	// a の selfLayer に対して b.collidesWithMaskが一致しているか

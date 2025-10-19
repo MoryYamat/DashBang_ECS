@@ -1,19 +1,19 @@
-#pragma once
+﻿#pragma once
 
 #include "Game/Character/State/Component/LifeStateComponent.hpp"
 
 #include "Game/Character/State/Rule/Life/LifeStateTransitionRule.hpp"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 #include <vector>
 namespace Game::Character::State::Life
 {
 	struct StateTransitionDatabase
 	{
-		std::vector<gNsCharaLifeState::StateTransitionRule> rules;
+		std::vector<Game::Character::State::Life::StateTransitionRule> rules;
 
-		const gNsCharaLifeState::StateTransitionRule* FindRule(LifeState from, LifeState to) const
+		const Game::Character::State::Life::StateTransitionRule* FindRule(LifeState from, LifeState to) const
 		{
 			for (const auto& rule : rules)
 			{

@@ -1,4 +1,4 @@
-#include "MovementTransitionInitialize.hpp"
+﻿#include "MovementTransitionInitialize.hpp"
 
 #include "Game/Character/FSM/Movement/Database/MovementFSMDatabase.hpp"
 
@@ -14,11 +14,11 @@
 
 #include "Game/Character/FSM/Movement/MovementStateTags.hpp"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 #include <memory>
 
-void Game::Character::FSM::Movement::InitMovementFSMDatabase(eNsECS::EntityMgr& ecs)
+void Game::Character::FSM::Movement::InitMovementFSMDatabase(Engine::ECS::EntityMgr& ecs)
 {
 	using namespace Game::Character::FSM::Movement;
 	using namespace Game::Character::FSM::Movement::StateTag;
@@ -53,9 +53,9 @@ void Game::Character::FSM::Movement::InitMovementFSMDatabase(eNsECS::EntityMgr& 
 	db.Add("basic", def);
 }
 
-//void Game::Character::FSM::Movement::InitializeMovementTransitionSystem(eNsECS::EntityMgr& ecs)
+//void Game::Character::FSM::Movement::InitializeMovementTransitionSystem(Engine::ECS::EntityMgr& ecs)
 //{
-//	auto& tableRes = ecs.createResource<gNsCharaFSMMovement::MovementTransitionTableResource>();
+//	auto& tableRes = ecs.createResource<Game::Character::FSM::Movement::MovementTransitionTableResource>();
 //
-//	tableRes.transitions = gNsCharaFSMMovement::BuildMovementTransitionTable();
+//	tableRes.transitions = Game::Character::FSM::Movement::BuildMovementTransitionTable();
 //}

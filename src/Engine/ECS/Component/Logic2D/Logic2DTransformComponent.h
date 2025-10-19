@@ -1,4 +1,4 @@
-// Position data used for logical calculations such as collision detection
+ï»¿// Position data used for logical calculations such as collision detection
 
 #pragma once 
 
@@ -6,7 +6,6 @@
 
 #include "Engine/Math/Logic2D/LogicMathUtils.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
 #include <glm/glm.hpp>
 
@@ -27,23 +26,23 @@ namespace Engine::ECS::Component::Logic2D
 		// scale
 		glm::vec2 scale = glm::vec2(1.0f);
 
-		// FrontƒxƒNƒgƒ‹‚©‚ç‰ñ“]‚ğ“¾‚é (radians)
+		// Frontãƒ™ã‚¯ãƒˆãƒ«ã‹ã‚‰å›è»¢ã‚’å¾—ã‚‹ (radians)
 		float GetRotationYFromFrontVector() const
 		{
-			return eNsLogic2DMath::CalcYawFromDirection(front);
+			return Engine::Math::Logic2D::CalcYawFromDirection(front);
 		}
 
-		// FrontƒxƒNƒgƒ‹‚©‚çRightƒxƒNƒgƒ‹‚ğ“¾‚é
+		// Frontãƒ™ã‚¯ãƒˆãƒ«ã‹ã‚‰Rightãƒ™ã‚¯ãƒˆãƒ«ã‚’å¾—ã‚‹
 		void UpdateRightFromFront()
 		{
-			right = eNsLogic2DMath::CalcRightFromForward(front);
+			right = Engine::Math::Logic2D::CalcRightFromForward(front);
 		}
 
-		// ‰Šú‰»‚Ì‚İ@¦ƒQ[ƒ€ƒ‹[ƒv‚Å‚Íg‚í‚È‚¢
+		// åˆæœŸåŒ–æ™‚ã®ã¿ã€€â€»ã‚²ãƒ¼ãƒ ãƒ«ãƒ¼ãƒ—ã§ã¯ä½¿ã‚ãªã„
 		void UpdateDirectionFromRotation()
 		{
-			front = glm::normalize(eNsLogic2DMath::CalcForwardFromYaw(rotation));
-			right = eNsLogic2DMath::CalcRightFromYaw(rotation);
+			front = glm::normalize(Engine::Math::Logic2D::CalcForwardFromYaw(rotation));
+			right = Engine::Math::Logic2D::CalcRightFromYaw(rotation);
 		}
 
 	};

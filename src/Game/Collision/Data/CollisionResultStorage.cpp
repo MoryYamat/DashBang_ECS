@@ -1,4 +1,4 @@
-#include "CollisionResultStorage.h"
+Ôªø#include "CollisionResultStorage.h"
 
 
 void Game::Collision::Data::CollisionResultStorage::Add(const CollisionContact& contact)
@@ -6,7 +6,7 @@ void Game::Collision::Data::CollisionResultStorage::Add(const CollisionContact& 
 	mContacts.push_back(contact);
 }
 
-const std::vector<gNsCollData::CollisionContact>& Game::Collision::Data::CollisionResultStorage::GetAll() const
+const std::vector<Game::Collision::Data::CollisionContact>& Game::Collision::Data::CollisionResultStorage::GetAll() const
 {
 	return mContacts;
 }
@@ -18,8 +18,8 @@ void Game::Collision::Data::CollisionResultStorage::Clear()
 }
 
 
-// EntityID Ç≈åüçı
-std::vector<gNsCollData::CollisionContact> Game::Collision::Data::CollisionResultStorage::GetContactsInvolving(eNsECS::Entity entity) const
+// EntityID „ÅßÊ§úÁ¥¢
+std::vector<Game::Collision::Data::CollisionContact> Game::Collision::Data::CollisionResultStorage::GetContactsInvolving(Engine::ECS::Entity entity) const
 {
 	std::vector<CollisionContact> result;
 	for (const auto& contact : mContacts)

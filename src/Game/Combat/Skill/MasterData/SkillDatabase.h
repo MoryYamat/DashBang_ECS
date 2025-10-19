@@ -8,7 +8,7 @@
 
 #include "Game/Combat/Skill/MasterData/SkillEntry.hpp"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 #include <cstdint>
 
@@ -22,7 +22,7 @@ namespace Game::Combat::Skill::Database
 	class SkillDatabase
 	{
 	public:
-		void AddSkill(const gNsSkillData::SkillEntry& entry)
+		void AddSkill(const Game::Combat::Skill::Data::SkillEntry& entry)
 		{
 			if (mEntries.count(entry.def.id))
 			{
@@ -33,7 +33,7 @@ namespace Game::Combat::Skill::Database
 			std::cout << "[SkillDatabase.h(AddSkill): Skill id ]" << entry.def.id << "is added as \"" << entry.def.name << "\"" << std::endl;
 		}
 
-		const gNsSkillData::SkillEntry& Get(const uint32_t id) const
+		const Game::Combat::Skill::Data::SkillEntry& Get(const uint32_t id) const
 		{
 			// ~~.conatins(id)に変更予定(C++20)~~ => (.containsは存在確認をしたいだけの時.)
 			//auto it = mDefinitions.find(id);
@@ -60,7 +60,7 @@ namespace Game::Combat::Skill::Database
 
 
 		// read only
-		const gNsSkillData::SkillEntry* tryGet(uint32_t id) const noexcept
+		const Game::Combat::Skill::Data::SkillEntry* tryGet(uint32_t id) const noexcept
 		{
 			auto it = mEntries.find(id);
 			if (it != mEntries.end())
@@ -73,7 +73,7 @@ namespace Game::Combat::Skill::Database
 		}
 
 		// writable
-		gNsSkillData::SkillEntry* tryGet(uint32_t id) noexcept
+		Game::Combat::Skill::Data::SkillEntry* tryGet(uint32_t id) noexcept
 		{
 			auto it = mEntries.find(id);
 			if (it != mEntries.end())
@@ -88,7 +88,7 @@ namespace Game::Combat::Skill::Database
 	private:
 
 		// ( id, skillDefinition(class) )
-		std::unordered_map<uint32_t, gNsSkillData::SkillEntry> mEntries;
+		std::unordered_map<uint32_t, Game::Combat::Skill::Data::SkillEntry> mEntries;
 	};
 
 
@@ -114,7 +114,7 @@ namespace Game::Combat::Skill::Data
 	class SkillDatabase
 	{
 	public:
-		void AddSkill(const gNsSkillData::SkillDefinition& def)
+		void AddSkill(const Game::Combat::Skill::Data::SkillDefinition& def)
 		{
 			if (mDefinitions.count(def.id))
 			{
@@ -125,7 +125,7 @@ namespace Game::Combat::Skill::Data
 			std::cout << "[SkillDatabase.h(AddSkill): Skill id ]" << def.id << "is added as \"" << def.name << "\"" << std::endl;
 		}
 
-		const gNsSkillData::SkillDefinition& Get(int id) const
+		const Game::Combat::Skill::Data::SkillDefinition& Get(int id) const
 		{
 			// ~~.conatins(id)に変更予定(C++20)~~ => (.containsは存在確認をしたいだけの時.)
 			//auto it = mDefinitions.find(id);
@@ -153,7 +153,7 @@ namespace Game::Combat::Skill::Data
 	private:
 
 		// ( id, skillDefinition(class) )
-		std::unordered_map<int, gNsSkillData::SkillDefinition> mDefinitions;
+		std::unordered_map<int, Game::Combat::Skill::Data::SkillDefinition> mDefinitions;
 	};
 }
 

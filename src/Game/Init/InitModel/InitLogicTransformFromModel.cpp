@@ -1,21 +1,21 @@
-#include "InitLogicTransformFromModel.h"
+ï»¿#include "InitLogicTransformFromModel.h"
 
 #include "Engine/Debug/DebugUtils.h"
 
 #include <iostream>
 
 // Initialize 2D logical data from the position, rotation, and scale of a 3D model
-eNsLogic2DComp::Logic2DTransformComponent Game::Init::Logic2D::InitLogic2DTransformFromModel(
-	const eNsCommonComp::TransformComponent& transformComp
-	, const eNsGfxModel::ModelData& modelData
+Engine::ECS::Component::Logic2D::Logic2DTransformComponent Game::Init::Logic2D::InitLogic2DTransformFromModel(
+	const Engine::ECS::Component::Common::TransformComponent& transformComp
+	, const Engine::Graphics::Model::ModelData& modelData
 )
 {
-	eNsLogic2DComp::Logic2DTransformComponent logic;
+	Engine::ECS::Component::Logic2D::Logic2DTransformComponent logic;
 
-	// ˆÊ’uƒf[ƒ^‚Ì‰Šú‰»
+	// ä½ç½®ãƒ‡ãƒ¼ã‚¿ã®åˆæœŸåŒ–
 	logic.positionXZ = glm::vec2(transformComp.position.x, transformComp.position.z);
 
-	// ‰ñ“]ƒf[ƒ^‚Ì‰Šú‰» (‚Ç‚¤‚â‚Á‚Äƒ‚ƒfƒ‹³–Ê‚ğ“¾‚é‚©)
+	// å›è»¢ãƒ‡ãƒ¼ã‚¿ã®åˆæœŸåŒ– (ã©ã†ã‚„ã£ã¦ãƒ¢ãƒ‡ãƒ«æ­£é¢ã‚’å¾—ã‚‹ã‹)
 	logic.rotation = glm::radians(transformComp.rotation.y);
 	// logic.rotation = transformComp.rotation.y;// 
 	logic.UpdateDirectionFromRotation();
@@ -28,7 +28,7 @@ eNsLogic2DComp::Logic2DTransformComponent Game::Init::Logic2D::InitLogic2DTransf
 	std::cout << "[InitLogicTransformSystem.cpp]: logical rotationY: " << logic.rotation << std::endl;
 	//std::cout << "[InitLogicTransformSystem.cpp]: logical right vector " << logic.right.x << std::endl;
 	
-	eNsDebugLog::GeneralLog("InitLogicTransformFromModel.cpp",
+	Engine::Debug::Logging::GeneralLog("InitLogicTransformFromModel.cpp",
 		"Logical 2D coordinates were successfully initialized based on model drawing coordinates. ");
 
 	return logic;
@@ -36,16 +36,16 @@ eNsLogic2DComp::Logic2DTransformComponent Game::Init::Logic2D::InitLogic2DTransf
 
 
 glm::vec2 Game::Init::Logic2D::GetModelXZSizeWithScale(
-	const eNsCommonComp::TransformComponent& transformComp
-	, const eNsGfxModel::ModelData& modelData
+	const Engine::ECS::Component::Common::TransformComponent& transformComp
+	, const Engine::Graphics::Model::ModelData& modelData
 )
 {
 	glm::vec2 logicalXZSize = glm::vec2(1.0f);
 
-	// ƒ‚ƒfƒ‹ƒf[ƒ^‚©‚çƒTƒCƒY‚ğæ“¾
+	// ãƒ¢ãƒ‡ãƒ«ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰ã‚µã‚¤ã‚ºã‚’å–å¾—
 	glm::vec3 rowModelSize = modelData.GetSize();
 
-	// XZƒTƒCƒY‚ğƒXƒP[ƒ‹•t‚«‚ÅŒvZ
+	// XZã‚µã‚¤ã‚ºã‚’ã‚¹ã‚±ãƒ¼ãƒ«ä»˜ãã§è¨ˆç®—
 	if (rowModelSize.x > 0.0001f && rowModelSize.z > 0.0001f)
 	{
 		logicalXZSize.x = transformComp.scale.x * rowModelSize.x;
@@ -54,7 +54,7 @@ glm::vec2 Game::Init::Logic2D::GetModelXZSizeWithScale(
 	else
 	{
 		logicalXZSize = glm::vec2(1.0f);
-		eNsDebugLog::GeneralLog("InitLogicTransformFromModel(scale)", "Probably an error occurred while getting/setting the scale.");
+		Engine::Debug::Logging::GeneralLog("InitLogicTransformFromModel(scale)", "Probably an error occurred while getting/setting the scale.");
 	}
 
 	return logicalXZSize;
@@ -65,8 +65,8 @@ glm::vec2 Game::Init::Logic2D::GetModelXZSizeWithScale(
 
 
 float  Game::Init::Logic2D::EstimateRadiusFromModelXZ(
-	const eNsCommonComp::TransformComponent& transformComp
-	, const eNsGfxModel::ModelData& modelData
+	const Engine::ECS::Component::Common::TransformComponent& transformComp
+	, const Engine::Graphics::Model::ModelData& modelData
 	, RadiusEstimateStrategy strategy
 )
 {
@@ -87,7 +87,7 @@ float  Game::Init::Logic2D::EstimateRadiusFromModelXZ(
 	}
 	else
 	{
-		eNsDebugLog::GeneralLog("InitLogicTransformFromModel.cpp(Radius)", "Maybe radius initialization failed");
+		Engine::Debug::Logging::GeneralLog("InitLogicTransformFromModel.cpp(Radius)", "Maybe radius initialization failed");
 		return 0.5f;
 
 	}

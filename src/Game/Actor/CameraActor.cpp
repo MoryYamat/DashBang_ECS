@@ -15,22 +15,22 @@
 #include "Engine/ECS/Ops/CoreOps.hpp"
 
 // 現在未使用: 削除予定
-Game::Actor::Camera::CameraActor::CameraActor(eNsECS::EntityMgr& ecs)
+Game::Actor::Camera::CameraActor::CameraActor(Engine::ECS::EntityMgr& ecs)
 {
-	eNsECS::Entity entity = ecs.createEntity();
+	Engine::ECS::Entity entity = ecs.createEntity();
 
-	eNsCommonComp::TransformComponent transformComp;
+	Engine::ECS::Component::Common::TransformComponent transformComp;
 	transformComp.position = glm::vec3(0.0f, 0.0f, 0.0f);
 	transformComp.rotation = glm::vec3(0.0f);
 	transformComp.scale = glm::vec3(1.0f);
 	Engine::ECS::Ops::Add<Engine::ECS::Component::Common::TransformComponent>(ecs, entity, transformComp);
 
-	eNsCamComp::CameraComponent cameraComp;
+	Engine::ECS::Component::Camera::CameraComponent cameraComp;
 	cameraComp.fov = glm::radians(120.0f);
 	cameraComp.target = glm::vec3(0.0f, 0.0f, 0.0f);
 	cameraComp.up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-	eNsTagComp::PlayerControllerComponent player;
+	Engine::ECS::Component::Tags::PlayerControllerComponent player;
 	Engine::ECS::Ops::Add<Engine::ECS::Component::Tags::PlayerControllerComponent>(ecs, entity, player);
 
 	cameraComp.aspect = 1280.0f / 720.0f;

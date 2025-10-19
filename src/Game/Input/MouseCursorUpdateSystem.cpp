@@ -1,4 +1,4 @@
-#include "MouseCursorUpdateSystem.h"
+ï»¿#include "MouseCursorUpdateSystem.h"
 
 #include "Engine/ECS/Entity.h"
 #include "Engine/ECS/Component/Input/MouseCursorComponent.h"
@@ -11,44 +11,44 @@
 #include <glm/glm.hpp>
 
 
-// Œ»İ–¢g—pFˆÓ}‘w“±“üŒã–¢g—p (¡Œãg—p‰Â”\«‚ ‚èC(ƒ^ƒCƒgƒ‹‰æ–Ê‚È‚ÇƒQ[ƒ€ŠO‚ÌƒAƒiƒƒO“ü—Í”½‰f‚Ì‚½‚ß))
-void Game::Input::Analog::Update(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, eNsGfxRender::RenderContext& renderContext)
+// ç¾åœ¨æœªä½¿ç”¨ï¼šæ„å›³å±¤å°å…¥å¾Œæœªä½¿ç”¨ (ä»Šå¾Œä½¿ç”¨å¯èƒ½æ€§ã‚ã‚Šï¼Œ(ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢ãªã©ã‚²ãƒ¼ãƒ å¤–ã®ã‚¢ãƒŠãƒ­ã‚°å…¥åŠ›åæ˜ ã®ãŸã‚))
+void Game::Input::Analog::Update(Engine::ECS::EntityMgr& ecs, const Engine::Input::RawInputState& rawInput, Engine::Graphics::Render::RenderContext& renderContext)
 {
-	for (eNsECS::Entity e : ecs.view<eNsInputComp::MouseCursorComponent, eNsLogic2DComp::Logic2DTransformComponent>())
+	for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Input::MouseCursorComponent, Engine::ECS::Component::Logic2D::Logic2DTransformComponent>())
 	{
-		auto& mouseComp = ecs.get<eNsInputComp::MouseCursorComponent>(e);
-		auto& logic2DComp = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
+		auto& mouseComp = ecs.get<Engine::ECS::Component::Input::MouseCursorComponent>(e);
+		auto& logic2DComp = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(e);
 
 		//mouseComp.logicPosition = GameUtils::SpatialTransform::ProjectScreenToLogicXZPlane(input.screenMousePosition, renderContext);
 		//logic2DComp.positionXZ = mouseComp.logicPosition;
 
 		logic2DComp.positionXZ = Game::Utils::ProjectScreenToLogicXZPlane(rawInput.mousePosition, renderContext);
 
-		// position(0.0f, 0.0f)‚Ì•s‹ï‡‚ª”­¶‚µ‚È‚¢‚©AŠm”F‚·‚é
-		// position(0.0f, 0.0f)‚Ì•s‹ï‡‚ª”­¶‚µ‚È‚¢‚©AŠm”F‚·‚é
-		// position(0.0f, 0.0f)‚Ì•s‹ï‡‚ª”­¶‚µ‚È‚¢‚©AŠm”F‚·‚é
+		// position(0.0f, 0.0f)ã®æ™‚ä¸å…·åˆãŒç™ºç”Ÿã—ãªã„ã‹ã€ç¢ºèªã™ã‚‹
+		// position(0.0f, 0.0f)ã®æ™‚ä¸å…·åˆãŒç™ºç”Ÿã—ãªã„ã‹ã€ç¢ºèªã™ã‚‹
+		// position(0.0f, 0.0f)ã®æ™‚ä¸å…·åˆãŒç™ºç”Ÿã—ãªã„ã‹ã€ç¢ºèªã™ã‚‹
 		// DebugUtils::LogVector_string("MouseCursorUpdateSystem.cpp(logic2DPos)", logic2DComp.positionXZ);
 
 		break;
 	}
 }
 
-// Ì‚Ì‚â‚Â (íœ—\’è)
-void Game::Input::Analog::Update(eNsECS::EntityMgr& ecs, InputState& input, eNsGfxRender::RenderContext renderContext)
+// æ˜”ã®ã‚„ã¤ (å‰Šé™¤äºˆå®š)
+void Game::Input::Analog::Update(Engine::ECS::EntityMgr& ecs, InputState& input, Engine::Graphics::Render::RenderContext renderContext)
 {
-	for (eNsECS::Entity e : ecs.view<eNsInputComp::MouseCursorComponent, eNsLogic2DComp::Logic2DTransformComponent>())
+	for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Input::MouseCursorComponent, Engine::ECS::Component::Logic2D::Logic2DTransformComponent>())
 	{
-		auto& mouseComp = ecs.get<eNsInputComp::MouseCursorComponent>(e);
-		auto& logic2DComp = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
+		auto& mouseComp = ecs.get<Engine::ECS::Component::Input::MouseCursorComponent>(e);
+		auto& logic2DComp = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(e);
 
 		//mouseComp.logicPosition = GameUtils::SpatialTransform::ProjectScreenToLogicXZPlane(input.screenMousePosition, renderContext);
 		//logic2DComp.positionXZ = mouseComp.logicPosition;
 
 		logic2DComp.positionXZ = Game::Utils::ProjectScreenToLogicXZPlane(input.screenMousePosition, renderContext);
 
-		// position(0.0f, 0.0f)‚Ì•s‹ï‡‚ª”­¶‚µ‚È‚¢‚©AŠm”F‚·‚é
-		// position(0.0f, 0.0f)‚Ì•s‹ï‡‚ª”­¶‚µ‚È‚¢‚©AŠm”F‚·‚é
-		// position(0.0f, 0.0f)‚Ì•s‹ï‡‚ª”­¶‚µ‚È‚¢‚©AŠm”F‚·‚é
+		// position(0.0f, 0.0f)ã®æ™‚ä¸å…·åˆãŒç™ºç”Ÿã—ãªã„ã‹ã€ç¢ºèªã™ã‚‹
+		// position(0.0f, 0.0f)ã®æ™‚ä¸å…·åˆãŒç™ºç”Ÿã—ãªã„ã‹ã€ç¢ºèªã™ã‚‹
+		// position(0.0f, 0.0f)ã®æ™‚ä¸å…·åˆãŒç™ºç”Ÿã—ãªã„ã‹ã€ç¢ºèªã™ã‚‹
 		// DebugUtils::LogVector_string("MouseCursorUpdateSystem.cpp(logic2DPos)", logic2DComp.positionXZ);
 
 		break;

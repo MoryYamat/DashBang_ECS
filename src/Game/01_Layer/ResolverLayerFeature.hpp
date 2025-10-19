@@ -1,9 +1,9 @@
-#pragma once
+﻿#pragma once
 
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Game::Layer
 {
@@ -11,6 +11,6 @@ namespace Game::Layer
 	{
 	public:
 
-		static void Update(eNsECS::EntityMgr& ecs);
+		static void Update(Engine::ECS::EntityMgr& ecs);
 	};
 }

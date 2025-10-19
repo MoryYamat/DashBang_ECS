@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 
 #include <GLM/glm.hpp>
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Common/EngineNamespaceDecl.h"
+
 namespace Game::Character::FSM::Movement
 {
 	struct MovementFSMContext
@@ -12,10 +12,10 @@ namespace Game::Character::FSM::Movement
 		float elapsedTime = 0.0f;
 		float phaseElapsedTime = 0.0f;
 
-		glm::vec2 direction = glm::vec2(0.0f);// MovementIntent‚©‚çæ“¾
+		glm::vec2 direction = glm::vec2(0.0f);// MovementIntentã‹ã‚‰å–å¾—
 		bool intentActive = false;
 
 
-		glm::vec2 velocity;// íœ—\’èF”p~
+		glm::vec2 velocity;// å‰Šé™¤äºˆå®šï¼šå»ƒæ­¢
 	};
 }

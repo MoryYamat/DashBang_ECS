@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 
 namespace Game::Feature::ECS
@@ -11,8 +11,8 @@ namespace Game::Feature::ECS
 	class GameGeneralSytem
 	{
 	public:
-		static void UpdateLifetimeSystem(eNsECS::EntityMgr& ecs, float deltaTime);
+		static void UpdateLifetimeSystem(Engine::ECS::EntityMgr& ecs, float deltaTime);
 	};
 
-	// ‚»‚Ì‘¼A•K—v‚Èƒwƒ‹ƒp[ŠÖ”‚âƒ†[ƒeƒBƒŠƒeƒBŠÖ”‚ğ‚±‚±‚É’Ç‰Á
+	// ãã®ä»–ã€å¿…è¦ãªãƒ˜ãƒ«ãƒ‘ãƒ¼é–¢æ•°ã‚„ãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£é–¢æ•°ã‚’ã“ã“ã«è¿½åŠ 
 } // namespace Game::00_Feature::ECS

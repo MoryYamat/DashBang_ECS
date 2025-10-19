@@ -50,8 +50,8 @@ bool Engine::Physics::Logic2D::Collision::Intersects_Circle2D_Sector2D(const glm
 		return false;
 
 	// ここから精密かすり判定用：
-	glm::vec2 leftVec = eNsLogic2DMath::RotateVec2FromZForward(sectorDirection, +sectorAngle * 0.5f);
-	glm::vec2 rightVec = eNsLogic2DMath::RotateVec2FromZForward(sectorDirection, -sectorAngle * 0.5f);
+	glm::vec2 leftVec = Engine::Math::Logic2D::RotateVec2FromZForward(sectorDirection, +sectorAngle * 0.5f);
+	glm::vec2 rightVec = Engine::Math::Logic2D::RotateVec2FromZForward(sectorDirection, -sectorAngle * 0.5f);
 
 	glm::vec2 tipLeft = sectorCenter + leftVec * sectorRadius;
 	glm::vec2 tipRight = sectorCenter + rightVec * sectorRadius;
@@ -248,8 +248,8 @@ bool Engine::Physics::Logic2D::Collision::Intersects_Sector2D_Obb2D(
 	}
 
 	// 
-	glm::vec2 left = eNsLogic2DMath::RotateVec2FromZForward(sectorDirection, +sectorAngle * 0.5f);
-	glm::vec2 right = eNsLogic2DMath::RotateVec2FromZForward(sectorDirection, -sectorAngle * 0.5f);
+	glm::vec2 left = Engine::Math::Logic2D::RotateVec2FromZForward(sectorDirection, +sectorAngle * 0.5f);
+	glm::vec2 right = Engine::Math::Logic2D::RotateVec2FromZForward(sectorDirection, -sectorAngle * 0.5f);
 	glm::vec2 tipLeft = sectorCenter + left * sectorRadius;
 	glm::vec2 tipRight = sectorCenter + right * sectorRadius;
 
@@ -331,7 +331,7 @@ bool Engine::Physics::Logic2D::Collision::Intersects_Obb2D_Obb2D(
 }
 
 // 呼び出しは、`if(c.type == ColliderType::box2D) else {// 未定義動作}`
-bool Engine::Physics::Logic2D::Collision::intersectBox2D(const eNsLogic2DComp::Box2D& a, const eNsLogic2DComp::Box2D& b)
+bool Engine::Physics::Logic2D::Collision::intersectBox2D(const Engine::ECS::Component::Logic2D::Box2D& a, const Engine::ECS::Component::Logic2D::Box2D& b)
 {
 	glm::vec2 aMin = a.center - a.halfExtents;
 	glm::vec2 aMax = a.center + a.halfExtents;
@@ -380,7 +380,7 @@ bool Engine::Physics::Logic2D::Collision::CheckCircleAABBIntersection(
 }
 
 // Separating Axis Theorem (SAT)
-bool Engine::Physics::Logic2D::Collision::intersectOBB2D_AABB2D(const eNsLogic2DComp::Obb2D& obb, const glm::vec2& aabbMin, const glm::vec2& aabbMax)
+bool Engine::Physics::Logic2D::Collision::intersectOBB2D_AABB2D(const Engine::ECS::Component::Logic2D::Obb2D& obb, const glm::vec2& aabbMin, const glm::vec2& aabbMax)
 {
 	// AABBの中心とハーフサイズ
 	glm::vec2 aabbCenter = 0.5f * (aabbMin + aabbMax);

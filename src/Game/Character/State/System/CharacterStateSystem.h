@@ -1,4 +1,4 @@
-//// ƒLƒƒƒ‰ƒNƒ^[‚É‹¤’Ê‚·‚éˆÓ–¡“Ió‘ÔƒRƒ“ƒeƒLƒXƒg‚ğ’ñ‹Ÿ‚·‚é§Œä‹@\
+ï»¿//// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã«å…±é€šã™ã‚‹æ„å‘³çš„çŠ¶æ…‹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’æä¾›ã™ã‚‹åˆ¶å¾¡æ©Ÿæ§‹
 //
 //#pragma once
 //
@@ -6,7 +6,7 @@
 //
 //#include "Game/Character/State/Behavior/CharacterState.h"
 //
-//#include "Common/EngineNamespaceDecl.h"
+//
 //
 //namespace Game::Character::State
 //{
@@ -16,10 +16,10 @@
 //	{
 //	public:
 //
-//		static void UpdateStates(eNsECS::EntityMgr& ecs, float deltaTime);
+//		static void UpdateStates(Engine::ECS::EntityMgr& ecs, float deltaTime);
 //
-//		// ó‘Ôƒ†[ƒeƒBƒŠƒeƒB
-//		static void RequestStateChange(eNsECS::EntityMgr& ecs, eNsECS::Entity e, CharacterBehaviorState nextState);
-//		static void ForceCrowdControl(eNsECS::EntityMgr& ecs, eNsECS::Entity e, CharacterCrowdControlState ccState);
+//		// çŠ¶æ…‹ãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£
+//		static void RequestStateChange(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity e, CharacterBehaviorState nextState);
+//		static void ForceCrowdControl(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity e, CharacterCrowdControlState ccState);
 //	};
 //}

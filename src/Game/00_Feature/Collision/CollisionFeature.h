@@ -1,8 +1,8 @@
-//
+ï»¿//
 
 #pragma once
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 #include "Engine/ECS/EntityManager.h"
 
@@ -11,14 +11,14 @@ namespace Game::Feature
 	class CollisionFeature
 	{
 	public:
-		// Collision ƒoƒbƒtƒ@‚Ì‰Šú‰»
-		static void InitCollisionBuffer(eNsECS::EntityMgr& ecs);
+		// Collision ãƒãƒƒãƒ•ã‚¡ã®åˆæœŸåŒ–
+		static void InitCollisionBuffer(Engine::ECS::EntityMgr& ecs);
 
-		// Collision ƒoƒbƒtƒ@‚ÌXV
-		static void UpdateCollisionBuffer(eNsECS::EntityMgr& ecs);
+		// Collision ãƒãƒƒãƒ•ã‚¡ã®æ›´æ–°
+		static void UpdateCollisionBuffer(Engine::ECS::EntityMgr& ecs);
 
 
-		// CollisionComp‚Ìƒf[ƒ^XV
-		static void SyncLogicCollision(eNsECS::EntityMgr& ecs);
+		// CollisionCompã®ãƒ‡ãƒ¼ã‚¿æ›´æ–°
+		static void SyncLogicCollision(Engine::ECS::EntityMgr& ecs);
 };
 }

@@ -33,8 +33,8 @@
 #include <variant>
 
 // デバッグ用（論理系）の描画する機能まとめてを提供
-void Engine::Debug::Drawing::Logic2D::Draw(eNsECS::EntityMgr& ecs,
-	const eNsGfxRender::RenderContext& renderContext,
+void Engine::Debug::Drawing::Logic2D::Draw(Engine::ECS::EntityMgr& ecs,
+	const Engine::Graphics::Render::RenderContext& renderContext,
 	const Game::Collision::Data::CollisionResultStorage& collisionResult
 )
 {
@@ -59,7 +59,7 @@ void Engine::Debug::Drawing::Logic2D::Draw(eNsECS::EntityMgr& ecs,
 }
 
 // デバッグ用（論理座標）の点や矩形を描画する機能を提供
-void Engine::Debug::Drawing::Logic2D::DebugDrawLogicPlayerPositions(eNsECS::EntityMgr& ecs, const eNsGfxRender::RenderContext& renderContext)
+void Engine::Debug::Drawing::Logic2D::DebugDrawLogicPlayerPositions(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext)
 {
 	//SetOpenGLMatrixState(renderContext);
 
@@ -67,23 +67,23 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawLogicPlayerPositions(eNsECS::Enti
 	glm::vec3 color = glm::vec3(1.0f, 0.0f, 0.0f);
 
 
-	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::Logic2DTransformComponent, gNsTags::PlayerCharacterTag>())
+	for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Logic2D::Logic2DTransformComponent, Game::ECS::Tags::PlayerCharacterTag>())
 	{
-		const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
+		const auto& logic = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(e);
 
 		glm::vec3 worldPos(logic.positionXZ.x, 0.01f, logic.positionXZ.y);
 
-		eNsDebugDraw::DrawCross(worldPos, 0.1f, color);
+		Engine::Debug::Drawing::DrawCross(worldPos, 0.1f, color);
 	}
 
 	// mouse cursor position
-	for (eNsECS::Entity e : ecs.view<eNsInputComp::AnalogInputComponent>())
+	for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Input::AnalogInputComponent>())
 	{
-		const auto& analogInput = ecs.get<eNsInputComp::AnalogInputComponent>(e);
+		const auto& analogInput = ecs.get<Engine::ECS::Component::Input::AnalogInputComponent>(e);
 
 		glm::vec3 worldPos(analogInput.cursorLogicPositionXZ.x, 0.01f, analogInput.cursorLogicPositionXZ.y);
 
-		eNsDebugDraw::DrawCross(worldPos, 0.1f, color);
+		Engine::Debug::Drawing::DrawCross(worldPos, 0.1f, color);
 	}
 
 	//ResetOpenGLMatrixState();
@@ -91,20 +91,20 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawLogicPlayerPositions(eNsECS::Enti
 }
 
 // デバッグ用、タイルマップを描画する機能を提供
-void Engine::Debug::Drawing::Logic2D::DebugDrawLogicTileMaps(eNsECS::EntityMgr& ecs, const eNsGfxRender::RenderContext& renderContext)
+void Engine::Debug::Drawing::Logic2D::DebugDrawLogicTileMaps(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext)
 {
 	//SetOpenGLMatrixState(renderContext);
 
 
-	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::TileMapComponent>())
+	for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Logic2D::TileMapComponent>())
 	{
-		const auto& tileMapComp = ecs.get<eNsLogic2DComp::TileMapComponent>(e);
+		const auto& tileMapComp = ecs.get<Engine::ECS::Component::Logic2D::TileMapComponent>(e);
 
 		for (int row = 0; row < tileMapComp.numRows; ++row)
 		{
 			for (int col = 0; col < tileMapComp.numCols; ++col)
 			{
-				const eNsLogic2DComp::Tile& tile = tileMapComp.tiles[row][col];
+				const Engine::ECS::Component::Logic2D::Tile& tile = tileMapComp.tiles[row][col];
 
 
 				glm::vec2 center = tileMapComp.origin + glm::vec2(col + 0.5f, row + 0.5f) * tileMapComp.tileSize;
@@ -114,14 +114,14 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawLogicTileMaps(eNsECS::EntityMgr& 
 				if (!tile.isWalkable)
 				{
 					color = glm::vec3(0.0f, 0.0f, 0.5f);
-					eNsDebugDraw::DrawFilledQuad(center, tileMapComp.tileSize, color);
+					Engine::Debug::Drawing::DrawFilledQuad(center, tileMapComp.tileSize, color);
 				}
 				else
 				{
 					color = glm::vec3(1.0f, 1.0f, 0.0f);
 					// どこで何の情報を生成し、どういう形で渡すかを要検討
 					// どこで何の情報を生成し、どういう形で渡すかを要検討
-					eNsDebugDraw::DrawQuad(center, tileMapComp.tileSize, color);
+					Engine::Debug::Drawing::DrawQuad(center, tileMapComp.tileSize, color);
 				}
 
 			}
@@ -133,38 +133,38 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawLogicTileMaps(eNsECS::EntityMgr& 
 }
 
 // uion使用時の条件分岐
-//void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerCollision(eNsECS::EntityMgr& ecs, const eNsGfxRender::RenderContext& renderContext)
+//void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerCollision(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext)
 //{
 //	glm::vec3 color = glm::vec3(0.0f, 1.0f, 1.0f);
 //
-//	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::CollisionComponent>())
+//	for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Logic2D::CollisionComponent>())
 //	{
-//		const auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
+//		const auto& collisionComp = ecs.get<Engine::ECS::Component::Logic2D::CollisionComponent>(e);
 //
 //
-//		if (collisionComp.collider.type == eNsLogic2DComp::ColliderType::Circle2D)
+//		if (collisionComp.collider.type == Engine::ECS::Component::Logic2D::ColliderType::Circle2D)
 //		{
 //			glm::vec2 center = collisionComp.collider.circle2D.center;
 //			float radius = collisionComp.collider.circle2D.radius;
 //
-//			eNsDebugDraw::DrawCircle2D(center, radius, color);
+//			Engine::Debug::Drawing::DrawCircle2D(center, radius, color);
 //		}
 //	}
 //}
 
 // variantの条件分岐
-void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerCollision(eNsECS::EntityMgr& ecs, const eNsGfxRender::RenderContext& renderContext)
+void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerCollision(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext)
 {
 	glm::vec3 color = glm::vec3(0.0f, 1.0f, 1.0f);
 
-	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::CollisionComponent, eNsCommonComp::TransformComponent>())
+	for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Logic2D::CollisionComponent, Engine::ECS::Component::Common::TransformComponent>())
 	{
-		const auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
-		const auto& transformComp = ecs.get<eNsCommonComp::TransformComponent>(e);
+		const auto& collisionComp = ecs.get<Engine::ECS::Component::Logic2D::CollisionComponent>(e);
+		const auto& transformComp = ecs.get<Engine::ECS::Component::Common::TransformComponent>(e);
 
 		std::visit([&](auto&& shape) {
 			using T = std::decay_t<decltype(shape)>;
-			if constexpr (std::is_same_v<T, eNsLogic2DComp::Circle2D>)
+			if constexpr (std::is_same_v<T, Engine::ECS::Component::Logic2D::Circle2D>)
 			{
 				// ローカル -> ワールド変換
 				glm::vec2 worldCenter = glm::vec2(transformComp.position.x, transformComp.position.z)
@@ -172,22 +172,22 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerCollision(eNsECS::EntityMgr
 
 				float worldRadius = shape.radius;// 必要ならスケーリング(ローカルにスケーリングを適用済(修正必要))
 
-				eNsDebugDraw::DrawCircle2D(worldCenter, worldRadius, color);
+				Engine::Debug::Drawing::DrawCircle2D(worldCenter, worldRadius, color);
 			}
 			}, collisionComp.collider.shape);
 	}
 }
 
-void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerAndTileMap(eNsECS::EntityMgr& ecs,
-	const eNsGfxRender::RenderContext& renderContext,
+void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerAndTileMap(Engine::ECS::EntityMgr& ecs,
+	const Engine::Graphics::Render::RenderContext& renderContext,
 	const Game::Collision::Data::CollisionResultStorage& collisionResult)
 {
 	glm::vec3 color = glm::vec3(1.0f, 0.0f, 0.0f);
 
-	eNsLogic2DComp::TileMapComponent tileMapComp;
-	for (eNsECS::Entity e : ecs.view<eNsLogic2DComp::TileMapComponent>())
+	Engine::ECS::Component::Logic2D::TileMapComponent tileMapComp;
+	for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Logic2D::TileMapComponent>())
 	{
-		tileMapComp = ecs.get<eNsLogic2DComp::TileMapComponent>(e);
+		tileMapComp = ecs.get<Engine::ECS::Component::Logic2D::TileMapComponent>(e);
 		break;
 	}
 
@@ -209,14 +209,14 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerAndTileMap(eNsECS::EntityMg
 		// DebugUtils::LogVector_string("tilemin", tileMin);
 		// DebugUtils::LogVector_string("tileMax", tileMax);
 
-		eNsDebugDraw::DrawTileOutline(tileMin, tileMax, color);
+		Engine::Debug::Drawing::DrawTileOutline(tileMin, tileMax, color);
 	}
 
 	// DebugUtils::DebugDraw::DrawTileOutline(collisionResult, tileMapComp, color);
 }
 
 
-void Engine::Debug::Drawing::Logic2D::SetOpenGLMatrixState(const eNsGfxRender::RenderContext& renderContext)
+void Engine::Debug::Drawing::Logic2D::SetOpenGLMatrixState(const Engine::Graphics::Render::RenderContext& renderContext)
 {
 	// view/projection を事前にセット
 	// 固定機能パイプラインの古い機能
@@ -238,14 +238,14 @@ void Engine::Debug::Drawing::Logic2D::ResetOpenGLMatrixState()
 
 
 
-void  Engine::Debug::Drawing::Logic2D::RenderAttack2DAreas(eNsECS::EntityMgr& ecs, const eNsGfxRender::RenderContext& renderContext)
+void  Engine::Debug::Drawing::Logic2D::RenderAttack2DAreas(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext)
 {
-	for (eNsECS::Entity e : ecs.view<gNsSkillComp::Attack2DAreaComponent, eNsLogic2DComp::Transform2DComponent>())
+	for (Engine::ECS::Entity e : ecs.view<Game::Combat::Skill::Component::Attack2DAreaComponent, Engine::ECS::Component::Logic2D::Transform2DComponent>())
 	{
-		const auto& area = ecs.get<gNsSkillComp::Attack2DAreaComponent>(e);
-		const auto& transfrom = ecs.get<eNsLogic2DComp::Transform2DComponent>(e);
+		const auto& area = ecs.get<Game::Combat::Skill::Component::Attack2DAreaComponent>(e);
+		const auto& transfrom = ecs.get<Engine::ECS::Component::Logic2D::Transform2DComponent>(e);
 		
-		gNsSkillComp::Attack2DShape worldShape = gNsSkillUtils::ComputeWorldShape(area.shape, transfrom);
+		Game::Combat::Skill::Component::Attack2DShape worldShape = Game::Combat::Skill::Utils::ComputeWorldShape(area.shape, transfrom);
 
 
 		std::visit([&](const auto& shape)
@@ -254,18 +254,18 @@ void  Engine::Debug::Drawing::Logic2D::RenderAttack2DAreas(eNsECS::EntityMgr& ec
 				glm::vec4 color = glm::vec4(1.0f, 0.5f, 0.5f, 0.3f);
 
 
-				if constexpr (std::is_same_v<T, gNsSkillComp::Circle2DAttack>)
+				if constexpr (std::is_same_v<T, Game::Combat::Skill::Component::Circle2DAttack>)
 				{
-					eNsDebugDraw::DrawFilledCircle2D(shape.center, shape.radius, color);
+					Engine::Debug::Drawing::DrawFilledCircle2D(shape.center, shape.radius, color);
 				}
-				else if constexpr (std::is_same_v<T, gNsSkillComp::Sector2DAttack>)
+				else if constexpr (std::is_same_v<T, Game::Combat::Skill::Component::Sector2DAttack>)
 				{
 					// DebugUtils::DebugDraw::DrawFilledSector2D(transfrom.positionXZ, transfrom.GetFrontXZ(), shape.radius, shape.angle, color);
-					eNsDebugDraw::DrawFilledSector2D(shape.center, shape.direction, shape.radius, shape.angle, color);
+					Engine::Debug::Drawing::DrawFilledSector2D(shape.center, shape.direction, shape.radius, shape.angle, color);
 				}
-				else if constexpr (std::is_same_v<T, gNsSkillComp::Rectangle2DAttack>)
+				else if constexpr (std::is_same_v<T, Game::Combat::Skill::Component::Rectangle2DAttack>)
 				{
-					eNsDebugDraw::DrawFilledRect2D(shape.center, shape.direction, shape.width, shape.height, color);
+					Engine::Debug::Drawing::DrawFilledRect2D(shape.center, shape.direction, shape.width, shape.height, color);
 				}
 
 			}, worldShape.shape);

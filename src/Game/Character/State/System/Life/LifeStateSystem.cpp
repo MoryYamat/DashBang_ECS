@@ -1,19 +1,19 @@
-#include "LifeStateSystem.hpp"
+﻿#include "LifeStateSystem.hpp"
 
 #include "Game/Character/Stats/Component/CharacterStatsComponent.h"
 #include "Game/Character/State/Rule/Life/LifeStateTransitionDatabase.hpp"
 #include "Game/Character/State/Rule/Life/LifeStateTransitionEvaluator.hpp"
 
-#include "Common/GameNamespaceDecl.h"
 
-void Game::Character::State::Life::LifeStateSystem::UpdateStates(eNsECS::EntityMgr& ecs)
+
+void Game::Character::State::Life::LifeStateSystem::UpdateStates(Engine::ECS::EntityMgr& ecs)
 {
-    auto& db = ecs.getResource<gNsCharaLifeState::StateTransitionDatabase>();
+    auto& db = ecs.getResource<Game::Character::State::Life::StateTransitionDatabase>();
 
-    for (auto e : ecs.view<gNsCharaLifeState::CharacterLifeStateComponent, gNsCharacterStats::CharacterStatsComponent>())
+    for (auto e : ecs.view<Game::Character::State::Life::CharacterLifeStateComponent, Game::Character::Stats::CharacterStatsComponent>())
     {
-        auto& life = ecs.get<gNsCharaLifeState::CharacterLifeStateComponent>(e);
-        auto& stats = ecs.get<gNsCharacterStats::CharacterStatsComponent>(e);
+        auto& life = ecs.get<Game::Character::State::Life::CharacterLifeStateComponent>(e);
+        auto& stats = ecs.get<Game::Character::Stats::CharacterStatsComponent>(e);
 
         for (const auto& rule : db.rules)
         {

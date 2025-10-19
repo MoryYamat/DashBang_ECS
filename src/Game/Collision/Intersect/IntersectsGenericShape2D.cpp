@@ -1,12 +1,12 @@
-#include "IntersectsGenericShape2D.h"
+ï»¿#include "IntersectsGenericShape2D.h"
 
 #include "Engine/Physics/Logic2D/DetectionFunctions.h"
 
 #include <iostream>
 
-#include "Common/EngineNamespaceDecl.h"
 
-// Ã“IŠÖ”ƒfƒBƒXƒpƒbƒ` => “®“IŠÖ”ƒfƒBƒXƒpƒbƒ`‚ÖˆÚs‚·‚é‚±‚Æ‚ğŒŸ“¢‚·‚é‚×‚«
+
+// é™çš„é–¢æ•°ãƒ‡ã‚£ã‚¹ãƒ‘ãƒƒãƒ => å‹•çš„é–¢æ•°ãƒ‡ã‚£ã‚¹ãƒ‘ãƒƒãƒã¸ç§»è¡Œã™ã‚‹ã“ã¨ã‚’æ¤œè¨ã™ã‚‹ã¹ã
 bool Game::Collision::Intersect::Intersects(const GenericShape2D& a, const GenericShape2D& b)
 {
 	return std::visit([](auto&& lhs, auto&& rhs) -> bool {
@@ -24,13 +24,13 @@ bool Game::Collision::Intersect::Intersects(const GenericShape2D& a, const Gener
 			return Intersects_Circle_Sector(lhs, rhs);
 		}
 		else if constexpr (std::is_same_v<L, Sector2D> && std::is_same_v<R, Circle2D>) {
-			return Intersects_Circle_Sector(rhs, lhs); // ˆø”‚Ì‡”Ô‚ğ“ü‚ê‘Ö‚¦‚é
+			return Intersects_Circle_Sector(rhs, lhs); // å¼•æ•°ã®é †ç•ªã‚’å…¥ã‚Œæ›¿ãˆã‚‹
 		}
 		else if constexpr (std::is_same_v<L, Circle2D> && std::is_same_v<R, Obb2D>) {
 			return Intersects_Circle_Obb(lhs, rhs);
 		}
 		else if constexpr (std::is_same_v<L, Obb2D> && std::is_same_v<R, Circle2D>) {
-			return Intersects_Circle_Obb(rhs, lhs); // ˆø”‚Ì‡”Ô‚ğ“ü‚ê‘Ö‚¦‚é
+			return Intersects_Circle_Obb(rhs, lhs); // å¼•æ•°ã®é †ç•ªã‚’å…¥ã‚Œæ›¿ãˆã‚‹
 		}
 		else if constexpr (std::is_same_v<L, Sector2D> && std::is_same_v<R, Sector2D>) {
 			return Intersects_Sector_Sector(lhs, rhs);
@@ -39,7 +39,7 @@ bool Game::Collision::Intersect::Intersects(const GenericShape2D& a, const Gener
 			return Intersects_Sector_Obb(lhs, rhs);
 		}
 		else if constexpr (std::is_same_v<L, Obb2D> && std::is_same_v<R, Sector2D>) {
-			return Intersects_Sector_Obb(rhs, lhs); // ‡˜”½“]
+			return Intersects_Sector_Obb(rhs, lhs); // é †åºåè»¢
 		}
 		else if constexpr (std::is_same_v<L, Obb2D> && std::is_same_v<R, Obb2D>) {
 			return Intersects_Obb_Obb(lhs, rhs);
@@ -51,7 +51,7 @@ bool Game::Collision::Intersect::Intersects(const GenericShape2D& a, const Gener
 		}
 		}, a, b);
 
-		//// –³Œø‚ÈŒ`ó(monostate)‚È‚çfalse
+		//// ç„¡åŠ¹ãªå½¢çŠ¶(monostate)ãªã‚‰false
 		//if constexpr (std::is_same_v<L, std::monostate> || std::is_same_v<R, std::monostate>)
 		//	return false;
 
@@ -79,7 +79,7 @@ bool Game::Collision::Intersect::Intersects(const GenericShape2D& a, const Gener
 		//else if constexpr (std::is_same_v<L, Obb2D> && std::is_same_v<R, Obb2D>)
 		//	return Intersects_Obb_Obb(lhs, rhs);
 
-		//// ‚Ù‚©‚Ì”»’è‚à‡Ÿ’Ç‰Á
+		//// ã»ã‹ã®åˆ¤å®šã‚‚é †æ¬¡è¿½åŠ 
 
 		//else
 		//	std::cout << "[IntersectsGenericShape2D.cpp(Intersects)]: There is no corresponding shape pair.\n";
@@ -90,37 +90,37 @@ bool Game::Collision::Intersect::Intersects(const GenericShape2D& a, const Gener
 
 bool Game::Collision::Intersect::Intersects_Circle_Circle(const Circle2D& a, const Circle2D& b)
 {
-	return eNsPhys2DColl::intersects_Circle2D_Circle2D(a.center, a.radius, b.center, b.radius);
+	return Engine::Physics::Logic2D::Collision::intersects_Circle2D_Circle2D(a.center, a.radius, b.center, b.radius);
 }
 
 bool Game::Collision::Intersect::Intersects_Circle_Sector(const Circle2D& circle, const Sector2D& sector)
 {
-	return eNsPhys2DColl::Intersects_Circle2D_Sector2D(circle.center, circle.radius,
+	return Engine::Physics::Logic2D::Collision::Intersects_Circle2D_Sector2D(circle.center, circle.radius,
 		sector.center, sector.direction, sector.angle, sector.radius);
 }
 
 bool Game::Collision::Intersect::Intersects_Circle_Obb(const Circle2D& circle, const Obb2D& obb)
 {
-	return eNsPhys2DColl::Intersects_Circle2D_Obb2D(circle.center, circle.radius,
+	return Engine::Physics::Logic2D::Collision::Intersects_Circle2D_Obb2D(circle.center, circle.radius,
 		obb.center, obb.halfExtents, obb.axisX, obb.axisZ
 		);
 }
 
 bool Game::Collision::Intersect::Intersects_Sector_Sector(const Sector2D& a, const Sector2D& b)
 {
-	return eNsPhys2DColl::Intersects_Sector2D_Sector2D(a.center, a.direction, a.angle, a.radius,
+	return Engine::Physics::Logic2D::Collision::Intersects_Sector2D_Sector2D(a.center, a.direction, a.angle, a.radius,
 		b.center, b.direction, b.angle, b.radius);
 }
 
 bool Game::Collision::Intersect::Intersects_Sector_Obb(const Sector2D& sector, const Obb2D& obb)
 {
-	return eNsPhys2DColl::Intersects_Sector2D_Obb2D(sector.center, sector.direction, sector.angle, sector.radius,
+	return Engine::Physics::Logic2D::Collision::Intersects_Sector2D_Obb2D(sector.center, sector.direction, sector.angle, sector.radius,
 		obb.center, obb.halfExtents, obb.axisX, obb.axisZ
 	);
 }
 
 bool Game::Collision::Intersect::Intersects_Obb_Obb(const Obb2D& a, const Obb2D& b)
 {
-	return eNsPhys2DColl::Intersects_Obb2D_Obb2D(a.center, a.halfExtents, a.axisX, a.axisZ,
+	return Engine::Physics::Logic2D::Collision::Intersects_Obb2D_Obb2D(a.center, a.halfExtents, a.axisX, a.axisZ,
 		b.center, b.halfExtents, b.axisX, b.axisZ);
 }

@@ -1,4 +1,4 @@
-// tile grid XZ
+ï»¿// tile grid XZ
 
 #pragma once
 
@@ -6,11 +6,11 @@
 
 #include "Engine/Math/Logic2D/LogicMathUtils.h"
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 #include <GLM/glm.hpp>
 
-// Œ»İ–¢g—p@(3ŸŒ³˜_—‹óŠÔ‚É‚¨‚¯‚é“ñŸŒ³ƒ^ƒCƒ‹‚ğl‚¦‚éd—l‚Ì‚½‚ß)
+// ç¾åœ¨æœªä½¿ç”¨ã€€(3æ¬¡å…ƒè«–ç†ç©ºé–“ã«ãŠã‘ã‚‹äºŒæ¬¡å…ƒã‚¿ã‚¤ãƒ«ã‚’è€ƒãˆã‚‹ä»•æ§˜ã®ãŸã‚)
 namespace Engine::ECS::Component::Logic2D
 {
 	struct TileData
@@ -19,18 +19,18 @@ namespace Engine::ECS::Component::Logic2D
 		int tileType = 0;
 	};
 
-	// Y = 0‚É‚ ‚é˜_—•½–Ê‚Ìƒf[ƒ^\‘¢
+	// Y = 0ã«ã‚ã‚‹è«–ç†å¹³é¢ã®ãƒ‡ãƒ¼ã‚¿æ§‹é€ 
 	struct TileGridXZComponent
 	{
 		int numCols;
 		int numRows;
 		float tileSize = 1.0f;
 
-		// origin ‚Í(0, 0, 0)‚Å Z‚ªrow•ûŒüCX‚ªcol•ûŒü‚ÉL‚ª‚é 
+		// origin ã¯(0, 0, 0)ã§ ZãŒrowæ–¹å‘ï¼ŒXãŒcolæ–¹å‘ã«åºƒãŒã‚‹ 
 		glm::vec3 origin = CanonicalDefaults::kCanonicalOrigin;
 
 		//tiles[row][col]
-		std::vector<std::vector<eNsLogic2DComp::TileData>> tiles;
+		std::vector<std::vector<Engine::ECS::Component::Logic2D::TileData>> tiles;
 
 		//
 		inline std::pair<glm::vec3, glm::vec3> GetTileAABB(int row, int col) 

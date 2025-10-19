@@ -1,4 +1,4 @@
-#include "UpdateCharacterVelocity.h"
+ï»¿#include "UpdateCharacterVelocity.h"
 
 #include "Engine/ECS/Component/Logic2D/Velocity2DComponent.h"
 
@@ -6,23 +6,25 @@
 
 #include "Game/Character/Stats/Component/CharacterStatsComponent.h"
 
-#include "Common/GameNamespaceDecl.h"
+#include "Engine/ECS/Ops/CoreOps.hpp"
 
 #include <GLM/glm.hpp>
 
-// íœ—\’èFFSMResolver“±“üŒã”p~
-void Game::Character::Movement::UpdateCharacterVelocity(eNsECS::EntityMgr& ecs)
+// å‰Šé™¤äºˆå®šï¼šFSMResolverå°å…¥å¾Œå»ƒæ­¢
+void Game::Character::Movement::UpdateCharacterVelocity(Engine::ECS::EntityMgr& ecs)
 {
+	namespace Ops = Engine::ECS::Ops;
+	namespace Comp = Engine::ECS::Component;
 
-	for (eNsECS::Entity e : ecs.view<
-		eNsLogic2DComp::Velocity2DComponent,
-		gNsCharacterIntent::MovementIntentComponent,
-		gNsCharacterStats::CharacterStatsComponent
+	for (Engine::ECS::Entity e : ecs.view<
+		Comp::Logic2D::Velocity2DComponent,
+		Game::Character::Intent::MovementIntentComponent,
+		Game::Character::Stats::CharacterStatsComponent
 	>())
 	{
-		auto& vel = ecs.get< eNsLogic2DComp::Velocity2DComponent>(e);
-		auto& intent = ecs.get<gNsCharacterIntent::MovementIntentComponent>(e);
-		auto& stats = ecs.get<gNsCharacterStats::CharacterStatsComponent>(e);
+		auto& vel = Ops::Get<Comp::Logic2D::Velocity2DComponent>(ecs, e);
+		auto& intent = Ops::Get<Game::Character::Intent::MovementIntentComponent>(ecs, e);
+		auto& stats = Ops::Get<Game::Character::Stats::CharacterStatsComponent>(ecs, e);
 
 		if (!intent.isActive || glm::length(intent.direction) < 0.001f)
 		{

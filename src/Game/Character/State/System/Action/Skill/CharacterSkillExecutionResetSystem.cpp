@@ -1,47 +1,47 @@
-#include "CharacterSkillExecutionResetSystem.hpp"
+ï»¿#include "CharacterSkillExecutionResetSystem.hpp"
 
 
 #include "Game/Character/State/Component/Action/Skill/CharacterSkillExecutionStateComponent.hpp"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 #include "Engine/Debug/DebugUtils.h"
 
 #include <string>
 
 
-// Fixme: ‚±‚ÌlifetimeComponent‚É‚æ‚Á‚ÄŠÔŒo‰ß‚¨‚æ‚ÑƒŠƒZƒbƒg‹@\‚ğÄÀ‘•‚·‚é•K—v‚ ‚è
+// Fixme: ã“ã®lifetimeComponentã«ã‚ˆã£ã¦æ™‚é–“çµŒéãŠã‚ˆã³ãƒªã‚»ãƒƒãƒˆæ©Ÿæ§‹ã‚’å†å®Ÿè£…ã™ã‚‹å¿…è¦ã‚ã‚Š
 void Game::Character::State::Action::CharacterSkillExecutionResetSystem::ResetSkillExecutionState
 (
-	eNsECS::EntityMgr& ecs,
+	Engine::ECS::EntityMgr& ecs,
 	float deltaTime
 )
 {
-	for (eNsECS::Entity ePlayer : ecs.view<gNsCharaActionState::CharacterSkillExecutionStateComponent>())
+	for (Engine::ECS::Entity ePlayer : ecs.view<Game::Character::State::Action::CharacterSkillExecutionStateComponent>())
 	{
-		auto& skillExec = ecs.get<gNsCharaActionState::CharacterSkillExecutionStateComponent>(ePlayer);
+		auto& skillExec = ecs.get<Game::Character::State::Action::CharacterSkillExecutionStateComponent>(ePlayer);
 
-		if (skillExec.currentPhase == gNsCharaActionState::CharacterSkillExecutionPhase::Completed)
+		if (skillExec.currentPhase == Game::Character::State::Action::CharacterSkillExecutionPhase::Completed)
 		{
-			skillExec.currentPhase = gNsCharaActionState::CharacterSkillExecutionPhase::None;
-			skillExec.previousPhase = gNsCharaActionState::CharacterSkillExecutionPhase::None;
-			skillExec.elapsedTime = 0.0f; // Œo‰ßŠÔ‚ğƒŠƒZƒbƒg
-			// ƒfƒoƒbƒOƒƒO
-			eNsDebugLog::GeneralLog("CharacterSkillExecutionResetSystem", "Skill execution state reset for entity: " + std::to_string(ePlayer.id));
+			skillExec.currentPhase = Game::Character::State::Action::CharacterSkillExecutionPhase::None;
+			skillExec.previousPhase = Game::Character::State::Action::CharacterSkillExecutionPhase::None;
+			skillExec.elapsedTime = 0.0f; // çµŒéæ™‚é–“ã‚’ãƒªã‚»ãƒƒãƒˆ
+			// ãƒ‡ãƒãƒƒã‚°ãƒ­ã‚°
+			Engine::Debug::Logging::GeneralLog("CharacterSkillExecutionResetSystem", "Skill execution state reset for entity: " + std::to_string(ePlayer.id));
 
 			//skillExec.elapsedTime += deltaTime;
-			//if (skillExec.elapsedTime > 0.2f) // 0.2•bˆÈãŒo‰ß‚µ‚½‚çƒŠƒZƒbƒg (‚±‚Ìƒ^ƒCƒ€ƒ‰ƒO‚Í•s—v‚©‚à‚µ‚ê‚È‚¢)
+			//if (skillExec.elapsedTime > 0.2f) // 0.2ç§’ä»¥ä¸ŠçµŒéã—ãŸã‚‰ãƒªã‚»ãƒƒãƒˆ (ã“ã®ã‚¿ã‚¤ãƒ ãƒ©ã‚°ã¯ä¸è¦ã‹ã‚‚ã—ã‚Œãªã„)
 			//{
-			//	skillExec.currentPhase = gNsCharaActionState::CharacterSkillExecutionPhase::None;
-			//	skillExec.previousPhase = gNsCharaActionState::CharacterSkillExecutionPhase::None;
-			//	skillExec.elapsedTime = 0.0f; // Œo‰ßŠÔ‚ğƒŠƒZƒbƒg
-			//	// ƒfƒoƒbƒOƒƒO
-			//	eNsDebugLog::GeneralLog("CharacterSkillExecutionResetSystem", "Skill execution state reset for entity: " + std::to_string(ePlayer.id));
+			//	skillExec.currentPhase = Game::Character::State::Action::CharacterSkillExecutionPhase::None;
+			//	skillExec.previousPhase = Game::Character::State::Action::CharacterSkillExecutionPhase::None;
+			//	skillExec.elapsedTime = 0.0f; // çµŒéæ™‚é–“ã‚’ãƒªã‚»ãƒƒãƒˆ
+			//	// ãƒ‡ãƒãƒƒã‚°ãƒ­ã‚°
+			//	Engine::Debug::Logging::GeneralLog("CharacterSkillExecutionResetSystem", "Skill execution state reset for entity: " + std::to_string(ePlayer.id));
 			//}
 		}
 
-		// Interruptedó‘Ô‚àƒŠƒZƒbƒg‚·‚éˆ—‚ğ’Ç‰Á—\’è
-		// Interruptedó‘Ô‚àƒŠƒZƒbƒg‚·‚éˆ—‚ğ’Ç‰Á—\’è
-		// Interruptedó‘Ô‚àƒŠƒZƒbƒg‚·‚éˆ—‚ğ’Ç‰Á—\’è
+		// InterruptedçŠ¶æ…‹ã‚‚ãƒªã‚»ãƒƒãƒˆã™ã‚‹å‡¦ç†ã‚’è¿½åŠ äºˆå®š
+		// InterruptedçŠ¶æ…‹ã‚‚ãƒªã‚»ãƒƒãƒˆã™ã‚‹å‡¦ç†ã‚’è¿½åŠ äºˆå®š
+		// InterruptedçŠ¶æ…‹ã‚‚ãƒªã‚»ãƒƒãƒˆã™ã‚‹å‡¦ç†ã‚’è¿½åŠ äºˆå®š
 	}
 }

@@ -4,7 +4,7 @@
 
 #include "Engine/ECS/Entity.h"
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 #include "Game/Combat/Skill/FSM/SkillStateTags.hpp"
 
@@ -46,7 +46,7 @@ namespace Game::Combat::Skill::Component
 	// スキル実行状態メタ情報
 	struct SkillExecutionContextComponent
 	{
-		eNsECS::Entity caster = eNsECS::Entity::INVALID;
+		Engine::ECS::Entity caster = Engine::ECS::Entity::INVALID;
 		uint32_t skillId = 0;
 
 		float elapsedTime = 0.0f;

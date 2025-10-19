@@ -4,11 +4,11 @@
 
 #include "Engine/ECS/Component/Tags/PendingDestroyComponent.h"
 
-void Engine::ECS::GrobalSystem::RunCleanup(eNsECS::EntityMgr& ecs)
+void Engine::ECS::GrobalSystem::RunCleanup(Engine::ECS::EntityMgr& ecs)
 {
-	for (Entity e : ecs.view<eNsTagComp::PendingDestroyComponent>())
+	for (Entity e : ecs.view<Engine::ECS::Component::Tags::PendingDestroyComponent>())
 	{
-		auto& destroy = ecs.get<eNsTagComp::PendingDestroyComponent>(e);
+		auto& destroy = ecs.get<Engine::ECS::Component::Tags::PendingDestroyComponent>(e);
 
 		// 削除遅延フレーム消費
 		if (destroy.delayFrames > 0)

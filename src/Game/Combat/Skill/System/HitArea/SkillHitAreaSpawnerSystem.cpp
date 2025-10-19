@@ -1,13 +1,13 @@
-#include "SkillHitAreaSpawnerSystem.hpp"
+﻿#include "SkillHitAreaSpawnerSystem.hpp"
 
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 //
-void Game::Combat::Skill::System::SpawnSkillHitAreas(eNsECS::EntityMgr& ecs)
+void Game::Combat::Skill::System::SpawnSkillHitAreas(Engine::ECS::EntityMgr& ecs)
 {
-	auto& db = ecs.getResource<gNsSkillData::SkillDatabase>();
+	auto& db = ecs.getResource<Game::Combat::Skill::Data::SkillDatabase>();
 
 
 }

@@ -1,4 +1,4 @@
-// 
+ï»¿// 
 #include "SkillCastingSystem.h"
 
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
@@ -21,108 +21,108 @@
 #include "Engine/Debug/DebugUtils.h"
 
 
-// íœ—\’èFŒ^ƒx[ƒXFSM“±“üŒã”p~—\’è
-void Game::Combat::Skill::System::spawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsSkillData::SkillDatabase& skillDB, eNsECS::Entity skillEntity)
+// å‰Šé™¤äºˆå®šï¼šå‹ãƒ™ãƒ¼ã‚¹FSMå°å…¥å¾Œå»ƒæ­¢äºˆå®š
+void Game::Combat::Skill::System::spawnSkillHitArea(Engine::ECS::EntityMgr& ecs, Game::Combat::Skill::Data::SkillDatabase& skillDB, Engine::ECS::Entity skillEntity)
 {
-	//auto& instance = ecs.get<gNsSkillComp::SkillInstanceComponent>(skillEntity);
+	//auto& instance = ecs.get<Game::Combat::Skill::Component::SkillInstanceComponent>(skillEntity);
 
 	//std::cout << "[SkillCastingSystem] Checking if SkillID " << instance.skillId << " exists..." << std::endl;
 	//if (!skillDB.Has(instance.skillId)) {
 	//	std::cout << "[SkillCastingSystem] SkillID not found, skipping." << std::endl;
 	//}
 
-	//const gNsSkillData::SkillDefinition& def = skillDB.Get(instance.skillId);
+	//const Game::Combat::Skill::Data::SkillDefinition& def = skillDB.Get(instance.skillId);
 
-	//auto& transform = ecs.get<eNsLogic2DComp::Transform2DComponent>(skillEntity);
-	//const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(instance.caster);
-	//const auto& casterTeam = ecs.get<gNsECSComp::TeamComponent>(instance.caster).team;
+	//auto& transform = ecs.get<Engine::ECS::Component::Logic2D::Transform2DComponent>(skillEntity);
+	//const auto& logic = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(instance.caster);
+	//const auto& casterTeam = ecs.get<Game::ECS::Component::TeamComponent>(instance.caster).team;
 
-	//// world •ÏŠ·
+	//// world å¤‰æ›
 	//glm::vec2 worldCenter = logic.positionXZ;
-	//gNsSkillComp::Attack2DShape shape = def.attackSpec.shape;
+	//Game::Combat::Skill::Component::Attack2DShape shape = def.attackSpec.shape;
 
 
-	//// UŒ‚”ÍˆÍƒGƒ“ƒeƒBƒeƒB¶¬
-	//eNsECS::Entity attack = ecs.createEntity();
-	//gNsSkillComp::Attack2DAreaComponent area;
-	//area.shape = shape;							// UŒ‚”ÍˆÍ‚ÌŒ`ó‚ğİ’è
+	//// æ”»æ’ƒç¯„å›²ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ç”Ÿæˆ
+	//Engine::ECS::Entity attack = ecs.createEntity();
+	//Game::Combat::Skill::Component::Attack2DAreaComponent area;
+	//area.shape = shape;							// æ”»æ’ƒç¯„å›²ã®å½¢çŠ¶ã‚’è¨­å®š
 
-	//// Fixme: lifetime‚Í`LifetimeComponent`‚ÉÓ–±•ª—£‚µ‚½‚½‚ßíœ—\’è
-	//area.lifetime = def.attackSpec.lifetime.duration.value_or(0.0f);	// UŒ‚”ÍˆÍ‚Ìƒ‰ƒCƒtƒ^ƒCƒ€‚ğİ’è
+	//// Fixme: lifetimeã¯`LifetimeComponent`ã«è²¬å‹™åˆ†é›¢ã—ãŸãŸã‚å‰Šé™¤äºˆå®š
+	//area.lifetime = def.attackSpec.lifetime.duration.value_or(0.0f);	// æ”»æ’ƒç¯„å›²ã®ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ã‚’è¨­å®š
 
-	//area.owner = instance.caster;				// UŒ‚”ÍˆÍ‚ÌŠ—LÒ‚ğİ’è
-	//area.skillEntity = skillEntity;				// ƒXƒLƒ‹ƒGƒ“ƒeƒBƒeƒB‚ğİ’è
+	//area.owner = instance.caster;				// æ”»æ’ƒç¯„å›²ã®æ‰€æœ‰è€…ã‚’è¨­å®š
+	//area.skillEntity = skillEntity;				// ã‚¹ã‚­ãƒ«ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ã‚’è¨­å®š
 	//std::cout << "[SkillCastingSystem.cpp(SpawnSkillHitArea)] create: " << def.name << " is created. \n";
 	//ecs.addComponent(attack, area);
 
-	//// Fixme : ŠÖ”‚Æ‚µ‚ÄØ‚èo‚µ‚½‚¢
-	//// Fixme : ŠÖ”‚Æ‚µ‚ÄØ‚èo‚µ‚½‚¢
-	//// Fixme : ŠÖ”‚Æ‚µ‚ÄØ‚èo‚µ‚½‚¢
-	//gNsECSComp::LifetimeComponent lifetime;
-	//if (def.attackSpec.lifetime.hitBoxlifetimePolicy == gNsSkillData::AttackLifeTimeMode::SyncWithSkillPhase)
+	//// Fixme : é–¢æ•°ã¨ã—ã¦åˆ‡ã‚Šå‡ºã—ãŸã„
+	//// Fixme : é–¢æ•°ã¨ã—ã¦åˆ‡ã‚Šå‡ºã—ãŸã„
+	//// Fixme : é–¢æ•°ã¨ã—ã¦åˆ‡ã‚Šå‡ºã—ãŸã„
+	//Game::ECS::Component::LifetimeComponent lifetime;
+	//if (def.attackSpec.lifetime.hitBoxlifetimePolicy == Game::Combat::Skill::Data::AttackLifeTimeMode::SyncWithSkillPhase)
 	//{
-	//	lifetime.totalLifetime = def.attackSpec.lifetime.duration.value_or(0.0f);	// ƒXƒLƒ‹ƒtƒF[ƒY‚Ì‘±ŠÔ‚Æ“¯Šú
+	//	lifetime.totalLifetime = def.attackSpec.lifetime.duration.value_or(0.0f);	// ã‚¹ã‚­ãƒ«ãƒ•ã‚§ãƒ¼ã‚ºã®æŒç¶šæ™‚é–“ã¨åŒæœŸ
 	//}
-	//else if (def.attackSpec.lifetime.hitBoxlifetimePolicy == gNsSkillData::AttackLifeTimeMode::IndependentEntityLifetime)
+	//else if (def.attackSpec.lifetime.hitBoxlifetimePolicy == Game::Combat::Skill::Data::AttackLifeTimeMode::IndependentEntityLifetime)
 	//{
-	//	// UŒ‚”ÍˆÍ‚Ìƒ‰ƒCƒtƒ^ƒCƒ€‚Í“Æ—§‚µ‚Ä‚¢‚é‚½‚ßA‚±‚±‚Å‚Í“Á‚Éİ’è‚µ‚È‚¢
-	//	lifetime.totalLifetime = def.attackSpec.lifetime.duration.value_or(0.0f); // “Æ—§‚µ‚½ƒ‰ƒCƒtƒ^ƒCƒ€‚ğg—p
+	//	// æ”»æ’ƒç¯„å›²ã®ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ã¯ç‹¬ç«‹ã—ã¦ã„ã‚‹ãŸã‚ã€ã“ã“ã§ã¯ç‰¹ã«è¨­å®šã—ãªã„
+	//	lifetime.totalLifetime = def.attackSpec.lifetime.duration.value_or(0.0f); // ç‹¬ç«‹ã—ãŸãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ã‚’ä½¿ç”¨
 	//}
-	//else if (def.attackSpec.lifetime.hitBoxlifetimePolicy == gNsSkillData::AttackLifeTimeMode::AttachedToChildEntity)
+	//else if (def.attackSpec.lifetime.hitBoxlifetimePolicy == Game::Combat::Skill::Data::AttackLifeTimeMode::AttachedToChildEntity)
 	//{
-	//	// UŒ‚”ÍˆÍ‚ÍqƒGƒ“ƒeƒBƒeƒB‚ÉƒAƒ^ƒbƒ`‚³‚ê‚é‚½‚ßA‚±‚±‚Å‚Í“Á‚Éİ’è‚µ‚È‚¢
+	//	// æ”»æ’ƒç¯„å›²ã¯å­ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ã«ã‚¢ã‚¿ãƒƒãƒã•ã‚Œã‚‹ãŸã‚ã€ã“ã“ã§ã¯ç‰¹ã«è¨­å®šã—ãªã„
 	//}
-	//ecs.addComponent(attack, lifetime); // UŒ‚”ÍˆÍ‚Éƒ‰ƒCƒtƒ^ƒCƒ€ƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ’Ç‰Á
-	//// Fixme : ŠÖ”‚Æ‚µ‚ÄØ‚èo‚µ‚½‚¢
-	//// Fixme : ŠÖ”‚Æ‚µ‚ÄØ‚èo‚µ‚½‚¢
-	//// Fixme : ŠÖ”‚Æ‚µ‚ÄØ‚èo‚µ‚½‚¢
+	//ecs.addComponent(attack, lifetime); // æ”»æ’ƒç¯„å›²ã«ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’è¿½åŠ 
+	//// Fixme : é–¢æ•°ã¨ã—ã¦åˆ‡ã‚Šå‡ºã—ãŸã„
+	//// Fixme : é–¢æ•°ã¨ã—ã¦åˆ‡ã‚Šå‡ºã—ãŸã„
+	//// Fixme : é–¢æ•°ã¨ã—ã¦åˆ‡ã‚Šå‡ºã—ãŸã„
 
-	//instance.spawnedHitAreas.push_back(attack);// ¶¬‚³‚ê‚½UŒ‚”ÍˆÍ‚ğSkillInstance‚É’Ç‰Á
+	//instance.spawnedHitAreas.push_back(attack);// ç”Ÿæˆã•ã‚ŒãŸæ”»æ’ƒç¯„å›²ã‚’SkillInstanceã«è¿½åŠ 
 
-	//// transform‚ğ•¡»
+	//// transformã‚’è¤‡è£½
 	//ecs.addComponent(attack, transform);
 
-	//eNsDebugLog::LogVector_string("skillCastingSystem.cpp()", transform.positionXZ);
+	//Engine::Debug::Logging::LogVector_string("skillCastingSystem.cpp()", transform.positionXZ);
 
-	//// UŒ‚”»’è Entity‚É‹OÕƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ’Ç‰Á
-	//gNsSkillComp::SkillTrajectoryComponent traj;
+	//// æ”»æ’ƒåˆ¤å®š Entityã«è»Œè·¡ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’è¿½åŠ 
+	//Game::Combat::Skill::Component::SkillTrajectoryComponent traj;
 	//traj.type = def.attackSpec.trajectoryType;
 	//traj.elapsedTime = 0.0f;
-	//traj.trajectoryFunc = gNsSkillFactory::SkillTrajectoryFactory::Create(def, transform);
+	//traj.trajectoryFunc = Game::Combat::SkillFactory::SkillTrajectoryFactory::Create(def, transform);
 	//ecs.addComponent(attack, traj);
 
-	//// ƒRƒŠƒWƒ‡ƒ“ƒ}ƒXƒN‚ğì¬
-	//gNsCollComp::CollisionMaskComponent mask;
+	//// ã‚³ãƒªã‚¸ãƒ§ãƒ³ãƒã‚¹ã‚¯ã‚’ä½œæˆ
+	//Game::Collision::Component::CollisionMaskComponent mask;
 	//mask = generateSkillCollisionMask(ecs, instance.caster);
 	//ecs.addComponent(attack, mask);
 
 }
 
 
-// íœ—\’èFŒ^ƒx[ƒXFSM“±“üŒã”p~—\’è
-//gNsCollComp::CollisionMaskComponent Game::Combat::Skill::System::generateSkillCollisionMask(
-//	eNsECS::EntityMgr& ecs,
-//	eNsECS::Entity caster
+// å‰Šé™¤äºˆå®šï¼šå‹ãƒ™ãƒ¼ã‚¹FSMå°å…¥å¾Œå»ƒæ­¢äºˆå®š
+//Game::Collision::Component::CollisionMaskComponent Game::Combat::Skill::System::generateSkillCollisionMask(
+//	Engine::ECS::EntityMgr& ecs,
+//	Engine::ECS::Entity caster
 //)
 //{
-//	gNsCollComp::CollisionMaskComponent mask;
-//	//// «—ˆ“I‚É‚ÍC‚±‚ÌselfLayer‚àskillDefinition‚©‚ç©“®İ’è‚·‚é•K—v‚ª‚ ‚é‚Æv‚í‚ê‚é
-//	//// «—ˆ“I‚É‚ÍC‚±‚ÌselfLayer‚àskillDefinition‚©‚ç©“®İ’è‚·‚é•K—v‚ª‚ ‚é‚Æv‚í‚ê‚é
-//	//// «—ˆ“I‚É‚ÍC‚±‚ÌselfLayer‚àskillDefinition‚©‚ç©“®İ’è‚·‚é•K—v‚ª‚ ‚é‚Æv‚í‚ê‚é
-//	//mask.selfLayer = gNsCollData::Layer::Skill;
+//	Game::Collision::Component::CollisionMaskComponent mask;
+//	//// å°†æ¥çš„ã«ã¯ï¼Œã“ã®selfLayerã‚‚skillDefinitionã‹ã‚‰è‡ªå‹•è¨­å®šã™ã‚‹å¿…è¦ãŒã‚ã‚‹ã¨æ€ã‚ã‚Œã‚‹
+//	//// å°†æ¥çš„ã«ã¯ï¼Œã“ã®selfLayerã‚‚skillDefinitionã‹ã‚‰è‡ªå‹•è¨­å®šã™ã‚‹å¿…è¦ãŒã‚ã‚‹ã¨æ€ã‚ã‚Œã‚‹
+//	//// å°†æ¥çš„ã«ã¯ï¼Œã“ã®selfLayerã‚‚skillDefinitionã‹ã‚‰è‡ªå‹•è¨­å®šã™ã‚‹å¿…è¦ãŒã‚ã‚‹ã¨æ€ã‚ã‚Œã‚‹
+//	//mask.selfLayer = Game::Collision::Data::Layer::Skill;
 //
-//	//gNsECSComp::Team team = ecs.get<gNsECSComp::TeamComponent>(caster).team;
+//	//Game::ECS::Component::Team team = ecs.get<Game::ECS::Component::TeamComponent>(caster).team;
 //
 //	//switch (team)
 //	//{
-//	//case gNsECSComp::Team::PlayerTeam:
-//	//	mask.collidesWithMask = static_cast<uint32_t>(gNsCollData::Layer::Enemy | gNsCollData::Layer::Neutral);
+//	//case Game::ECS::Component::Team::PlayerTeam:
+//	//	mask.collidesWithMask = static_cast<uint32_t>(Game::Collision::Data::Layer::Enemy | Game::Collision::Data::Layer::Neutral);
 //	//	break;
-//	//case gNsECSComp::Team::EnemyTeam:
-//	//	mask.collidesWithMask = static_cast<uint32_t>(gNsCollData::Layer::Player | gNsCollData::Layer::Neutral | gNsCollData::Layer::Friendly);
+//	//case Game::ECS::Component::Team::EnemyTeam:
+//	//	mask.collidesWithMask = static_cast<uint32_t>(Game::Collision::Data::Layer::Player | Game::Collision::Data::Layer::Neutral | Game::Collision::Data::Layer::Friendly);
 //	//	break;
-//	//case gNsECSComp::Team::Neutral:
-//	//	mask.collidesWithMask = static_cast<uint32_t>(gNsCollData::Layer::Enemy | gNsCollData::Layer::Player | gNsCollData::Layer::Friendly);
+//	//case Game::ECS::Component::Team::Neutral:
+//	//	mask.collidesWithMask = static_cast<uint32_t>(Game::Collision::Data::Layer::Enemy | Game::Collision::Data::Layer::Player | Game::Collision::Data::Layer::Friendly);
 //	//	break;
 //	//}
 //
@@ -130,18 +130,18 @@ void Game::Combat::Skill::System::spawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsS
 //}
 
 
-// íœ—\’èFŒ^ƒx[ƒXFSM“±“üŒã”p~—\’è
-// (”p~ (ŒÄ‚Ño‚µŒ^‚ğƒOƒ[ƒoƒ‹‚Å‚Í‚È‚­Cƒ[ƒJƒ‹‚É•ÏX))UŒ‚”»’èŒvã‚ğ¶¬(ECSƒOƒ[ƒoƒ‹ƒŠƒ\[ƒX(ƒXƒLƒ‹’è‹`‚Ìƒf[ƒ^ƒx[ƒX)‚ğg—p‚µ‚½À‘•) 
-void Game::Combat::Skill::System::SpawnSkillHitArea(eNsECS::EntityMgr& ecs)
+// å‰Šé™¤äºˆå®šï¼šå‹ãƒ™ãƒ¼ã‚¹FSMå°å…¥å¾Œå»ƒæ­¢äºˆå®š
+// (å»ƒæ­¢ (å‘¼ã³å‡ºã—å‹ã‚’ã‚°ãƒ­ãƒ¼ãƒãƒ«ã§ã¯ãªãï¼Œãƒ­ãƒ¼ã‚«ãƒ«ã«å¤‰æ›´))æ”»æ’ƒåˆ¤å®šè¨ˆä¸Šã‚’ç”Ÿæˆ(ECSã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒªã‚½ãƒ¼ã‚¹(ã‚¹ã‚­ãƒ«å®šç¾©ã®ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹)ã‚’ä½¿ç”¨ã—ãŸå®Ÿè£…) 
+void Game::Combat::Skill::System::SpawnSkillHitArea(Engine::ECS::EntityMgr& ecs)
 {
-	//gNsSkillData::SkillDatabase& skillDB = ecs.getResource<gNsSkillData::SkillDatabase>();
+	//Game::Combat::Skill::Data::SkillDatabase& skillDB = ecs.getResource<Game::Combat::Skill::Data::SkillDatabase>();
 
-	//for (eNsECS::Entity e : ecs.view<gNsSkillComp::SkillInstanceComponent>())
+	//for (Engine::ECS::Entity e : ecs.view<Game::Combat::Skill::Component::SkillInstanceComponent>())
 	//{
-	//	auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(e);
+	//	auto& skillInstance = ecs.get<Game::Combat::Skill::Component::SkillInstanceComponent>(e);
 
 
-	//	// (ó‘ÔƒŒƒCƒ„[“±“ü•ÏX—\’è ŠÔ‚É‚æ‚é§Œä‚Í‚¨‚©‚µ‚¢‚½‚ß)‰‰ñ”­“®‚Ì‚İ
+	//	// (çŠ¶æ…‹ãƒ¬ã‚¤ãƒ¤ãƒ¼å°å…¥æ™‚å¤‰æ›´äºˆå®š æ™‚é–“ã«ã‚ˆã‚‹åˆ¶å¾¡ã¯ãŠã‹ã—ã„ãŸã‚)åˆå›ç™ºå‹•æ™‚ã®ã¿
 	//	if (skillInstance.timeSinceCast > 0.0f)
 	//		continue;
 
@@ -155,19 +155,19 @@ void Game::Combat::Skill::System::SpawnSkillHitArea(eNsECS::EntityMgr& ecs)
 
 
 	//	if (!skillDB.Has(skillInstance.skillId)) continue;
-	//	const gNsSkillData::SkillDefinition& def = skillDB.Get(skillInstance.skillId);
+	//	const Game::Combat::Skill::Data::SkillDefinition& def = skillDB.Get(skillInstance.skillId);
 
-	//	auto& transform = ecs.get<eNsLogic2DComp::Transform2DComponent>(e);
-	//	const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(skillInstance.caster);
+	//	auto& transform = ecs.get<Engine::ECS::Component::Logic2D::Transform2DComponent>(e);
+	//	const auto& logic = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(skillInstance.caster);
 
-	//	// world •ÏŠ·
+	//	// world å¤‰æ›
 	//	glm::vec2 worldCenter = logic.positionXZ;
-	//	gNsSkillComp::Attack2DShape shape = def.attackSpec.shape;
+	//	Game::Combat::Skill::Component::Attack2DShape shape = def.attackSpec.shape;
 
 
-	//	// UŒ‚”ÍˆÍƒGƒ“ƒeƒBƒeƒB¶¬
-	//	eNsECS::Entity attack = ecs.createEntity();
-	//	gNsSkillComp::Attack2DAreaComponent area;
+	//	// æ”»æ’ƒç¯„å›²ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ç”Ÿæˆ
+	//	Engine::ECS::Entity attack = ecs.createEntity();
+	//	Game::Combat::Skill::Component::Attack2DAreaComponent area;
 	//	area.shape = shape;
 	//	area.lifetime = def.attackSpec.lifetime.duration.value_or(0.0f);
 	//	area.owner = skillInstance.caster;
@@ -177,45 +177,45 @@ void Game::Combat::Skill::System::SpawnSkillHitArea(eNsECS::EntityMgr& ecs)
 
 	//	skillInstance.spawnedHitAreas.push_back(attack);
 
-	//	// transform‚ğ•¡»
+	//	// transformã‚’è¤‡è£½
 	//	ecs.addComponent(attack, transform);
 
-	//	// UŒ‚”»’è Entity‚É‹OÕƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ’Ç‰Á
-	//	gNsSkillComp::SkillTrajectoryComponent traj;
+	//	// æ”»æ’ƒåˆ¤å®š Entityã«è»Œè·¡ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’è¿½åŠ 
+	//	Game::Combat::Skill::Component::SkillTrajectoryComponent traj;
 	//	traj.type = def.attackSpec.trajectoryType;
 	//	traj.elapsedTime = 0.0f;
-	//	traj.trajectoryFunc = gNsSkillFactory::SkillTrajectoryFactory::Create(def, transform);
+	//	traj.trajectoryFunc = Game::Combat::SkillFactory::SkillTrajectoryFactory::Create(def, transform);
 	//	ecs.addComponent(attack, traj);
 	//}
 	//// std::cout << "[SkillCastingSystem.cpp(SpawnSkillHitArea)] Hit Area is created successfully\n";
 
 }
 
-// UŒ‚”»’èŒ`ó‚ğì¬(Ìd—lFECSƒOƒ[ƒoƒ‹ƒŠƒ\[ƒXÀ‘•Œã”p~—\’è)
-void Game::Combat::Skill::System::SpawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsSkillData::SkillDatabase& skillDB)
+// æ”»æ’ƒåˆ¤å®šå½¢çŠ¶ã‚’ä½œæˆ(æ˜”ä»•æ§˜ï¼šECSã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒªã‚½ãƒ¼ã‚¹å®Ÿè£…å¾Œå»ƒæ­¢äºˆå®š)
+void Game::Combat::Skill::System::SpawnSkillHitArea(Engine::ECS::EntityMgr& ecs, Game::Combat::Skill::Data::SkillDatabase& skillDB)
 {
-	//for (eNsECS::Entity e : ecs.view<gNsSkillComp::SkillInstanceComponent>())
+	//for (Engine::ECS::Entity e : ecs.view<Game::Combat::Skill::Component::SkillInstanceComponent>())
 	//{
-	//	auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(e);
+	//	auto& skillInstance = ecs.get<Game::Combat::Skill::Component::SkillInstanceComponent>(e);
 
 
-	//	// ‰‰ñ”­“®‚Ì‚İ
+	//	// åˆå›ç™ºå‹•æ™‚ã®ã¿
 	//	if (skillInstance.timeSinceCast > 0.0f)
 	//		continue;
 
 	//	std::cout << "[SkillCastingSystem] skillId: " << skillInstance.skillId << std::endl;
 
 	//	if (!skillDB.Has(skillInstance.skillId)) continue;
-	//	const gNsSkillData::SkillDefinition& def = skillDB.Get(skillInstance.skillId);
-	//	auto& transform = ecs.get<eNsLogic2DComp::Transform2DComponent>(e);
-	//	const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(skillInstance.caster);
+	//	const Game::Combat::Skill::Data::SkillDefinition& def = skillDB.Get(skillInstance.skillId);
+	//	auto& transform = ecs.get<Engine::ECS::Component::Logic2D::Transform2DComponent>(e);
+	//	const auto& logic = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(skillInstance.caster);
 
-	//	// world •ÏŠ·
+	//	// world å¤‰æ›
 	//	glm::vec2 worldCenter = logic.positionXZ;
-	//	gNsSkillComp::Attack2DShape shape = def.attackSpec.shape;
+	//	Game::Combat::Skill::Component::Attack2DShape shape = def.attackSpec.shape;
 
 
-	//	// ƒ[ƒJƒ‹Œ`óî•ñ‚Æƒ[ƒ‹ƒh•ÏŠ·î•ñ‚ğ•ª—£‚µ‚½‚½‚ß‚±‚Ì•”•ª‚Ì•ªŠò‚Í•s—v
+	//	// ãƒ­ãƒ¼ã‚«ãƒ«å½¢çŠ¶æƒ…å ±ã¨ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›æƒ…å ±ã‚’åˆ†é›¢ã—ãŸãŸã‚ã“ã®éƒ¨åˆ†ã®åˆ†å²ã¯ä¸è¦
 	//	// Since the local shape information and the world transformation information have been separated, 
 	//	// this branch is no longer necessary.
 	//	//if (def.shape.IsCircle())
@@ -254,9 +254,9 @@ void Game::Combat::Skill::System::SpawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsS
 	//	//	//transform.positionXZ = transform.positionXZ + offset;
 	//	//}
 
-	//	// UŒ‚”ÍˆÍƒGƒ“ƒeƒBƒeƒB¶¬
-	//	eNsECS::Entity attack = ecs.createEntity();
-	//	gNsSkillComp::Attack2DAreaComponent area;
+	//	// æ”»æ’ƒç¯„å›²ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ç”Ÿæˆ
+	//	Engine::ECS::Entity attack = ecs.createEntity();
+	//	Game::Combat::Skill::Component::Attack2DAreaComponent area;
 	//	area.shape = shape;
 	//	area.lifetime = def.attackSpec.lifetime.duration.value_or(0.0f);
 	//	area.owner = skillInstance.caster;
@@ -266,14 +266,14 @@ void Game::Combat::Skill::System::SpawnSkillHitArea(eNsECS::EntityMgr& ecs, gNsS
 
 	//	skillInstance.spawnedHitAreas.push_back(attack);
 
-	//	// transform‚ğ•¡»
+	//	// transformã‚’è¤‡è£½
 	//	ecs.addComponent(attack, transform);
 
-	//	// UŒ‚”»’è Entity‚É‹OÕƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ’Ç‰Á
-	//	gNsSkillComp::SkillTrajectoryComponent traj;
+	//	// æ”»æ’ƒåˆ¤å®š Entityã«è»Œè·¡ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’è¿½åŠ 
+	//	Game::Combat::Skill::Component::SkillTrajectoryComponent traj;
 	//	traj.type = def.attackSpec.trajectoryType;
 	//	traj.elapsedTime = 0.0f;
-	//	traj.trajectoryFunc = gNsSkillFactory::SkillTrajectoryFactory::Create(def, transform);
+	//	traj.trajectoryFunc = Game::Combat::SkillFactory::SkillTrajectoryFactory::Create(def, transform);
 	//	ecs.addComponent(attack, traj);
 	//}
 }

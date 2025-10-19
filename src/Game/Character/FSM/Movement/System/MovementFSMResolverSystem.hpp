@@ -10,13 +10,13 @@
 
 #include <typeindex>
 
-#include "Common/EngineNamespaceDecl.h"
+
 namespace Game::Character::FSM::Movement::System
 {
 	class MovementFSMResolverSystem
 	{
 	public:
-		static void Update(eNsECS::EntityMgr& ecs, float deltaTime);
+		static void Update(Engine::ECS::EntityMgr& ecs, float deltaTime);
 
 	private:
 		static bool tryApplyForcedTransition

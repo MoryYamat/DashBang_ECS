@@ -122,7 +122,7 @@
 
 #include <iostream>
 
-Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader)
+Game::Actor::Player::PlayerCharacter::PlayerCharacter(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader* shader)
 {
 	namespace Ops = Engine::ECS::Ops;
 	namespace Comp = Engine::ECS::Component;
@@ -130,7 +130,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	Engine::ECS::Entity e = ecs.createEntity();
 
 	// load Model Datas from file
-	// eNsGfxModel::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
+	// Engine::Graphics::Model::ModelData modelData = Engine::Graphics::Model::AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
 	// =============================== test ==================================
 	// Engine::Graphics::Model::ModelData modelData = Engine::Graphics::Model::CgltfImporter::Import("Assets/Models/paladdin_w_prop.glb");
 	// Engine::Graphics::Model::ModelData modelData = Engine::Graphics::Model::CgltfImporter::Import("Assets/Models/paladin/paladin_run_idle_default.glb");
@@ -145,7 +145,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 
 
 	// set Mesh data to GPUBuffers
-	Engine::Graphics::Model::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
+	Engine::Graphics::Model::ModelGPU modelGPU = Engine::Graphics::Render::GPUBufferUtils::createMeshGPUBuffers(modelData);
 
 	// move 前に 必要な情報を設定
 	// set TransformComponent
@@ -195,9 +195,9 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	// Collsion Initialization
 	// コリジョン初期化
 	Comp::Logic2D::CollisionComponent playerCollisionComp;
-	playerCollisionComp.collider.shape = eNsLogic2DComp::Circle2D{
+	playerCollisionComp.collider.shape = Engine::ECS::Component::Logic2D::Circle2D{
 		.center = glm::vec2(0.0f),// ローカルセンター
-		.radius = Game::Init::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, gNsInit::Logic2D::RadiusEstimateStrategy::MaxAxis)
+		.radius = Game::Init::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, Game::Init::Logic2D::RadiusEstimateStrategy::MaxAxis)
 	};
 	//playerCollisionComp.collider.circle2D.center = logic.positionXZ;
 	playerCollisionComp.isStatic = false;
@@ -279,19 +279,21 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 	//ecs.addComponent(entity, activeSkill2);
 
 	// スキル（ID） を SkillSLotに割り当て 情報を保持
-	gNsSkillComp::SkillSlotAssignmentComponent assign;
-	assign.slotToSkillId[gNsSkillData::SkillSlot::Primary] = 1;
-	assign.slotToSkillId[gNsSkillData::SkillSlot::Secondary] = 2;
-	assign.slotToSkillId[gNsSkillData::SkillSlot::Utility1] = 3;
-	assign.slotToSkillId[gNsSkillData::SkillSlot::Utility2] = 4;
+	namespace Skill = Game::Combat::Skill;
+	Skill::Component::SkillSlotAssignmentComponent assign;
+	assign.slotToSkillId[Skill::Data::SkillSlot::Primary] = 1;
+	assign.slotToSkillId[Skill::Data::SkillSlot::Secondary] = 2;
+	assign.slotToSkillId[Skill::Data::SkillSlot::Utility1] = 3;
+	assign.slotToSkillId[Skill::Data::SkillSlot::Utility2] = 4;
 	Ops::Add<Game::Combat::Skill::Component::SkillSlotAssignmentComponent>(ecs, e, assign);
 
 	// InputAction と スキルスロットの割り当てを保持
-	gNsSkillComp::SkillInputBindingComponent binding;
-	binding.actionToSlot[gNsInput::InputAction::CastSkill1] = gNsSkillData::SkillSlot::Primary;
-	binding.actionToSlot[gNsInput::InputAction::CastSkill2] = gNsSkillData::SkillSlot::Secondary;
-	binding.actionToSlot[gNsInput::InputAction::CastSkill3] = gNsSkillData::SkillSlot::Utility1;
-	binding.actionToSlot[gNsInput::InputAction::CastSkill4] = gNsSkillData::SkillSlot::Utility2;
+	namespace GameInput = Game::Input;
+	Skill::Component::SkillInputBindingComponent binding;
+	binding.actionToSlot[GameInput::InputAction::CastSkill1] = Skill::Data::SkillSlot::Primary;
+	binding.actionToSlot[GameInput::InputAction::CastSkill2] = Skill::Data::SkillSlot::Secondary;
+	binding.actionToSlot[GameInput::InputAction::CastSkill3] = Skill::Data::SkillSlot::Utility1;
+	binding.actionToSlot[GameInput::InputAction::CastSkill4] = Skill::Data::SkillSlot::Utility2;
 	Ops::Add<Game::Combat::Skill::Component::SkillInputBindingComponent>(ecs, e, binding);
 
 
@@ -307,7 +309,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 
 	std::cout << "[PlayerCharacterActor.cpp]: Test3Dmodel Settings Completed" << std::endl;
 
-	eNsDebugLog::LogVector("PlayerCharacterActor.cpp(Color)", materialComp.baseColor);
+	Engine::Debug::Logging::LogVector("PlayerCharacterActor.cpp(Color)", materialComp.baseColor);
 
 	// velocity
 	Ops::Add<Comp::Logic2D::Velocity2DComponent>(ecs, e, Comp::Logic2D::Velocity2DComponent{});
@@ -333,16 +335,16 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 
 	// logical state comp
 	// life
-	//ecs.addComponent(entity, gNsCharaLifeState::CharacterLifeStateComponent{});
+	//ecs.addComponent(entity, Game::Character::State::Life::CharacterLifeStateComponent{});
 
 	//// movenet
-	//ecs.addComponent(entity, gNsCharaMoveState::CharacterMovementStateComponent{});
+	//ecs.addComponent(entity, Game::Character::State::Movement::CharacterMovementStateComponent{});
 
 	//// action
-	//ecs.addComponent(entity, gNsCharaActionState::CharacterActionStateComponent{});
+	//ecs.addComponent(entity, Game::Character::State::Action::CharacterActionStateComponent{});
 
 	//// skill execution state
-	//ecs.addComponent(entity, gNsCharaActionState::CharacterSkillExecutionStateComponent{});
+	//ecs.addComponent(entity, Game::Character::State::Action::CharacterSkillExecutionStateComponent{});
 
 
 
@@ -365,15 +367,15 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 
 	// skill FSM
 	// namespace alias
-	namespace Skill = Game::Combat::Skill::FSM::StateModel;
+	namespace SkillFSM = Game::Combat::Skill::FSM::StateModel;
 	// 
-	Ops::Add<Skill::SkillStateComponent>(ecs, e, Skill::SkillStateComponent{});
-	Ops::Add<Skill::SkillFSMTransitionRequestComponent>(ecs, e, Skill::SkillFSMTransitionRequestComponent{});
+	Ops::Add<SkillFSM::SkillStateComponent>(ecs, e, SkillFSM::SkillStateComponent{});
+	Ops::Add<SkillFSM::SkillFSMTransitionRequestComponent>(ecs, e, SkillFSM::SkillFSMTransitionRequestComponent{});
 	Ops::Add<Game::Combat::Skill::Component::SkillExecutionContextComponent>(ecs, e, Game::Combat::Skill::Component::SkillExecutionContextComponent{ .caster = e,
 		});
 	Ops::Add<Game::Combat::Skill::Component::SkillEffectExecutionRecordComponent>(ecs, e, Game::Combat::Skill::Component::SkillEffectExecutionRecordComponent{});
-	Ops::Add<Skill::SkillFSMInterferenceRequestComponent>(ecs, e, Skill::SkillFSMInterferenceRequestComponent{});
-	Ops::Add<Skill::SkillFSMLeaseComponent>(ecs, e, Skill::SkillFSMLeaseComponent{});
+	Ops::Add<SkillFSM::SkillFSMInterferenceRequestComponent>(ecs, e, SkillFSM::SkillFSMInterferenceRequestComponent{});
+	Ops::Add<SkillFSM::SkillFSMLeaseComponent>(ecs, e, SkillFSM::SkillFSMLeaseComponent{});
 	// std::cout << "[PlayerCharacterActor.cpp] Created Player Entity: " << entity.id << std::endl;
 	//if (ecs.hasComponent<gNsCharacterState::CharacterStateComponent>(entity)) {
 	//	std::cout << "[確認] CharacterStateComponent は Entity " << entity.id << " に存在しています" << std::endl;
@@ -384,7 +386,7 @@ Game::Actor::Player::PlayerCharacter::PlayerCharacter(eNsECS::EntityMgr& ecs, eN
 
 	//std::cout << "addComponent の typeid: " << typeid(gNsCharacterState::CharacterStateComponent).name() << std::endl;
 
-	//for (eNsECS::Entity e : ecs.view<gNsCharacterState::CharacterStateComponent>()) {
+	//for (Engine::ECS::Entity e : ecs.view<gNsCharacterState::CharacterStateComponent>()) {
 	//	std::cout << "view の Entity: " << e.id << std::endl;
 	//}
 	//std::cout << "view の typeid: " << typeid(decltype(ecs.view<gNsCharacterState::CharacterStateComponent>())).name() << std::endl;

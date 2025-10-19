@@ -6,25 +6,24 @@
 
 #include "Game/Collision/Init/InitCollisionResultBuffer.h"
 
-#include "Common/GameNamespaceDecl.h"
 
 
 // Collision バッファの初期化
-void Game::Feature::CollisionFeature::InitCollisionBuffer(eNsECS::EntityMgr& ecs)
+void Game::Feature::CollisionFeature::InitCollisionBuffer(Engine::ECS::EntityMgr& ecs)
 {
-	gNsCollInit::InitCollisionResultBuffer(ecs);
+	Game::Collision::Init::InitCollisionResultBuffer(ecs);
 }
 
 // Collision バッファの更新
-void Game::Feature::CollisionFeature::UpdateCollisionBuffer(eNsECS::EntityMgr& ecs)
+void Game::Feature::CollisionFeature::UpdateCollisionBuffer(Engine::ECS::EntityMgr& ecs)
 {
-	gNsCollSystem::UpdateCollisionResultBuffer(ecs);
+	Game::Collision::System::UpdateCollisionResultBuffer(ecs);
 }
 
 // おそらく未使用：削除予定
 // 論理レイヤー内でオブジェクト位置情報などと，コリジョン形状の位置情報などを同期させる処理
-void Game::Feature::CollisionFeature::SyncLogicCollision(eNsECS::EntityMgr& ecs)
+void Game::Feature::CollisionFeature::SyncLogicCollision(Engine::ECS::EntityMgr& ecs)
 {
 	// 論理レイヤー内でオブジェクト位置情報などと，コリジョン形状の位置情報などを同期
-	gNsCollSystem::CollisionSyncSystem(ecs);
+	Game::Collision::System::CollisionSyncSystem(ecs);
 }

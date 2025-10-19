@@ -1,19 +1,19 @@
-#include "InitCharaMoveStateTransitionDatabase.hpp"
+ï»¿#include "InitCharaMoveStateTransitionDatabase.hpp"
 
 #include "Game/Character/State/Rule/Movement/MovementStateTransitionDatabase.hpp"
 
-#include "Common/GameNamespaceDecl.h"
 
-void Game::Character::State::Movement::InitCharaMovementStateTransitionDatabase(eNsECS::EntityMgr& ecs)
+
+void Game::Character::State::Movement::InitCharaMovementStateTransitionDatabase(Engine::ECS::EntityMgr& ecs)
 {
-	auto& db = ecs.createResource<gNsCharaMoveState::StateTransitionDatabase>();
+	auto& db = ecs.createResource<Game::Character::State::Movement::StateTransitionDatabase>();
 
-	using State = gNsCharaMoveState::MovementState;
-	using ConditionType = gNsCharaMoveState::TransitionConditionType;
+	using State = Game::Character::State::Movement::MovementState;
+	using ConditionType = Game::Character::State::Movement::TransitionConditionType;
 
 	db.rules =
 	{
-		// Alive -> Dead: HP‚ª0ˆÈ‰º
+		// Alive -> Dead: HPãŒ0ä»¥ä¸‹
 		{
 			.from = State::Idle,
 			.to = State::Moving,
@@ -23,7 +23,7 @@ void Game::Character::State::Movement::InitCharaMovementStateTransitionDatabase(
 			}
 		},
 
-		// Dead -> Alive: ‘h¶ƒtƒ‰ƒO
+		// Dead -> Alive: è˜‡ç”Ÿãƒ•ãƒ©ã‚°
 		{
 			.from = State::Moving,
 			.to = State::Idle,

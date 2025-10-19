@@ -1,4 +1,4 @@
-//
+ï»¿//
 #pragma once
 
 #include "Engine/ECS/Component/Logic2D/ColliderType.h"
@@ -10,32 +10,32 @@
 
 #include "Game/Collision/Data/GenericShape2D.h"
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
+
+
 
 #include <glm/glm.hpp>
 
 namespace Game::Collision::Convert
 {
-	// ƒ[ƒJƒ‹Collision‚Æƒ[ƒ‹ƒh•ÏŠ·‚©‚çƒ[ƒ‹ƒhã‚Ì’ŠÛ”»’èŒ`ó‚ğŒvZ (templateÀ‘•‚Ì‚½‚ß”p~)
-	gNsCollData::GenericShape2D ConvertFromCollider(const eNsLogic2DComp::Collider& collider
-		, const eNsLogic2DComp::Logic2DTransformComponent& transform);
+	// ãƒ­ãƒ¼ã‚«ãƒ«Collisionã¨ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›ã‹ã‚‰ãƒ¯ãƒ¼ãƒ«ãƒ‰ä¸Šã®æŠ½è±¡åˆ¤å®šå½¢çŠ¶ã‚’è¨ˆç®— (templateå®Ÿè£…ã®ãŸã‚å»ƒæ­¢)
+	Game::Collision::Data::GenericShape2D ConvertFromCollider(const Engine::ECS::Component::Logic2D::Collider& collider
+		, const Engine::ECS::Component::Logic2D::Logic2DTransformComponent& transform);
 
-	// ƒ[ƒJƒ‹Collision‚Æƒ[ƒ‹ƒh•ÏŠ·‚©‚çƒ[ƒ‹ƒhã‚Ì’ŠÛ”»’èŒ`ó‚ğŒvZ (tempalteÀ‘•‚Ì‚½‚ß”p~)
-	gNsCollData::GenericShape2D ConvertFromAttackShape(const gNsSkillComp::Attack2DShape& attackShape
-		, const eNsLogic2DComp::Transform2DComponent& worldTransform);
+	// ãƒ­ãƒ¼ã‚«ãƒ«Collisionã¨ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›ã‹ã‚‰ãƒ¯ãƒ¼ãƒ«ãƒ‰ä¸Šã®æŠ½è±¡åˆ¤å®šå½¢çŠ¶ã‚’è¨ˆç®— (tempalteå®Ÿè£…ã®ãŸã‚å»ƒæ­¢)
+	Game::Collision::Data::GenericShape2D ConvertFromAttackShape(const Game::Combat::Skill::Component::Attack2DShape& attackShape
+		, const Engine::ECS::Component::Logic2D::Transform2DComponent& worldTransform);
 
-	// ƒ[ƒJƒ‹Collision‚Æƒ[ƒ‹ƒh•ÏŠ·‚©‚çƒ[ƒ‹ƒhã‚Ì’ŠÛ”»’èŒ`ó‚ğŒvZ
-	gNsCollData::GenericShape2D BuildGenericShape2D(const eNsLogic2DComp::Collider& collider
-		, const eNsLogic2DComp::Logic2DTransformComponent& transform);
+	// ãƒ­ãƒ¼ã‚«ãƒ«Collisionã¨ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›ã‹ã‚‰ãƒ¯ãƒ¼ãƒ«ãƒ‰ä¸Šã®æŠ½è±¡åˆ¤å®šå½¢çŠ¶ã‚’è¨ˆç®—
+	Game::Collision::Data::GenericShape2D BuildGenericShape2D(const Engine::ECS::Component::Logic2D::Collider& collider
+		, const Engine::ECS::Component::Logic2D::Logic2DTransformComponent& transform);
 
-	// ƒ[ƒJƒ‹Collision‚Æƒ[ƒ‹ƒh•ÏŠ·‚©‚çƒ[ƒ‹ƒhã‚Ì’ŠÛ”»’èŒ`ó‚ğŒvZ 
-	gNsCollData::GenericShape2D BuildGenericShape2D(const gNsSkillComp::Attack2DShape& attack2DArea
-		, const eNsLogic2DComp::Transform2DComponent& worldTransform);
+	// ãƒ­ãƒ¼ã‚«ãƒ«Collisionã¨ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›ã‹ã‚‰ãƒ¯ãƒ¼ãƒ«ãƒ‰ä¸Šã®æŠ½è±¡åˆ¤å®šå½¢çŠ¶ã‚’è¨ˆç®— 
+	Game::Collision::Data::GenericShape2D BuildGenericShape2D(const Game::Combat::Skill::Component::Attack2DShape& attack2DArea
+		, const Engine::ECS::Component::Logic2D::Transform2DComponent& worldTransform);
 
-	// (GenericShape2D‚ğì¬)
+	// (GenericShape2Dã‚’ä½œæˆ)
 	template<typename ShapeT, typename TransformT>
-	gNsCollData::GenericShape2D MakeGenericShape2DFromTransform(
+	Game::Collision::Data::GenericShape2D MakeGenericShape2DFromTransform(
 		const ShapeT& shape,
 		const TransformT& transform
 	)
@@ -43,40 +43,40 @@ namespace Game::Collision::Convert
 		return BuildGenericShape2D(shape, transform);
 	}
 
-	// (Transform‚ÌŒ^‚ª–¢’m‚Ìê‡)GenericShape2D‚ğì¬‚·‚éƒCƒ“ƒ^[ƒtƒF[ƒX
+	// (Transformã®å‹ãŒæœªçŸ¥ã®å ´åˆ)GenericShape2Dã‚’ä½œæˆã™ã‚‹ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
 	template<typename ShapeT>
-	gNsCollData::GenericShape2D MakeGenericShape2DAuto(
+	Game::Collision::Data::GenericShape2D MakeGenericShape2DAuto(
 		const ShapeT& shape,
-		eNsECS::Entity e,
-		eNsECS::EntityMgr& ecs
+		Engine::ECS::Entity e,
+		Engine::ECS::EntityMgr& ecs
 	)
 	{
-		if (ecs.hasComponent<eNsLogic2DComp::Logic2DTransformComponent>(e)) {
-			return MakeGenericShape2DFromTransform(shape, ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e));
+		if (ecs.hasComponent<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(e)) {
+			return MakeGenericShape2DFromTransform(shape, ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(e));
 		}
-		else if (ecs.hasComponent<eNsLogic2DComp::Transform2DComponent>(e)) {
-			return MakeGenericShape2DFromTransform(shape, ecs.get<eNsLogic2DComp::Transform2DComponent>(e));
+		else if (ecs.hasComponent<Engine::ECS::Component::Logic2D::Transform2DComponent>(e)) {
+			return MakeGenericShape2DFromTransform(shape, ecs.get<Engine::ECS::Component::Logic2D::Transform2DComponent>(e));
 		}
 		else {
 			assert(false && "No valid transform component");
-			return gNsCollData::GenericShape2D{};
+			return Game::Collision::Data::GenericShape2D{};
 		}
 	}
 
-	// GenericShape2D‚ğæ“¾‚·‚éƒCƒ“ƒ^[ƒtƒF[ƒX
-	gNsCollData::GenericShape2D MakeGenericShape2D(
-		eNsECS::Entity e,
-		eNsECS::EntityMgr& ecs);
+	// GenericShape2Dã‚’å–å¾—ã™ã‚‹ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
+	Game::Collision::Data::GenericShape2D MakeGenericShape2D(
+		Engine::ECS::Entity e,
+		Engine::ECS::EntityMgr& ecs);
 
-	// ƒ[ƒJƒ‹Œ`ó‚ÌƒIƒtƒZƒbƒg‚ğ“K—p‚µ‚Ä’†SÀ•W‚Ìƒ[ƒ‹ƒh•ÏŠ·‚ğæ“¾‚·‚é
-	glm::vec2 applyLocalToWorldPoint(const glm::vec2& localOffset, const eNsLogic2DComp::Logic2DTransformComponent& transform);
+	// ãƒ­ãƒ¼ã‚«ãƒ«å½¢çŠ¶ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’é©ç”¨ã—ã¦ä¸­å¿ƒåº§æ¨™ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›ã‚’å–å¾—ã™ã‚‹
+	glm::vec2 applyLocalToWorldPoint(const glm::vec2& localOffset, const Engine::ECS::Component::Logic2D::Logic2DTransformComponent& transform);
 
-	// ƒ[ƒJƒ‹Œ`ó‚ÌƒIƒtƒZƒbƒg‚ğ“K—p‚µ‚Ä’†SÀ•W‚Ìƒ[ƒ‹ƒh•ÏŠ·‚ğæ“¾‚·‚é
-	glm::vec2 applyLocalToWorldPoint(const glm::vec2& localOffset, const eNsLogic2DComp::Transform2DComponent& transform);
+	// ãƒ­ãƒ¼ã‚«ãƒ«å½¢çŠ¶ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’é©ç”¨ã—ã¦ä¸­å¿ƒåº§æ¨™ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›ã‚’å–å¾—ã™ã‚‹
+	glm::vec2 applyLocalToWorldPoint(const glm::vec2& localOffset, const Engine::ECS::Component::Logic2D::Transform2DComponent& transform);
 
-	// ƒ[ƒJƒ‹Œ`ó‚Ì•ûŒüƒxƒNƒgƒ‹‚ğ‚Æƒ[ƒ‹ƒh•ÏŠ·î•ñ‚©‚ç•ûŒüƒxƒNƒgƒ‹‚Ìƒ[ƒ‹ƒh•ÏŠ·
-	glm::vec2 transformLocalPointToWorld(const glm::vec2& localOffset, const eNsLogic2DComp::Logic2DTransformComponent& transform);
+	// ãƒ­ãƒ¼ã‚«ãƒ«å½¢çŠ¶ã®æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã‚’ã¨ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›æƒ…å ±ã‹ã‚‰æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›
+	glm::vec2 transformLocalPointToWorld(const glm::vec2& localOffset, const Engine::ECS::Component::Logic2D::Logic2DTransformComponent& transform);
 
-	// ƒ[ƒJƒ‹Œ`ó‚Ì•ûŒüƒxƒNƒgƒ‹‚ğ‚Æƒ[ƒ‹ƒh•ÏŠ·î•ñ‚©‚ç•ûŒüƒxƒNƒgƒ‹‚Ìƒ[ƒ‹ƒh•ÏŠ·
-	glm::vec2 transformLocalPointToWorld(const glm::vec2& localOffset, const eNsLogic2DComp::Transform2DComponent& transform);
+	// ãƒ­ãƒ¼ã‚«ãƒ«å½¢çŠ¶ã®æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã‚’ã¨ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›æƒ…å ±ã‹ã‚‰æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›
+	glm::vec2 transformLocalPointToWorld(const glm::vec2& localOffset, const Engine::ECS::Component::Logic2D::Transform2DComponent& transform);
 }

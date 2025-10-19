@@ -35,17 +35,17 @@
 
 #include <iostream>
 
-Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader)
+Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader* shader)
 {
 	namespace Ops = Engine::ECS::Ops;
 	namespace Component = Engine::ECS::Component;
 	namespace Model = Engine::Graphics::Model;
 
-	eNsECS::Entity entity = ecs.createEntity();
+	Engine::ECS::Entity entity = ecs.createEntity();
 
 	// モデルデータインポート
-	// eNsGfxModel::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/BaseMesh.fbx");
-	eNsGfxModel::ModelData modelData = Model::CgltfImporter::Import("Assets/Models/test_terrain.glb");
+	// Engine::Graphics::Model::ModelData modelData = Engine::Graphics::Model::AssimpImporter::Import("Assets/Models/BaseMesh.fbx");
+	Engine::Graphics::Model::ModelData modelData = Model::CgltfImporter::Import("Assets/Models/test_terrain.glb");
 	//ModelData modelData = AssimpImporter::Import("Assets/Models/HorizontallyTerrainMesh.fbx");
 	for (const auto& mesh : modelData.meshes)
 	{
@@ -54,22 +54,17 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 			<< ", hasIndices: " << mesh.hasIndices << std::endl;
 	}
 
-	// GPUBufferをインポートデータから作成
-	eNsGfxModel::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
-	Ops::Add<Component::Graphics::MeshComponent>(ecs, entity,
-		Component::Graphics::MeshComponent{ std::move(modelData), std::move(modelGPU)}
-		);
 
 
 	// 初期描画座標を設定
-	eNsCommonComp::TransformComponent transformComp;
+	Component::Common::TransformComponent transformComp;
 	transformComp.position = glm::vec3(0.0f, 0.0f, 0.0f);
 	transformComp.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	transformComp.scale = glm::vec3(1.0f);
 	Ops::Add<Component::Common::TransformComponent>(ecs, entity, transformComp);
 
 	// set ShaderComponent
-	eNsGfxComp::ShaderComponent shaderComp;
+	Component::Graphics::ShaderComponent shaderComp;
 	shaderComp.shader = shader;
 	if (shaderComp.shader)
 	{
@@ -84,35 +79,24 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 	Ops::Add<Component::Graphics::ShaderComponent>(ecs, entity, shaderComp);
 
 	// 色情報を設定(デバッグ用)
-	eNsGfxComp::MaterialComponent materialComp;
+	Component::Graphics::MaterialComponent materialComp;
 	// materialComp.baseColor = glm::vec3(0.6f, 0.8f, 0.7f);
-	eNsDebugLog::LogVector("TestBaseTerrainActor.cpp(Color)", materialComp.baseColor);
+	Engine::Debug::Logging::LogVector("TestBaseTerrainActor.cpp(Color)", materialComp.baseColor);
 	Ops::Add<Component::Graphics::MaterialComponent>(ecs, entity, materialComp);
 
 	// 描画情報から論理情報を初期化
-	eNsLogic2DComp::Logic2DTransformComponent logic2DComp;
-	logic2DComp = gNsInit::Logic2D::InitLogic2DTransformFromModel(transformComp, modelData);
+	Component::Logic2D::Logic2DTransformComponent logic2DComp;
+	logic2DComp = Game::Init::Logic2D::InitLogic2DTransformFromModel(transformComp, modelData);
 	Ops::Add<Component::Logic2D::Logic2DTransformComponent>(ecs, entity, logic2DComp);
 
 	std::cout << "TestBaseTerrainActor.cpp: Rotation " << logic2DComp.rotation << std::endl;
 
 
-	// 削除予定
-//	// 1.0f -> 1.0m (想定)
-//	eNsLogic2DComp::TileMapComponent tileMapComp;
-//	tileMapComp.tileSize = 0.5f;
-//	tileMapComp = gNsInit::Logic2D::InitTileMapFromBounds(transformComp, modelData, logic2DComp, tileMapComp.tileSize);
-//	// TileMapComponent内のtilesベクトルを作成(初期化)
-//	gNsInit::Logic2D::InitTileMapTiles(tileMapComp);
-////	GameInit::TileMapFromMesh::InitWalKableByTerrain(tileMapComp, modelData);
-//	
-//	// GameInit::TileMapFromMesh::ApplyObstacleCollidersToTileMap(ecs, tileMapComp);
-//
-//	ecs.addComponent(entity, tileMapComp);
 
-	eNsLogic2DComp::CollisionComponent collisionComp;
+
+	Component::Logic2D::CollisionComponent collisionComp;
 	// calc world size on the xz plane
-	glm::vec2 worldSize = gNsInit::Logic2D::GetModelXZSizeWithScale(transformComp, modelData);
+	glm::vec2 worldSize = Game::Init::Logic2D::GetModelXZSizeWithScale(transformComp, modelData);
 	// calc world center on the xz plane
 	glm::vec3 localCenter = modelData.GetCenter();
 	glm::vec3 worldCenter3D = transformComp.toMatrix() * glm::vec4(localCenter, 1.0f);
@@ -120,10 +104,10 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 	// calc local vector axisX and axisZ
 	float rotRad = logic2DComp.rotation;// 描画基準と論理基準の整合性を考える
 	// Front = Z axis basis
-	glm::vec2 axisZ = glm::normalize(eNsLogic2DMath::CalcForwardFromYaw((rotRad)));
-	glm::vec2 axisX = eNsLogic2DMath::CalcRightFromYaw(rotRad);
+	glm::vec2 axisZ = glm::normalize(Engine::Math::Logic2D::CalcForwardFromYaw((rotRad)));
+	glm::vec2 axisX = Engine::Math::Logic2D::CalcRightFromYaw(rotRad);
 
-	collisionComp.collider.shape = eNsLogic2DComp::Obb2D
+	collisionComp.collider.shape = Component::Logic2D::Obb2D
 	{
 		.center = glm::vec2(0.0f),// ローカルオフセット
 		.halfExtents = worldSize * 0.5f,
@@ -135,10 +119,15 @@ Game::Actor::Map::TestBaseTerrainActor::TestBaseTerrainActor(eNsECS::EntityMgr& 
 	Ops::Add<Component::Tags::TerrainMeshTag>(ecs, entity, Component::Tags::TerrainMeshTag{});
 
 	// TileMapActorの作成(Entityとして)
-	[[maybe_unused]] auto _ =  gNsActor::Map::TileMapActor::Create(ecs, transformComp, modelData, 0.5f);
+	[[maybe_unused]] auto _ =  Game::Actor::Map::TileMapActor::Create(ecs, transformComp, modelData, 0.5f);
 
+	// GPUBufferをインポートデータから作成
+	Engine::Graphics::Model::ModelGPU modelGPU = Engine::Graphics::Render::GPUBufferUtils::createMeshGPUBuffers(modelData);
+	Ops::Add<Component::Graphics::MeshComponent>(ecs, entity,
+		Component::Graphics::MeshComponent{ std::move(modelData), std::move(modelGPU) }
+	);
 
 	// 最終ログ
-	eNsDebugLog::GeneralLog("TestBaseTerrainActor.cpp", "TestBaseTerrainActor creation completed successfully");
+	Engine::Debug::Logging::GeneralLog("TestBaseTerrainActor.cpp", "TestBaseTerrainActor creation completed successfully");
 }
 

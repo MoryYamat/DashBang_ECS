@@ -1,4 +1,4 @@
-#include "ActionStateSystem.hpp"
+﻿#include "ActionStateSystem.hpp"
 
 #include "Game/Character/State/System/Action/ActionStateSystem.hpp"
 #include "Game/Character/State/Component/Action/ActionStateComponent.hpp"
@@ -10,19 +10,19 @@
 
 #include "Game/Character/State/Rule/Action/ActionStateTransitionEvaluator.hpp"
 
-#include "Common/GameNamespaceDecl.h"
 
-void Game::Character::State::Action::ActionStateSystem::UpdateStates(eNsECS::EntityMgr& ecs, float deltaTime)
+
+void Game::Character::State::Action::ActionStateSystem::UpdateStates(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
-    auto& db = ecs.getResource <gNsCharaActionState::StateTransitionDatabase>();
+    auto& db = ecs.getResource <Game::Character::State::Action::StateTransitionDatabase>();
 
-    //for (auto e : ecs.view<gNsCharaActionState::CharacterActionStateComponent,
-    //    gNsCharacterControlSkill::SkillIntentComponent>())
-	for (eNsECS::Entity e : ecs.view<gNsCharaActionState::CharacterActionStateComponent,
-		gNsCharaActionState::CharacterSkillExecutionStateComponent>())
+    //for (auto e : ecs.view<Game::Character::State::Action::CharacterActionStateComponent,
+    //    Game::Character::Control::Skill::SkillIntentComponent>())
+	for (Engine::ECS::Entity e : ecs.view<Game::Character::State::Action::CharacterActionStateComponent,
+		Game::Character::State::Action::CharacterSkillExecutionStateComponent>())
     {
-        auto& action = ecs.get<gNsCharaActionState::CharacterActionStateComponent>(e);
-        auto& skillExec = ecs.get<gNsCharaActionState::CharacterSkillExecutionStateComponent>(e);
+        auto& action = ecs.get<Game::Character::State::Action::CharacterActionStateComponent>(e);
+        auto& skillExec = ecs.get<Game::Character::State::Action::CharacterSkillExecutionStateComponent>(e);
 
         for (const auto& rule : db.rules)
         {
@@ -30,11 +30,11 @@ void Game::Character::State::Action::ActionStateSystem::UpdateStates(eNsECS::Ent
             if (rule.from != action.current)
                 continue;
 
-            if (gNsCharaActionState::AreConditionsMet(action, skillExec, deltaTime, rule.conditions))
+            if (Game::Character::State::Action::AreConditionsMet(action, skillExec, deltaTime, rule.conditions))
             {
                 std::cout << "[ActionStateSystem(Changed State)] Entity " << e.id
-                    << ": " << gNsCharaActionState::ToString(action.current)
-                    << " -> " << gNsCharaActionState::ToString(rule.to) << std::endl;
+                    << ": " << Game::Character::State::Action::ToString(action.current)
+                    << " -> " << Game::Character::State::Action::ToString(rule.to) << std::endl;
 
 
 

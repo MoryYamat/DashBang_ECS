@@ -5,8 +5,8 @@
 #include <GLFW/glfw3.h>
 
 // ======================= Common =======================
-#include "Common/GameNameSpaceDecl.h"
-#include "Common/EngineNamespaceDecl.h"
+
+
 
 
 // ======================= Engine =======================
@@ -64,15 +64,15 @@ namespace GameApp
 
 		// 
 		//// ecs
-		//eNsECS::EntityMgr mECS;
+		//Engine::ECS::EntityMgr mECS;
 
 		//// shader
-		//eNsGfxRender::Shader* mShader;// new するので完全な定義が必要
-		//eNsGfxRender::RenderContext mRenderContext;
+		//Engine::Graphics::Render::Shader* mShader;// new するので完全な定義が必要
+		//Engine::Graphics::Render::RenderContext mRenderContext;
 
 		//Engine::Window::Window mWindow;
 
-		//eNsInput::InputManager* mInputManager;
+		//Engine::Input::InputManager* mInputManager;
 
 		Game::Collision::Data::CollisionResultStorage mCollisionResults;
 

@@ -15,7 +15,7 @@
 #include <iostream>
 
 // 
-void Game::Character::FSM::Movement::UpdateMovementFSMSystem(eNsECS::EntityMgr& ecs)
+void Game::Character::FSM::Movement::UpdateMovementFSMSystem(Engine::ECS::EntityMgr& ecs)
 {
 	using namespace Game::Character::Intent;
 	using namespace Game::Character::FSM::Movement;
@@ -24,7 +24,7 @@ void Game::Character::FSM::Movement::UpdateMovementFSMSystem(eNsECS::EntityMgr& 
 	const auto& db = ecs.getResource<MovementFSMDatabase>();
 	const auto& def = db.Get("basic"); // TODO: 将来entity事に違う定義を持てるように
 
-	for (eNsECS::Entity e : ecs.view<
+	for (Engine::ECS::Entity e : ecs.view<
 		MovementStateComponent,
 		MovementIntentComponent,
 		MovementFSMTransitionRequestComponent>())
@@ -58,9 +58,9 @@ void Game::Character::FSM::Movement::UpdateMovementFSMSystem(eNsECS::EntityMgr& 
 	}
 
 
-	//auto& transitions = ecs.getResource<gNsCharaFSMMovement::MovementTransitionTableResource>().transitions;
+	//auto& transitions = ecs.getResource<Game::Character::FSM::Movement::MovementTransitionTableResource>().transitions;
 
-	//for (auto entity : ecs.view<MovementStateComponent, eNsLogic2DComp::Velocity2DComponent>())
+	//for (auto entity : ecs.view<MovementStateComponent, Engine::ECS::Component::Logic2D::Velocity2DComponent>())
 	//{
 	//	auto& state = ecs.get<MovementStateComponent>(entity);
 	//	const auto& velocity = ecs.get<Engine::ECS::Component::Logic2D::Velocity2DComponent>(entity).velocity;

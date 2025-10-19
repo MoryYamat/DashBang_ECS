@@ -1,4 +1,4 @@
-#include "MovementStateSystem.hpp"
+﻿#include "MovementStateSystem.hpp"
 #include "Engine/ECS/Component/Logic2D/Velocity2DComponent.h"
 
 #include "Game/Character/State/Component/MovementStateComponent.hpp"
@@ -6,16 +6,16 @@
 #include "Game/Character/State/Rule/Movement/MovementStateTransitionDatabase.hpp"
 #include "Game/Character/State/Rule/Movement/MovementStateTransitionEvaluator.hpp"
 
-#include "Common/GameNamespaceDecl.h"
 
-void Game::Character::State::Movement::MovementStateSystem::UpdateStates(eNsECS::EntityMgr& ecs, float deltaTime)
+
+void Game::Character::State::Movement::MovementStateSystem::UpdateStates(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
-    auto& db = ecs.getResource<gNsCharaMoveState::StateTransitionDatabase>();
+    auto& db = ecs.getResource<Game::Character::State::Movement::StateTransitionDatabase>();
 
-    for (auto e : ecs.view<gNsCharaMoveState::CharacterMovementStateComponent, eNsLogic2DComp::Velocity2DComponent>())
+    for (auto e : ecs.view<Game::Character::State::Movement::CharacterMovementStateComponent, Engine::ECS::Component::Logic2D::Velocity2DComponent>())
     {
-        auto& move = ecs.get<gNsCharaMoveState::CharacterMovementStateComponent>(e);
-        auto& vel = ecs.get<eNsLogic2DComp::Velocity2DComponent>(e);
+        auto& move = ecs.get<Game::Character::State::Movement::CharacterMovementStateComponent>(e);
+        auto& vel = ecs.get<Engine::ECS::Component::Logic2D::Velocity2DComponent>(e);
 
         for (const auto& rule : db.rules)
         {

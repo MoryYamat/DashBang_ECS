@@ -1,4 +1,4 @@
-// íœ—\’èFFSMƒVƒXƒeƒ€À‘•Œã”p~
+ï»¿// å‰Šé™¤äºˆå®šï¼šFSMã‚·ã‚¹ãƒ†ãƒ å®Ÿè£…å¾Œå»ƒæ­¢
 
 
 #pragma once 
@@ -8,16 +8,16 @@
 
 #include "Game/Combat/Skill/Component/SkillInstanceComponent.h"
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
+
+
 
 namespace Game::Combat::Skill::System
 {
-	void UpdateSkillPhase(eNsECS::EntityMgr& ecs, float deltaTime);
+	void UpdateSkillPhase(Engine::ECS::EntityMgr& ecs, float deltaTime);
 
-	void UpdateSkillPhase(eNsECS::EntityMgr& ecs, float deltaTime, gNsSkillData::SkillDatabase& skillDB);
+	void UpdateSkillPhase(Engine::ECS::EntityMgr& ecs, float deltaTime, Game::Combat::Skill::Data::SkillDatabase& skillDB);
 
-	bool AllAttacksDestroyed(eNsECS::EntityMgr& ecs, const gNsSkillComp::SkillInstanceComponent& instance);
+	bool AllAttacksDestroyed(Engine::ECS::EntityMgr& ecs, const Game::Combat::Skill::Component::SkillInstanceComponent& instance);
 
-	bool IsSkillInterrupted(const gNsSkillComp::SkillInstanceComponent& instance, eNsECS::EntityMgr& ecs);
+	bool IsSkillInterrupted(const Game::Combat::Skill::Component::SkillInstanceComponent& instance, Engine::ECS::EntityMgr& ecs);
 }

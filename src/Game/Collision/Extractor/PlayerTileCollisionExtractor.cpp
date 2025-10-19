@@ -1,4 +1,4 @@
-#include "PlayerTileCollisionExtractor.h"
+﻿#include "PlayerTileCollisionExtractor.h"
 
 #include "Engine/Physics/Logic2D/DetectionFunctions.h"
 
@@ -9,8 +9,8 @@
 #include <iostream>
 
 std::vector<glm::ivec2> Game::Collision::Extract::ExtractPlayerTileCollisions(
-	const gNsCollData::PlayerCollisionContext& playerCollisionCtx,
-	const eNsLogic2DComp::TileMapComponent& tileMapComp
+	const Game::Collision::Data::PlayerCollisionContext& playerCollisionCtx,
+	const Engine::ECS::Component::Logic2D::TileMapComponent& tileMapComp
 )
 {
 	std::vector<glm::ivec2> hitTiles;
@@ -32,7 +32,7 @@ std::vector<glm::ivec2> Game::Collision::Extract::ExtractPlayerTileCollisions(
 			auto [tileMin, tileMax] = tileMapComp.GetTileAABB(row, col);
 
 			// Detect
-			if (eNsPhys2DColl::CheckCircleAABBIntersection(playerCollisionCtx.center, playerCollisionCtx.radius, tileMin, tileMax))
+			if (Engine::Physics::Logic2D::Collision::CheckCircleAABBIntersection(playerCollisionCtx.center, playerCollisionCtx.radius, tileMin, tileMax))
 			{
 				// DebugUtils::LogVector_string("[PlayerTileCollisionExtractor.cpp]: TileMin.", tileMin);
 				// DebugUtils::LogVector_string("[PlayerTileCollisionExtractor.cpp]: TileMax.", tileMax);

@@ -1,12 +1,14 @@
-//
+ï»¿//
 
 #pragma once
+
+#include <glm/glm.hpp>
 
 namespace Game::Character::Intent
 {
 	struct FacingIntentComponent
 	{
-		glm::vec2 front = glm::vec2(0.0f, 1.0f); // ³–Ê‚Ì•ûŒü
-		bool isValid = false; //“ü—Í‚ª—LŒø‚©‚Ç‚¤‚©
+		glm::vec2 front = glm::vec2(0.0f, 1.0f); // æ­£é¢ã®æ–¹å‘
+		bool isValid = false; //å…¥åŠ›ãŒæœ‰åŠ¹ã‹ã©ã†ã‹
 	};
 }

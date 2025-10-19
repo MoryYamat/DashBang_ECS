@@ -1,8 +1,8 @@
-//
+﻿//
 
 #pragma once
 
-#include "Common/GameNamespaceDecl.h"
+
 
 #include "Game/Input/InputAction.h"
 #include "Game/Combat/Skill/MasterData/SkillSlot.h"
@@ -13,6 +13,6 @@ namespace Game::Combat::Skill::Component
 {
 	struct SkillInputBindingComponent
 	{
-		std::unordered_map<gNsInput::InputAction, gNsSkillData::SkillSlot> actionToSlot;
+		std::unordered_map<Game::Input::InputAction, Game::Combat::Skill::Data::SkillSlot> actionToSlot;
 	};
 }

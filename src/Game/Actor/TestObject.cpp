@@ -38,15 +38,17 @@
 
 #include <iostream>
 
-Game::Actor::TestObject::TestObject(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader)
+Game::Actor::TestObject::TestObject(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader* shader)
 {
 	namespace Ops = Engine::ECS::Ops;
 	namespace Comp = Engine::ECS::Component;
+	namespace Model = Engine::Graphics::Model;
+	namespace Render = Engine::Graphics::Render;
 
-	eNsECS::Entity e = ecs.createEntity();
+	Engine::ECS::Entity e = ecs.createEntity();
 
 	// load Model Datas from file
-	Engine::Graphics::Model::ModelData modelData = eNsGfxModel::AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
+	Engine::Graphics::Model::ModelData modelData = Model::AssimpImporter::Import("Assets/Models/Ch44_nonPBR.fbx");
 	for (const auto& mesh : modelData.meshes)
 	{
 		std::cout << "[PlayerCharacterActor.cpp]: Vertices: " << mesh.vertices.size()
@@ -55,10 +57,7 @@ Game::Actor::TestObject::TestObject(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader
 	}
 
 	// set Mesh data to GPUBuffers
-	Engine::Graphics::Model::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
-
-	// set MeshComponent
-	Ops::Add<Comp::Graphics::MeshComponent>(ecs, e, Comp::Graphics::MeshComponent{ std::move(modelData), std::move(modelGPU) });
+	Engine::Graphics::Model::ModelGPU modelGPU = Render::GPUBufferUtils::createMeshGPUBuffers(modelData);
 
 
 	// set TransformComponent
@@ -86,7 +85,7 @@ Game::Actor::TestObject::TestObject(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader
 
 	// Logic2D
 	Comp::Logic2D::Logic2DTransformComponent logic;
-	logic = gNsInit::Logic2D::InitLogic2DTransformFromModel(transformComp, modelData);
+	logic = Game::Init::Logic2D::InitLogic2DTransformFromModel(transformComp, modelData);
 	Ops::Add<Comp::Logic2D::Logic2DTransformComponent>(ecs, e, logic);
 
 	// set Test Corlor
@@ -97,7 +96,7 @@ Game::Actor::TestObject::TestObject(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader
 	// Collsion Initialization
 // コリジョン初期化
 	Comp::Logic2D::CollisionComponent playerCollisionComp;
-	playerCollisionComp.collider.shape = eNsLogic2DComp::Circle2D{
+	playerCollisionComp.collider.shape = Comp::Logic2D::Circle2D{
 		.center = glm::vec2(0.0f),// ローカルセンター
 		.radius = Game::Init::Logic2D::EstimateRadiusFromModelXZ(transformComp, modelData, Game::Init::Logic2D::RadiusEstimateStrategy::MaxAxis)
 	};
@@ -109,9 +108,14 @@ Game::Actor::TestObject::TestObject(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader
 
 	// Collision Mask 初期化
 	Game::Collision::Component::CollisionMaskComponent testObjectMask;
-	testObjectMask = gNsCollComp::CollisionMaskPresets::Character();
+	testObjectMask = Game::Collision::Component::CollisionMaskPresets::Character();
 	Ops::Add<Game::Collision::Component::CollisionMaskComponent>(ecs, e, testObjectMask);
 
 	Ops::Add<Game::ECS::Component::TeamComponent>(ecs, e, Game::ECS::Component::TeamComponent{ .team =
 		Game::ECS::Component::Team::EnemyTeam });
+
+	// set MeshComponent
+	Ops::Add<Comp::Graphics::MeshComponent>(ecs, e, Comp::Graphics::MeshComponent{ std::move(modelData), std::move(modelGPU) });
+
+
 }

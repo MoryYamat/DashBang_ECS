@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMConditions.hpp"
 
@@ -9,14 +9,14 @@
 
 #include <optional>
 
-#include "Common/GameNamespaceDecl.h"
+
 
 namespace Game::Combat::Skill::FSM
 {
 	struct SkillTransition
 	{
-		std::optional<std::type_index> from;// nullopt => ‚·‚×‚Ä‚Ìó‘Ô‚©‚ç
+		std::optional<std::type_index> from;// nullopt => ã™ã¹ã¦ã®çŠ¶æ…‹ã‹ã‚‰
 		std::type_index to;
-		std::shared_ptr<gNsSkillFSM::ISkillFSMCondition> condition;
+		std::shared_ptr<Game::Combat::Skill::FSM::ISkillFSMCondition> condition;
 	};
 }

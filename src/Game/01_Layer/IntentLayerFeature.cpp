@@ -1,24 +1,22 @@
-#include "IntentLayerFeature.h"
+ï»¿#include "IntentLayerFeature.h"
 
 #include "Game/00_Feature/Character/Movement/MovementFeature.h"
 
 #include "Game/00_Feature/Combat/Skill/SkillFeature.h"
 
-#include "Common/GameNamespaceDecl.h"
-
 #include <iostream>
 
-void Game::Layer::IntentLayerFeature::Update(eNsECS::EntityMgr& ecs)
+void Game::Layer::IntentLayerFeature::Update(Engine::ECS::EntityMgr& ecs)
 {
 	// Movement Intent
-	gNsFeature::Character::MovementFeature::UpdateMovementIntent(ecs);
-	// Intent‚É‰‚¶‚ÄŠeIntentƒRƒ“ƒ|[ƒlƒ“ƒg‚Ìƒf[ƒ^‚ğXV
-	// gNsFeature::Character::MovementFeature::UpdateVelocity(ecs);
+	Game::Feature::Character::MovementFeature::UpdateMovementIntent(ecs);
+	// Intentã«å¿œã˜ã¦å„Intentã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®ãƒ‡ãƒ¼ã‚¿ã‚’æ›´æ–°
+	// Game::Feature::Character::MovementFeature::UpdateVelocity(ecs);
 
 	// std::cout<<"hello\n";
 
 	// Skill Intent
-	gNsFeature::Combat::SkillFeature::UpateSkillIntent(ecs);
+	Game::Feature::Combat::SkillFeature::UpateSkillIntent(ecs);
 
-	// ˆÈ‰ºUpdate Intent ‚ª‘±‚­‚Í‚¸
+	// ä»¥ä¸‹Update Intent ãŒç¶šãã¯ãš
 }

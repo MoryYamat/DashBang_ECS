@@ -1,11 +1,11 @@
-#include "ECSGeneral.hpp"
+ï»¿#include "ECSGeneral.hpp"
 
 #include "Game/ECS/System/LifetimeSystem.hpp"
 
-#include "Common/GameNamespaceDecl.h"
 
-void Game::Feature::ECS::GameGeneralSytem::UpdateLifetimeSystem(eNsECS::EntityMgr& ecs, float deltaTime)
+
+void Game::Feature::ECS::GameGeneralSytem::UpdateLifetimeSystem(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
-	// ECS‚Ìƒ‰ƒCƒtƒ^ƒCƒ€ƒVƒXƒeƒ€‚ğXV
-	gNsECSSystem::UpdateLifetimeSystem(ecs, deltaTime);
+	// ECSã®ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ã‚·ã‚¹ãƒ†ãƒ ã‚’æ›´æ–°
+	Game::ECS::System::UpdateLifetimeSystem(ecs, deltaTime);
 }

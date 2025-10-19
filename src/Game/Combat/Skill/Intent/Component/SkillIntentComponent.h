@@ -1,19 +1,19 @@
-// 
+ï»¿// 
 
 #pragma once
 
 #include "Game/Combat/Skill/MasterData/SkillSlot.h"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 #include <vector>
 
-// íœ—\’èF–¢g—p -> Character‘¤‚ÌIntent‚ÉˆÚs
+// å‰Šé™¤äºˆå®šï¼šæœªä½¿ç”¨ -> Characterå´ã®Intentã«ç§»è¡Œ
 namespace Game::Combat::Skill::Intent
 {
 	struct SkillIntentComponent
 	{
-		std::vector<gNsSkillData::SkillSlot> requestedSlots;
+		std::vector<Game::Combat::Skill::Data::SkillSlot> requestedSlots;
 		bool isActive = false;
 	};
 }

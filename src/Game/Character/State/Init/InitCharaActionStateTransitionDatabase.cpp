@@ -1,21 +1,21 @@
-#include "InitCharaActionStateTransitionDatabase.hpp"
+ï»¿#include "InitCharaActionStateTransitionDatabase.hpp"
 
 
 #include "Game/Character/State/Rule/Action/ActionStateTransitionDatabase.hpp"
 
 
-#include "Common/GameNamespaceDecl.h"
 
-void Game::Character::State::Action::InitCharaActionStateTransitionDatabase(eNsECS::EntityMgr& ecs)
+
+void Game::Character::State::Action::InitCharaActionStateTransitionDatabase(Engine::ECS::EntityMgr& ecs)
 {
-	auto& db = ecs.createResource<gNsCharaActionState::StateTransitionDatabase>();
+	auto& db = ecs.createResource<Game::Character::State::Action::StateTransitionDatabase>();
 
-	using State = gNsCharaActionState::ActionState;
-	using ConditionType = gNsCharaActionState::TransitionConditionType;
+	using State = Game::Character::State::Action::ActionState;
+	using ConditionType = Game::Character::State::Action::TransitionConditionType;
 
 	db.rules =
 	{
-		// None ¨ SkillCasting
+		// None â†’ SkillCasting
 		{
 			.from = State::None,
 			.to = State::SkillCasting,
@@ -23,16 +23,16 @@ void Game::Character::State::Action::InitCharaActionStateTransitionDatabase(eNsE
 				{ ConditionType::SkillTriggered }
 			}
 		},
-		// SkillCasting ¨ NoneiŠÔŒo‰ßj
+		// SkillCasting â†’ Noneï¼ˆæ™‚é–“çµŒéï¼‰
 		{
 			.from = State::SkillCasting,
 			.to = State::None,
 			.conditions = {
-				{ ConditionType::ActionDurationElapsed, 1.0f } // ‰¼FƒXƒLƒ‹”­“®1•bŒãI—¹
+				{ ConditionType::ActionDurationElapsed, 1.0f } // ä»®ï¼šã‚¹ã‚­ãƒ«ç™ºå‹•1ç§’å¾Œçµ‚äº†
 			}
 		},
 
-		//// None ¨ Rolling
+		//// None â†’ Rolling
 		//{
 		//	.from = State::None,
 		//	.to = State::Rolling,
@@ -40,16 +40,16 @@ void Game::Character::State::Action::InitCharaActionStateTransitionDatabase(eNsE
 		//		{ ConditionType::RequestRoll }
 		//	}
 		//},
-		//// Rolling ¨ Nonei‰ñ”ğI—¹j
+		//// Rolling â†’ Noneï¼ˆå›é¿çµ‚äº†ï¼‰
 		//{
 		//	.from = State::Rolling,
 		//	.to = State::None,
 		//	.conditions = {
-		//		{ ConditionType::IsTimeElapsed, 0.5f } // ‰¼F‰ñ”ğŠÔ
+		//		{ ConditionType::IsTimeElapsed, 0.5f } // ä»®ï¼šå›é¿æ™‚é–“
 		//	}
 		//},
 
-		//// None ¨ Guarding
+		//// None â†’ Guarding
 		//{
 		//	.from = State::None,
 		//	.to = State::Guarding,
@@ -59,29 +59,29 @@ void Game::Character::State::Action::InitCharaActionStateTransitionDatabase(eNsE
 		//},
 
 
-		//// Guarding ¨ NoneiƒK[ƒh‰ğœj
+		//// Guarding â†’ Noneï¼ˆã‚¬ãƒ¼ãƒ‰è§£é™¤ï¼‰
 		//{
 		//	.from = State::Guarding,
 		//	.to = State::None,
 		//	.conditions = {
-		//		{ ConditionType::IsTimeElapsed, 1.0f } // ‰¼FƒK[ƒhŒp‘±ŠÔ
+		//		{ ConditionType::IsTimeElapsed, 1.0f } // ä»®ï¼šã‚¬ãƒ¼ãƒ‰ç¶™ç¶šæ™‚é–“
 		//	}
 		//},
 
-		//// None ¨ UsingItem
+		//// None â†’ UsingItem
 		//{
 		//	.from = State::None,
 		//	.to = State::UsingItem,
 		//	.conditions = {
-		//		{ ConditionType::RequestGuard } // ‰¼FƒAƒCƒeƒ€g—p‚àƒK[ƒh‚Æ“¯‚¶ğŒ‚Å
+		//		{ ConditionType::RequestGuard } // ä»®ï¼šã‚¢ã‚¤ãƒ†ãƒ ä½¿ç”¨ã‚‚ã‚¬ãƒ¼ãƒ‰ã¨åŒã˜æ¡ä»¶ã§
 		//	}
 		//},
-		//// UsingItem ¨ NoneiƒAƒCƒeƒ€g—pI—¹j
+		//// UsingItem â†’ Noneï¼ˆã‚¢ã‚¤ãƒ†ãƒ ä½¿ç”¨çµ‚äº†ï¼‰
 		//{
 		//	.from = State::UsingItem,
 		//	.to = State::None,
 		//	.conditions = {
-		//		{ ConditionType::ActionDurationElapsed, 1.0f } // ‰¼FƒAƒCƒeƒ€g—pŠÔ
+		//		{ ConditionType::ActionDurationElapsed, 1.0f } // ä»®ï¼šã‚¢ã‚¤ãƒ†ãƒ ä½¿ç”¨æ™‚é–“
 		//	}
 		//}
 	};

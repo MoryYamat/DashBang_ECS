@@ -1,27 +1,27 @@
-#include "AttackLifetimeSystem.hpp"
+ï»¿#include "AttackLifetimeSystem.hpp"
 
 #include "Game/Combat/Skill/Component/Attack2DAreaComponent.h"
 
 #include "Engine/ECS/EntityUtils/EntityUtils.h"
 
-#include "Common/GameNamespaceDecl.h"
 
-// íœ—\’èFŒ^ƒx[ƒXFSM“±“üŒã”p~—\’è
-void Game::Combat::Skill::System::AttackLifetimeSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
+
+// å‰Šé™¤äºˆå®šï¼šå‹ãƒ™ãƒ¼ã‚¹FSMå°å…¥å¾Œå»ƒæ­¢äºˆå®š
+void Game::Combat::Skill::System::AttackLifetimeSystem::Update(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
-	//for (eNsECS::Entity e : ecs.view<gNsSkillComp::Attack2DAreaComponent>())
+	//for (Engine::ECS::Entity e : ecs.view<Game::Combat::Skill::Component::Attack2DAreaComponent>())
 	//{
-	//	auto& area = ecs.get<gNsSkillComp::Attack2DAreaComponent>(e);
-	//	area.lifetime -= deltaTime; // ƒ‰ƒCƒtƒ^ƒCƒ€‚ğŒ¸­
+	//	auto& area = ecs.get<Game::Combat::Skill::Component::Attack2DAreaComponent>(e);
+	//	area.lifetime -= deltaTime; // ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ã‚’æ¸›å°‘
 	//	if (area.lifetime <= 0.0f)
 	//	{
-	//		// ƒ‰ƒCƒtƒ^ƒCƒ€‚ªI—¹‚µ‚½‚çAƒGƒ“ƒeƒBƒeƒB‚ğíœ
+	//		// ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ãŒçµ‚äº†ã—ãŸã‚‰ã€ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ã‚’å‰Šé™¤
 	//		std::cout << "[AttackLifetimeSystem] Attack area with owner " << area.owner.id << " has expired and will be destroyed.\n";
-	//		eNsECS::EntityUtils::MarkForPendingDestroy(ecs, e);
+	//		Engine::ECS::EntityUtils::MarkForPendingDestroy(ecs, e);
 	//	}
 	//	else
 	//	{
-	//		// ƒ‰ƒCƒtƒ^ƒCƒ€‚ªc‚Á‚Ä‚¢‚éê‡‚ÍA•K—v‚É‰‚¶‚ÄXVˆ—‚ğs‚¤
+	//		// ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ãŒæ®‹ã£ã¦ã„ã‚‹å ´åˆã¯ã€å¿…è¦ã«å¿œã˜ã¦æ›´æ–°å‡¦ç†ã‚’è¡Œã†
 	//		// Update logic if needed while the lifetime is still active
 	//	}
 	//}

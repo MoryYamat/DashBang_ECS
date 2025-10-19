@@ -17,23 +17,23 @@
 
 #include <iostream>
 
-#include "Common/GameNamespaceDecl.h"
+
 
 // 削除予定：FSM実装後廃止予定
 // FIXME:Intentに基づいてキャラクターのスキルを実行する．※本来はこのExecutionの前にResolverによる実行可否判定が必要
 // Intent -> Resolver -> Logic : IntentとStateに基づいてスキルの実行可否を判定する
-void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::EntityMgr& ecs, float deltaTime)
+void Game::Character::Control::Skill::UpdateCharacterSkillExecution(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
 
-	//for (eNsECS::Entity ePlayer : ecs.view<
-	//	gNsCharacterControlSkill::SkillIntentComponent,
-	//	gNsSkillComp::SkillSlotAssignmentComponent,
-	//	eNsLogic2DComp::Logic2DTransformComponent,
-	//	gNsTags::PlayerCharacterTag>())
+	//for (Engine::ECS::Entity ePlayer : ecs.view<
+	//	Game::Character::Control::Skill::SkillIntentComponent,
+	//	Game::Combat::Skill::Component::SkillSlotAssignmentComponent,
+	//	Engine::ECS::Component::Logic2D::Logic2DTransformComponent,
+	//	Game::ECS::Tags::PlayerCharacterTag>())
 	//{
-	//	const auto& intent = ecs.get<gNsCharacterControlSkill::SkillIntentComponent>(ePlayer);
-	//	const auto& slotAssign = ecs.get<gNsSkillComp::SkillSlotAssignmentComponent>(ePlayer);
-	//	const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(ePlayer);
+	//	const auto& intent = ecs.get<Game::Character::Control::Skill::SkillIntentComponent>(ePlayer);
+	//	const auto& slotAssign = ecs.get<Game::Combat::Skill::Component::SkillSlotAssignmentComponent>(ePlayer);
+	//	const auto& logic = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(ePlayer);
 
 	//	// ボタンが押されていない場合はスルー
 	//	if (!intent.isActive) continue;
@@ -55,9 +55,9 @@ void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::Enti
 
 	//		// 効率問題 キャッシュ
 	//		// Fixme: 同じスキルを短時間で複数回発動(連射みたいな感じ)できるようにする場合は、ここを変更する必要がある
-	//		for (eNsECS::Entity eSkill : ecs.view<gNsSkillComp::SkillInstanceComponent>())
+	//		for (Engine::ECS::Entity eSkill : ecs.view<Game::Combat::Skill::Component::SkillInstanceComponent>())
 	//		{
-	//			const auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(eSkill);
+	//			const auto& skillInstance = ecs.get<Game::Combat::Skill::Component::SkillInstanceComponent>(eSkill);
 	//			if (skillInstance.caster == ePlayer && skillInstance.skillId == skillId)
 	//			{
 	//				// すでにスキルが発動中
@@ -70,18 +70,18 @@ void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::Enti
 	//		if (!alreadyCasting)
 	//		{
 	//			// SkillInstance を生成
-	//			eNsECS::Entity skillEntity = ecs.createEntity();
+	//			Engine::ECS::Entity skillEntity = ecs.createEntity();
 
-	//			gNsSkillComp::SkillExecutionComponent execution;
+	//			Game::Combat::Skill::Component::SkillExecutionComponent execution;
 	//			execution.caster = ePlayer;
 	//			execution.skillId = skillId;
-	//			execution.currentPhase = gNsSkillComp::SkillExecutionPhase::Casting;
+	//			execution.currentPhase = Game::Combat::Skill::Component::SkillExecutionPhase::Casting;
 	//			execution.timeSinceCast = 0.0f;
 	//			execution.phaseElapsedTime = 0.0f;
 	//			execution.isInterrupted = false;
 	//			ecs.addComponent(skillEntity, execution);
 
-	//			eNsLogic2DComp::Transform2DComponent transform2DComp;
+	//			Engine::ECS::Component::Logic2D::Transform2DComponent transform2DComp;
 	//			transform2DComp.positionXZ = logic.positionXZ;
 	//			transform2DComp.rotationY = logic.GetRotationYFromFrontVector();
 	//			transform2DComp.front = logic.front;
@@ -102,18 +102,18 @@ void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::Enti
 
 // FIXME:Intentに基づいてキャラクターのスキルを実行する．※本来はこのExecutionの前にResolverによる実行可否判定が必要
 // Intent -> Resolver -> Logic : IntentとStateに基づいてスキルの実行可否を判定する
-//void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::EntityMgr& ecs, float deltaTime)
+//void Game::Character::Control::Skill::UpdateCharacterSkillExecution(Engine::ECS::EntityMgr& ecs, float deltaTime)
 //{
 //
-//	for (eNsECS::Entity ePlayer : ecs.view<
-//		gNsCharacterControlSkill::SkillIntentComponent,
-//		gNsSkillComp::SkillSlotAssignmentComponent,
-//		eNsLogic2DComp::Logic2DTransformComponent,
-//		gNsTags::PlayerCharacterTag>())
+//	for (Engine::ECS::Entity ePlayer : ecs.view<
+//		Game::Character::Control::Skill::SkillIntentComponent,
+//		Game::Combat::Skill::Component::SkillSlotAssignmentComponent,
+//		Engine::ECS::Component::Logic2D::Logic2DTransformComponent,
+//		Game::ECS::Tags::PlayerCharacterTag>())
 //	{
-//		const auto& intent = ecs.get<gNsCharacterControlSkill::SkillIntentComponent>(ePlayer);
-//		const auto& slotAssign = ecs.get<gNsSkillComp::SkillSlotAssignmentComponent>(ePlayer);
-//		const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(ePlayer);
+//		const auto& intent = ecs.get<Game::Character::Control::Skill::SkillIntentComponent>(ePlayer);
+//		const auto& slotAssign = ecs.get<Game::Combat::Skill::Component::SkillSlotAssignmentComponent>(ePlayer);
+//		const auto& logic = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(ePlayer);
 //
 //		// ボタンが押されていない場合はスルー
 //		if (!intent.isActive) continue;
@@ -135,9 +135,9 @@ void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::Enti
 //
 //			// 効率問題 キャッシュ
 //			// Fixme: 同じスキルを短時間で複数回発動(連射みたいな感じ)できるようにする場合は、ここを変更する必要がある
-//			for (eNsECS::Entity eSkill : ecs.view<gNsSkillComp::SkillInstanceComponent>())
+//			for (Engine::ECS::Entity eSkill : ecs.view<Game::Combat::Skill::Component::SkillInstanceComponent>())
 //			{
-//				const auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(eSkill);
+//				const auto& skillInstance = ecs.get<Game::Combat::Skill::Component::SkillInstanceComponent>(eSkill);
 //				if (skillInstance.caster == ePlayer && skillInstance.skillId == skillId)
 //				{
 //					// すでにスキルが発動中
@@ -150,15 +150,15 @@ void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::Enti
 //			if (!alreadyCasting)
 //			{
 //				// SkillInstance を生成
-//				eNsECS::Entity skillEntity = ecs.createEntity();
+//				Engine::ECS::Entity skillEntity = ecs.createEntity();
 //
-//				gNsSkillComp::SkillInstanceComponent skillInstance;
+//				Game::Combat::Skill::Component::SkillInstanceComponent skillInstance;
 //				skillInstance.caster = ePlayer;
 //				skillInstance.skillId = skillId;
 //				skillInstance.timeSinceCast = 0.0f;
 //				ecs.addComponent(skillEntity, skillInstance);
 //
-//				eNsLogic2DComp::Transform2DComponent transform2DComp;
+//				Engine::ECS::Component::Logic2D::Transform2DComponent transform2DComp;
 //				transform2DComp.positionXZ = logic.positionXZ;
 //				transform2DComp.rotationY = logic.GetRotationYFromFrontVector();
 //				transform2DComp.front = logic.front;
@@ -176,25 +176,25 @@ void Game::Character::Control::Skill::UpdateCharacterSkillExecution(eNsECS::Enti
 //	}
 //}
 
-//eNsECS::Entity Game::Character::Control::Skill::CreateSkillInstanceWithContext
+//Engine::ECS::Entity Game::Character::Control::Skill::CreateSkillInstanceWithContext
 //(
-//	eNsECS::EntityMgr& ecs,
-//	eNsECS::Entity caster,
+//	Engine::ECS::EntityMgr& ecs,
+//	Engine::ECS::Entity caster,
 //	int skillId,
-//	const eNsLogic2DComp::Logic2DTransformComponent& casterTransform
+//	const Engine::ECS::Component::Logic2D::Logic2DTransformComponent& casterTransform
 //)
 //{
 //	// skillInstanceを生成
-//	eNsECS::Entity skillEntity = ecs.createEntity();
+//	Engine::ECS::Entity skillEntity = ecs.createEntity();
 //
-//	gNsSkillComp::SkillInstanceComponent skillInstance;
+//	Game::Combat::Skill::Component::SkillInstanceComponent skillInstance;
 //	skillInstance.caster = caster;
 //	skillInstance.skillId = skillId;
 //	skillInstance.timeSinceCast = 0.0f;
 //	ecs.addComponent(skillEntity, skillInstance);
 //
 //	// Transform2DComponentを設定
-//	eNsLogic2DComp::Transform2DComponent transform2DComp;
+//	Engine::ECS::Component::Logic2D::Transform2DComponent transform2DComp;
 //	transform2DComp.positionXZ = casterTransform.positionXZ;
 //	transform2DComp.rotationY = casterTransform.GetRotationYFromFrontVector();
 //	transform2DComp.front = casterTransform.front;

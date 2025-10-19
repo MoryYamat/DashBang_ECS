@@ -1,19 +1,19 @@
-// UI‚â“ü—Í‚É‘Î‰‚µ‚½ƒXƒLƒ‹‘•”õ
-// ‘•”õƒŠƒXƒg
+ï»¿// UIã‚„å…¥åŠ›ã«å¯¾å¿œã—ãŸã‚¹ã‚­ãƒ«è£…å‚™
+// è£…å‚™ãƒªã‚¹ãƒˆ
 #pragma once
 
 #include <unordered_map>
 
 #include "Game/Combat/Skill/MasterData/SkillSlot.h"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 namespace Game::Combat::Skill::Component
 {
-	// ‘•”õ’†‚ÌƒXƒLƒ‹(SkillSLot‚Æ‚Ì‘Î‰)
+	// è£…å‚™ä¸­ã®ã‚¹ã‚­ãƒ«(SkillSLotã¨ã®å¯¾å¿œ)
 	struct SkillSlotAssignmentComponent
 	{
-		std::unordered_map<gNsSkillData::SkillSlot, int> slotToSkillId;
+		std::unordered_map<Game::Combat::Skill::Data::SkillSlot, int> slotToSkillId;
 	};
 }
 

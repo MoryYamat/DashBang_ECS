@@ -1,4 +1,4 @@
-// Class that creates TileMapEntity
+ï»¿// Class that creates TileMapEntity
 
 #pragma once
 
@@ -8,26 +8,24 @@
 #include "Engine/ECS/Component/Common/TransformComponent.h"
 #include "Engine/Graphics/Model/ModelData.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Game::Actor::Map
 {
-	// (Œ»İ–¢g—p)ƒeƒXƒgƒ^ƒCƒ‹ƒ}ƒbƒv—p(íœ—\’è)
-	// (Œ»İ–¢g—p)ƒeƒXƒgƒ^ƒCƒ‹ƒ}ƒbƒv—p(íœ—\’è)
-	// (Œ»İ–¢g—p)ƒeƒXƒgƒ^ƒCƒ‹ƒ}ƒbƒv—p(íœ—\’è)
+	// (ç¾åœ¨æœªä½¿ç”¨)ãƒ†ã‚¹ãƒˆã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—ç”¨(å‰Šé™¤äºˆå®š)
+	// (ç¾åœ¨æœªä½¿ç”¨)ãƒ†ã‚¹ãƒˆã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—ç”¨(å‰Šé™¤äºˆå®š)
+	// (ç¾åœ¨æœªä½¿ç”¨)ãƒ†ã‚¹ãƒˆã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—ç”¨(å‰Šé™¤äºˆå®š)
 	class TileMapActor
 	{
 	public:
 
-		// TerrainMesh‚©‚çŒÄ‚Ño‚· («—ˆ“I‚É‚Í“®“I¶¬^íœ‚¨‚æ‚ÑLOD‚É‘Î‰—\’è)
-		static eNsECS::Entity Create(
-			eNsECS::EntityMgr& ecs,
-			const eNsCommonComp::TransformComponent& transform,
-			const eNsGfxModel::ModelData& modelData,
+		// TerrainMeshã‹ã‚‰å‘¼ã³å‡ºã™ (å°†æ¥çš„ã«ã¯å‹•çš„ç”Ÿæˆï¼å‰Šé™¤ãŠã‚ˆã³LODã«å¯¾å¿œäºˆå®š)
+		static Engine::ECS::Entity Create(
+			Engine::ECS::EntityMgr& ecs,
+			const Engine::ECS::Component::Common::TransformComponent& transform,
+			const Engine::Graphics::Model::ModelData& modelData,
 			float tileSize
 		);
 
-		// TileMapActor(eNsECS::EntityMgr& ecs);
 	};
 }
 

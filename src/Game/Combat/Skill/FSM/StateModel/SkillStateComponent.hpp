@@ -5,7 +5,7 @@
 
 #include <typeindex>
 
-#include "Common/GameNamespaceDecl.h"
+
 
 namespace Game::Combat::Skill::FSM::StateModel
 {

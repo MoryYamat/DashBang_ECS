@@ -1,5 +1,5 @@
-// A component that holds information in 2D world space.
-// 2Dƒ[ƒ‹ƒh‹óŠÔ‚Å‚Ìî•ñ‚ğ•Û‚·‚éƒRƒ“ƒ|[ƒlƒ“ƒg
+ï»¿// A component that holds information in 2D world space.
+// 2Dãƒ¯ãƒ¼ãƒ«ãƒ‰ç©ºé–“ã§ã®æƒ…å ±ã‚’ä¿æŒã™ã‚‹ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
 
 #pragma once 
 
@@ -11,7 +11,7 @@
 
 #include <GLM/glm.hpp>
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Engine::ECS::Component::Logic2D
 {
@@ -22,24 +22,24 @@ namespace Engine::ECS::Component::Logic2D
 		float scale = 1.0f; // uniform
 
 		glm::vec2 front = CanonicalDefaults::kLocalForwardXZ;
-		glm::vec2 right = eNsLogic2DMath::CalcRightFromForward(front);
+		glm::vec2 right = Engine::Math::Logic2D::CalcRightFromForward(front);
 
-		// front (radians‘O’ñ)
+		// front (radianså‰æ)
 		glm::vec2 GetFrontXZ() const
 		{
-			return eNsLogic2DMath::CalcForwardFromYaw(rotationY);// +ZŠî€
+			return Engine::Math::Logic2D::CalcForwardFromYaw(rotationY);// +ZåŸºæº–
 		}
 
-		// right (radians‘O’ñ)
+		// right (radianså‰æ)
 		glm::vec2 GetRightXZ() const
 		{
-			return eNsLogic2DMath::CalcRightFromYaw(rotationY);// +ZŠî€
+			return Engine::Math::Logic2D::CalcRightFromYaw(rotationY);// +ZåŸºæº–
 		}
 
-		// front‚É‡‚í‚¹‚ÄXV
+		// frontã«åˆã‚ã›ã¦æ›´æ–°
 		void UpdateRightFromFront()
 		{
-			right = eNsLogic2DMath::CalcRightFromForward(front);
+			right = Engine::Math::Logic2D::CalcRightFromForward(front);
 		}
 
 	};

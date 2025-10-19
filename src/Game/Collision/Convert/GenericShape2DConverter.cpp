@@ -1,220 +1,220 @@
-#include "GenericShape2DConverter.h"
+ï»¿#include "GenericShape2DConverter.h"
 
 #include "Engine/Math/Logic2D/LogicMathUtils.h"
 
 #include <variant>
 
-gNsCollData::GenericShape2D Game::Collision::Convert::MakeGenericShape2D(
-	eNsECS::Entity e,
-	eNsECS::EntityMgr& ecs)
+Game::Collision::Data::GenericShape2D Game::Collision::Convert::MakeGenericShape2D(
+	Engine::ECS::Entity e,
+	Engine::ECS::EntityMgr& ecs)
 {
-	if (ecs.hasComponent<eNsLogic2DComp::CollisionComponent>(e)) {
-		const auto& collider = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
-		if (ecs.hasComponent<eNsLogic2DComp::Logic2DTransformComponent>(e)) {
-			return MakeGenericShape2DFromTransform(collider.collider, ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e));
+	if (ecs.hasComponent<Engine::ECS::Component::Logic2D::CollisionComponent>(e)) {
+		const auto& collider = ecs.get<Engine::ECS::Component::Logic2D::CollisionComponent>(e);
+		if (ecs.hasComponent<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(e)) {
+			return MakeGenericShape2DFromTransform(collider.collider, ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(e));
 		}
 	}
-	else if (ecs.hasComponent<gNsSkillComp::Attack2DAreaComponent>(e)) {
-		const auto& area = ecs.get<gNsSkillComp::Attack2DAreaComponent>(e);
-		if (ecs.hasComponent<eNsLogic2DComp::Transform2DComponent>(e)) {
-			return MakeGenericShape2DFromTransform(area.shape, ecs.get<eNsLogic2DComp::Transform2DComponent>(e));
+	else if (ecs.hasComponent<Game::Combat::Skill::Component::Attack2DAreaComponent>(e)) {
+		const auto& area = ecs.get<Game::Combat::Skill::Component::Attack2DAreaComponent>(e);
+		if (ecs.hasComponent<Engine::ECS::Component::Logic2D::Transform2DComponent>(e)) {
+			return MakeGenericShape2DFromTransform(area.shape, ecs.get<Engine::ECS::Component::Logic2D::Transform2DComponent>(e));
 		}
 	}
 
-	//‚±‚Ì•ªŠò‚Éˆø‚Á‚©‚©‚Á‚Ä‚È‚¢‚Ì‚ª–â‘è
-	// ˆê’U‰ğŒˆiCollisionMask‚ğ‚Á‚Ä‚¢‚é‚ªCAttack2DShape‚àCollisionCompoent‚à‚Á‚Ä‚¢‚È‚¢(TileMapActor)Entity‚ª‚ ‚é) => monostate‚ğ•Ô‚·
+	//ã“ã®åˆ†å²ã«å¼•ã£ã‹ã‹ã£ã¦ãªã„ã®ãŒå•é¡Œ
+	// ä¸€æ—¦è§£æ±ºï¼ˆCollisionMaskã‚’æŒã£ã¦ã„ã‚‹ãŒï¼ŒAttack2DShapeã‚‚CollisionCompoentã‚‚æŒã£ã¦ã„ãªã„(TileMapActor)EntityãŒã‚ã‚‹) => monostateã‚’è¿”ã™
 
 	// assert(false && "No valid shape or transform");
 	// std::cerr << "[MakeGenericShape2D] Warning: Entity " << e.id << " has no valid shape or transform.\n";
-	return gNsCollData::GenericShape2D{}; // monostate
+	return Game::Collision::Data::GenericShape2D{}; // monostate
 }
 
-gNsCollData::GenericShape2D Game::Collision::Convert::BuildGenericShape2D(const eNsLogic2DComp::Collider& collider
-	, const eNsLogic2DComp::Logic2DTransformComponent& transform)
+Game::Collision::Data::GenericShape2D Game::Collision::Convert::BuildGenericShape2D(const Engine::ECS::Component::Logic2D::Collider& collider
+	, const Engine::ECS::Component::Logic2D::Logic2DTransformComponent& transform)
 {
-	return std::visit([&](auto&& shape) -> gNsCollData::GenericShape2D {
+	return std::visit([&](auto&& shape) -> Game::Collision::Data::GenericShape2D {
 
 		using T = std::decay_t<decltype(shape)>;
 
-		if constexpr (std::is_same_v<T, eNsLogic2DComp::Circle2D>)
+		if constexpr (std::is_same_v<T, Engine::ECS::Component::Logic2D::Circle2D>)
 		{
-			// 2Dƒ[ƒJƒ‹ƒIƒtƒZƒbƒg‚ğƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·iXZ•½–Êj
+			// 2Dãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›ï¼ˆXZå¹³é¢ï¼‰
 			glm::vec2 center = applyLocalToWorldPoint(shape.center, transform);
-			return gNsCollData::FromCircle(center, shape.radius);
+			return Game::Collision::Data::FromCircle(center, shape.radius);
 		}
-		else if constexpr (std::is_same_v<T, eNsLogic2DComp::Obb2D>)
+		else if constexpr (std::is_same_v<T, Engine::ECS::Component::Logic2D::Obb2D>)
 		{
-			// 2Dƒ[ƒJƒ‹ƒIƒtƒZƒbƒg‚ğƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·iXZ•½–Êj
+			// 2Dãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›ï¼ˆXZå¹³é¢ï¼‰
 			glm::vec2 center = applyLocalToWorldPoint(shape.center, transform);
 			glm::vec2 axisX = glm::normalize(shape.axisX);
 			glm::vec2 axisZ = glm::normalize(shape.axisZ);
 			glm::vec2 halfExtents = shape.halfExtents * transform.scale;
-			return gNsCollData::FromObb(center, halfExtents, axisX, axisZ);
+			return Game::Collision::Data::FromObb(center, halfExtents, axisX, axisZ);
 		}
-		else if constexpr (std::is_same_v<T, eNsLogic2DComp::Box2D>)
+		else if constexpr (std::is_same_v<T, Engine::ECS::Component::Logic2D::Box2D>)
 		{
-			// 2Dƒ[ƒJƒ‹ƒIƒtƒZƒbƒg‚ğƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·iXZ•½–Êj
+			// 2Dãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›ï¼ˆXZå¹³é¢ï¼‰
 			glm::vec2 center = applyLocalToWorldPoint(shape.center, transform);
 			glm::vec2 halfExtents = shape.halfExtents * transform.scale;
-			return gNsCollData::FromObb(center, halfExtents, transform.right, transform.front);
+			return Game::Collision::Data::FromObb(center, halfExtents, transform.right, transform.front);
 		}
 		else
 		{
-			return gNsCollData::GenericShape2D{};// monostate
+			return Game::Collision::Data::GenericShape2D{};// monostate
 		}
 		}, collider.shape);
 }
 
-gNsCollData::GenericShape2D Game::Collision::Convert::BuildGenericShape2D(const gNsSkillComp::Attack2DShape& attackShape
-	, const eNsLogic2DComp::Transform2DComponent& worldTransform)
+Game::Collision::Data::GenericShape2D Game::Collision::Convert::BuildGenericShape2D(const Game::Combat::Skill::Component::Attack2DShape& attackShape
+	, const Engine::ECS::Component::Logic2D::Transform2DComponent& worldTransform)
 {
 
-	return std::visit([&](const auto& shape) -> gNsCollData::GenericShape2D {
+	return std::visit([&](const auto& shape) -> Game::Collision::Data::GenericShape2D {
 
 		using T = std::decay_t<decltype(shape)>;
 
-		if constexpr (std::is_same_v<T, gNsSkillComp::Circle2DAttack>)
+		if constexpr (std::is_same_v<T, Game::Combat::Skill::Component::Circle2DAttack>)
 		{
-			// 2Dƒ[ƒJƒ‹ƒIƒtƒZƒbƒg‚ğƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·iXZ•½–Êj
+			// 2Dãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›ï¼ˆXZå¹³é¢ï¼‰
 			glm::vec2 center = applyLocalToWorldPoint(shape.center, worldTransform);
-			return gNsCollData::FromCircle(center, shape.radius);
+			return Game::Collision::Data::FromCircle(center, shape.radius);
 		}
-		else if constexpr (std::is_same_v<T, gNsSkillComp::Sector2DAttack>)
+		else if constexpr (std::is_same_v<T, Game::Combat::Skill::Component::Sector2DAttack>)
 		{
-			// 2Dƒ[ƒJƒ‹ƒIƒtƒZƒbƒg‚ğƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·iXZ•½–Êj
+			// 2Dãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›ï¼ˆXZå¹³é¢ï¼‰
 			glm::vec2 center = applyLocalToWorldPoint(shape.center, worldTransform);
 			glm::vec2 direction = glm::normalize(transformLocalPointToWorld(shape.direction, worldTransform));
-			return gNsCollData::FromSector(center, direction, shape.angle, shape.radius);
+			return Game::Collision::Data::FromSector(center, direction, shape.angle, shape.radius);
 		}
-		else if constexpr (std::is_same_v<T, gNsSkillComp::Rectangle2DAttack>)
+		else if constexpr (std::is_same_v<T, Game::Combat::Skill::Component::Rectangle2DAttack>)
 		{
-			// 2Dƒ[ƒJƒ‹ƒIƒtƒZƒbƒg‚ğƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·iXZ•½–Êj
+			// 2Dãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›ï¼ˆXZå¹³é¢ï¼‰
 			glm::vec2 center = applyLocalToWorldPoint(shape.center, worldTransform);
 			glm::vec2 front = glm::normalize(transformLocalPointToWorld(shape.direction, worldTransform));
-			glm::vec2 right = eNsLogic2DMath::CalcRightFromForward(front);
+			glm::vec2 right = Engine::Math::Logic2D::CalcRightFromForward(front);
 			glm::vec2 halfExtents = { shape.width * 0.5, shape.height * 0.5 };
-			return gNsCollData::FromObb(center, halfExtents, right, front);
+			return Game::Collision::Data::FromObb(center, halfExtents, right, front);
 
 		}
 		else
 		{
-			return gNsCollData::GenericShape2D{};// monostate
+			return Game::Collision::Data::GenericShape2D{};// monostate
 		}
 
 		}, attackShape.shape);
 }
 
-// –¢g—p
-gNsCollData::GenericShape2D Game::Collision::Convert::ConvertFromCollider(const eNsLogic2DComp::Collider& collider
-	, const eNsLogic2DComp::Logic2DTransformComponent& transform)
+// æœªä½¿ç”¨
+Game::Collision::Data::GenericShape2D Game::Collision::Convert::ConvertFromCollider(const Engine::ECS::Component::Logic2D::Collider& collider
+	, const Engine::ECS::Component::Logic2D::Logic2DTransformComponent& transform)
 {
-	return std::visit([&](auto&& shape) -> gNsCollData::GenericShape2D {
+	return std::visit([&](auto&& shape) -> Game::Collision::Data::GenericShape2D {
 
 		using T = std::decay_t<decltype(shape)>;
 
-		if constexpr (std::is_same_v<T, eNsLogic2DComp::Circle2D>)
+		if constexpr (std::is_same_v<T, Engine::ECS::Component::Logic2D::Circle2D>)
 		{
-			// 2Dƒ[ƒJƒ‹ƒIƒtƒZƒbƒg‚ğƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·iXZ•½–Êj
+			// 2Dãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›ï¼ˆXZå¹³é¢ï¼‰
 			glm::vec2 center = applyLocalToWorldPoint(shape.center, transform);
-			return gNsCollData::FromCircle(center, shape.radius);
+			return Game::Collision::Data::FromCircle(center, shape.radius);
 		}
-		else if constexpr (std::is_same_v<T, eNsLogic2DComp::Obb2D>)
+		else if constexpr (std::is_same_v<T, Engine::ECS::Component::Logic2D::Obb2D>)
 		{
-			// 2Dƒ[ƒJƒ‹ƒIƒtƒZƒbƒg‚ğƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·iXZ•½–Êj
+			// 2Dãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›ï¼ˆXZå¹³é¢ï¼‰
 			glm::vec2 center = applyLocalToWorldPoint(shape.center, transform);
 			glm::vec2 axisX = glm::normalize(shape.axisX);
 			glm::vec2 axisZ = glm::normalize(shape.axisZ);
 			glm::vec2 halfExtents = shape.halfExtents * transform.scale;
-			return gNsCollData::FromObb(center, halfExtents, axisX, axisZ);
+			return Game::Collision::Data::FromObb(center, halfExtents, axisX, axisZ);
 		}
-		else if constexpr (std::is_same_v<T, eNsLogic2DComp::Box2D>)
+		else if constexpr (std::is_same_v<T, Engine::ECS::Component::Logic2D::Box2D>)
 		{
-			// 2Dƒ[ƒJƒ‹ƒIƒtƒZƒbƒg‚ğƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·iXZ•½–Êj
+			// 2Dãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›ï¼ˆXZå¹³é¢ï¼‰
 			glm::vec2 center = applyLocalToWorldPoint(shape.center, transform);
 			glm::vec2 halfExtents = shape.halfExtents * transform.scale;
-			return gNsCollData::FromObb(center, halfExtents, transform.right, transform.front);
+			return Game::Collision::Data::FromObb(center, halfExtents, transform.right, transform.front);
 		}
 		else
 		{
-			return gNsCollData::GenericShape2D{};// monostate
+			return Game::Collision::Data::GenericShape2D{};// monostate
 		}
 		}, collider.shape);
 }
 
-// –¢g—p
-gNsCollData::GenericShape2D Game::Collision::Convert::ConvertFromAttackShape(const gNsSkillComp::Attack2DShape& attackShape
-	, const eNsLogic2DComp::Transform2DComponent& worldTransform)
+// æœªä½¿ç”¨
+Game::Collision::Data::GenericShape2D Game::Collision::Convert::ConvertFromAttackShape(const Game::Combat::Skill::Component::Attack2DShape& attackShape
+	, const Engine::ECS::Component::Logic2D::Transform2DComponent& worldTransform)
 {
-	return std::visit([&](const auto& shape) -> gNsCollData::GenericShape2D {
+	return std::visit([&](const auto& shape) -> Game::Collision::Data::GenericShape2D {
 
 		using T = std::decay_t<decltype(shape)>;
 
-		if constexpr (std::is_same_v<T, gNsSkillComp::Circle2DAttack>)
+		if constexpr (std::is_same_v<T, Game::Combat::Skill::Component::Circle2DAttack>)
 		{
-			// 2Dƒ[ƒJƒ‹ƒIƒtƒZƒbƒg‚ğƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·iXZ•½–Êj
+			// 2Dãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›ï¼ˆXZå¹³é¢ï¼‰
 			glm::vec2 center = applyLocalToWorldPoint(shape.center, worldTransform);
-			return gNsCollData::FromCircle(center, shape.radius);
+			return Game::Collision::Data::FromCircle(center, shape.radius);
 		}
-		else if constexpr (std::is_same_v<T, gNsSkillComp::Sector2DAttack>)
+		else if constexpr (std::is_same_v<T, Game::Combat::Skill::Component::Sector2DAttack>)
 		{
-			// 2Dƒ[ƒJƒ‹ƒIƒtƒZƒbƒg‚ğƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·iXZ•½–Êj
+			// 2Dãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›ï¼ˆXZå¹³é¢ï¼‰
 			glm::vec2 center = applyLocalToWorldPoint(shape.center, worldTransform);
 			glm::vec2 direction = glm::normalize(transformLocalPointToWorld(shape.direction, worldTransform));
-			return gNsCollData::FromSector(center, direction, shape.angle, shape.radius);
+			return Game::Collision::Data::FromSector(center, direction, shape.angle, shape.radius);
 		}
-		else if constexpr (std::is_same_v<T, gNsSkillComp::Rectangle2DAttack>)
+		else if constexpr (std::is_same_v<T, Game::Combat::Skill::Component::Rectangle2DAttack>)
 		{
-			// 2Dƒ[ƒJƒ‹ƒIƒtƒZƒbƒg‚ğƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·iXZ•½–Êj
+			// 2Dãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›ï¼ˆXZå¹³é¢ï¼‰
 			glm::vec2 center = applyLocalToWorldPoint(shape.center, worldTransform);
 			glm::vec2 front = glm::normalize(transformLocalPointToWorld(shape.direction, worldTransform));
-			glm::vec2 right = eNsLogic2DMath::CalcRightFromForward(front);
+			glm::vec2 right = Engine::Math::Logic2D::CalcRightFromForward(front);
 			glm::vec2 halfExtents = { shape.width * 0.5, shape.height * 0.5 };
-			return gNsCollData::FromObb(center, halfExtents, right, front);
+			return Game::Collision::Data::FromObb(center, halfExtents, right, front);
 
 		}
 		else
 		{
-			return gNsCollData::GenericShape2D{};// monostate
+			return Game::Collision::Data::GenericShape2D{};// monostate
 		}
 
 		}, attackShape.shape);
 }
 
-glm::vec2 Game::Collision::Convert::applyLocalToWorldPoint(const glm::vec2& localOffset, const eNsLogic2DComp::Logic2DTransformComponent& transform)
+glm::vec2 Game::Collision::Convert::applyLocalToWorldPoint(const glm::vec2& localOffset, const Engine::ECS::Component::Logic2D::Logic2DTransformComponent& transform)
 {
 	//return transform.positionXZ
 	//	+ transform.front * localOffset.y
 	//	+ transform.right * localOffset.x;
-	//return eNsLogic2DMath::Transform::ApplyLocalOffset(localOffset, transform.positionXZ, transform.front, transform.right);
-	// return transform.positionXZ + eNsLogic2DMath::RotateVec2FromZForward(result.center, transform.rotationY) * transform.scale
+	//return Engine::Math::Logic2D::Transform::ApplyLocalOffset(localOffset, transform.positionXZ, transform.front, transform.right);
+	// return transform.positionXZ + Engine::Math::Logic2D::RotateVec2FromZForward(result.center, transform.rotationY) * transform.scale
 	//return transform.positionXZ
-	//	+ eNsLogic2DMath::RotateVec2FromZForward(localOffset, transform.rotation) * transform.scale;
+	//	+ Engine::Math::Logic2D::RotateVec2FromZForward(localOffset, transform.rotation) * transform.scale;
 	
-	return eNsLogic2DMath::Transform::ApplyLocalOffset(localOffset, transform.positionXZ, transform.rotation, transform.scale);
+	return Engine::Math::Logic2D::Transform::ApplyLocalOffset(localOffset, transform.positionXZ, transform.rotation, transform.scale);
 }
 
-glm::vec2 Game::Collision::Convert::applyLocalToWorldPoint(const glm::vec2& localOffset, const eNsLogic2DComp::Transform2DComponent& transform)
+glm::vec2 Game::Collision::Convert::applyLocalToWorldPoint(const glm::vec2& localOffset, const Engine::ECS::Component::Logic2D::Transform2DComponent& transform)
 {
 	//return transform.positionXZ
 	//	+ transform.front * localOffset.y
-	//	+ transform.right * localOffset.x;// right‚Í‰Šú‰»ŒãXV‚µ‚Ä‚¢‚È‚¢(YAGNI: You Aren't Gonna Need it) 
+	//	+ transform.right * localOffset.x;// rightã¯åˆæœŸåŒ–å¾Œæ›´æ–°ã—ã¦ã„ãªã„(YAGNI: You Aren't Gonna Need it) 
 	//return transform.positionXZ
-	//	+ eNsLogic2DMath::RotateVec2FromZForward(localOffset, transform.rotationY) * transform.scale;
+	//	+ Engine::Math::Logic2D::RotateVec2FromZForward(localOffset, transform.rotationY) * transform.scale;
 
-	//glm::vec2 front = eNsLogic2DMath::CalcForwardFromYaw(transform.rotationY);
-	//glm::vec2 right = eNsLogic2DMath::CalcRightFromForward(front);
+	//glm::vec2 front = Engine::Math::Logic2D::CalcForwardFromYaw(transform.rotationY);
+	//glm::vec2 right = Engine::Math::Logic2D::CalcRightFromForward(front);
 	//return transform.positionXZ
 	//	+ front * localOffset.y
 	//	+ right * localOffset.x;
-	return eNsLogic2DMath::Transform::ApplyLocalOffset(localOffset, transform.positionXZ, transform.rotationY, glm::vec2(transform.scale, transform.scale));
+	return Engine::Math::Logic2D::Transform::ApplyLocalOffset(localOffset, transform.positionXZ, transform.rotationY, glm::vec2(transform.scale, transform.scale));
 }
 
-glm::vec2 Game::Collision::Convert::transformLocalPointToWorld(const glm::vec2& localDir, const eNsLogic2DComp::Logic2DTransformComponent& transform)
+glm::vec2 Game::Collision::Convert::transformLocalPointToWorld(const glm::vec2& localDir, const Engine::ECS::Component::Logic2D::Logic2DTransformComponent& transform)
 {
-	return eNsLogic2DMath::Transform::TransformDirection(localDir, transform.rotation);;
+	return Engine::Math::Logic2D::Transform::TransformDirection(localDir, transform.rotation);;
 }
 
-glm::vec2 Game::Collision::Convert::transformLocalPointToWorld(const glm::vec2& localDir, const eNsLogic2DComp::Transform2DComponent& transform)
+glm::vec2 Game::Collision::Convert::transformLocalPointToWorld(const glm::vec2& localDir, const Engine::ECS::Component::Logic2D::Transform2DComponent& transform)
 {
-	return eNsLogic2DMath::Transform::TransformDirection(localDir, transform.rotationY); // right‚Í‰Šú‰»ŒãXV‚µ‚Ä‚¢‚È‚¢(YAGNI: You Aren't Gonna Need it) 
+	return Engine::Math::Logic2D::Transform::TransformDirection(localDir, transform.rotationY); // rightã¯åˆæœŸåŒ–å¾Œæ›´æ–°ã—ã¦ã„ãªã„(YAGNI: You Aren't Gonna Need it) 
 }

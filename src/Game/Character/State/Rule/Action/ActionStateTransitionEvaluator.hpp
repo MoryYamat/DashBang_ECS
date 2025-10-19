@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 
 
 #include "Game/Character/State/Component/Action/ActionStateComponent.hpp"
@@ -10,41 +10,41 @@
 
 #include <vector>
 
-#include "Common/GameNamespaceDecl.h"
+
 
 namespace Game::Character::State::Action
 {
 	bool AreConditionsMet
 	(
-		const gNsCharaActionState::CharacterActionStateComponent& action,
-		const gNsCharaActionState::CharacterSkillExecutionStateComponent& skillExec,
+		const Game::Character::State::Action::CharacterActionStateComponent& action,
+		const Game::Character::State::Action::CharacterSkillExecutionStateComponent& skillExec,
 		float deltaTime,
-		const std::vector<gNsCharaActionState::TransitionCondition>& conditions
+		const std::vector<Game::Character::State::Action::TransitionCondition>& conditions
 	);
 
 	bool EvaluateCondition
 	(
-		const gNsCharaActionState::CharacterActionStateComponent& action,
-		const gNsCharaActionState::CharacterSkillExecutionStateComponent& skillExec,
+		const Game::Character::State::Action::CharacterActionStateComponent& action,
+		const Game::Character::State::Action::CharacterSkillExecutionStateComponent& skillExec,
 		float deltaTime,
-		const gNsCharaActionState::TransitionCondition& condition
+		const Game::Character::State::Action::TransitionCondition& condition
 	);
 
 
-	// à»â∫îpé~ÅFçÌèúó\íË=> skillEcectionStateComponentÇ…äÓÇ√Ç≠èåèÇ…ïœçXÇµÇΩÇΩÇﬂ
+	// ‰ª•‰∏ãÂªÉÊ≠¢ÔºöÂâäÈô§‰∫àÂÆö=> skillEcectionStateComponent„Å´Âü∫„Å•„ÅèÊù°‰ª∂„Å´Â§âÊõ¥„Åó„Åü„Åü„ÇÅ
 	//bool AreConditionsMet
 	//(
-	//	const gNsCharaActionState::CharacterActionStateComponent& action,
-	//	const gNsCharacterControlSkill::SkillIntentComponent& intent,
+	//	const Game::Character::State::Action::CharacterActionStateComponent& action,
+	//	const Game::Character::Control::Skill::SkillIntentComponent& intent,
 	//	float deltaTime,
-	//	const std::vector<gNsCharaActionState::TransitionCondition>& conditions
+	//	const std::vector<Game::Character::State::Action::TransitionCondition>& conditions
 	//);
 
 	//bool EvaluateCondition
 	//(
-	//	const gNsCharaActionState::CharacterActionStateComponent& action,
-	//	const gNsCharacterControlSkill::SkillIntentComponent& intent,
+	//	const Game::Character::State::Action::CharacterActionStateComponent& action,
+	//	const Game::Character::Control::Skill::SkillIntentComponent& intent,
 	//	float deltaTime,
-	//	const gNsCharaActionState::TransitionCondition& condition
+	//	const Game::Character::State::Action::TransitionCondition& condition
 	//);
 }

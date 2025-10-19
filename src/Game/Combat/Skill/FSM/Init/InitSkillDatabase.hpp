@@ -1,12 +1,12 @@
-// SkillDatabase ‰Šú‰»
+ï»¿// SkillDatabase åˆæœŸåŒ–
 
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Game::Combat::Skill::Database
 {
-	void SkillResourceInitialization(eNsECS::EntityMgr& ecs);
+	void SkillResourceInitialization(Engine::ECS::EntityMgr& ecs);
 }

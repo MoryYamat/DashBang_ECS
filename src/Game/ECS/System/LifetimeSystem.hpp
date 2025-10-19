@@ -1,10 +1,10 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Game::ECS::System
 {
-	void UpdateLifetimeSystem(eNsECS::EntityMgr& ecs, float deltaTime);
+	void UpdateLifetimeSystem(Engine::ECS::EntityMgr& ecs, float deltaTime);
 }

@@ -13,13 +13,13 @@
 #define MAX_BONES 128
 
 // 現在未使用
-//void Engine::Graphics::Render::UpdateRenderContext(eNsECS::EntityMgr& ecs, eNsGfxRender::RenderContext& context)
+//void Engine::Graphics::Render::UpdateRenderContext(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::RenderContext& context)
 //{
-//	for (eNsECS::Entity e : ecs.view<
-//		eNsCommonComp::TransformComponent,
+//	for (Engine::ECS::Entity e : ecs.view<
+//		Engine::ECS::Component::Common::TransformComponent,
 //		eNsCamComp::CameraComponent>())
 //	{
-//		const auto& transform = ecs.get<eNsCommonComp::TransformComponent>(e);
+//		const auto& transform = ecs.get<Engine::ECS::Component::Common::TransformComponent>(e);
 //		const auto& cam = ecs.get<eNsCamComp::CameraComponent>(e);
 //
 //		// view / projection matrixの更新
@@ -207,12 +207,12 @@ void Engine::Graphics::Render::drawMesh(const Engine::ECS::Component::Graphics::
 bool Engine::Graphics::Render::getCameraMatrices(Engine::ECS::EntityMgr& ecs, glm::mat4& view, glm::mat4& projection)
 {
 	Engine::ECS::Component::Common::TransformComponent* camTransformComp = nullptr;
-	eNsCamComp::CameraComponent* camComp = nullptr;
+	Engine::ECS::Component::Camera::CameraComponent* camComp = nullptr;
 
-	for (Engine::ECS::Entity entity : ecs.view<Engine::ECS::Component::Common::TransformComponent, eNsCamComp::CameraComponent>())
+	for (Engine::ECS::Entity entity : ecs.view<Engine::ECS::Component::Common::TransformComponent, Engine::ECS::Component::Camera::CameraComponent>())
 	{
 		camTransformComp = &ecs.get<Engine::ECS::Component::Common::TransformComponent>(entity);
-		camComp = &ecs.get<eNsCamComp::CameraComponent>(entity);
+		camComp = &ecs.get<Engine::ECS::Component::Camera::CameraComponent>(entity);
 		break;
 	}
 
@@ -231,10 +231,10 @@ bool Engine::Graphics::Render::getCameraMatrices(Engine::ECS::EntityMgr& ecs, gl
 bool Engine::Graphics::Render::getCameraMatrices(Engine::ECS::EntityMgr& ecs, glm::mat4& view, glm::mat4& projection, RenderContext& context)
 {
 
-	for (Engine::ECS::Entity entity : ecs.view<Engine::ECS::Component::Common::TransformComponent, eNsCamComp::CameraComponent>())
+	for (Engine::ECS::Entity entity : ecs.view<Engine::ECS::Component::Common::TransformComponent, Engine::ECS::Component::Camera::CameraComponent>())
 	{
 		const auto& camTransformComp = ecs.get<Engine::ECS::Component::Common::TransformComponent>(entity);
-		const auto& camComp = ecs.get<eNsCamComp::CameraComponent>(entity);
+		const auto& camComp = ecs.get<Engine::ECS::Component::Camera::CameraComponent>(entity);
 
 		view = computeViewMatrix(camTransformComp, camComp);
 		projection = computeProjectionMatrix(camComp.fov, camComp.aspect, camComp.nearClip, camComp.farClip);
@@ -257,7 +257,7 @@ bool Engine::Graphics::Render::getCameraMatrices(Engine::ECS::EntityMgr& ecs, gl
 
 
 
-glm::mat4 Engine::Graphics::Render::computeViewMatrix(const Engine::ECS::Component::Common::TransformComponent& transformComp, const eNsCamComp::CameraComponent& cameraComp)
+glm::mat4 Engine::Graphics::Render::computeViewMatrix(const Engine::ECS::Component::Common::TransformComponent& transformComp, const Engine::ECS::Component::Camera::CameraComponent& cameraComp)
 {
 	glm::vec3 position = transformComp.position;
 	return glm::lookAt(position, position + cameraComp.front, cameraComp.up);

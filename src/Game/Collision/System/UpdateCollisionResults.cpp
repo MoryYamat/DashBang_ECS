@@ -2,28 +2,28 @@
 
 #include "UpdateCollisionResults.h"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 #include "Game/Collision/Data/CollisionResultStorage.h"
 
 // ECSグローバルリソースにバッファ情報を作成
-void Game::Collision::System::InitCollisionResultStorage(eNsECS::EntityMgr ecs)
+void Game::Collision::System::InitCollisionResultStorage(Engine::ECS::EntityMgr ecs)
 {
-	auto& buffer = ecs.createResource <gNsCollData::CollisionResultStorage>();
+	auto& buffer = ecs.createResource <Game::Collision::Data::CollisionResultStorage>();
 }
 
 // バッファをクリア
-void Game::Collision::System::ClearCollisionResultStorage(eNsECS::EntityMgr& ecs)
+void Game::Collision::System::ClearCollisionResultStorage(Engine::ECS::EntityMgr& ecs)
 {
-	auto& buffer = ecs.getResource<gNsCollData::CollisionResultStorage>();
+	auto& buffer = ecs.getResource<Game::Collision::Data::CollisionResultStorage>();
 
 	buffer.Clear();
 }
 
 // バッファを更新
-void Game::Collision::System::UpdateCollisionResultStorage(eNsECS::EntityMgr& ecs)
+void Game::Collision::System::UpdateCollisionResultStorage(Engine::ECS::EntityMgr& ecs)
 {
-	auto& buffer = ecs.getResource<gNsCollData::CollisionResultStorage>();
+	auto& buffer = ecs.getResource<Game::Collision::Data::CollisionResultStorage>();
 
 	// 計算関数を書く
 

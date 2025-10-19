@@ -15,16 +15,16 @@
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 
-#include "Common/GameNamespaceDecl.h"
 
-Test::Actor::TriangleActor::TriangleActor(eNsECS::EntityMgr& ecs)
+
+Test::Actor::TriangleActor::TriangleActor(Engine::ECS::EntityMgr& ecs)
 {
 	namespace Ops = Engine::ECS::Ops;
 	namespace Comp = Engine::ECS::Component;
 
-	eNsECS::Entity e = ecs.createEntity();
+	Engine::ECS::Entity e = ecs.createEntity();
 
-	std::vector < eNsGfxModel::VertexData > vertices = {
+	std::vector < Engine::Graphics::Model::VertexData > vertices = {
 	{ {0.0f,  0.5f, 0.0f} },
 	{ {-0.5f, -0.5f, 0.0f} },
 	{ {0.5f, -0.5f, 0.0f} }
@@ -32,14 +32,14 @@ Test::Actor::TriangleActor::TriangleActor(eNsECS::EntityMgr& ecs)
 
 	std::vector<unsigned int> indices = { 0, 1, 2 };
 
-	eNsGfxModel::MeshData meshData;
-	eNsGfxModel::ModelData modelData;
+	Engine::Graphics::Model::MeshData meshData;
+	Engine::Graphics::Model::ModelData modelData;
 	meshData.vertices = vertices;
 	meshData.indices = indices;
 	meshData.hasIndices = true;
 	modelData.meshes.push_back(std::move(meshData));
 
-	eNsGfxModel::ModelGPU modelGPU = eNsGfxRender::GPUBufferUtils::createMeshGPUBuffers(modelData);
+	Engine::Graphics::Model::ModelGPU modelGPU = Engine::Graphics::Render::GPUBufferUtils::createMeshGPUBuffers(modelData);
 
 	Ops::Add<Comp::Graphics::MeshComponent>(ecs, e,
 		Comp::Graphics::MeshComponent

@@ -1,23 +1,23 @@
 ﻿#pragma once
 
 #include "Engine/ECS/EntityManager.h"
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Game::Feature::Character::FSM
 {
 	class MovementFSMFeature
 	{
 	public:
-		static void InitializeMovementFSMDefinition(eNsECS::EntityMgr& ecs);
+		static void InitializeMovementFSMDefinition(Engine::ECS::EntityMgr& ecs);
 
-		static void UpdateMovementIntentResolver(eNsECS::EntityMgr& ecs);
+		static void UpdateMovementIntentResolver(Engine::ECS::EntityMgr& ecs);
 
-		static void UpdateMovementFSMSystem(eNsECS::EntityMgr& ecs);
+		static void UpdateMovementFSMSystem(Engine::ECS::EntityMgr& ecs);
 
-		static void UpdateMovementFSMResolverSystem(eNsECS::EntityMgr& ecs, float deltaTime);
+		static void UpdateMovementFSMResolverSystem(Engine::ECS::EntityMgr& ecs, float deltaTime);
 
-		static void UpdateMovementFSMScopedSystem(eNsECS::EntityMgr& ecs, float deltaTime);
+		static void UpdateMovementFSMScopedSystem(Engine::ECS::EntityMgr& ecs, float deltaTime);
 
-		static void UpdateMovementFSMInterferenceResolver(eNsECS::EntityMgr& ecs);
+		static void UpdateMovementFSMInterferenceResolver(Engine::ECS::EntityMgr& ecs);
 	};
 }

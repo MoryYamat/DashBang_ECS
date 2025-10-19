@@ -1,4 +1,4 @@
-// Write a process for tiles that collide with the player character
+ï»¿// Write a process for tiles that collide with the player character
 
 
 #pragma once
@@ -7,14 +7,14 @@
 
 #include "Engine/ECS/Component/Logic2D/TileMapComponent.h"
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 //namespace Game::Collision::Utils
 //{
 //	// Scan the circle Collider and all tiles in the TileMap, and do something to the tiles that are in contact.
-//	// ‰~Collider‚ÆTileMap‚Ì‘Sƒ^ƒCƒ‹‚Æ‚ğ‘–¸‚µAÚG‚µ‚Ä‚¢‚éƒ^ƒCƒ‹‚É‘Î‚µ‚Ä‰½‚©ˆ—‚ğ‚·‚é
+//	// å††Colliderã¨TileMapã®å…¨ã‚¿ã‚¤ãƒ«ã¨ã‚’èµ°æŸ»ã—ã€æ¥è§¦ã—ã¦ã„ã‚‹ã‚¿ã‚¤ãƒ«ã«å¯¾ã—ã¦ä½•ã‹å‡¦ç†ã‚’ã™ã‚‹
 //	void TestCircleTileMapCollisionHighlight(
-//		const eNsLogic2DComp::CollisionComponent& colliderComp,
-//		const eNsLogic2DComp::TileMapComponent& tileMapComp
+//		const Engine::ECS::Component::Logic2D::CollisionComponent& colliderComp,
+//		const Engine::ECS::Component::Logic2D::TileMapComponent& tileMapComp
 //	);
 //}

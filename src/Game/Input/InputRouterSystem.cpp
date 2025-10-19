@@ -1,16 +1,16 @@
-#include "InputRouterSystem.h"
+ï»¿#include "InputRouterSystem.h"
 
 #include "Game/Input/InputMapping.h"
 
 #include <iostream>
 
-void Game::Input::InputRouterSystem(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput)
+void Game::Input::InputRouterSystem(Engine::ECS::EntityMgr& ecs, const Engine::Input::RawInputState& rawInput)
 {
-	auto& map = ecs.getResource<gNsInput::InputMapping>();
+	auto& map = ecs.getResource<Game::Input::InputMapping>();
 
-	for (eNsECS::Entity e : ecs.view<gNsInput::InputActionComponent>())
+	for (Engine::ECS::Entity e : ecs.view<Game::Input::InputActionComponent>())
 	{
-		auto& inputComp = ecs.get<gNsInput::InputActionComponent>(e);
+		auto& inputComp = ecs.get<Game::Input::InputActionComponent>(e);
 
 		inputComp.previous = inputComp.current;
 		inputComp.current.clear();
@@ -27,11 +27,11 @@ void Game::Input::InputRouterSystem(eNsECS::EntityMgr& ecs, const eNsInput::RawI
 	}
 }
 
-void Game::Input::InputRouterSystem(eNsECS::EntityMgr& ecs, const eNsInput::RawInputState& rawInput, const InputMapping& mapping)
+void Game::Input::InputRouterSystem(Engine::ECS::EntityMgr& ecs, const Engine::Input::RawInputState& rawInput, const InputMapping& mapping)
 {
-	for (eNsECS::Entity e : ecs.view<gNsInput::InputActionComponent>())
+	for (Engine::ECS::Entity e : ecs.view<Game::Input::InputActionComponent>())
 	{
-		auto& inputComp = ecs.get<gNsInput::InputActionComponent>(e);
+		auto& inputComp = ecs.get<Game::Input::InputActionComponent>(e);
 
 		inputComp.previous = inputComp.current;
 		inputComp.current.clear();
@@ -39,10 +39,10 @@ void Game::Input::InputRouterSystem(eNsECS::EntityMgr& ecs, const eNsInput::RawI
 		// 
 		for (const auto& [key, isDown] : rawInput.keyState)
 		{
-			// ‰Ÿ‰º‚³‚ê‚Ä‚¢‚È‚¢‚È‚ç‚ÎƒXƒLƒbƒv
+			// æŠ¼ä¸‹ã•ã‚Œã¦ã„ãªã„ãªã‚‰ã°ã‚¹ã‚­ãƒƒãƒ—
 			if (!isDown) continue;
 
-			// ‰Ÿ‰º‚³‚ê‚Ä‚¢‚é"‚©‚Â"ƒ}ƒbƒsƒ“ƒO‚³‚ê‚Ä‚¢‚éê‡
+			// æŠ¼ä¸‹ã•ã‚Œã¦ã„ã‚‹"ã‹ã¤"ãƒãƒƒãƒ”ãƒ³ã‚°ã•ã‚Œã¦ã„ã‚‹å ´åˆ
 			if (auto actionOpt = mapping.getAction(key))
 			{
 				inputComp.current[*actionOpt] = true;

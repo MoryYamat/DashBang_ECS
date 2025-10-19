@@ -9,25 +9,25 @@
 
 
 // 削除予定：FSM導入後廃止(関数オブジェクトをSkillTrajectoryComponentに持たせるのではなく，System側で計算を行う方式に変更)
-std::function<eNsLogic2DComp::Transform2DComponent(float)> Game::Combat::Skill::Factory::SkillTrajectoryFactory::Create(
-	const gNsSkillData::SkillDefinition& def,
-	const eNsLogic2DComp::Transform2DComponent& origin)
+std::function<Engine::ECS::Component::Logic2D::Transform2DComponent(float)> Game::Combat::Skill::Factory::SkillTrajectoryFactory::Create(
+	const Game::Combat::Skill::Data::SkillDefinition& def,
+	const Engine::ECS::Component::Logic2D::Transform2DComponent& origin)
 {
 	auto& params = def.attackSpec.trajectoryParams;
 	float duration = def.attackSpec.lifetime.duration.value_or(0.0f);
 
 	// 関数を返す
-	return std::visit([=](auto&& p) -> std::function<eNsLogic2DComp::Transform2DComponent(float)>
+	return std::visit([=](auto&& p) -> std::function<Engine::ECS::Component::Logic2D::Transform2DComponent(float)>
 		{
 			using T = std::decay_t<decltype(p)>;
 
 			// ワールド座標における回転
-			if constexpr (std::is_same_v<T, gNsSkillData::SkillTrajectory::RotateTrajectoryParams>)
+			if constexpr (std::is_same_v<T, Game::Combat::Skill::Data::SkillTrajectory::RotateTrajectoryParams>)
 			{
 				glm::vec2 center = origin.positionXZ;
 
-				float startRad = eNsMath::DegreesToRadians(p.startAngle);
-				float endRad = eNsMath::DegreesToRadians(p.endAngle);
+				float startRad = Engine::Math::DegreesToRadians(p.startAngle);
+				float endRad = Engine::Math::DegreesToRadians(p.endAngle);
 
 				// それぞれパラメーターに応じてラムダを生成
 				// t: 経過時間
@@ -38,18 +38,18 @@ std::function<eNsLogic2DComp::Transform2DComponent(float)> Game::Combat::Skill::
 
 						float yaw = origin.rotationY + angle;
 						// Transform2DComponent の rotationY にこの角度を設定
-						return eNsLogic2DComp::Transform2DComponent{
+						return Engine::ECS::Component::Logic2D::Transform2DComponent{
 							.positionXZ = center,
 							// .rotationY = origin.rotationY + angle, 
 							.rotationY = yaw,
 							.scale = 1.0f,
-							.front = eNsLogic2DMath::CalcForwardFromYaw(yaw),
-							.right = eNsLogic2DMath::CalcRightFromYaw(yaw),
+							.front = Engine::Math::Logic2D::CalcForwardFromYaw(yaw),
+							.right = Engine::Math::Logic2D::CalcRightFromYaw(yaw),
 						};
 					};
 			}
 			// ワールド座標における直線移動
-			else if constexpr (std::is_same_v<T, gNsSkillData::SkillTrajectory::LinearTrajectoryParams>)
+			else if constexpr (std::is_same_v<T, Game::Combat::Skill::Data::SkillTrajectory::LinearTrajectoryParams>)
 			{
 				glm::vec2 start = origin.positionXZ;
 				float angle = origin.rotationY;
@@ -59,7 +59,7 @@ std::function<eNsLogic2DComp::Transform2DComponent(float)> Game::Combat::Skill::
 					{
 						float d = glm::min(t, duration);
 						glm::vec2 offset = dir * p.speed * d;
-						return eNsLogic2DComp::Transform2DComponent{
+						return Engine::ECS::Component::Logic2D::Transform2DComponent{
 							.positionXZ = start + offset,
 							.rotationY = angle,
 							.scale = 1.0f

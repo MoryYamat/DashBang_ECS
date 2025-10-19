@@ -1,4 +1,4 @@
-// ˆÓ–¡“I“ü—Í(InputAction)‚ðƒLƒƒƒ‰ƒNƒ^[‚ÌˆÓ}(Intent)‚É•ÏŠ·‚·‚éƒVƒXƒeƒ€
+ï»¿// æ„å‘³çš„å…¥åŠ›(InputAction)ã‚’ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®æ„å›³(Intent)ã«å¤‰æ›ã™ã‚‹ã‚·ã‚¹ãƒ†ãƒ 
 
 #pragma once 
 
@@ -15,34 +15,30 @@
 
 #include "Engine/InputManager/RawInputState.h"
 
-#include "Common/GameNamespaceDecl.h"
 
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 
-#include "Common/EngineNamespaceDecl.h"
-
-#include "Common/GameNamespaceDecl.h"
 
 namespace Game::Input::Intent
 {
 
 	struct MovementIntentMappingSystem
 	{
-		// “ü—Íó‘Ô‚ð‚à‚Æ‚ÉIntentƒRƒ“ƒ|[ƒlƒ“ƒg‚Ö”½‰f‚·‚é
-		static void UpdatePlayerMovementIntent(eNsECS::EntityMgr& ecs);
+		// å…¥åŠ›çŠ¶æ…‹ã‚’ã‚‚ã¨ã«Intentã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã¸åæ˜ ã™ã‚‹
+		static void UpdatePlayerMovementIntent(Engine::ECS::EntityMgr& ecs);
 
-		// ƒ[ƒ‹ƒhŠî€ˆÚ“® (Global X-Z)
+		// ãƒ¯ãƒ¼ãƒ«ãƒ‰åŸºæº–ç§»å‹• (Global X-Z)
 		static void updatePlayerMovementIntent(
-			gNsCharacterIntent::MovementIntentComponent& intent
-			, gNsInput::InputActionComponent& input
+			Game::Character::Intent::MovementIntentComponent& intent
+			, Game::Input::InputActionComponent& input
 		);
 
 
 		// mouse input -> intent facing
 		static void updatePlayerDirectionIntent(
-			eNsInputComp::AnalogInputComponent& analog,
-			gNsCharacterIntent::FacingIntentComponent& facing,
-			eNsLogic2DComp::Logic2DTransformComponent& logic
+			Engine::ECS::Component::Input::AnalogInputComponent& analog,
+			Game::Character::Intent::FacingIntentComponent& facing,
+			Engine::ECS::Component::Logic2D::Logic2DTransformComponent& logic
 		);
 	};
 }

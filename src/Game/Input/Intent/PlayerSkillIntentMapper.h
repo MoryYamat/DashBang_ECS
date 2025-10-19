@@ -1,7 +1,7 @@
-// Input -> Intent for Skill input
+﻿// Input -> Intent for Skill input
 #pragma once
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 #include "Engine/ECS/EntityManager.h"
 
@@ -9,6 +9,6 @@ namespace Game::Input::Intent
 {
 	struct SkillIntentMappingSystem
 	{
-		static void UpdatePlayerSkillIntent(eNsECS::EntityMgr& ecs);
+		static void UpdatePlayerSkillIntent(Engine::ECS::EntityMgr& ecs);
 	};
 }

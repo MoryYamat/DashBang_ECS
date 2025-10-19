@@ -1,4 +1,4 @@
-// Trajectory data
+ï»¿// Trajectory data
 
 #pragma once
 
@@ -11,9 +11,9 @@
 
 #include <variant>
 
-#include "Common/EngineNamespaceDecl.h"
 
-#include "Common/GameNamespaceDecl.h"
+
+
 
 namespace Game::Combat::Skill::Component
 {
@@ -21,11 +21,11 @@ namespace Game::Combat::Skill::Component
 
 	struct SkillTrajectoryComponent
 	{
-		//// is’†‚ÌŒo‰ßŠÔ
+		//// é€²è¡Œä¸­ã®çµŒéæ™‚é–“
 		//float elapsedTime = 0.0f;
 
-		//// ‹OÕ‚Ì’è‹`(Œ^î•ñC“®ì‚Ìí—Ş)
-		//gNsSkillData::TrajectoryType type = gNsSkillData::TrajectoryType::None;
+		//// è»Œè·¡ã®å®šç¾©(å‹æƒ…å ±ï¼Œå‹•ä½œã®ç¨®é¡)
+		//Game::Combat::Skill::Data::TrajectoryType type = Game::Combat::Skill::Data::TrajectoryType::None;
 
 		using TrajectoryVariant = std::variant<
 			std::monostate, 
@@ -37,8 +37,8 @@ namespace Game::Combat::Skill::Component
 
 		TrajectoryVariant trajectory = StaticTrajectory{};
 
-		// Às‚Ì‹ï‘Ì“I‹““® (Transform‚ğŠÔ‚Å•Ô‚·)
-		// std::function<eNsLogic2DComp::Transform2DComponent(float)> trajectoryFunc;
+		// å®Ÿè¡Œæ™‚ã®å…·ä½“çš„æŒ™å‹• (Transformã‚’æ™‚é–“ã§è¿”ã™)
+		// std::function<Engine::ECS::Component::Logic2D::Transform2DComponent(float)> trajectoryFunc;
 	};
 }
 

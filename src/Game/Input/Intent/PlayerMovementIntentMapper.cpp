@@ -1,4 +1,4 @@
-#include "PlayerMovementIntentMapper.h"
+ï»¿#include "PlayerMovementIntentMapper.h"
 
 #include "Game/Utils/SpatialTransformUtils.h"
 
@@ -12,21 +12,21 @@
 
 #include <glm/glm.hpp>
 
-// Å“K‰»•K—v
-// Å“K‰»•K—v
-// Å“K‰»•K—v
-// Å“K‰»•K—v
-// ƒvƒŒƒCƒ„[ƒLƒƒƒ‰ƒNƒ^[—pƒCƒ“ƒeƒ“ƒgƒRƒ“ƒ|[ƒlƒ“ƒg‚Æ“ü—Í‚Ì˜AŒg (Linking the Intent Component for Player Characters and Input)
-void Game::Input::Intent::MovementIntentMappingSystem::UpdatePlayerMovementIntent(eNsECS::EntityMgr& ecs)
+// æœ€é©åŒ–å¿…è¦
+// æœ€é©åŒ–å¿…è¦
+// æœ€é©åŒ–å¿…è¦
+// æœ€é©åŒ–å¿…è¦
+// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ç”¨ã‚¤ãƒ³ãƒ†ãƒ³ãƒˆã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã¨å…¥åŠ›ã®é€£æº (Linking the Intent Component for Player Characters and Input)
+void Game::Input::Intent::MovementIntentMappingSystem::UpdatePlayerMovementIntent(Engine::ECS::EntityMgr& ecs)
 {
 	// update player movement intent
-	for (eNsECS::Entity e : ecs.view<
-		gNsInput::InputActionComponent,
-		gNsCharacterIntent::MovementIntentComponent,
-		gNsTags::PlayerCharacterTag>())
+	for (Engine::ECS::Entity e : ecs.view<
+		Game::Input::InputActionComponent,
+		Game::Character::Intent::MovementIntentComponent,
+		Game::ECS::Tags::PlayerCharacterTag>())
 	{
-		auto& input = ecs.get<gNsInput::InputActionComponent>(e);
-		auto& move = ecs.get<gNsCharacterIntent::MovementIntentComponent>(e);
+		auto& input = ecs.get<Game::Input::InputActionComponent>(e);
+		auto& move = ecs.get<Game::Character::Intent::MovementIntentComponent>(e);
 
 		updatePlayerMovementIntent(move, input);
 
@@ -34,37 +34,37 @@ void Game::Input::Intent::MovementIntentMappingSystem::UpdatePlayerMovementInten
 	}
 
 	// by mouse Cursor
-	for (eNsECS::Entity e : ecs.view<
-		eNsInputComp::AnalogInputComponent,
-		eNsInputComp::InputBindingComponent>())
+	for (Engine::ECS::Entity e : ecs.view<
+		Engine::ECS::Component::Input::AnalogInputComponent,
+		Engine::ECS::Component::Input::InputBindingComponent>())
 	{
-		// ƒoƒCƒ“ƒh‚³‚ê‚½ƒf[ƒ^‚ğæ“¾
-		auto& binding = ecs.get<eNsInputComp::InputBindingComponent>(e);
+		// ãƒã‚¤ãƒ³ãƒ‰ã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
+		auto& binding = ecs.get<Engine::ECS::Component::Input::InputBindingComponent>(e);
 
-		// Entity‚¨‚æ‚ÑComponent‚ª—LŒø‚©Šm”F
+		// EntityãŠã‚ˆã³ComponentãŒæœ‰åŠ¹ã‹ç¢ºèª
 		if (!binding.controllingEntity.isValid()) continue;
 		if (!ecs.isAlive(binding.controllingEntity)) continue;
-		if (!ecs.hasComponent<gNsCharacterIntent::FacingIntentComponent>(binding.controllingEntity)) continue;
+		if (!ecs.hasComponent<Game::Character::Intent::FacingIntentComponent>(binding.controllingEntity)) continue;
 
-		// ƒAƒiƒƒO“ü—Íƒf[ƒ^‚ğæ“¾
-		auto& analog = ecs.get<eNsInputComp::AnalogInputComponent>(e);
+		// ã‚¢ãƒŠãƒ­ã‚°å…¥åŠ›ãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
+		auto& analog = ecs.get<Engine::ECS::Component::Input::AnalogInputComponent>(e);
 
-		// ‘€ì‘ÎÛ‚Ì`Entity`‚ğæ“¾
-		auto& facing = ecs.get<gNsCharacterIntent::FacingIntentComponent>(binding.controllingEntity);
-		auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(binding.controllingEntity);
+		// æ“ä½œå¯¾è±¡ã®`Entity`ã‚’å–å¾—
+		auto& facing = ecs.get<Game::Character::Intent::FacingIntentComponent>(binding.controllingEntity);
+		auto& logic = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(binding.controllingEntity);
 
 		updatePlayerDirectionIntent(analog, facing, logic);
 	}
 
 
-	//for (eNsECS::Entity e : ecs.view <
-	//	eNsInputComp::AnalogInputComponent
-	//	, gNsCharacterIntent::FacingIntentComponent
+	//for (Engine::ECS::Entity e : ecs.view <
+	//	Engine::ECS::Component::Input::AnalogInputComponent
+	//	, Game::Character::Intent::FacingIntentComponent
 	//	>())
 	//{
-	//	auto& analog = ecs.get<eNsInputComp::AnalogInputComponent>(e);
-	//	auto& logic = ecs.get <eNsLogic2DComp::Logic2DTransformComponent>(e);
-	//	auto& facing = ecs.get<gNsCharacterIntent::FacingIntentComponent>(e);
+	//	auto& analog = ecs.get<Engine::ECS::Component::Input::AnalogInputComponent>(e);
+	//	auto& logic = ecs.get <Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(e);
+	//	auto& facing = ecs.get<Game::Character::Intent::FacingIntentComponent>(e);
 
 	//	updatePlayerDirectionIntent(facing, analog, logic);
 	//}
@@ -72,8 +72,8 @@ void Game::Input::Intent::MovementIntentMappingSystem::UpdatePlayerMovementInten
 
 
 void Game::Input::Intent::MovementIntentMappingSystem::updatePlayerMovementIntent(
-	gNsCharacterIntent::MovementIntentComponent& intent
-	, gNsInput::InputActionComponent& input
+	Game::Character::Intent::MovementIntentComponent& intent
+	, Game::Input::InputActionComponent& input
 )
 {
 	glm::vec2 moveDir(0.0f);
@@ -88,7 +88,7 @@ void Game::Input::Intent::MovementIntentMappingSystem::updatePlayerMovementInten
 
 	if (glm::length(moveDir) > 0.001f)
 	{
-		// direction‚Íg—p‘¤‚Å³‹K‰»‚·‚é
+		// directionã¯ä½¿ç”¨å´ã§æ­£è¦åŒ–ã™ã‚‹
 		intent.direction = moveDir;
 		intent.isActive = true;
 	}
@@ -100,9 +100,9 @@ void Game::Input::Intent::MovementIntentMappingSystem::updatePlayerMovementInten
 }
 
 void Game::Input::Intent::MovementIntentMappingSystem::updatePlayerDirectionIntent(
-	eNsInputComp::AnalogInputComponent& analog,
-	gNsCharacterIntent::FacingIntentComponent& facing,
-	eNsLogic2DComp::Logic2DTransformComponent& logic
+	Engine::ECS::Component::Input::AnalogInputComponent& analog,
+	Game::Character::Intent::FacingIntentComponent& facing,
+	Engine::ECS::Component::Logic2D::Logic2DTransformComponent& logic
 )
 {
 
@@ -114,5 +114,5 @@ void Game::Input::Intent::MovementIntentMappingSystem::updatePlayerDirectionInte
 		facing.front = CanonicalDefaults::kCanonicalForwardXZ;
 
 
-	// eNsDebugLog::LogVector("PlayerIntentMapper.cpp(direction)", facing.front);
+	// Engine::Debug::Logging::LogVector("PlayerIntentMapper.cpp(direction)", facing.front);
 }

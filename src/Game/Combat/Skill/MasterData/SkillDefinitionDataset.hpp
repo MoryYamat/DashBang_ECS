@@ -1,37 +1,37 @@
-// ƒXƒLƒ‹’è‹`—pƒf[ƒ^ƒZƒbƒg
+ï»¿// ã‚¹ã‚­ãƒ«å®šç¾©ç”¨ãƒ‡ãƒ¼ã‚¿ã‚»ãƒƒãƒˆ
 
-/// Šî–{“I‚ÉƒXƒe[ƒgƒ}ƒVƒ“Œ`®‚ÅÀs‚³‚ê‚éƒXƒLƒ‹‚ğl‚¦‚é
-// ƒXƒLƒ‹Às‚ÍˆÈ‰º‚Ì‚æ‚¤‚É•ª‚¯‚Äl‚¦‚é
-// 1. ƒXƒLƒ‹ÀsƒtƒF[ƒYFƒLƒƒƒ‰ƒNƒ^[‘¤‚ÌƒXƒLƒ‹Às‚Ì’iŠK‚ğ•\‚·
-// 2. “–‚½‚è”»’èFƒXƒLƒ‹‚Ì”»’è‚ğs‚¤
-// 3. ƒXƒLƒ‹Œø‰ÊFƒXƒLƒ‹‚ªƒqƒbƒg‚µ‚½Û‚É”­¶‚·‚éŒø‰Ê‚ğ•\‚·
+/// åŸºæœ¬çš„ã«ã‚¹ãƒ†ãƒ¼ãƒˆãƒã‚·ãƒ³å½¢å¼ã§å®Ÿè¡Œã•ã‚Œã‚‹ã‚¹ã‚­ãƒ«ã‚’è€ƒãˆã‚‹
+// ã‚¹ã‚­ãƒ«å®Ÿè¡Œã¯ä»¥ä¸‹ã®ã‚ˆã†ã«åˆ†ã‘ã¦è€ƒãˆã‚‹
+// 1. ã‚¹ã‚­ãƒ«å®Ÿè¡Œãƒ•ã‚§ãƒ¼ã‚ºï¼šã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼å´ã®ã‚¹ã‚­ãƒ«å®Ÿè¡Œã®æ®µéšã‚’è¡¨ã™
+// 2. å½“ãŸã‚Šåˆ¤å®šï¼šã‚¹ã‚­ãƒ«ã®åˆ¤å®šã‚’è¡Œã†
+// 3. ã‚¹ã‚­ãƒ«åŠ¹æœï¼šã‚¹ã‚­ãƒ«ãŒãƒ’ãƒƒãƒˆã—ãŸéš›ã«ç™ºç”Ÿã™ã‚‹åŠ¹æœã‚’è¡¨ã™
 
 //
 // SkillDefinition
-//„¥„Ÿ„Ÿ MetaInfo
-//„¥„Ÿ„Ÿ ExecutionModel
-//„    „¥„Ÿ„Ÿ PhaseTiming
-//„    „¥„Ÿ„Ÿ SyncPolicy / CancelPolicy
-//„    „¤„Ÿ„Ÿ MovementLock, FacingLock
-//„¥„Ÿ„Ÿ TargetingDef
-//„¥„Ÿ„Ÿ TriggerList[SkillExecutionEvent ¨ SkillAction[]]
-//„    „¤„Ÿ„Ÿ ActionType + Payload(e.g.Hitbox, VFX, Buff)
-//„¥„Ÿ„Ÿ Damage, Buff, Debuff, SummonSpec, etc.
-//„¥„Ÿ„Ÿ ResourceCost, Cooldown, CastConditions
-//„¥„Ÿ„Ÿ Tags / UI / VFX / SFX
+//â”œâ”€â”€ MetaInfo
+//â”œâ”€â”€ ExecutionModel
+//â”‚   â”œâ”€â”€ PhaseTiming
+//â”‚   â”œâ”€â”€ SyncPolicy / CancelPolicy
+//â”‚   â””â”€â”€ MovementLock, FacingLock
+//â”œâ”€â”€ TargetingDef
+//â”œâ”€â”€ TriggerList[SkillExecutionEvent â†’ SkillAction[]]
+//â”‚   â””â”€â”€ ActionType + Payload(e.g.Hitbox, VFX, Buff)
+//â”œâ”€â”€ Damage, Buff, Debuff, SummonSpec, etc.
+//â”œâ”€â”€ ResourceCost, Cooldown, CastConditions
+//â”œâ”€â”€ Tags / UI / VFX / SFX
 //
 //
 
 // SkillDefinition
-// „¥„Ÿ„Ÿ Metadata            // ID, –¼‘O, ƒJƒeƒSƒŠ, ƒN[ƒ‹ƒ_ƒEƒ“‚È‚Ç
-// „¥„Ÿ„Ÿ ExecutionModel      // ƒtƒF[ƒYİŒv, ˆÚ“®§ŒÀ, ƒLƒƒƒ“ƒZƒ‹, ƒ`ƒƒ[ƒW‚È‚Ç
-// „¥„Ÿ„Ÿ PhaseTable          // ŠeƒtƒF[ƒY‚Ì’·‚³EğŒEˆÚsƒ|ƒŠƒV[
-// „¥„Ÿ„Ÿ EventTable          // ŠeƒCƒxƒ“ƒg‚Ì”­‰ÎğŒ‚Æ“à—eiƒgƒŠƒK[j
-// „    „¤„Ÿ„Ÿ[Phase x Event] = > ActionList
-// „                      „¥„Ÿ ğŒ(Condition)
-// „                      „¥„Ÿ Às“à—e(ActionType)
-// „                      „¤„Ÿ ƒAƒNƒVƒ‡ƒ“—pƒpƒ‰ƒ[ƒ^iDataPayloadj
-// „¤„Ÿ„Ÿ HitEffects          // ƒ_ƒ[ƒW, CC, ƒoƒt, ƒfƒoƒt‚Ì’è‹`
+// â”œâ”€â”€ Metadata            // ID, åå‰, ã‚«ãƒ†ã‚´ãƒª, ã‚¯ãƒ¼ãƒ«ãƒ€ã‚¦ãƒ³ãªã©
+// â”œâ”€â”€ ExecutionModel      // ãƒ•ã‚§ãƒ¼ã‚ºè¨­è¨ˆ, ç§»å‹•åˆ¶é™, ã‚­ãƒ£ãƒ³ã‚»ãƒ«, ãƒãƒ£ãƒ¼ã‚¸ãªã©
+// â”œâ”€â”€ PhaseTable          // å„ãƒ•ã‚§ãƒ¼ã‚ºã®é•·ã•ãƒ»æ¡ä»¶ãƒ»ç§»è¡Œãƒãƒªã‚·ãƒ¼
+// â”œâ”€â”€ EventTable          // å„ã‚¤ãƒ™ãƒ³ãƒˆã®ç™ºç«æ¡ä»¶ã¨å†…å®¹ï¼ˆãƒˆãƒªã‚¬ãƒ¼ï¼‰
+// â”‚   â””â”€â”€[Phase x Event] = > ActionList
+// â”‚                     â”œâ”€ æ¡ä»¶(Condition)
+// â”‚                     â”œâ”€ å®Ÿè¡Œå†…å®¹(ActionType)
+// â”‚                     â””â”€ ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ç”¨ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ï¼ˆDataPayloadï¼‰
+// â””â”€â”€ HitEffects          // ãƒ€ãƒ¡ãƒ¼ã‚¸, CC, ãƒãƒ•, ãƒ‡ãƒãƒ•ã®å®šç¾©
 
 
 #pragma once
@@ -40,7 +40,7 @@
 
 #include "Game/Combat/Skill/MasterData/SkillTrajectoryData.h"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 #include <variant>
 #include <vector>
@@ -48,59 +48,59 @@
 
 namespace Game::Combat::Skill::MasterData
 {
-	// ƒXƒLƒ‹‚ÌƒJƒeƒSƒŠ‚ğ’è‹`‚·‚é—ñ‹“Œ^
+	// ã‚¹ã‚­ãƒ«ã®ã‚«ãƒ†ã‚´ãƒªã‚’å®šç¾©ã™ã‚‹åˆ—æŒ™å‹
 	enum class SkillCategory
 	{
-		Melee, // ‹ßÚUŒ‚ƒXƒLƒ‹
-		Ranged, // ‰“‹——£UŒ‚ƒXƒLƒ‹
-		Projectile, // ’e“¹UŒ‚ƒXƒLƒ‹
-		AreaOfEffect, // ”ÍˆÍUŒ‚ƒXƒLƒ‹
-		Summon, // ¢Š«ƒXƒLƒ‹
-		Buff, // ƒoƒtƒXƒLƒ‹
-		Debuff, // ƒfƒoƒtƒXƒLƒ‹
+		Melee, // è¿‘æ¥æ”»æ’ƒã‚¹ã‚­ãƒ«
+		Ranged, // é è·é›¢æ”»æ’ƒã‚¹ã‚­ãƒ«
+		Projectile, // å¼¾é“æ”»æ’ƒã‚¹ã‚­ãƒ«
+		AreaOfEffect, // ç¯„å›²æ”»æ’ƒã‚¹ã‚­ãƒ«
+		Summon, // å¬å–šã‚¹ã‚­ãƒ«
+		Buff, // ãƒãƒ•ã‚¹ã‚­ãƒ«
+		Debuff, // ãƒ‡ãƒãƒ•ã‚¹ã‚­ãƒ«
 	};
 
-	// ƒXƒLƒ‹‚ÌÀsƒtƒF[ƒY‚ğ’è‹`‚·‚é—ñ‹“Œ^
+	// ã‚¹ã‚­ãƒ«ã®å®Ÿè¡Œãƒ•ã‚§ãƒ¼ã‚ºã‚’å®šç¾©ã™ã‚‹åˆ—æŒ™å‹
 	enum class SkillExecutionPhase
 	{
-		Casting,// ƒXƒLƒ‹‚ÌƒLƒƒƒXƒg’iŠK
-		Active, // ƒXƒLƒ‹‚ÌƒAƒNƒeƒBƒu’iŠK(UŒ‚‚È‚Ç)
-		Recovery,// ƒXƒLƒ‹‚Ìd’¼
-		Completed, // ƒXƒLƒ‹‚ÌŠ®—¹’iŠK(I—¹ó‘Ô)
-		Interrupted, // ƒXƒLƒ‹‚Ì’†’f’iŠK(ƒXƒ^ƒ“‚â€–S‚È‚Ç)
-		Canceled, // ƒXƒLƒ‹ƒLƒƒƒ“ƒZƒ‹
+		Casting,// ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ã‚¹ãƒˆæ®µéš
+		Active, // ã‚¹ã‚­ãƒ«ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–æ®µéš(æ”»æ’ƒãªã©)
+		Recovery,// ã‚¹ã‚­ãƒ«ã®ç¡¬ç›´
+		Completed, // ã‚¹ã‚­ãƒ«ã®å®Œäº†æ®µéš(çµ‚äº†çŠ¶æ…‹)
+		Interrupted, // ã‚¹ã‚­ãƒ«ã®ä¸­æ–­æ®µéš(ã‚¹ã‚¿ãƒ³ã‚„æ­»äº¡ãªã©)
+		Canceled, // ã‚¹ã‚­ãƒ«ã‚­ãƒ£ãƒ³ã‚»ãƒ«
 	};
 
-	// ƒXƒLƒ‹‚ÌÀsƒtƒF[ƒYƒCƒxƒ“ƒg‚ğ’è‹`‚·‚é—ñ‹“Œ^
+	// ã‚¹ã‚­ãƒ«ã®å®Ÿè¡Œãƒ•ã‚§ãƒ¼ã‚ºã‚¤ãƒ™ãƒ³ãƒˆã‚’å®šç¾©ã™ã‚‹åˆ—æŒ™å‹
 	enum class SkillExecutionEvent
 	{
-		OnEneterCasting, // ƒXƒLƒ‹‚ÌƒLƒƒƒXƒgŠJn
-		OnExitCasting, // ƒXƒLƒ‹‚ÌƒLƒƒƒXƒgI—¹
-		OnEnterActive, // ƒXƒLƒ‹‚ÌƒAƒNƒeƒBƒuŠJn
-		OnExitActive, // ƒXƒLƒ‹‚ÌƒAƒNƒeƒBƒuI—¹
-		OnEnterRecovery, // ƒXƒLƒ‹‚ÌƒŠƒJƒoƒŠ[ŠJn
-		OnExitRecovery, // ƒXƒLƒ‹‚ÌƒŠƒJƒoƒŠ[I—¹
-		OnCompleted, // ƒXƒLƒ‹‚ÌŠ®—¹
-		OnInterrupted, // ƒXƒLƒ‹‚Ì’†’f
-		OnCanceled, // ƒXƒLƒ‹‚ÌƒLƒƒƒ“ƒZƒ‹
+		OnEneterCasting, // ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ã‚¹ãƒˆé–‹å§‹
+		OnExitCasting, // ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ã‚¹ãƒˆçµ‚äº†
+		OnEnterActive, // ã‚¹ã‚­ãƒ«ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–é–‹å§‹
+		OnExitActive, // ã‚¹ã‚­ãƒ«ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–çµ‚äº†
+		OnEnterRecovery, // ã‚¹ã‚­ãƒ«ã®ãƒªã‚«ãƒãƒªãƒ¼é–‹å§‹
+		OnExitRecovery, // ã‚¹ã‚­ãƒ«ã®ãƒªã‚«ãƒãƒªãƒ¼çµ‚äº†
+		OnCompleted, // ã‚¹ã‚­ãƒ«ã®å®Œäº†
+		OnInterrupted, // ã‚¹ã‚­ãƒ«ã®ä¸­æ–­
+		OnCanceled, // ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ãƒ³ã‚»ãƒ«
 	};
 
 	struct SkillPhaseTiming
 	{
-		float castingDuration = 0.0f; // ƒLƒƒƒXƒgŠÔ
-		float activeDuration = 0.0f; // ƒAƒNƒeƒBƒuŠÔ
-		float recoveryDuration = 0.0f; // ƒŠƒJƒoƒŠ[ŠÔ
+		float castingDuration = 0.0f; // ã‚­ãƒ£ã‚¹ãƒˆæ™‚é–“
+		float activeDuration = 0.0f; // ã‚¢ã‚¯ãƒ†ã‚£ãƒ–æ™‚é–“
+		float recoveryDuration = 0.0f; // ãƒªã‚«ãƒãƒªãƒ¼æ™‚é–“
 	};
 
 
-	// ƒXƒLƒ‹‚ÌÀsƒtƒF[ƒY‚Ì•Ï‰»‚ğ‚à‚Æ‚É‰½‚ğ‹N‚±‚·‚©‚ğ’è‹`‚·‚é—ñ‹“Œ^
+	// ã‚¹ã‚­ãƒ«ã®å®Ÿè¡Œãƒ•ã‚§ãƒ¼ã‚ºã®å¤‰åŒ–ã‚’ã‚‚ã¨ã«ä½•ã‚’èµ·ã“ã™ã‹ã‚’å®šç¾©ã™ã‚‹åˆ—æŒ™å‹
 	enum class SkillActionType
 	{
-		None, // ƒXƒLƒ‹ƒAƒNƒVƒ‡ƒ“‚È‚µ
-		SpawnHitbox, // UŒ‚”»’è‚ğ¶¬
-		PlayeEffect, // ƒGƒtƒFƒNƒg‚ğÄ¶
-		ApplyBuff, // ƒoƒt‚ğ“K—p
-		ApplyDebuff, // ƒfƒoƒt‚ğ“K—p
+		None, // ã‚¹ã‚­ãƒ«ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãªã—
+		SpawnHitbox, // æ”»æ’ƒåˆ¤å®šã‚’ç”Ÿæˆ
+		PlayeEffect, // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’å†ç”Ÿ
+		ApplyBuff, // ãƒãƒ•ã‚’é©ç”¨
+		ApplyDebuff, // ãƒ‡ãƒãƒ•ã‚’é©ç”¨
 	};
 
 }
@@ -111,48 +111,48 @@ namespace Game::Combat::Skill::MasterData
 
 	struct SkillHitBoxDef
 	{
-		gNsSkillComp::Attack2DShape shape; // UŒ‚”»’è‚ÌŒ`ó
-		gNsSkillData::TrajectoryType trajectoryType = gNsSkillData::TrajectoryType::None; // ‹OÕƒ^ƒCƒv
-		gNsSkillData::SkillTrajectory::TrajectoryParamsVariant trajectoryParamas = gNsSkillData::SkillTrajectory::StaticTrajectory{};
+		Game::Combat::Skill::Component::Attack2DShape shape; // æ”»æ’ƒåˆ¤å®šã®å½¢çŠ¶
+		Game::Combat::Skill::Data::TrajectoryType trajectoryType = Game::Combat::Skill::Data::TrajectoryType::None; // è»Œè·¡ã‚¿ã‚¤ãƒ—
+		Game::Combat::Skill::Data::SkillTrajectory::TrajectoryParamsVariant trajectoryParamas = Game::Combat::Skill::Data::SkillTrajectory::StaticTrajectory{};
 	};
 
 	struct SkillHitBoxData
 	{
-		SkillHitBoxDef hitBoxdef; // UŒ‚”»’è‚Ì’è‹`
+		SkillHitBoxDef hitBoxdef; // æ”»æ’ƒåˆ¤å®šã®å®šç¾©
 	};
 }
 
 namespace Game::Combat::Skill::MasterData
 {
-	// ƒXƒLƒ‹‚Ì‘JˆÚğŒ‚ğ’è‹`‚·‚é—ñ‹“Œ^
+	// ã‚¹ã‚­ãƒ«ã®é·ç§»æ¡ä»¶ã‚’å®šç¾©ã™ã‚‹åˆ—æŒ™å‹
 	enum class SkillConditionType
 	{
-		ElapsedTime, // Œo‰ßŠÔ
-		Count, // ‰ñ”
-		Phase, // ƒtƒF[ƒY
-		ExecutionEventOccured, // ƒCƒxƒ“ƒg”­¶
-		Flag, // ƒtƒ‰ƒO
-		CollisionOccured, // Õ“Ë”­¶
-		StatThreshold, // ƒXƒe[ƒ^ƒXè‡’l
-		RandomChance, // ƒ‰ƒ“ƒ_ƒ€Šm—¦
+		ElapsedTime, // çµŒéæ™‚é–“
+		Count, // å›æ•°
+		Phase, // ãƒ•ã‚§ãƒ¼ã‚º
+		ExecutionEventOccured, // ã‚¤ãƒ™ãƒ³ãƒˆç™ºç”Ÿ
+		Flag, // ãƒ•ãƒ©ã‚°
+		CollisionOccured, // è¡çªç™ºç”Ÿ
+		StatThreshold, // ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹é–¾å€¤
+		RandomChance, // ãƒ©ãƒ³ãƒ€ãƒ ç¢ºç‡
 	};
 
-	// ŠÔ‚ÌğŒ
+	// æ™‚é–“ã®æ¡ä»¶
 	struct ElapsedTimeCondition
 	{
-		float thresholdSeconds = 0.0f; // Œo‰ßŠÔ‚Ìè‡’l
+		float thresholdSeconds = 0.0f; // çµŒéæ™‚é–“ã®é–¾å€¤
 	};
 
-	// ‰ñ”‚ÌğŒ
+	// å›æ•°ã®æ¡ä»¶
 	struct CountCondition
 	{
-		uint8_t thresholdCount = 0; // ğŒ‚ğ–‚½‚·‰ñ”‚Ìè‡’l
+		uint8_t thresholdCount = 0; // æ¡ä»¶ã‚’æº€ãŸã™å›æ•°ã®é–¾å€¤
 	};
 
-	// ƒtƒF[ƒY‚ÌğŒ
+	// ãƒ•ã‚§ãƒ¼ã‚ºã®æ¡ä»¶
 	struct PhaseCondition
 	{
-		SkillExecutionPhase requiredPhase;// •K—v‚ÈƒtƒF[ƒY
+		SkillExecutionPhase requiredPhase;// å¿…è¦ãªãƒ•ã‚§ãƒ¼ã‚º
 	};
 
 
@@ -162,21 +162,21 @@ namespace Game::Combat::Skill::MasterData
 {
 	struct SkillActionEntry
 	{
-		SkillActionType type = SkillActionType::None; // ƒAƒNƒVƒ‡ƒ“‚Ìƒ^ƒCƒv
+		SkillActionType type = SkillActionType::None; // ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®ã‚¿ã‚¤ãƒ—
 
-		// ÀsğŒ (Œã‚Å’Ç‰Á)
+		// å®Ÿè¡Œæ¡ä»¶ (å¾Œã§è¿½åŠ )
 
-		// ƒAƒNƒVƒ‡ƒ“‚É•K—v‚Èƒf[ƒ^
+		// ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã«å¿…è¦ãªãƒ‡ãƒ¼ã‚¿
 		std::variant<
-			SkillHitBoxData // UŒ‚”»’è‚Ì’è‹`
+			SkillHitBoxData // æ”»æ’ƒåˆ¤å®šã®å®šç¾©
 		> data;
 	};
 
 	// 
 	struct SkillEventTriggerDef
 	{
-		SkillExecutionEvent triggerEvent = SkillExecutionEvent::OnEneterCasting;// ‚±‚ÌƒCƒxƒ“ƒg‚ª”­‰Î‚·‚éƒ^ƒCƒ~ƒ“ƒO
-		std::vector<SkillActionEntry> actions = {};// ‚±‚ÌƒCƒxƒ“ƒg‚ª”­‰Î‚µ‚½‚Æ‚«‚ÉÀs‚³‚ê‚éƒAƒNƒVƒ‡ƒ“‚ÌƒŠƒXƒg
+		SkillExecutionEvent triggerEvent = SkillExecutionEvent::OnEneterCasting;// ã“ã®ã‚¤ãƒ™ãƒ³ãƒˆãŒç™ºç«ã™ã‚‹ã‚¿ã‚¤ãƒŸãƒ³ã‚°
+		std::vector<SkillActionEntry> actions = {};// ã“ã®ã‚¤ãƒ™ãƒ³ãƒˆãŒç™ºç«ã—ãŸã¨ãã«å®Ÿè¡Œã•ã‚Œã‚‹ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®ãƒªã‚¹ãƒˆ
 	};
 }
 
@@ -184,20 +184,20 @@ namespace Game::Combat::Skill::MasterData
 {
 	struct SkillDefinition
 	{
-		// ƒXƒLƒ‹‚Ìƒƒ^ƒf[ƒ^
-		int id = 0; // ƒXƒLƒ‹ID
-		std::string name; // ƒXƒLƒ‹–¼
-		SkillCategory category = SkillCategory::Melee; // ƒXƒLƒ‹‚ÌƒJƒeƒSƒŠ
-		float cooldown = 1.0f; // ƒXƒLƒ‹‚ÌÄg—p‘Ò‹@ŠÔ
+		// ã‚¹ã‚­ãƒ«ã®ãƒ¡ã‚¿ãƒ‡ãƒ¼ã‚¿
+		int id = 0; // ã‚¹ã‚­ãƒ«ID
+		std::string name; // ã‚¹ã‚­ãƒ«å
+		SkillCategory category = SkillCategory::Melee; // ã‚¹ã‚­ãƒ«ã®ã‚«ãƒ†ã‚´ãƒª
+		float cooldown = 1.0f; // ã‚¹ã‚­ãƒ«ã®å†ä½¿ç”¨å¾…æ©Ÿæ™‚é–“
 
-		SkillEventTriggerDef eventTriggers; // ƒCƒxƒ“ƒg‚ÌƒgƒŠƒK‚ÆƒAƒNƒVƒ‡ƒ“‚Ì’è‹`
+		SkillEventTriggerDef eventTriggers; // ã‚¤ãƒ™ãƒ³ãƒˆã®ãƒˆãƒªã‚¬ã¨ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®å®šç¾©
 
-		// ƒXƒLƒ‹‚ÌƒtƒF[ƒYİŒv
+		// ã‚¹ã‚­ãƒ«ã®ãƒ•ã‚§ãƒ¼ã‚ºè¨­è¨ˆ
 	};
 }
 
 
-// İŒv
-// •K—v‚Èƒf[ƒ^
-// 1. ƒXƒLƒ‹‚Ìƒƒ^ƒf[ƒ^(ID, NAME, Category, Cooldown)
-// 2. ƒXƒLƒ‹‚ÌÀsƒ‚ƒfƒ‹
+// è¨­è¨ˆ
+// å¿…è¦ãªãƒ‡ãƒ¼ã‚¿
+// 1. ã‚¹ã‚­ãƒ«ã®ãƒ¡ã‚¿ãƒ‡ãƒ¼ã‚¿(ID, NAME, Category, Cooldown)
+// 2. ã‚¹ã‚­ãƒ«ã®å®Ÿè¡Œãƒ¢ãƒ‡ãƒ«

@@ -1,4 +1,4 @@
-#include "CharacterFacingSystem.h"
+ï»¿#include "CharacterFacingSystem.h"
 
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
@@ -11,26 +11,32 @@
 
 #include "Engine/Debug/DebugUtils.h"
 
+#include "Engine/ECS/Ops/CoreOps.hpp"
+
 #include <GLM/glm.hpp>
 
-void Game::Character::Movement::UpdatePlayerFacing(eNsECS::EntityMgr& ecs)
+void Game::Character::Movement::UpdatePlayerFacing(Engine::ECS::EntityMgr& ecs)
 {
-	for (eNsECS::Entity e : ecs.view<
-		eNsLogic2DComp::Logic2DTransformComponent,
-		gNsCharacterIntent::FacingIntentComponent>())
+	using namespace Engine::ECS::Component;
+
+	namespace Ops = Engine::ECS::Ops;
+
+	for (Engine::ECS::Entity e : ecs.view<
+		Logic2D::Logic2DTransformComponent,
+		Game::Character::Intent::FacingIntentComponent>())
 	{
-		auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
-		auto& facing = ecs.get<gNsCharacterIntent::FacingIntentComponent>(e);
+		auto& logic = Ops::Get<Logic2D::Logic2DTransformComponent>(ecs, e);
+		auto& facing = Ops::Get<Game::Character::Intent::FacingIntentComponent>(ecs,e);
 
 		logic.front = facing.front;
 		logic.rotation = logic.GetRotationYFromFrontVector();
 		logic.UpdateRightFromFront();
 
-		// PlayerCharacterController‚ÍŒ´‘¥ˆê‚Â‚¾‚¯
-		// ecs.find<PlayerControllerComponent>()‚ğ—pˆÓ‚µ‚Äbreak‚ğÁ‚·
-		// ecs.find<PlayerControllerComponent>()‚ğ—pˆÓ‚µ‚Äbreak‚ğÁ‚·
-		// ecs.find<PlayerControllerComponent>()‚ğ—pˆÓ‚µ‚Äbreak‚ğÁ‚·
-		// ecs.find<PlayerControllerComponent>()‚ğ—pˆÓ‚µ‚Äbreak‚ğÁ‚·
+		// PlayerCharacterControllerã¯åŸå‰‡ä¸€ã¤ã ã‘
+		// ecs.find<PlayerControllerComponent>()ã‚’ç”¨æ„ã—ã¦breakã‚’æ¶ˆã™
+		// ecs.find<PlayerControllerComponent>()ã‚’ç”¨æ„ã—ã¦breakã‚’æ¶ˆã™
+		// ecs.find<PlayerControllerComponent>()ã‚’ç”¨æ„ã—ã¦breakã‚’æ¶ˆã™
+		// ecs.find<PlayerControllerComponent>()ã‚’ç”¨æ„ã—ã¦breakã‚’æ¶ˆã™
 		break;
 	}
 }

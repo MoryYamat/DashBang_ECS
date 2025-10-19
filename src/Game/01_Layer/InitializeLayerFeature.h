@@ -1,20 +1,20 @@
-#pragma once
+ï»¿#pragma once
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 #include "Engine/ECS/EntityManager.h"
 
 
 namespace Game::Layer
 {
-	// ‰Šú‰»ƒtƒF[ƒY
+	// åˆæœŸåŒ–ãƒ•ã‚§ãƒ¼ã‚º
 	class InitializeLayerFeature
 	{
 	public:
-		// ‰Šú‰»‡‚É’ˆÓ
+		// åˆæœŸåŒ–é †ã«æ³¨æ„
 
 
-		// ’x‚ç‚¹‰Šú‰»
-		static void DelayedInitialzation(eNsECS::EntityMgr& ecs);
+		// é…ã‚‰ã›åˆæœŸåŒ–
+		static void DelayedInitialzation(Engine::ECS::EntityMgr& ecs);
 	};
 }

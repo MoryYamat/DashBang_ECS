@@ -1,4 +1,4 @@
-#include "InitTileMap.h"
+ï»¿#include "InitTileMap.h"
 
 #include "Engine/Debug/DebugUtils.h"
 
@@ -14,66 +14,66 @@
 
 #include <iostream>
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
+
+
 
 // A function that creates initialization information for the Tilemap component from the imported BaseMesh model.
-// ƒCƒ“ƒ|[ƒg‚µ‚½BaseMeshƒ‚ƒfƒ‹‚©‚çƒ^ƒCƒ‹ƒ}ƒbƒvƒRƒ“ƒ|[ƒlƒ“ƒg(s—ñ\‘¢)‚Ì‰Šú‰»î•ñ‚ğì¬‚·‚éŠÖ”
-eNsLogic2DComp::TileMapComponent Game::Init::Logic2D::InitTileMapFromBounds(
-	const eNsCommonComp::TransformComponent& transformComp
-	, const eNsGfxModel::ModelData& modelData
-	, const eNsLogic2DComp::Logic2DTransformComponent& logic2DComp
+// ã‚¤ãƒ³ãƒãƒ¼ãƒˆã—ãŸBaseMeshãƒ¢ãƒ‡ãƒ«ã‹ã‚‰ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ(è¡Œåˆ—æ§‹é€ )ã®åˆæœŸåŒ–æƒ…å ±ã‚’ä½œæˆã™ã‚‹é–¢æ•°
+Engine::ECS::Component::Logic2D::TileMapComponent Game::Init::Logic2D::InitTileMapFromBounds(
+	const Engine::ECS::Component::Common::TransformComponent& transformComp
+	, const Engine::Graphics::Model::ModelData& modelData
+	, const Engine::ECS::Component::Logic2D::Logic2DTransformComponent& logic2DComp
 	, float tileSize)
 {
-	eNsLogic2DComp::TileMapComponent tileMapComp;
+	Engine::ECS::Component::Logic2D::TileMapComponent tileMapComp;
 	tileMapComp.tileSize = tileSize;
 
-	// —]”’ƒ^ƒCƒ‹(•Ğ‘¤“–‚½‚è)
+	// ä½™ç™½ã‚¿ã‚¤ãƒ«(ç‰‡å´å½“ãŸã‚Š)
 	const int marginTiles = 1;
 
 	// Get logical XZ size from model size and drawing scale
 	glm::vec2 logicalTileMapSize = GetModelWorldAABBSizeXZ(transformComp, modelData);
 
 	// Calculate the number of tiles
-	// ƒ^ƒCƒ‹–‡”(ã‰º¶‰E‚É margin ‚ğ‰Á‚¦‚é)
+	// ã‚¿ã‚¤ãƒ«æšæ•°(ä¸Šä¸‹å·¦å³ã« margin ã‚’åŠ ãˆã‚‹)
 	tileMapComp.numCols = static_cast<int>(std::ceil(logicalTileMapSize.x / tileSize)) + marginTiles * 2;
 	tileMapComp.numRows = static_cast<int>(std::ceil(logicalTileMapSize.y / tileSize)) + marginTiles * 2;
 
 	// Calculate the origin (in world coordinates)
-	// ˜_—ƒ^ƒCƒ‹ƒ}ƒbƒv‚ÌŒ´“_‚Ìƒ[ƒ‹ƒhÀ•W‚É‚¨‚¯‚éˆÊ’u
+	// è«–ç†ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—ã®åŸç‚¹ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«ãŠã‘ã‚‹ä½ç½®
 	glm::vec2 baseOrigin = ComputeTileMapOriginFromModel(transformComp, modelData);
 
 	// Apply Margin Offset
-	// —]”’•ª‚ÌƒIƒtƒZƒbƒg‚ğ“K—p
+	// ä½™ç™½åˆ†ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’é©ç”¨
 	tileMapComp.origin = baseOrigin - glm::vec2(marginTiles * tileSize);
 
-	eNsDebugLog::LogVector("InitLogicTransformFromModel(origin)", tileMapComp.origin);
+	Engine::Debug::Logging::LogVector("InitLogicTransformFromModel(origin)", tileMapComp.origin);
 
 	return tileMapComp;
 }
 
 glm::vec2 Game::Init::Logic2D::GetModelWorldAABBSizeXZ(
-	const eNsCommonComp::TransformComponent& transformComp
-	, const eNsGfxModel::ModelData& modelData
+	const Engine::ECS::Component::Common::TransformComponent& transformComp
+	, const Engine::Graphics::Model::ModelData& modelData
 )
 {
 	glm::vec3 min = modelData.min;
 	glm::vec3 max = modelData.max;
 
-	// ƒ‚ƒfƒ‹‚ğƒ[ƒ‹ƒh‹óŠÔ‚É•ÏŠ·
+	// ãƒ¢ãƒ‡ãƒ«ã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰ç©ºé–“ã«å¤‰æ›
 	glm::mat4 modelMat = transformComp.toMatrix();
 	std::vector<glm::vec3> corners;
 	for (int i = 0; i < 8; ++i)
 	{
 		glm::vec3 local = GetAABBCorner(min, max, i);
-		glm::vec4 world = modelMat * glm::vec4(local, 1.0f);// ‰ñ“].ƒXƒP[ƒ‹1.0f
+		glm::vec4 world = modelMat * glm::vec4(local, 1.0f);// å›è»¢.ã‚¹ã‚±ãƒ¼ãƒ«1.0f
 		corners.push_back(glm::vec3(world));
 	}
 
 	float minX = corners[0].x, maxX = corners[0].x;
 	float minZ = corners[0].z, maxZ = corners[0].z;
 
-	// XZ•½–Ê‚Å‚ÌÅ¬^Å‘å‚ğÄŒvZ
+	// XZå¹³é¢ã§ã®æœ€å°ï¼æœ€å¤§ã‚’å†è¨ˆç®—
 	for (auto& c : corners)
 	{
 		minX = std::min(minX, c.x);
@@ -86,11 +86,11 @@ glm::vec2 Game::Init::Logic2D::GetModelWorldAABBSizeXZ(
 }
 
 
-// İ’èÏ‚İ‚ÌTileMapComponent‚Ì“à—e‚©‚çtiless—ñ(”z—ñ)‚ğ‰Šú‰»‚·‚éŠÖ”
-void Game::Init::Logic2D::InitTileMapTiles(eNsLogic2DComp::TileMapComponent& tileMapComp)
+// è¨­å®šæ¸ˆã¿ã®TileMapComponentã®å†…å®¹ã‹ã‚‰tilesè¡Œåˆ—(é…åˆ—)ã‚’åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
+void Game::Init::Logic2D::InitTileMapTiles(Engine::ECS::Component::Logic2D::TileMapComponent& tileMapComp)
 {
-	tileMapComp.tiles.resize(tileMapComp.numRows, std::vector<eNsLogic2DComp::Tile>(tileMapComp.numCols));
-	eNsDebugLog::GeneralLog("InitLogicTransformFromModel(InitTileMapTiles)", "InitTileMapTiles creation completed successfully");
+	tileMapComp.tiles.resize(tileMapComp.numRows, std::vector<Engine::ECS::Component::Logic2D::Tile>(tileMapComp.numCols));
+	Engine::Debug::Logging::GeneralLog("InitLogicTransformFromModel(InitTileMapTiles)", "InitTileMapTiles creation completed successfully");
 }
 
 
@@ -111,10 +111,10 @@ glm::vec3 Game::Init::Logic2D::GetAABBCorner(glm::vec3 min, glm::vec3 max, int i
 	);
 }
 
-// ƒ‚ƒfƒ‹‚ÌÅ‘å^Å¬À•W‚©‚çƒ^ƒCƒ‹ƒ}ƒbƒvŒ´“_‚ğŒvZ‚·‚é
+// ãƒ¢ãƒ‡ãƒ«ã®æœ€å¤§ï¼æœ€å°åº§æ¨™ã‹ã‚‰ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—åŸç‚¹ã‚’è¨ˆç®—ã™ã‚‹
 glm::vec2 Game::Init::Logic2D::ComputeTileMapOriginFromModel(
-	const eNsCommonComp::TransformComponent& transformComp
-	, const eNsGfxModel::ModelData& modelData
+	const Engine::ECS::Component::Common::TransformComponent& transformComp
+	, const Engine::Graphics::Model::ModelData& modelData
 )
 {
 	glm::vec3 min = modelData.min;
@@ -138,25 +138,25 @@ glm::vec2 Game::Init::Logic2D::ComputeTileMapOriginFromModel(
 }
 
 
-void Game::Init::Logic2D::ApplyObstacleCollidersToTileMap(eNsECS::EntityMgr& ecs, eNsLogic2DComp::TileMapComponent& tileMapComp)
+void Game::Init::Logic2D::ApplyObstacleCollidersToTileMap(Engine::ECS::EntityMgr& ecs, Engine::ECS::Component::Logic2D::TileMapComponent& tileMapComp)
 {
 	// std::cout << "this function is called " << std::endl;
-	for (eNsECS::Entity e : ecs.view<
-		eNsLogic2DComp::CollisionComponent,
-		eNsTagComp::ObstacleTagComponent,
-		eNsLogic2DComp::Logic2DTransformComponent>())
+	for (Engine::ECS::Entity e : ecs.view<
+		Engine::ECS::Component::Logic2D::CollisionComponent,
+		Engine::ECS::Component::Tags::ObstacleTagComponent,
+		Engine::ECS::Component::Logic2D::Logic2DTransformComponent>())
 	{
-		const auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
-		auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
-		//if (collisionComp.collider.type != eNsLogic2DComp::ColliderType::Obb2D)
+		const auto& collisionComp = ecs.get<Engine::ECS::Component::Logic2D::CollisionComponent>(e);
+		auto& logic = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(e);
+		//if (collisionComp.collider.type != Engine::ECS::Component::Logic2D::ColliderType::Obb2D)
 		//	continue;
 
 		if (!collisionComp.collider.IsObb2D())
 			continue;
 
-		// ƒ[ƒJƒ‹î•ñ -> ƒ[ƒ‹ƒh•ÏŠ·
-		const eNsLogic2DComp::Obb2D& obblocal = collisionComp.collider.AsObb2D();
-		eNsLogic2DComp::Obb2D obbWorld = obblocal;
+		// ãƒ­ãƒ¼ã‚«ãƒ«æƒ…å ± -> ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›
+		const Engine::ECS::Component::Logic2D::Obb2D& obblocal = collisionComp.collider.AsObb2D();
+		Engine::ECS::Component::Logic2D::Obb2D obbWorld = obblocal;
 		obbWorld.center += logic.positionXZ;
 
 		for (int row = 0; row < tileMapComp.numRows; ++row)
@@ -175,7 +175,7 @@ void Game::Init::Logic2D::ApplyObstacleCollidersToTileMap(eNsECS::EntityMgr& ecs
 				//	DebugUtils::LogVector_string("[InitTileMap.cpp(This Tile is Un Walkable)] :", tileCenter);
 				//}
 
-				if (eNsPhys2DColl::intersectOBB2D_AABB2D(obbWorld, tileMin, tileMax))
+				if (Engine::Physics::Logic2D::Collision::intersectOBB2D_AABB2D(obbWorld, tileMin, tileMax))
 				{
 					tileMapComp.tiles[row][col].isWalkable = false;
 				}
@@ -189,27 +189,27 @@ void Game::Init::Logic2D::ApplyObstacleCollidersToTileMap(eNsECS::EntityMgr& ecs
 	}
 }
 
-void Game::Init::Logic2D::MaskUncoveredTilesByTerrainOBB(eNsECS::EntityMgr& ecs, eNsLogic2DComp::TileMapComponent& tileMapComp)
+void Game::Init::Logic2D::MaskUncoveredTilesByTerrainOBB(Engine::ECS::EntityMgr& ecs, Engine::ECS::Component::Logic2D::TileMapComponent& tileMapComp)
 {
-	for (eNsECS::Entity e : ecs.view<
-		eNsLogic2DComp::CollisionComponent,
-		eNsTagComp::TerrainMeshTag,
-		eNsLogic2DComp::Logic2DTransformComponent>())
+	for (Engine::ECS::Entity e : ecs.view<
+		Engine::ECS::Component::Logic2D::CollisionComponent,
+		Engine::ECS::Component::Tags::TerrainMeshTag,
+		Engine::ECS::Component::Logic2D::Logic2DTransformComponent>())
 	{
-		const auto& collisionComp = ecs.get<eNsLogic2DComp::CollisionComponent>(e);
-		const auto& logic = ecs.get<eNsLogic2DComp::Logic2DTransformComponent>(e);
+		const auto& collisionComp = ecs.get<Engine::ECS::Component::Logic2D::CollisionComponent>(e);
+		const auto& logic = ecs.get<Engine::ECS::Component::Logic2D::Logic2DTransformComponent>(e);
 
-		//if (collisionComp.collider.type != eNsLogic2DComp::ColliderType::Obb2D)
+		//if (collisionComp.collider.type != Engine::ECS::Component::Logic2D::ColliderType::Obb2D)
 		//	continue;
 
-		//const eNsLogic2DComp::Obb2D& obb = collisionComp.collider.obb2D;
+		//const Engine::ECS::Component::Logic2D::Obb2D& obb = collisionComp.collider.obb2D;
 
 		if (!collisionComp.collider.IsObb2D())
 			continue;
 
-		// ƒ[ƒJƒ‹î•ñ -> ƒ[ƒ‹ƒh•ÏŠ·
-		const eNsLogic2DComp::Obb2D& obblocal = collisionComp.collider.AsObb2D();
-		eNsLogic2DComp::Obb2D obbWorld = obblocal;
+		// ãƒ­ãƒ¼ã‚«ãƒ«æƒ…å ± -> ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›
+		const Engine::ECS::Component::Logic2D::Obb2D& obblocal = collisionComp.collider.AsObb2D();
+		Engine::ECS::Component::Logic2D::Obb2D obbWorld = obblocal;
 		obbWorld.center += logic.positionXZ;
 
 
@@ -229,13 +229,13 @@ void Game::Init::Logic2D::MaskUncoveredTilesByTerrainOBB(eNsECS::EntityMgr& ecs,
 				//	DebugUtils::LogVector_string("[InitTileMap.cpp(This Tile is Un Walkable)] :", tileCenter);
 				//}
 
-				// TerrainMesh‚Æ”í‚ç‚È‚¢‹ó’†•”•ª‚Ìƒ^ƒCƒ‹‚Ì`unWalkable`İ’è
-				if (!eNsPhys2DColl::intersectOBB2D_AABB2D(obbWorld, tileMin, tileMax))
+				// TerrainMeshã¨è¢«ã‚‰ãªã„ç©ºä¸­éƒ¨åˆ†ã®ã‚¿ã‚¤ãƒ«ã®`unWalkable`è¨­å®š
+				if (!Engine::Physics::Logic2D::Collision::intersectOBB2D_AABB2D(obbWorld, tileMin, tileMax))
 				{
 					tileMapComp.tiles[row][col].isWalkable = false;
 				}
 
-				// ŠOüˆêƒ^ƒCƒ‹•ª‚Í`UnWalkable`
+				// å¤–å‘¨ä¸€ã‚¿ã‚¤ãƒ«åˆ†ã¯`UnWalkable`
 				if (row == 0 || row == tileMapComp.numRows - 1 || col == 0 || col == tileMapComp.numCols - 1)
 				{
 					tileMapComp.tiles[row][col].isWalkable = false;

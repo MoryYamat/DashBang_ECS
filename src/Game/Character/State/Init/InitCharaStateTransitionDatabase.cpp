@@ -1,21 +1,21 @@
-#include "InitCharaStateTransitionDatabase.hpp"
+ï»¿#include "InitCharaStateTransitionDatabase.hpp"
 
 #include "Game/Character/State/Rule/Life/LifeStateTransitionDatabase.hpp"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 #include <iostream>
 
-void Game::Character::State::Life::InitLifeStateTransitionDatabase(eNsECS::EntityMgr& ecs)
+void Game::Character::State::Life::InitLifeStateTransitionDatabase(Engine::ECS::EntityMgr& ecs)
 {
-	auto& db = ecs.createResource<gNsCharaLifeState::StateTransitionDatabase>();
+	auto& db = ecs.createResource<Game::Character::State::Life::StateTransitionDatabase>();
 
-	using State = gNsCharaLifeState::LifeState;
-	using ConditionType = gNsCharaLifeState::TransitionConditionType;
+	using State = Game::Character::State::Life::LifeState;
+	using ConditionType = Game::Character::State::Life::TransitionConditionType;
 
 	db.rules =
 	{
-		// Alive -> Dead: HP‚ª0ˆÈ‰º
+		// Alive -> Dead: HPãŒ0ä»¥ä¸‹
 		{
 			.from = State::Alive,
 			.to = State::Dead,
@@ -25,7 +25,7 @@ void Game::Character::State::Life::InitLifeStateTransitionDatabase(eNsECS::Entit
 			}
 		},
 
-		// Dead -> Alive: ‘h¶ƒtƒ‰ƒO
+		// Dead -> Alive: è˜‡ç”Ÿãƒ•ãƒ©ã‚°
 		{
 			.from = State::Dead,
 			.to = State::Alive,

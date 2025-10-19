@@ -1,7 +1,7 @@
-#pragma once
+﻿#pragma once
 
-#include "Common/GameNamespaceDecl.h"
-#include "Common/EngineNamespaceDecl.h"
+
+
 
 #include "Engine/ECS/Component/Logic2D/Velocity2DComponent.h"
 
@@ -14,16 +14,16 @@ namespace Game::Character::State::Movement
 {
 	bool AreConditionsMet
 	(
-		const gNsCharaMoveState::CharacterMovementStateComponent& movement,
-		const eNsLogic2DComp::Velocity2DComponent& vel,
+		const Game::Character::State::Movement::CharacterMovementStateComponent& movement,
+		const Engine::ECS::Component::Logic2D::Velocity2DComponent& vel,
 		float deltaTime,
-		const std::vector<gNsCharaMoveState::TransitionCondition>& conditions
+		const std::vector<Game::Character::State::Movement::TransitionCondition>& conditions
 	);
 
 	bool EvaluateCondition
 	(
-		const eNsLogic2DComp::Velocity2DComponent& vel,
+		const Engine::ECS::Component::Logic2D::Velocity2DComponent& vel,
 		float deltaTime,
-		const gNsCharaMoveState::TransitionCondition& cond
+		const Game::Character::State::Movement::TransitionCondition& cond
 	);
 }

@@ -1,17 +1,17 @@
-// 
+ï»¿// 
 
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Game::Character::State::Action
 {
-	// ƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹Àsó‘Ô‚ğXV‚·‚é
+	// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«å®Ÿè¡ŒçŠ¶æ…‹ã‚’æ›´æ–°ã™ã‚‹
 	void UpdateCharacterSkillExecutionStateFromInstance
 	(
-		eNsECS::EntityMgr& ecs,
+		Engine::ECS::EntityMgr& ecs,
 		float deltaTime
 	);
 }

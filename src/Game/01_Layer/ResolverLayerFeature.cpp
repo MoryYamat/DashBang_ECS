@@ -7,16 +7,16 @@
 
 #include "Game/00_Feature/Character/Control/CC/CharacterCCFeature.hpp"
 
-#include "Common/GameNamespaceDecl.h"
 
-void Game::Layer::ResolverLayerFeature::Update(eNsECS::EntityMgr& ecs)
+
+void Game::Layer::ResolverLayerFeature::Update(Engine::ECS::EntityMgr& ecs)
 {
 	// Update Character Skill Intent Resolver
-	gNsFeature::Character::CharacterSkillFeature::UpdateCharacterSkillIntentResolver(ecs);
+	Game::Feature::Character::CharacterSkillFeature::UpdateCharacterSkillIntentResolver(ecs);
 
 	// Update Character Movement Intent Resolver
-	// gNsFeature::Character::FSM::MovementFSMFeature::UpdateMovementIntentResolver(ecs);// 削除予定：FSM導入後削除予定
+	// Game::Feature::Character::FSM::MovementFSMFeature::UpdateMovementIntentResolver(ecs);// 削除予定：FSM導入後削除予定
 
 	// update Character CC Antichain Component
-	gNsFeature::Character::CharacterCCFeature::UpdateCCAntiChainSystem(ecs);
+	Game::Feature::Character::CharacterCCFeature::UpdateCCAntiChainSystem(ecs);
 }

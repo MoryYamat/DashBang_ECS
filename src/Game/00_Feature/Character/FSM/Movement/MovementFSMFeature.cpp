@@ -11,31 +11,31 @@
 
 #include "Game/Character/FSM/Movement/Interference/MovementFSMInterferenceResolver.hpp"
 
-#include "Common/GameNamespaceDecl.h"
 
-void Game::Feature::Character::FSM::MovementFSMFeature::InitializeMovementFSMDefinition(eNsECS::EntityMgr& ecs)
+
+void Game::Feature::Character::FSM::MovementFSMFeature::InitializeMovementFSMDefinition(Engine::ECS::EntityMgr& ecs)
 {
-	gNsCharaFSMMovement::InitMovementFSMDatabase(ecs);
-	//gNsCharaFSMMovement::InitializeMovementTransitionSystem(ecs);
+	Game::Character::FSM::Movement::InitMovementFSMDatabase(ecs);
+	//Game::Character::FSM::Movement::InitializeMovementTransitionSystem(ecs);
 }
 
-void Game::Feature::Character::FSM::MovementFSMFeature::UpdateMovementIntentResolver(eNsECS::EntityMgr& ecs)
+void Game::Feature::Character::FSM::MovementFSMFeature::UpdateMovementIntentResolver(Engine::ECS::EntityMgr& ecs)
 {
 	//Game::Character::Control::Movement::UpdateMovementIntentResolverSystem(ecs);// 削除予定：FSM導入後廃止
 }
 
-void Game::Feature::Character::FSM::MovementFSMFeature::UpdateMovementFSMSystem(eNsECS::EntityMgr& ecs)
+void Game::Feature::Character::FSM::MovementFSMFeature::UpdateMovementFSMSystem(Engine::ECS::EntityMgr& ecs)
 {
 	// state Scope
-	gNsCharaFSMMovement::UpdateMovementFSMSystem(ecs);
+	Game::Character::FSM::Movement::UpdateMovementFSMSystem(ecs);
 }
 
-void Game::Feature::Character::FSM::MovementFSMFeature::UpdateMovementFSMResolverSystem(eNsECS::EntityMgr& ecs, float deltaTime)
+void Game::Feature::Character::FSM::MovementFSMFeature::UpdateMovementFSMResolverSystem(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
 	Game::Character::FSM::Movement::System::MovementFSMResolverSystem::Update(ecs, deltaTime);
 }
 
-void Game::Feature::Character::FSM::MovementFSMFeature::UpdateMovementFSMScopedSystem(eNsECS::EntityMgr& ecs, float deltaTime)
+void Game::Feature::Character::FSM::MovementFSMFeature::UpdateMovementFSMScopedSystem(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
 	// fsm scope
 	Game::Character::FSM::Movement::System::MovementFSMScopedEffectSystem::Update(ecs, deltaTime);

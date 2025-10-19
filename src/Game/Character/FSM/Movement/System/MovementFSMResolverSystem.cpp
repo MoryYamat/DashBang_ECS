@@ -8,9 +8,9 @@
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 // FIXME: ResolverとStateScopedの副作用は分離したほうがよい
-void Game::Character::FSM::Movement::System::MovementFSMResolverSystem::Update(eNsECS::EntityMgr& ecs, float deltaTime)
+void Game::Character::FSM::Movement::System::MovementFSMResolverSystem::Update(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
-	using namespace Engine::ECS::Component::Logic2D;
+	//using namespace Engine::ECS::Component::Logic2D;
 	namespace Ops = Engine::ECS::Ops;
 	using namespace Game::Character::Intent;
 	using namespace Game::Character::FSM::Movement;
@@ -22,7 +22,7 @@ void Game::Character::FSM::Movement::System::MovementFSMResolverSystem::Update(e
 	const auto& db = Ops::GetOrCreateRes<MovementFSMDatabase>(ecs);
 	// const auto& def = db.Get("basic");// TODO: 将来 entityごとに切り替え可能 // 現在未使用
 
-	for (eNsECS::Entity e : ecs.view<
+	for (Engine::ECS::Entity e : ecs.view<
 		MovementStateComponent,
 		MovementFSMTransitionRequestComponent,
 		MovementFSMLeaseComponent

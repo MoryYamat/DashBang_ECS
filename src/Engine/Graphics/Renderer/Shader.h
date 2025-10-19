@@ -9,7 +9,7 @@
 
 #include <string>
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Engine::Graphics::Render
 {

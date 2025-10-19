@@ -34,8 +34,8 @@ namespace Game::Combat::Skill::FSM::Effect
 	struct SpawnHitboxEffect : IEffectTemplate
 	{
 		void execute(
-			eNsECS::EntityMgr& ecs,
-			eNsECS::Entity caster,
+			Engine::ECS::EntityMgr& ecs,
+			Engine::ECS::Entity caster,
 			const SkillDef& def,
 			const SkillFSMContext& ctx
 		) const override
@@ -45,7 +45,7 @@ namespace Game::Combat::Skill::FSM::Effect
 
 			const auto& spawn = def.spawnHitArea.value();
 
-			eNsECS::Entity eHitbox = ecs.createEntity();
+			Engine::ECS::Entity eHitbox = ecs.createEntity();
 
 
 			Ops::Add<Game::Combat::Skill::Component::SkillOwnerComponent>

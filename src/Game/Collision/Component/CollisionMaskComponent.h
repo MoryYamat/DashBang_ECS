@@ -80,7 +80,7 @@ namespace Game::Collision::Component
 		return true;
 	};
 
-	inline Game::ECS::Component::Team resolveTeam(Engine::ECS::EntityMgr& ecs, eNsECS::Entity e)
+	inline Game::ECS::Component::Team resolveTeam(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity e)
 	{
 		using namespace Game::Combat::Skill::Component;
 		using namespace Game::ECS::Component;

@@ -1,4 +1,4 @@
-//#include "CharacterStateSystem.h"
+ï»¿//#include "CharacterStateSystem.h"
 //
 //#include "Game/Character/State/Component/CharacterStateComponent.h"
 //
@@ -6,17 +6,17 @@
 //
 //#include "Game/Character/State/Rule/StateTransitionEvaluator.hpp"
 //
-//#include "Common/GameNamespaceDecl.h"
+//
 //
 //#include <iostream>
 //
-//void Game::Character::State::CharacterStateSystem::UpdateStates(eNsECS::EntityMgr& ecs, float deltaTime)
+//void Game::Character::State::CharacterStateSystem::UpdateStates(Engine::ECS::EntityMgr& ecs, float deltaTime)
 //{
 //	auto& ruleDatabase = ecs.getResource<gNsCharacterState::StateTransitionDatabase>();
 //
-//	// std::cout << "view ‚Ì typeid: " << typeid(decltype(ecs.view<gNsCharacterState::CharacterStateComponent>())).name() << std::endl;
+//	// std::cout << "view ã® typeid: " << typeid(decltype(ecs.view<gNsCharacterState::CharacterStateComponent>())).name() << std::endl;
 //
-//	for (eNsECS::Entity e : ecs.view<gNsCharacterState::CharacterStateComponent>())
+//	for (Engine::ECS::Entity e : ecs.view<gNsCharacterState::CharacterStateComponent>())
 //	{
 //
 //		auto& state = ecs.get<gNsCharacterState::CharacterStateComponent>(e);
@@ -33,7 +33,7 @@
 //		gNsCharacterState::CharacterBehaviorState to = *state.requestedNextState;
 //
 //		
-//		// ‘JˆÚƒ‹[ƒ‹æ“¾
+//		// é·ç§»ãƒ«ãƒ¼ãƒ«å–å¾—
 //		const auto* rule = ruleDatabase.FindRule(from, to);
 //		if (rule && gNsCharacterState::StateTransitionEvaluator::AreConditionsMet(state, deltaTime, rule->conditions))
 //		{
@@ -43,7 +43,7 @@
 //
 //			std::cout << "[CharacterStateSystem.cpp(StateChange)] Entity " << e.id
 //				<< ": " << ToString(state.previous)
-//				<< " ¨ " << ToString(state.current) << std::endl;
+//				<< " â†’ " << ToString(state.current) << std::endl;
 //
 //		}
 //
@@ -55,8 +55,8 @@
 //}
 //
 //void Game::Character::State::CharacterStateSystem::RequestStateChange(
-//	eNsECS::EntityMgr& ecs
-//	, eNsECS::Entity e
+//	Engine::ECS::EntityMgr& ecs
+//	, Engine::ECS::Entity e
 //	, CharacterBehaviorState nextState
 //)
 //{
@@ -71,15 +71,15 @@
 //	state.requestedNextState = nextState;
 //}
 //void Game::Character::State::CharacterStateSystem::ForceCrowdControl(
-//	eNsECS::EntityMgr& ecs
-//	, eNsECS::Entity e
+//	Engine::ECS::EntityMgr& ecs
+//	, Engine::ECS::Entity e
 //	, CharacterCrowdControlState ccState
 //)
 //{
 //	auto& state = ecs.get<gNsCharacterState::CharacterStateComponent>(e);
 //	state.crowdControl = ccState;
 //
-//	// ©“®“I‚És“®‚ğ~‚ß‚é
+//	// è‡ªå‹•çš„ã«è¡Œå‹•ã‚’æ­¢ã‚ã‚‹
 //	if (ccState != gNsCharacterState::CharacterCrowdControlState::None)
 //	{
 //		state.requestedNextState = gNsCharacterState::CharacterBehaviorState::Idle;

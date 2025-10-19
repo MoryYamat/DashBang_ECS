@@ -24,7 +24,7 @@
 #include <string>
 #include <memory>
 
-void Game::Character::FSM::CC::InitCCTransitionDefinitionDatabase(eNsECS::EntityMgr& ecs)
+void Game::Character::FSM::CC::InitCCTransitionDefinitionDatabase(Engine::ECS::EntityMgr& ecs)
 {
 	using namespace Game::Character::FSM::CC::Database;
 	using namespace Game::Character::FSM::CC::StateModel;

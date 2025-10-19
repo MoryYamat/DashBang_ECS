@@ -13,8 +13,8 @@
 
 float Game::Combat::Skill::FSM::Modifier::Movement::CalcMovementSpeedMultiplierFromSkillFSM
 (
-	eNsECS::EntityMgr& ecs,
-	eNsECS::Entity entity
+	Engine::ECS::EntityMgr& ecs,
+	Engine::ECS::Entity entity
 )
 {
 	using namespace Game::Combat::Skill::Component;

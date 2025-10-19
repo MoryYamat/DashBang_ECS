@@ -1,6 +1,6 @@
-#include "InitializeSkills.h"
+ï»¿#include "InitializeSkills.h"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 
 #include "Game/Combat/Skill/MasterData/SkillDatabase.h"
@@ -11,160 +11,160 @@
 
 #include <iostream>
 
-//void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
+//void Game::Combat::Skill::System::InitializeSkills(Engine::ECS::EntityMgr& ecs)
 //{
 //	using namespace Game::Combat::Skill::MasterData;
 //
-//	auto& db = ecs.createResource<gNsSkillData::SkillDatabase>();
+//	auto& db = ecs.createResource<Game::Combat::Skill::Data::SkillDatabase>();
 //
 //	SkillDefinition slash;
 //}
 
-void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
+void Game::Combat::Skill::System::InitializeSkills(Engine::ECS::EntityMgr& ecs)
 {
-	// gNsSkillData::SkillDatabase db;
+	// Game::Combat::Skill::Data::SkillDatabase db;
 	
 	using namespace Game::Combat::Skill::Data;
 
-	// ECS‚ÌƒŠƒ\[ƒX‚Æ‚µ‚ÄƒXƒLƒ‹ƒf[ƒ^ƒx[ƒX‚ğì¬
-	auto& db = ecs.createResource<gNsSkillData::SkillDatabase>();
+	// ECSã®ãƒªã‚½ãƒ¼ã‚¹ã¨ã—ã¦ã‚¹ã‚­ãƒ«ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’ä½œæˆ
+	auto& db = ecs.createResource<Game::Combat::Skill::Data::SkillDatabase>();
 
 	
 
 	SkillDefinition slash;
 	slash.id = 1;
 	slash.name = "Basic Slash";
-	slash.category = SkillCategory::Melee; // ƒXƒLƒ‹‚ÌƒJƒeƒSƒŠ‚ğİ’è
+	slash.category = SkillCategory::Melee; // ã‚¹ã‚­ãƒ«ã®ã‚«ãƒ†ã‚´ãƒªã‚’è¨­å®š
 
-	// ƒXƒLƒ‹‚ÌÀsƒ‚ƒfƒ‹‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®å®Ÿè¡Œãƒ¢ãƒ‡ãƒ«ã‚’å®šç¾©
 	slash.execution = SkillExecutionModelDef{
 		.timing = SkillPhaseTiming{
-			.castTime = 0.3f, // ƒLƒƒƒXƒgƒ^ƒCƒ€(”­¶‚Ü‚Å‚ÌŠÔ)
-			.recoveryTime = 0.4f, // ƒŠƒJƒoƒŠ[ƒ^ƒCƒ€(ƒXƒLƒ‹I—¹Œã‚Ì‘Ò‹@ŠÔ)
-			.duration = 1.0f // action‚Ì‘±ŠÔ
+			.castTime = 0.3f, // ã‚­ãƒ£ã‚¹ãƒˆã‚¿ã‚¤ãƒ (ç™ºç”Ÿã¾ã§ã®æ™‚é–“)
+			.recoveryTime = 0.4f, // ãƒªã‚«ãƒãƒªãƒ¼ã‚¿ã‚¤ãƒ (ã‚¹ã‚­ãƒ«çµ‚äº†å¾Œã®å¾…æ©Ÿæ™‚é–“)
+			.duration = 1.0f // actionã®æŒç¶šæ™‚é–“
 		},
-		.castSyncPolicy = SkillCastSyncPolicy::Synchronous, // ƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì“¯Šú
-		.cancelMask = SkillCancelPhase::All, // ‘S‚Ä‚ÌƒtƒF[ƒY‚ÅƒLƒƒƒ“ƒZƒ‹‰Â”\
-		.cancelableSkillIds = { 2, 3 }, // ‚±‚ÌƒXƒLƒ‹’†‚ÉƒLƒƒƒ“ƒZƒ‹‚µ‚Ä”­“®‰Â”\‚ÈƒXƒLƒ‹ID
-		.movementLock = SkillMovementLockPolicy::Locked, // ƒXƒLƒ‹‚ÌˆÚ“®ƒƒbƒNƒ^ƒCƒvFƒƒbƒN
-		.lockFacingDirection = true, // ‰r¥’†‚ÌŒü‚«ŒÅ’è
+		.castSyncPolicy = SkillCastSyncPolicy::Synchronous, // ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®åŒæœŸ
+		.cancelMask = SkillCancelPhase::All, // å…¨ã¦ã®ãƒ•ã‚§ãƒ¼ã‚ºã§ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½
+		.cancelableSkillIds = { 2, 3 }, // ã“ã®ã‚¹ã‚­ãƒ«ä¸­ã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã—ã¦ç™ºå‹•å¯èƒ½ãªã‚¹ã‚­ãƒ«ID
+		.movementLock = SkillMovementLockPolicy::Locked, // ã‚¹ã‚­ãƒ«ã®ç§»å‹•ãƒ­ãƒƒã‚¯ã‚¿ã‚¤ãƒ—ï¼šãƒ­ãƒƒã‚¯
+		.lockFacingDirection = true, // è© å”±ä¸­ã®å‘ãå›ºå®š
 		.charge = SkillChargeSpecDef{
-			.isChargeSkill = false, // ƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚©‚Ç‚¤‚©
-			.chargeTime = 0.0f // ƒ`ƒƒ[ƒWŠÔiƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚Ìê‡j
+			.isChargeSkill = false, // ãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã‹ã©ã†ã‹
+			.chargeTime = 0.0f // ãƒãƒ£ãƒ¼ã‚¸æ™‚é–“ï¼ˆãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã®å ´åˆï¼‰
 		},
 	};
 
-	// ƒXƒLƒ‹‚ÌUŒ‚d—l‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®æ”»æ’ƒä»•æ§˜ã‚’å®šç¾©
 	slash.attackSpec = SkillAttackSpecDef{
-		.triggerTiming = gNsSkillComp::SkillExecutionEvent::OnEnterActive, // ƒXƒLƒ‹‚ÌƒgƒŠƒK[ƒ^ƒCƒ~ƒ“ƒO
+		.triggerTiming = Game::Combat::Skill::Component::SkillExecutionEvent::OnEnterActive, // ã‚¹ã‚­ãƒ«ã®ãƒˆãƒªã‚¬ãƒ¼ã‚¿ã‚¤ãƒŸãƒ³ã‚°
 		.lifetime = SkillLifetimeSpecDef{
-			.hitBoxlifetimePolicy = AttackLifeTimeMode::SyncWithSkillPhase, // ƒtƒF[ƒY‚Æ“¯Šú
-			.duration = 1.0f, // ƒXƒLƒ‹‚Ì‘±ŠÔ
-			.despawnFlags = SkillDespawnCondition::TimeElapsed // ŠÔŒo‰ß‚ÅÁ–Å
+			.hitBoxlifetimePolicy = AttackLifeTimeMode::SyncWithSkillPhase, // ãƒ•ã‚§ãƒ¼ã‚ºã¨åŒæœŸ
+			.duration = 1.0f, // ã‚¹ã‚­ãƒ«ã®æŒç¶šæ™‚é–“
+			.despawnFlags = SkillDespawnCondition::TimeElapsed // æ™‚é–“çµŒéã§æ¶ˆæ»…
 		},
-		.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Sector2DAttack
+		.shape = Game::Combat::Skill::Component::Attack2DShape{ Game::Combat::Skill::Component::Sector2DAttack
 		{
-			.center = CanonicalDefaults::kLocalCenterXZ, // ’†SˆÊ’u
+			.center = CanonicalDefaults::kLocalCenterXZ, // ä¸­å¿ƒä½ç½®
 			.direction = CanonicalDefaults::kLocalForwardXZ,
-			.angle = 0.5236f, // –ñ57“x
+			.angle = 0.5236f, // ç´„57åº¦
 			.radius = 10.0f
 		} },
-		.trajectoryType = TrajectoryType::None, // ‹OÕƒ^ƒCƒv‚Í‚È‚µ
-		.trajectoryParams = gNsSkillData::SkillTrajectory::StaticTrajectory{}, // Ã“I‹OÕƒpƒ‰ƒ[ƒ^
+		.trajectoryType = TrajectoryType::None, // è»Œè·¡ã‚¿ã‚¤ãƒ—ã¯ãªã—
+		.trajectoryParams = Game::Combat::Skill::Data::SkillTrajectory::StaticTrajectory{}, // é™çš„è»Œè·¡ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 	};
 
-	// ƒXƒLƒ‹‚Ì–hŒäd—l‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®é˜²å¾¡ä»•æ§˜ã‚’å®šç¾©
 	slash.defense = SkillDefenseDef{
-		.superArmorType = gNsSkillData::SkillSuperArmorType::None, // ƒX[ƒp[ƒA[ƒ}[‚Ìí—Ş
-		.guardType = gNsSkillData::SkillGuardType::None // ƒK[ƒh‚Ì—L–³
+		.superArmorType = Game::Combat::Skill::Data::SkillSuperArmorType::None, // ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼ã®ç¨®é¡
+		.guardType = Game::Combat::Skill::Data::SkillGuardType::None // ã‚¬ãƒ¼ãƒ‰ã®æœ‰ç„¡
 	};
 
 
-	// ƒXƒLƒ‹‚ÌƒRƒXƒg‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®ã‚³ã‚¹ãƒˆã‚’å®šç¾©
 	slash.cost = SkillCostDef{
-		.manaCost = 0.0f, // ƒ}ƒiƒRƒXƒg
-		.staminaCost = 0.0f, // ƒXƒ^ƒ~ƒiƒRƒXƒg
-		.healthCost = 0.0f // ƒwƒ‹ƒXƒRƒXƒg
+		.manaCost = 0.0f, // ãƒãƒŠã‚³ã‚¹ãƒˆ
+		.staminaCost = 0.0f, // ã‚¹ã‚¿ãƒŸãƒŠã‚³ã‚¹ãƒˆ
+		.healthCost = 0.0f // ãƒ˜ãƒ«ã‚¹ã‚³ã‚¹ãƒˆ
 	};
 
-	// ƒXƒLƒ‹‚Ìƒ_ƒ[ƒWî•ñ‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®ãƒ€ãƒ¡ãƒ¼ã‚¸æƒ…å ±ã‚’å®šç¾©
 	slash.damage = SkillDamageDef{
-		.onHitEffect = gNsSkillData::OnHitEffectType::None, // ƒqƒbƒg‚ÌŒø‰Ê
-		.damageType = SkillDamageType::Physical, // ƒ_ƒ[ƒWƒ^ƒCƒv
-		.baseDamage = 10.0f, // Šî–{ƒ_ƒ[ƒW
-		.isPercentBased = false, // ƒp[ƒZƒ“ƒgƒx[ƒX‚Ìƒ_ƒ[ƒW‚©‚Ç‚¤‚©
+		.onHitEffect = Game::Combat::Skill::Data::OnHitEffectType::None, // ãƒ’ãƒƒãƒˆæ™‚ã®åŠ¹æœ
+		.damageType = SkillDamageType::Physical, // ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¿ã‚¤ãƒ—
+		.baseDamage = 10.0f, // åŸºæœ¬ãƒ€ãƒ¡ãƒ¼ã‚¸
+		.isPercentBased = false, // ãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆãƒ™ãƒ¼ã‚¹ã®ãƒ€ãƒ¡ãƒ¼ã‚¸ã‹ã©ã†ã‹
 	};
 
-	// ƒoƒtEƒfƒoƒtF‚È‚µ
+	// ãƒãƒ•ãƒ»ãƒ‡ãƒãƒ•ï¼šãªã—
 
 	db.AddSkill(slash);
 
-	// “ŠË•¨‚ÌŠî‘bƒXƒLƒ‹’è‹`
+	// æŠ•å°„ç‰©ã®åŸºç¤ã‚¹ã‚­ãƒ«å®šç¾©
 	SkillDefinition projectile;
 	projectile.id = 2;
 	projectile.name = "Projectile Skill";
-	projectile.category = SkillCategory::Projectile; // ƒXƒLƒ‹‚ÌƒJƒeƒSƒŠ‚ğİ’è
+	projectile.category = SkillCategory::Projectile; // ã‚¹ã‚­ãƒ«ã®ã‚«ãƒ†ã‚´ãƒªã‚’è¨­å®š
 
-	// ƒXƒLƒ‹‚ÌÀsƒ‚ƒfƒ‹‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®å®Ÿè¡Œãƒ¢ãƒ‡ãƒ«ã‚’å®šç¾©
 	projectile.execution = SkillExecutionModelDef{
 		.timing = SkillPhaseTiming{
-			.castTime = 0.3f, // ƒLƒƒƒXƒgƒ^ƒCƒ€(”­¶‚Ü‚Å‚ÌŠÔ)
-			.recoveryTime = 0.3f, // ƒŠƒJƒoƒŠ[ƒ^ƒCƒ€(ƒXƒLƒ‹I—¹Œã‚Ì‘Ò‹@ŠÔ)
-			.duration = 1.0f // action‚Ì‘±ŠÔ
+			.castTime = 0.3f, // ã‚­ãƒ£ã‚¹ãƒˆã‚¿ã‚¤ãƒ (ç™ºç”Ÿã¾ã§ã®æ™‚é–“)
+			.recoveryTime = 0.3f, // ãƒªã‚«ãƒãƒªãƒ¼ã‚¿ã‚¤ãƒ (ã‚¹ã‚­ãƒ«çµ‚äº†å¾Œã®å¾…æ©Ÿæ™‚é–“)
+			.duration = 1.0f // actionã®æŒç¶šæ™‚é–“
 		},
-		.castSyncPolicy = SkillCastSyncPolicy::Asynchronous, // ƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì”ñ“¯Šú
-		.cancelMask = SkillCancelPhase::All, // ‘S‚Ä‚ÌƒtƒF[ƒY‚ÅƒLƒƒƒ“ƒZƒ‹‰Â”\
-		.cancelableSkillIds = {}, // ‚±‚ÌƒXƒLƒ‹’†‚ÉƒLƒƒƒ“ƒZƒ‹‚µ‚Ä”­“®‰Â”\‚ÈƒXƒLƒ‹ID
-		.movementLock = SkillMovementLockPolicy::Free, // ƒXƒLƒ‹‚ÌˆÚ“®ƒƒbƒNƒ^ƒCƒvF©—R
-		.lockFacingDirection = false, // ‰r¥’†‚ÌŒü‚«ŒÅ’è‚È‚µ
+		.castSyncPolicy = SkillCastSyncPolicy::Asynchronous, // ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®éåŒæœŸ
+		.cancelMask = SkillCancelPhase::All, // å…¨ã¦ã®ãƒ•ã‚§ãƒ¼ã‚ºã§ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½
+		.cancelableSkillIds = {}, // ã“ã®ã‚¹ã‚­ãƒ«ä¸­ã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã—ã¦ç™ºå‹•å¯èƒ½ãªã‚¹ã‚­ãƒ«ID
+		.movementLock = SkillMovementLockPolicy::Free, // ã‚¹ã‚­ãƒ«ã®ç§»å‹•ãƒ­ãƒƒã‚¯ã‚¿ã‚¤ãƒ—ï¼šè‡ªç”±
+		.lockFacingDirection = false, // è© å”±ä¸­ã®å‘ãå›ºå®šãªã—
 		.charge = SkillChargeSpecDef{
-			.isChargeSkill = false, // ƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚©‚Ç‚¤‚©
-			.chargeTime = 0.0f // ƒ`ƒƒ[ƒWŠÔiƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚Ìê‡j
+			.isChargeSkill = false, // ãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã‹ã©ã†ã‹
+			.chargeTime = 0.0f // ãƒãƒ£ãƒ¼ã‚¸æ™‚é–“ï¼ˆãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã®å ´åˆï¼‰
 		},
 	};
 
-	// ƒXƒLƒ‹‚ÌUŒ‚d—l‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®æ”»æ’ƒä»•æ§˜ã‚’å®šç¾©
 	projectile.attackSpec = SkillAttackSpecDef{
-		.triggerTiming = gNsSkillComp::SkillExecutionEvent::OnEnterActive, // ƒXƒLƒ‹‚ÌƒgƒŠƒK[ƒ^ƒCƒ~ƒ“ƒO
+		.triggerTiming = Game::Combat::Skill::Component::SkillExecutionEvent::OnEnterActive, // ã‚¹ã‚­ãƒ«ã®ãƒˆãƒªã‚¬ãƒ¼ã‚¿ã‚¤ãƒŸãƒ³ã‚°
 		.lifetime = SkillLifetimeSpecDef{
-			.hitBoxlifetimePolicy = AttackLifeTimeMode::IndependentEntityLifetime, // ƒtƒF[ƒY‚Æ“¯Šú
-			.duration = 3.0f, // ƒXƒLƒ‹‚Ì‘±ŠÔ
-			.despawnFlags = SkillDespawnCondition::DefaultProjectile // ŠÔŒo‰ß‚ÅÁ–Å
+			.hitBoxlifetimePolicy = AttackLifeTimeMode::IndependentEntityLifetime, // ãƒ•ã‚§ãƒ¼ã‚ºã¨åŒæœŸ
+			.duration = 3.0f, // ã‚¹ã‚­ãƒ«ã®æŒç¶šæ™‚é–“
+			.despawnFlags = SkillDespawnCondition::DefaultProjectile // æ™‚é–“çµŒéã§æ¶ˆæ»…
 		},
-		.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Circle2DAttack
+		.shape = Game::Combat::Skill::Component::Attack2DShape{ Game::Combat::Skill::Component::Circle2DAttack
 		{
-			.center = CanonicalDefaults::kLocalCenterXZ, // ’†SˆÊ’u
-			.radius = 5.0f // ”¼Œa
+			.center = CanonicalDefaults::kLocalCenterXZ, // ä¸­å¿ƒä½ç½®
+			.radius = 5.0f // åŠå¾„
 		} },
-		.trajectoryType = TrajectoryType::LinearForward, // ‹OÕƒ^ƒCƒvF’¼ü‘O•û
-		.trajectoryParams = gNsSkillData::SkillTrajectory::LinearTrajectoryParams
+		.trajectoryType = TrajectoryType::LinearForward, // è»Œè·¡ã‚¿ã‚¤ãƒ—ï¼šç›´ç·šå‰æ–¹
+		.trajectoryParams = Game::Combat::Skill::Data::SkillTrajectory::LinearTrajectoryParams
 		{
-			.speed = 20.0f // ‘¬“x
+			.speed = 20.0f // é€Ÿåº¦
 		},
 	};
 
-	// ƒXƒLƒ‹‚Ì–hŒäd—l‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®é˜²å¾¡ä»•æ§˜ã‚’å®šç¾©
 	projectile.defense = SkillDefenseDef{
-		.superArmorType = gNsSkillData::SkillSuperArmorType::None, // ƒX[ƒp[ƒA[ƒ}[‚Ìí—Ş
-		.guardType = gNsSkillData::SkillGuardType::None // ƒK[ƒh‚Ì—L–³
+		.superArmorType = Game::Combat::Skill::Data::SkillSuperArmorType::None, // ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼ã®ç¨®é¡
+		.guardType = Game::Combat::Skill::Data::SkillGuardType::None // ã‚¬ãƒ¼ãƒ‰ã®æœ‰ç„¡
 	};
 
-	// ƒXƒLƒ‹‚ÌƒRƒXƒg‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®ã‚³ã‚¹ãƒˆã‚’å®šç¾©
 	projectile.cost = SkillCostDef{
-		.manaCost = 0.0f, // ƒ}ƒiƒRƒXƒg
-		.staminaCost = 0.0f, // ƒXƒ^ƒ~ƒiƒRƒXƒg
-		.healthCost = 0.0f // ƒwƒ‹ƒXƒRƒXƒg
+		.manaCost = 0.0f, // ãƒãƒŠã‚³ã‚¹ãƒˆ
+		.staminaCost = 0.0f, // ã‚¹ã‚¿ãƒŸãƒŠã‚³ã‚¹ãƒˆ
+		.healthCost = 0.0f // ãƒ˜ãƒ«ã‚¹ã‚³ã‚¹ãƒˆ
 	};
 
-	// ƒXƒLƒ‹‚Ìƒ_ƒ[ƒWî•ñ‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®ãƒ€ãƒ¡ãƒ¼ã‚¸æƒ…å ±ã‚’å®šç¾©
 	projectile.damage = SkillDamageDef{
-		.onHitEffect = gNsSkillData::OnHitEffectType::None, // ƒqƒbƒg‚ÌŒø‰Ê
-		.damageType = SkillDamageType::Physical, // ƒ_ƒ[ƒWƒ^ƒCƒv
-		.baseDamage = 15.0f, // Šî–{ƒ_ƒ[ƒW
-		.isPercentBased = false, // ƒp[ƒZƒ“ƒgƒx[ƒX‚Ìƒ_ƒ[ƒW‚©‚Ç‚¤‚©
+		.onHitEffect = Game::Combat::Skill::Data::OnHitEffectType::None, // ãƒ’ãƒƒãƒˆæ™‚ã®åŠ¹æœ
+		.damageType = SkillDamageType::Physical, // ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¿ã‚¤ãƒ—
+		.baseDamage = 15.0f, // åŸºæœ¬ãƒ€ãƒ¡ãƒ¼ã‚¸
+		.isPercentBased = false, // ãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆãƒ™ãƒ¼ã‚¹ã®ãƒ€ãƒ¡ãƒ¼ã‚¸ã‹ã©ã†ã‹
 	};
 
-	// ƒoƒtEƒfƒoƒtF‚È‚µ
+	// ãƒãƒ•ãƒ»ãƒ‡ãƒãƒ•ï¼šãªã—
 
 	db.AddSkill(projectile);
 
@@ -172,145 +172,145 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 	SkillDefinition testMagic;
 	testMagic.id = 3;
 	testMagic.name = "Test Magic Skill";
-	testMagic.category = SkillCategory::AreaOfEffect; // ƒXƒLƒ‹‚ÌƒJƒeƒSƒŠ‚ğİ’è
+	testMagic.category = SkillCategory::AreaOfEffect; // ã‚¹ã‚­ãƒ«ã®ã‚«ãƒ†ã‚´ãƒªã‚’è¨­å®š
 
-	// ƒXƒLƒ‹‚ÌÀsƒ‚ƒfƒ‹‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®å®Ÿè¡Œãƒ¢ãƒ‡ãƒ«ã‚’å®šç¾©
 	testMagic.execution = SkillExecutionModelDef{
 		.timing = SkillPhaseTiming{
-			.castTime = 1.5f, // ƒLƒƒƒXƒgƒ^ƒCƒ€(”­¶‚Ü‚Å‚ÌŠÔ)
-			.recoveryTime = 0.5f, // ƒŠƒJƒoƒŠ[ƒ^ƒCƒ€(ƒXƒLƒ‹I—¹Œã‚Ì‘Ò‹@ŠÔ)
-			.duration = 3.0f // action‚Ì‘±ŠÔ
+			.castTime = 1.5f, // ã‚­ãƒ£ã‚¹ãƒˆã‚¿ã‚¤ãƒ (ç™ºç”Ÿã¾ã§ã®æ™‚é–“)
+			.recoveryTime = 0.5f, // ãƒªã‚«ãƒãƒªãƒ¼ã‚¿ã‚¤ãƒ (ã‚¹ã‚­ãƒ«çµ‚äº†å¾Œã®å¾…æ©Ÿæ™‚é–“)
+			.duration = 3.0f // actionã®æŒç¶šæ™‚é–“
 		},
-		.castSyncPolicy = SkillCastSyncPolicy::Synchronous, // ƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì“¯Šú
-		.cancelMask = SkillCancelPhase::All, // ‘S‚Ä‚ÌƒtƒF[ƒY‚ÅƒLƒƒƒ“ƒZƒ‹‰Â”\
-		.cancelableSkillIds = {}, // ‚±‚ÌƒXƒLƒ‹’†‚ÉƒLƒƒƒ“ƒZƒ‹‚µ‚Ä”­“®‰Â”\‚ÈƒXƒLƒ‹ID
-		.movementLock = SkillMovementLockPolicy::Free, // ƒXƒLƒ‹‚ÌˆÚ“®ƒƒbƒNƒ^ƒCƒvF©—R
-		.lockFacingDirection = false, // ‰r¥’†‚ÌŒü‚«ŒÅ’è‚È‚µ
+		.castSyncPolicy = SkillCastSyncPolicy::Synchronous, // ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®åŒæœŸ
+		.cancelMask = SkillCancelPhase::All, // å…¨ã¦ã®ãƒ•ã‚§ãƒ¼ã‚ºã§ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½
+		.cancelableSkillIds = {}, // ã“ã®ã‚¹ã‚­ãƒ«ä¸­ã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã—ã¦ç™ºå‹•å¯èƒ½ãªã‚¹ã‚­ãƒ«ID
+		.movementLock = SkillMovementLockPolicy::Free, // ã‚¹ã‚­ãƒ«ã®ç§»å‹•ãƒ­ãƒƒã‚¯ã‚¿ã‚¤ãƒ—ï¼šè‡ªç”±
+		.lockFacingDirection = false, // è© å”±ä¸­ã®å‘ãå›ºå®šãªã—
 		.charge = SkillChargeSpecDef{
-			.isChargeSkill = false, // ƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚©‚Ç‚¤‚©
-			.chargeTime = 0.0f // ƒ`ƒƒ[ƒWŠÔiƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚Ìê‡j
+			.isChargeSkill = false, // ãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã‹ã©ã†ã‹
+			.chargeTime = 0.0f // ãƒãƒ£ãƒ¼ã‚¸æ™‚é–“ï¼ˆãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã®å ´åˆï¼‰
 		},
 	};
 
-	// ƒXƒLƒ‹‚ÌUŒ‚d—l‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®æ”»æ’ƒä»•æ§˜ã‚’å®šç¾©
 	testMagic.attackSpec = SkillAttackSpecDef{
-		.triggerTiming = gNsSkillComp::SkillExecutionEvent::OnEnterActive, // ƒXƒLƒ‹‚ÌƒgƒŠƒK[ƒ^ƒCƒ~ƒ“ƒO
+		.triggerTiming = Game::Combat::Skill::Component::SkillExecutionEvent::OnEnterActive, // ã‚¹ã‚­ãƒ«ã®ãƒˆãƒªã‚¬ãƒ¼ã‚¿ã‚¤ãƒŸãƒ³ã‚°
 		.lifetime = SkillLifetimeSpecDef{
-			.hitBoxlifetimePolicy = AttackLifeTimeMode::IndependentEntityLifetime, // ƒtƒF[ƒY‚Æ“¯Šú
-			.duration = 5.0f, // ƒXƒLƒ‹‚Ì‘±ŠÔ
-			.despawnFlags = SkillDespawnCondition::TimeElapsed // ŠÔŒo‰ß‚ÅÁ–Å
+			.hitBoxlifetimePolicy = AttackLifeTimeMode::IndependentEntityLifetime, // ãƒ•ã‚§ãƒ¼ã‚ºã¨åŒæœŸ
+			.duration = 5.0f, // ã‚¹ã‚­ãƒ«ã®æŒç¶šæ™‚é–“
+			.despawnFlags = SkillDespawnCondition::TimeElapsed // æ™‚é–“çµŒéã§æ¶ˆæ»…
 		},
-		.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Circle2DAttack
+		.shape = Game::Combat::Skill::Component::Attack2DShape{ Game::Combat::Skill::Component::Circle2DAttack
 		{
-			.center = CanonicalDefaults::kLocalCenterXZ, // ’†SˆÊ’u
-			.radius = 15.0f // ”¼Œa
+			.center = CanonicalDefaults::kLocalCenterXZ, // ä¸­å¿ƒä½ç½®
+			.radius = 15.0f // åŠå¾„
 		} },
-		.trajectoryType = TrajectoryType::None, // ‹OÕƒ^ƒCƒv‚Í‚È‚µ
-		.trajectoryParams = gNsSkillData::SkillTrajectory::StaticTrajectory{}, // Ã“I‹OÕƒpƒ‰ƒ[ƒ^
+		.trajectoryType = TrajectoryType::None, // è»Œè·¡ã‚¿ã‚¤ãƒ—ã¯ãªã—
+		.trajectoryParams = Game::Combat::Skill::Data::SkillTrajectory::StaticTrajectory{}, // é™çš„è»Œè·¡ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 	};
 
-	// ƒXƒLƒ‹‚Ì–hŒäd—l‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®é˜²å¾¡ä»•æ§˜ã‚’å®šç¾©
 	testMagic.defense = SkillDefenseDef{
-		.superArmorType = gNsSkillData::SkillSuperArmorType::None, // ƒX[ƒp[ƒA[ƒ}[‚Ìí—Ş
-		.guardType = gNsSkillData::SkillGuardType::None // ƒK[ƒh‚Ì—L–³
+		.superArmorType = Game::Combat::Skill::Data::SkillSuperArmorType::None, // ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼ã®ç¨®é¡
+		.guardType = Game::Combat::Skill::Data::SkillGuardType::None // ã‚¬ãƒ¼ãƒ‰ã®æœ‰ç„¡
 	};
 
-	// ƒXƒLƒ‹‚ÌƒRƒXƒg‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®ã‚³ã‚¹ãƒˆã‚’å®šç¾©
 	testMagic.cost = SkillCostDef{
-		.manaCost = 10.0f, // ƒ}ƒiƒRƒXƒg
-		.staminaCost = 0.0f, // ƒXƒ^ƒ~ƒiƒRƒXƒg
-		.healthCost = 0.0f // ƒwƒ‹ƒXƒRƒXƒg
+		.manaCost = 10.0f, // ãƒãƒŠã‚³ã‚¹ãƒˆ
+		.staminaCost = 0.0f, // ã‚¹ã‚¿ãƒŸãƒŠã‚³ã‚¹ãƒˆ
+		.healthCost = 0.0f // ãƒ˜ãƒ«ã‚¹ã‚³ã‚¹ãƒˆ
 	};
 
-	// ƒXƒLƒ‹‚Ìƒ_ƒ[ƒWî•ñ‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®ãƒ€ãƒ¡ãƒ¼ã‚¸æƒ…å ±ã‚’å®šç¾©
 	testMagic.damage = SkillDamageDef{
-		.onHitEffect = gNsSkillData::OnHitEffectType::Stun, // ƒqƒbƒg‚ÌŒø‰Ê
-		.damageType = SkillDamageType::Magical, // ƒ_ƒ[ƒWƒ^ƒCƒv
-		.baseDamage = 25.0f, // Šî–{ƒ_ƒ[ƒW
-		.isPercentBased = false // ƒp[ƒZƒ“ƒgƒx[ƒX‚Ìƒ_ƒ[ƒW‚©‚Ç‚¤‚©
+		.onHitEffect = Game::Combat::Skill::Data::OnHitEffectType::Stun, // ãƒ’ãƒƒãƒˆæ™‚ã®åŠ¹æœ
+		.damageType = SkillDamageType::Magical, // ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¿ã‚¤ãƒ—
+		.baseDamage = 25.0f, // åŸºæœ¬ãƒ€ãƒ¡ãƒ¼ã‚¸
+		.isPercentBased = false // ãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆãƒ™ãƒ¼ã‚¹ã®ãƒ€ãƒ¡ãƒ¼ã‚¸ã‹ã©ã†ã‹
 	};
 
-	testMagic.cooldown = 5.0f; // ƒXƒLƒ‹‚ÌÄg—p‘Ò‹@ŠÔ
+	testMagic.cooldown = 5.0f; // ã‚¹ã‚­ãƒ«ã®å†ä½¿ç”¨å¾…æ©Ÿæ™‚é–“
 	db.AddSkill(testMagic);
 
 	SkillDefinition testBuffSkill;
 	testBuffSkill.id = 4;
 	testBuffSkill.name = "Test Buff Skill";
 
-	testBuffSkill.category = SkillCategory::Buff; // ƒXƒLƒ‹‚ÌƒJƒeƒSƒŠ‚ğİ’è
+	testBuffSkill.category = SkillCategory::Buff; // ã‚¹ã‚­ãƒ«ã®ã‚«ãƒ†ã‚´ãƒªã‚’è¨­å®š
 
-	// ƒXƒLƒ‹‚ÌÀsƒ‚ƒfƒ‹‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®å®Ÿè¡Œãƒ¢ãƒ‡ãƒ«ã‚’å®šç¾©
 	testBuffSkill.execution = SkillExecutionModelDef{
 		.timing = SkillPhaseTiming{
-			.castTime = 0.5f, // ƒLƒƒƒXƒgƒ^ƒCƒ€(”­¶‚Ü‚Å‚ÌŠÔ)
-			.recoveryTime = 0.5f, // ƒŠƒJƒoƒŠ[ƒ^ƒCƒ€(ƒXƒLƒ‹I—¹Œã‚Ì‘Ò‹@ŠÔ)
-			.duration = 2.0f // action‚Ì‘±ŠÔ
+			.castTime = 0.5f, // ã‚­ãƒ£ã‚¹ãƒˆã‚¿ã‚¤ãƒ (ç™ºç”Ÿã¾ã§ã®æ™‚é–“)
+			.recoveryTime = 0.5f, // ãƒªã‚«ãƒãƒªãƒ¼ã‚¿ã‚¤ãƒ (ã‚¹ã‚­ãƒ«çµ‚äº†å¾Œã®å¾…æ©Ÿæ™‚é–“)
+			.duration = 2.0f // actionã®æŒç¶šæ™‚é–“
 		},
-		.castSyncPolicy = SkillCastSyncPolicy::Asynchronous, // ƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì“¯Šú
-		.cancelMask = SkillCancelPhase::All, // ‘S‚Ä‚ÌƒtƒF[ƒY‚ÅƒLƒƒƒ“ƒZƒ‹‰Â”\
-		.cancelableSkillIds = {}, // ‚±‚ÌƒXƒLƒ‹’†‚ÉƒLƒƒƒ“ƒZƒ‹‚µ‚Ä”­“®‰Â”\‚ÈƒXƒLƒ‹ID
-		.movementLock = SkillMovementLockPolicy::Free, // ƒXƒLƒ‹‚ÌˆÚ“®ƒƒbƒNƒ^ƒCƒvF©—R
-		.lockFacingDirection = false, // ‰r¥’†‚ÌŒü‚«ŒÅ’è‚È‚µ
+		.castSyncPolicy = SkillCastSyncPolicy::Asynchronous, // ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®åŒæœŸ
+		.cancelMask = SkillCancelPhase::All, // å…¨ã¦ã®ãƒ•ã‚§ãƒ¼ã‚ºã§ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½
+		.cancelableSkillIds = {}, // ã“ã®ã‚¹ã‚­ãƒ«ä¸­ã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã—ã¦ç™ºå‹•å¯èƒ½ãªã‚¹ã‚­ãƒ«ID
+		.movementLock = SkillMovementLockPolicy::Free, // ã‚¹ã‚­ãƒ«ã®ç§»å‹•ãƒ­ãƒƒã‚¯ã‚¿ã‚¤ãƒ—ï¼šè‡ªç”±
+		.lockFacingDirection = false, // è© å”±ä¸­ã®å‘ãå›ºå®šãªã—
 		.charge = SkillChargeSpecDef{
-			.isChargeSkill = false, // ƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚©‚Ç‚¤‚©
-			.chargeTime = 0.0f // ƒ`ƒƒ[ƒWŠÔiƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚Ìê‡j
+			.isChargeSkill = false, // ãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã‹ã©ã†ã‹
+			.chargeTime = 0.0f // ãƒãƒ£ãƒ¼ã‚¸æ™‚é–“ï¼ˆãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã®å ´åˆï¼‰
 		},
 	};
 
-	// ƒXƒLƒ‹‚ÌUŒ‚d—l‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®æ”»æ’ƒä»•æ§˜ã‚’å®šç¾©
 	testBuffSkill.attackSpec = SkillAttackSpecDef{
-		.triggerTiming = gNsSkillComp::SkillExecutionEvent::OnEnterActive, // ƒXƒLƒ‹‚ÌƒgƒŠƒK[ƒ^ƒCƒ~ƒ“ƒO
+		.triggerTiming = Game::Combat::Skill::Component::SkillExecutionEvent::OnEnterActive, // ã‚¹ã‚­ãƒ«ã®ãƒˆãƒªã‚¬ãƒ¼ã‚¿ã‚¤ãƒŸãƒ³ã‚°
 		.lifetime = SkillLifetimeSpecDef{
-			.hitBoxlifetimePolicy = AttackLifeTimeMode::IndependentEntityLifetime, // ƒtƒF[ƒY‚Æ“¯Šú
-			.duration = 10.0f, // ƒXƒLƒ‹‚Ì‘±ŠÔ
-			.despawnFlags = SkillDespawnCondition::TimeElapsed // ŠÔŒo‰ß‚ÅÁ–Å
+			.hitBoxlifetimePolicy = AttackLifeTimeMode::IndependentEntityLifetime, // ãƒ•ã‚§ãƒ¼ã‚ºã¨åŒæœŸ
+			.duration = 10.0f, // ã‚¹ã‚­ãƒ«ã®æŒç¶šæ™‚é–“
+			.despawnFlags = SkillDespawnCondition::TimeElapsed // æ™‚é–“çµŒéã§æ¶ˆæ»…
 		},
-		.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Circle2DAttack
+		.shape = Game::Combat::Skill::Component::Attack2DShape{ Game::Combat::Skill::Component::Circle2DAttack
 		{
-			.center = CanonicalDefaults::kLocalCenterXZ, // ’†SˆÊ’u
-			.radius = 10.0f // ”¼Œa
+			.center = CanonicalDefaults::kLocalCenterXZ, // ä¸­å¿ƒä½ç½®
+			.radius = 10.0f // åŠå¾„
 		} },
-		.trajectoryType = TrajectoryType::None, // ‹OÕƒ^ƒCƒv‚Í‚È‚µ
-		.trajectoryParams = gNsSkillData::SkillTrajectory::StaticTrajectory{}, // Ã“I‹OÕƒpƒ‰ƒ[ƒ^
+		.trajectoryType = TrajectoryType::None, // è»Œè·¡ã‚¿ã‚¤ãƒ—ã¯ãªã—
+		.trajectoryParams = Game::Combat::Skill::Data::SkillTrajectory::StaticTrajectory{}, // é™çš„è»Œè·¡ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 	};
 
-	// ƒXƒLƒ‹‚Ì–hŒäd—l‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®é˜²å¾¡ä»•æ§˜ã‚’å®šç¾©
 	testBuffSkill.defense = SkillDefenseDef{
-		.superArmorType = gNsSkillData::SkillSuperArmorType::None, // ƒX[ƒp[ƒA[ƒ}[‚Ìí—Ş
-		.guardType = gNsSkillData::SkillGuardType::None // ƒK[ƒh‚Ì—L–³
+		.superArmorType = Game::Combat::Skill::Data::SkillSuperArmorType::None, // ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼ã®ç¨®é¡
+		.guardType = Game::Combat::Skill::Data::SkillGuardType::None // ã‚¬ãƒ¼ãƒ‰ã®æœ‰ç„¡
 	};
 
-	// ƒXƒLƒ‹‚ÌƒRƒXƒg‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®ã‚³ã‚¹ãƒˆã‚’å®šç¾©
 	testBuffSkill.cost = SkillCostDef{
-		.manaCost = 5.0f, // ƒ}ƒiƒRƒXƒg
-		.staminaCost = 0.0f, // ƒXƒ^ƒ~ƒiƒRƒXƒg
-		.healthCost = 0.0f // ƒwƒ‹ƒXƒRƒXƒg
+		.manaCost = 5.0f, // ãƒãƒŠã‚³ã‚¹ãƒˆ
+		.staminaCost = 0.0f, // ã‚¹ã‚¿ãƒŸãƒŠã‚³ã‚¹ãƒˆ
+		.healthCost = 0.0f // ãƒ˜ãƒ«ã‚¹ã‚³ã‚¹ãƒˆ
 	};
 
-	// ƒXƒLƒ‹‚Ìƒ_ƒ[ƒWî•ñ‚ğ’è‹`
+	// ã‚¹ã‚­ãƒ«ã®ãƒ€ãƒ¡ãƒ¼ã‚¸æƒ…å ±ã‚’å®šç¾©
 	testBuffSkill.damage = SkillDamageDef{
-		.onHitEffect = gNsSkillData::OnHitEffectType::None, // ƒqƒbƒg‚ÌŒø‰Ê
-		.damageType = SkillDamageType::None, // ƒ_ƒ[ƒWƒ^ƒCƒv
-		.baseDamage = 0.0f, // Šî–{ƒ_ƒ[ƒW
-		.isPercentBased = false // ƒp[ƒZƒ“ƒgƒx[ƒX‚Ìƒ_ƒ[ƒW‚©‚Ç‚¤‚©
+		.onHitEffect = Game::Combat::Skill::Data::OnHitEffectType::None, // ãƒ’ãƒƒãƒˆæ™‚ã®åŠ¹æœ
+		.damageType = SkillDamageType::None, // ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¿ã‚¤ãƒ—
+		.baseDamage = 0.0f, // åŸºæœ¬ãƒ€ãƒ¡ãƒ¼ã‚¸
+		.isPercentBased = false // ãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆãƒ™ãƒ¼ã‚¹ã®ãƒ€ãƒ¡ãƒ¼ã‚¸ã‹ã©ã†ã‹
 	};
 
-	// ƒoƒtŒø‰Ê’è‹` (•Ê‚ÌêŠ‚ÖˆÚ“®‚µ‚½‚Ù‚¤‚ª‚¢‚¢‚©‚à)
+	// ãƒãƒ•åŠ¹æœå®šç¾© (åˆ¥ã®å ´æ‰€ã¸ç§»å‹•ã—ãŸã»ã†ãŒã„ã„ã‹ã‚‚)
 	BuffModifierDef buffModifier;
-	buffModifier.buffType = SkillStatusBuffType::MovementSpeedUp; // ƒoƒt‚Ìí—Ş
-	buffModifier.percentBonus = 0.2f; // ƒoƒt‚ÌŒø‰Ê—Êi20%‚ÌˆÚ“®‘¬“xƒAƒbƒvj
-	buffModifier.duration = 10.0f; // ƒoƒt‚Ì‘±ŠÔi10•bj
-	buffModifier.targetStat = StatusEffectTargetStat::MovementSpeed; // ‘ÎÛ‚ÌƒXƒe[ƒ^ƒX
+	buffModifier.buffType = SkillStatusBuffType::MovementSpeedUp; // ãƒãƒ•ã®ç¨®é¡
+	buffModifier.percentBonus = 0.2f; // ãƒãƒ•ã®åŠ¹æœé‡ï¼ˆ20%ã®ç§»å‹•é€Ÿåº¦ã‚¢ãƒƒãƒ—ï¼‰
+	buffModifier.duration = 10.0f; // ãƒãƒ•ã®æŒç¶šæ™‚é–“ï¼ˆ10ç§’ï¼‰
+	buffModifier.targetStat = StatusEffectTargetStat::MovementSpeed; // å¯¾è±¡ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 
-	// ƒoƒtEƒfƒoƒt‚Ìî•ñ‚ğ’è‹`
+	// ãƒãƒ•ãƒ»ãƒ‡ãƒãƒ•ã®æƒ…å ±ã‚’å®šç¾©
 	testBuffSkill.buffEffect = BuffEffectDef{
-		.buffName = "Movement Speed Buff", // ƒoƒt‚Ì–¼‘O
-		.modifiers = { buffModifier }, // ƒoƒt‚ÌCüq
-		.applyTo = EffectApplicationTarget::AreaOfEffect // ƒoƒt‚Ì“K—p‘ÎÛiƒLƒƒƒXƒ^[©gj
+		.buffName = "Movement Speed Buff", // ãƒãƒ•ã®åå‰
+		.modifiers = { buffModifier }, // ãƒãƒ•ã®ä¿®é£¾å­
+		.applyTo = EffectApplicationTarget::AreaOfEffect // ãƒãƒ•ã®é©ç”¨å¯¾è±¡ï¼ˆã‚­ãƒ£ã‚¹ã‚¿ãƒ¼è‡ªèº«ï¼‰
 	};
 
-	testBuffSkill.cooldown = 15.0f; // ƒXƒLƒ‹‚ÌÄg—p‘Ò‹@ŠÔ
-	// ƒfƒoƒtŒø‰Ê‚Í‚È‚µ
+	testBuffSkill.cooldown = 15.0f; // ã‚¹ã‚­ãƒ«ã®å†ä½¿ç”¨å¾…æ©Ÿæ™‚é–“
+	// ãƒ‡ãƒãƒ•åŠ¹æœã¯ãªã—
 	db.AddSkill(testBuffSkill);
 
 
@@ -318,325 +318,325 @@ void Game::Combat::Skill::System::InitializeSkills(eNsECS::EntityMgr& ecs)
 		//slash.id = 1;
 	//slash.name = "Basic Slash";
 
-	//// ƒXƒLƒ‹‚ÌƒRƒXƒg‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ã‚³ã‚¹ãƒˆã‚’å®šç¾©
 	//slash.cost = SkillCost{
-	//	.manaCost = 0.0f, // ƒ}ƒiƒRƒXƒg
-	//	.staminaCost = 0.0f, // ƒXƒ^ƒ~ƒiƒRƒXƒg
-	//	.healthCost = 0.0f // ƒwƒ‹ƒXƒRƒXƒg
+	//	.manaCost = 0.0f, // ãƒãƒŠã‚³ã‚¹ãƒˆ
+	//	.staminaCost = 0.0f, // ã‚¹ã‚¿ãƒŸãƒŠã‚³ã‚¹ãƒˆ
+	//	.healthCost = 0.0f // ãƒ˜ãƒ«ã‚¹ã‚³ã‚¹ãƒˆ
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒtƒF[ƒYƒ^ƒCƒ~ƒ“ƒO‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ãƒ•ã‚§ãƒ¼ã‚ºã‚¿ã‚¤ãƒŸãƒ³ã‚°ã‚’å®šç¾©
 	//slash.phaseTiming = SkillPhaseTiming{
-	//	.castTime = 0.3f, // ƒLƒƒƒXƒgƒ^ƒCƒ€(”­¶‚Ü‚Å‚ÌŠÔ)
-	//	.recoveryTime = 0.4f, // ƒŠƒJƒoƒŠ[ƒ^ƒCƒ€(ƒXƒLƒ‹I—¹Œã‚Ì‘Ò‹@ŠÔ)
-	//	.duration = 1.0f, // action‚Ì‘±ŠÔ
+	//	.castTime = 0.3f, // ã‚­ãƒ£ã‚¹ãƒˆã‚¿ã‚¤ãƒ (ç™ºç”Ÿã¾ã§ã®æ™‚é–“)
+	//	.recoveryTime = 0.4f, // ãƒªã‚«ãƒãƒªãƒ¼ã‚¿ã‚¤ãƒ (ã‚¹ã‚­ãƒ«çµ‚äº†å¾Œã®å¾…æ©Ÿæ™‚é–“)
+	//	.duration = 1.0f, // actionã®æŒç¶šæ™‚é–“
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒA[ƒ}[î•ñ‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ã‚¢ãƒ¼ãƒãƒ¼æƒ…å ±ã‚’å®šç¾©
 	//slash.armorInfo = SkillArmorInfo{
-	//	.superArmorType = gNsSkillData::SkillSuperArmorType::None, // ƒX[ƒp[ƒA[ƒ}[‚Ìí—Ş
-	//	.guardType = gNsSkillData::SkillGuardType::None // ƒK[ƒh‚Ì—L–³
+	//	.superArmorType = Game::Combat::Skill::Data::SkillSuperArmorType::None, // ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼ã®ç¨®é¡
+	//	.guardType = Game::Combat::Skill::Data::SkillGuardType::None // ã‚¬ãƒ¼ãƒ‰ã®æœ‰ç„¡
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒqƒbƒgŒø‰Ê‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ãƒ’ãƒƒãƒˆåŠ¹æœã‚’å®šç¾©
 	//slash.hitEffect = SkillHitEffect{
-	//	.onHitEffect = gNsSkillData::OnHitEffectType::None, // ƒqƒbƒg‚ÌŒø‰Ê
-	//	.statusEffectType = gNsSkillData::SkillStatusEffectType::None // •t—^‚·‚éó‘ÔˆÙí‚Ìí—Ş
+	//	.onHitEffect = Game::Combat::Skill::Data::OnHitEffectType::None, // ãƒ’ãƒƒãƒˆæ™‚ã®åŠ¹æœ
+	//	.statusEffectType = Game::Combat::Skill::Data::SkillStatusEffectType::None // ä»˜ä¸ã™ã‚‹çŠ¶æ…‹ç•°å¸¸ã®ç¨®é¡
 	//};
 
-	//// ƒXƒLƒ‹‚Ìƒ`ƒƒ[ƒWî•ñ‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ãƒãƒ£ãƒ¼ã‚¸æƒ…å ±ã‚’å®šç¾©
 	//slash.chargeInfo = SkillChargeInfo{
-	//	.isChargeSkill = false, // ƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚©‚Ç‚¤‚©
-	//	.chargeTime = 0.0f // ƒ`ƒƒ[ƒWŠÔiƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚Ìê‡j
+	//	.isChargeSkill = false, // ãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã‹ã©ã†ã‹
+	//	.chargeTime = 0.0f // ãƒãƒ£ãƒ¼ã‚¸æ™‚é–“ï¼ˆãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã®å ´åˆï¼‰
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒLƒƒƒ“ƒZƒ‹‰Â”\‚ÈƒtƒF[ƒY‚ğ’è‹`
-	//slash.cancelBehavior = SkillCancelPhase::All; // ‘S‚Ä‚ÌƒtƒF[ƒY‚ÅƒLƒƒƒ“ƒZƒ‹‰Â”\
-	//slash.cancelableSkillIds = { 2, 3 }; // ‚±‚ÌƒXƒLƒ‹’†‚ÉƒLƒƒƒ“ƒZƒ‹‚µ‚Ä”­“®‰Â”\‚ÈƒXƒLƒ‹ID
+	//// ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½ãªãƒ•ã‚§ãƒ¼ã‚ºã‚’å®šç¾©
+	//slash.cancelBehavior = SkillCancelPhase::All; // å…¨ã¦ã®ãƒ•ã‚§ãƒ¼ã‚ºã§ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½
+	//slash.cancelableSkillIds = { 2, 3 }; // ã“ã®ã‚¹ã‚­ãƒ«ä¸­ã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã—ã¦ç™ºå‹•å¯èƒ½ãªã‚¹ã‚­ãƒ«ID
 
-	//// ”»’è‚Æ‹OÕ‚Ì’è‹`
-	//slash.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Sector2DAttack
+	//// åˆ¤å®šã¨è»Œè·¡ã®å®šç¾©
+	//slash.shape = Game::Combat::Skill::Component::Attack2DShape{ Game::Combat::Skill::Component::Sector2DAttack
 	//{
-	//	.center = CanonicalDefaults::kLocalCenterXZ, // ’†SˆÊ’u
+	//	.center = CanonicalDefaults::kLocalCenterXZ, // ä¸­å¿ƒä½ç½®
 	//	. direction = CanonicalDefaults::kLocalForwardXZ, 
-	//	. angle = 0.5236f, // –ñ57“x
+	//	. angle = 0.5236f, // ç´„57åº¦
 	//	. radius = 10.0f
 	//} };
-	//slash.trajectoryType = TrajectoryType::None;// ‹OÕƒ^ƒCƒv‚Í‚È‚µ
-	//slash.trajectoryParams = gNsSkillData::SkillTrajectory::StaticTrajectory{}; // Ã“I‹OÕƒpƒ‰ƒ[ƒ^
+	//slash.trajectoryType = TrajectoryType::None;// è»Œè·¡ã‚¿ã‚¤ãƒ—ã¯ãªã—
+	//slash.trajectoryParams = Game::Combat::Skill::Data::SkillTrajectory::StaticTrajectory{}; // é™çš„è»Œè·¡ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 
-	//// ƒXƒLƒ‹‚ÌƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì“¯Šú^”ñ“¯Šú‚ğ’è‹`
-	//slash.castSyncType = SkillCastSyncType::Synchronous; // ƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì“¯Šú
-	//slash.movementLockType = SkillMovementLockType::Locked; // ƒXƒLƒ‹‚ÌˆÚ“®ƒƒbƒNƒ^ƒCƒvFƒƒbƒN
+	//// ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®åŒæœŸï¼éåŒæœŸã‚’å®šç¾©
+	//slash.castSyncType = SkillCastSyncType::Synchronous; // ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®åŒæœŸ
+	//slash.movementLockType = SkillMovementLockType::Locked; // ã‚¹ã‚­ãƒ«ã®ç§»å‹•ãƒ­ãƒƒã‚¯ã‚¿ã‚¤ãƒ—ï¼šãƒ­ãƒƒã‚¯
 	//
-	//// ƒXƒLƒ‹‚Ì‚ ‚½‚è”»’è‚Ìî•ñ‚ğİ’è
-	//slash.attackTiming = gNsSkillData::SkillAttackTiming
+	//// ã‚¹ã‚­ãƒ«ã®ã‚ãŸã‚Šåˆ¤å®šã®æƒ…å ±ã‚’è¨­å®š
+	//slash.attackTiming = Game::Combat::Skill::Data::SkillAttackTiming
 	//{
-	//	.attackLifeTimeMode = gNsSkillData::AttackLifeTimeMode::SyncWithSkillPhase, // UŒ‚”»’èƒ‰ƒCƒtƒ^ƒCƒ€‚ÌŠÇ—•û–@
-	//	.triggerTiming = gNsSkillData::SkillTriggerTiming::OnCastingEnd, // ƒXƒLƒ‹‚ÌƒgƒŠƒK[ƒ^ƒCƒ~ƒ“ƒO
-	//	.attackDuration = 1.0f, // UŒ‚”»’è‚Ì¶‘¶ŠÔi•bj (Projectileõ–½CDot‚ÌŒp‘±ŠÔ‚È‚Ç)
+	//	.attackLifeTimeMode = Game::Combat::Skill::Data::AttackLifeTimeMode::SyncWithSkillPhase, // æ”»æ’ƒåˆ¤å®šãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ã®ç®¡ç†æ–¹æ³•
+	//	.triggerTiming = Game::Combat::Skill::Data::SkillTriggerTiming::OnCastingEnd, // ã‚¹ã‚­ãƒ«ã®ãƒˆãƒªã‚¬ãƒ¼ã‚¿ã‚¤ãƒŸãƒ³ã‚°
+	//	.attackDuration = 1.0f, // æ”»æ’ƒåˆ¤å®šã®ç”Ÿå­˜æ™‚é–“ï¼ˆç§’ï¼‰ (Projectileå¯¿å‘½ï¼ŒDotã®ç¶™ç¶šæ™‚é–“ãªã©)
 	//};
 	//db.AddSkill(slash);
 
 
 
-	//// “ŠË•¨‚ÌŠî‘bƒXƒLƒ‹’è‹`
+	//// æŠ•å°„ç‰©ã®åŸºç¤ã‚¹ã‚­ãƒ«å®šç¾©
 	//SkillDefinition projectile;
 	//projectile.id = 2;
 	//projectile.name = "Projectile Skill";
 
-	//// ƒXƒLƒ‹‚ÌƒRƒXƒg‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ã‚³ã‚¹ãƒˆã‚’å®šç¾©
 	//projectile.cost = SkillCost{
-	//	.manaCost = 0.0f, // ƒ}ƒiƒRƒXƒg
-	//	.staminaCost = 0.0f, // ƒXƒ^ƒ~ƒiƒRƒXƒg
-	//	.healthCost = 0.0f // ƒwƒ‹ƒXƒRƒXƒg
+	//	.manaCost = 0.0f, // ãƒãƒŠã‚³ã‚¹ãƒˆ
+	//	.staminaCost = 0.0f, // ã‚¹ã‚¿ãƒŸãƒŠã‚³ã‚¹ãƒˆ
+	//	.healthCost = 0.0f // ãƒ˜ãƒ«ã‚¹ã‚³ã‚¹ãƒˆ
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒtƒF[ƒYƒ^ƒCƒ~ƒ“ƒO‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ãƒ•ã‚§ãƒ¼ã‚ºã‚¿ã‚¤ãƒŸãƒ³ã‚°ã‚’å®šç¾©
 	//projectile.phaseTiming = SkillPhaseTiming{
-	//	.castTime = 0.3f, // ƒLƒƒƒXƒgƒ^ƒCƒ€(”­¶‚Ü‚Å‚ÌŠÔ)
-	//	.recoveryTime = 0.3f, // ƒŠƒJƒoƒŠ[ƒ^ƒCƒ€(ƒXƒLƒ‹I—¹Œã‚Ì‘Ò‹@ŠÔ)
-	//	.duration = 2.0f, // action‚Ì‘±ŠÔ
+	//	.castTime = 0.3f, // ã‚­ãƒ£ã‚¹ãƒˆã‚¿ã‚¤ãƒ (ç™ºç”Ÿã¾ã§ã®æ™‚é–“)
+	//	.recoveryTime = 0.3f, // ãƒªã‚«ãƒãƒªãƒ¼ã‚¿ã‚¤ãƒ (ã‚¹ã‚­ãƒ«çµ‚äº†å¾Œã®å¾…æ©Ÿæ™‚é–“)
+	//	.duration = 2.0f, // actionã®æŒç¶šæ™‚é–“
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒA[ƒ}[î•ñ‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ã‚¢ãƒ¼ãƒãƒ¼æƒ…å ±ã‚’å®šç¾©
 	//projectile.armorInfo = SkillArmorInfo{
-	//	.superArmorType = gNsSkillData::SkillSuperArmorType::None, // ƒX[ƒp[ƒA[ƒ}[‚Ìí—Ş
-	//	.guardType = gNsSkillData::SkillGuardType::None // ƒK[ƒh‚Ì—L–³
+	//	.superArmorType = Game::Combat::Skill::Data::SkillSuperArmorType::None, // ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼ã®ç¨®é¡
+	//	.guardType = Game::Combat::Skill::Data::SkillGuardType::None // ã‚¬ãƒ¼ãƒ‰ã®æœ‰ç„¡
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒqƒbƒgŒø‰Ê‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ãƒ’ãƒƒãƒˆåŠ¹æœã‚’å®šç¾©
 	//projectile.hitEffect = SkillHitEffect{
-	//	.onHitEffect = gNsSkillData::OnHitEffectType::None, // ƒqƒbƒg‚ÌŒø‰Ê
-	//	.statusEffectType = gNsSkillData::SkillStatusEffectType::None // •t—^‚·‚éó‘ÔˆÙí‚Ìí—Ş
+	//	.onHitEffect = Game::Combat::Skill::Data::OnHitEffectType::None, // ãƒ’ãƒƒãƒˆæ™‚ã®åŠ¹æœ
+	//	.statusEffectType = Game::Combat::Skill::Data::SkillStatusEffectType::None // ä»˜ä¸ã™ã‚‹çŠ¶æ…‹ç•°å¸¸ã®ç¨®é¡
 	//};
 
-	//// ƒXƒLƒ‹‚Ìƒ`ƒƒ[ƒWî•ñ‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ãƒãƒ£ãƒ¼ã‚¸æƒ…å ±ã‚’å®šç¾©
 	//projectile.chargeInfo = SkillChargeInfo{
-	//	.isChargeSkill = false, // ƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚©‚Ç‚¤‚©
-	//	.chargeTime = 0.0f // ƒ`ƒƒ[ƒWŠÔiƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚Ìê‡j
+	//	.isChargeSkill = false, // ãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã‹ã©ã†ã‹
+	//	.chargeTime = 0.0f // ãƒãƒ£ãƒ¼ã‚¸æ™‚é–“ï¼ˆãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã®å ´åˆï¼‰
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒLƒƒƒ“ƒZƒ‹‰Â”\‚ÈƒtƒF[ƒY‚ğ’è‹`
-	//projectile.cancelBehavior = SkillCancelPhase::All; // ‘S‚Ä‚ÌƒtƒF[ƒY‚ÅƒLƒƒƒ“ƒZƒ‹‰Â”\
-	//projectile.cancelableSkillIds = {}; // ‚±‚ÌƒXƒLƒ‹’†‚ÉƒLƒƒƒ“ƒZƒ‹‚µ‚Ä”­“®‰Â”\‚ÈƒXƒLƒ‹ID
+	//// ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½ãªãƒ•ã‚§ãƒ¼ã‚ºã‚’å®šç¾©
+	//projectile.cancelBehavior = SkillCancelPhase::All; // å…¨ã¦ã®ãƒ•ã‚§ãƒ¼ã‚ºã§ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½
+	//projectile.cancelableSkillIds = {}; // ã“ã®ã‚¹ã‚­ãƒ«ä¸­ã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã—ã¦ç™ºå‹•å¯èƒ½ãªã‚¹ã‚­ãƒ«ID
 
-	//// ”»’è‚Æ‹OÕ‚Ì’è‹`
-	//projectile.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Circle2DAttack
+	//// åˆ¤å®šã¨è»Œè·¡ã®å®šç¾©
+	//projectile.shape = Game::Combat::Skill::Component::Attack2DShape{ Game::Combat::Skill::Component::Circle2DAttack
 	//{
-	//	.center = CanonicalDefaults::kLocalCenterXZ, // ’†SˆÊ’u
-	//	.radius = 5.0f // ”¼Œa
+	//	.center = CanonicalDefaults::kLocalCenterXZ, // ä¸­å¿ƒä½ç½®
+	//	.radius = 5.0f // åŠå¾„
 	//} };
-	//projectile.trajectoryType = TrajectoryType::LinearForward; // ‹OÕƒ^ƒCƒvF’¼ü‘O•û
-	//projectile.trajectoryParams = gNsSkillData::SkillTrajectory::LinearTrajectoryParams
+	//projectile.trajectoryType = TrajectoryType::LinearForward; // è»Œè·¡ã‚¿ã‚¤ãƒ—ï¼šç›´ç·šå‰æ–¹
+	//projectile.trajectoryParams = Game::Combat::Skill::Data::SkillTrajectory::LinearTrajectoryParams
 	//{
-	//	.speed = 20.0f // ‘¬“x
+	//	.speed = 20.0f // é€Ÿåº¦
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì“¯Šú^”ñ“¯Šú‚ğ’è‹`
-	//projectile.castSyncType = SkillCastSyncType::Asynchronous; // ƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì”ñ“¯Šú
-	//projectile.movementLockType = SkillMovementLockType::Free; // ƒXƒLƒ‹‚ÌˆÚ“®ƒƒbƒNƒ^ƒCƒvF©—R
+	//// ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®åŒæœŸï¼éåŒæœŸã‚’å®šç¾©
+	//projectile.castSyncType = SkillCastSyncType::Asynchronous; // ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®éåŒæœŸ
+	//projectile.movementLockType = SkillMovementLockType::Free; // ã‚¹ã‚­ãƒ«ã®ç§»å‹•ãƒ­ãƒƒã‚¯ã‚¿ã‚¤ãƒ—ï¼šè‡ªç”±
 
-	//// ƒXƒLƒ‹‚Ì‚ ‚½‚è”»’è‚Ìî•ñ‚ğİ’è
-	//projectile.attackTiming = gNsSkillData::SkillAttackTiming
+	//// ã‚¹ã‚­ãƒ«ã®ã‚ãŸã‚Šåˆ¤å®šã®æƒ…å ±ã‚’è¨­å®š
+	//projectile.attackTiming = Game::Combat::Skill::Data::SkillAttackTiming
 	//{
-	//	.attackLifeTimeMode = gNsSkillData::AttackLifeTimeMode::IndependentEntityLifetime, // UŒ‚”»’èƒ‰ƒCƒtƒ^ƒCƒ€‚ÌŠÇ—•û–@
-	//	.triggerTiming = gNsSkillData::SkillTriggerTiming::OnCastingEnd, // ƒXƒLƒ‹‚ÌƒgƒŠƒK[ƒ^ƒCƒ~ƒ“ƒO
-	//	.attackDuration = 5.0f, // UŒ‚”»’è‚Ì¶‘¶ŠÔi•bj (Projectileõ–½CDot‚ÌŒp‘±ŠÔ‚È‚Ç)
+	//	.attackLifeTimeMode = Game::Combat::Skill::Data::AttackLifeTimeMode::IndependentEntityLifetime, // æ”»æ’ƒåˆ¤å®šãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ã®ç®¡ç†æ–¹æ³•
+	//	.triggerTiming = Game::Combat::Skill::Data::SkillTriggerTiming::OnCastingEnd, // ã‚¹ã‚­ãƒ«ã®ãƒˆãƒªã‚¬ãƒ¼ã‚¿ã‚¤ãƒŸãƒ³ã‚°
+	//	.attackDuration = 5.0f, // æ”»æ’ƒåˆ¤å®šã®ç”Ÿå­˜æ™‚é–“ï¼ˆç§’ï¼‰ (Projectileå¯¿å‘½ï¼ŒDotã®ç¶™ç¶šæ™‚é–“ãªã©)
 	//};
 
 	//db.AddSkill(projectile);
 
 
-	//// ƒeƒXƒg—pƒXƒLƒ‹’è‹`
+	//// ãƒ†ã‚¹ãƒˆç”¨ã‚¹ã‚­ãƒ«å®šç¾©
 	//SkillDefinition testSkill;
 	//testSkill.id = 3;
 	//testSkill.name = "Test Skill";
 
-	//// ƒXƒLƒ‹‚ÌƒRƒXƒg‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ã‚³ã‚¹ãƒˆã‚’å®šç¾©
 	//testSkill.cost = SkillCost{
-	//	.manaCost = 0.0f, // ƒ}ƒiƒRƒXƒg
-	//	.staminaCost = 0.0f, // ƒXƒ^ƒ~ƒiƒRƒXƒg
-	//	.healthCost = 0.0f // ƒwƒ‹ƒXƒRƒXƒg
+	//	.manaCost = 0.0f, // ãƒãƒŠã‚³ã‚¹ãƒˆ
+	//	.staminaCost = 0.0f, // ã‚¹ã‚¿ãƒŸãƒŠã‚³ã‚¹ãƒˆ
+	//	.healthCost = 0.0f // ãƒ˜ãƒ«ã‚¹ã‚³ã‚¹ãƒˆ
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒtƒF[ƒYƒ^ƒCƒ~ƒ“ƒO‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ãƒ•ã‚§ãƒ¼ã‚ºã‚¿ã‚¤ãƒŸãƒ³ã‚°ã‚’å®šç¾©
 	//testSkill.phaseTiming = SkillPhaseTiming{
-	//	.castTime = 0.5f, // ƒLƒƒƒXƒgƒ^ƒCƒ€(”­¶‚Ü‚Å‚ÌŠÔ)
-	//	.recoveryTime = 0.5f, // ƒŠƒJƒoƒŠ[ƒ^ƒCƒ€(ƒXƒLƒ‹I—¹Œã‚Ì‘Ò‹@ŠÔ)
-	//	.duration = 1.0f, // action‚Ì‘±ŠÔ
+	//	.castTime = 0.5f, // ã‚­ãƒ£ã‚¹ãƒˆã‚¿ã‚¤ãƒ (ç™ºç”Ÿã¾ã§ã®æ™‚é–“)
+	//	.recoveryTime = 0.5f, // ãƒªã‚«ãƒãƒªãƒ¼ã‚¿ã‚¤ãƒ (ã‚¹ã‚­ãƒ«çµ‚äº†å¾Œã®å¾…æ©Ÿæ™‚é–“)
+	//	.duration = 1.0f, // actionã®æŒç¶šæ™‚é–“
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒA[ƒ}[î•ñ‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ã‚¢ãƒ¼ãƒãƒ¼æƒ…å ±ã‚’å®šç¾©
 	//testSkill.armorInfo = SkillArmorInfo{
-	//	.superArmorType = gNsSkillData::SkillSuperArmorType::Invincible, // ƒX[ƒp[ƒA[ƒ}[‚Ìí—Ş
-	//	.guardType = gNsSkillData::SkillGuardType::None // ƒK[ƒh‚Ì—L–³
+	//	.superArmorType = Game::Combat::Skill::Data::SkillSuperArmorType::Invincible, // ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼ã®ç¨®é¡
+	//	.guardType = Game::Combat::Skill::Data::SkillGuardType::None // ã‚¬ãƒ¼ãƒ‰ã®æœ‰ç„¡
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒqƒbƒgŒø‰Ê‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ãƒ’ãƒƒãƒˆåŠ¹æœã‚’å®šç¾©
 	//testSkill.hitEffect = SkillHitEffect{
-	//	.onHitEffect = gNsSkillData::OnHitEffectType::Knockback, // ƒqƒbƒg‚ÌŒø‰Ê
-	//	.statusEffectType = gNsSkillData::SkillStatusEffectType::Burn// •t—^‚·‚éó‘ÔˆÙí‚Ìí—Ş
+	//	.onHitEffect = Game::Combat::Skill::Data::OnHitEffectType::Knockback, // ãƒ’ãƒƒãƒˆæ™‚ã®åŠ¹æœ
+	//	.statusEffectType = Game::Combat::Skill::Data::SkillStatusEffectType::Burn// ä»˜ä¸ã™ã‚‹çŠ¶æ…‹ç•°å¸¸ã®ç¨®é¡
 	//};
 
-	//// ƒXƒLƒ‹‚Ìƒ`ƒƒ[ƒWî•ñ‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ãƒãƒ£ãƒ¼ã‚¸æƒ…å ±ã‚’å®šç¾©
 	//testSkill.chargeInfo = SkillChargeInfo{
-	//	.isChargeSkill = true, // ƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚©‚Ç‚¤‚©
-	//	.chargeTime = 1.0f // ƒ`ƒƒ[ƒWŠÔiƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚Ìê‡j
+	//	.isChargeSkill = true, // ãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã‹ã©ã†ã‹
+	//	.chargeTime = 1.0f // ãƒãƒ£ãƒ¼ã‚¸æ™‚é–“ï¼ˆãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã®å ´åˆï¼‰
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒLƒƒƒ“ƒZƒ‹‰Â”\‚ÈƒtƒF[ƒY‚ğ’è‹`
-	//testSkill.cancelBehavior = SkillCancelPhase::DuringCast | SkillCancelPhase::DuringRecovery; // ƒLƒƒƒXƒg’†‚ÆƒŠƒJƒoƒŠ[’†‚ÉƒLƒƒƒ“ƒZƒ‹‰Â”\
+	//// ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½ãªãƒ•ã‚§ãƒ¼ã‚ºã‚’å®šç¾©
+	//testSkill.cancelBehavior = SkillCancelPhase::DuringCast | SkillCancelPhase::DuringRecovery; // ã‚­ãƒ£ã‚¹ãƒˆä¸­ã¨ãƒªã‚«ãƒãƒªãƒ¼ä¸­ã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½
 
-	//// ”»’è‚Æ‹OÕ‚Ì’è‹`
-	//testSkill.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Rectangle2DAttack
+	//// åˆ¤å®šã¨è»Œè·¡ã®å®šç¾©
+	//testSkill.shape = Game::Combat::Skill::Component::Attack2DShape{ Game::Combat::Skill::Component::Rectangle2DAttack
 	//{
-	//	.center = glm::vec2(0.0f, 5.0f), // ’†SˆÊ’u
-	//	.direction = CanonicalDefaults::kLocalForwardXZ, // ‘O•û•ûŒü
-	//	.width = 1.0f, // •
-	//	.height = 10.0f // ‚‚³
+	//	.center = glm::vec2(0.0f, 5.0f), // ä¸­å¿ƒä½ç½®
+	//	.direction = CanonicalDefaults::kLocalForwardXZ, // å‰æ–¹æ–¹å‘
+	//	.width = 1.0f, // å¹…
+	//	.height = 10.0f // é«˜ã•
 	//} };
-	//testSkill.trajectoryType = TrajectoryType::LinearForward; // ‹OÕƒ^ƒCƒvF©ŒÈ’†S‚Ì‰ñ“]
-	//testSkill.trajectoryParams = gNsSkillData::SkillTrajectory::RotateTrajectoryParams
+	//testSkill.trajectoryType = TrajectoryType::LinearForward; // è»Œè·¡ã‚¿ã‚¤ãƒ—ï¼šè‡ªå·±ä¸­å¿ƒã®å›è»¢
+	//testSkill.trajectoryParams = Game::Combat::Skill::Data::SkillTrajectory::RotateTrajectoryParams
 	//{
-	//	.startAngle = 60.0f, // ŠJnŠp“x
-	//	.endAngle = -60.0f // I—¹Šp“x
+	//	.startAngle = 60.0f, // é–‹å§‹è§’åº¦
+	//	.endAngle = -60.0f // çµ‚äº†è§’åº¦
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì“¯Šú^”ñ“¯Šú‚ğ’è‹`
-	//testSkill.castSyncType = SkillCastSyncType::Synchronous; // ƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì“¯Šú
-	//testSkill.movementLockType = SkillMovementLockType::Locked; // ƒXƒLƒ‹‚ÌˆÚ“®ƒƒbƒNƒ^ƒCƒvFƒƒbƒN
+	//// ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®åŒæœŸï¼éåŒæœŸã‚’å®šç¾©
+	//testSkill.castSyncType = SkillCastSyncType::Synchronous; // ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®åŒæœŸ
+	//testSkill.movementLockType = SkillMovementLockType::Locked; // ã‚¹ã‚­ãƒ«ã®ç§»å‹•ãƒ­ãƒƒã‚¯ã‚¿ã‚¤ãƒ—ï¼šãƒ­ãƒƒã‚¯
 
-	//// ƒXƒLƒ‹‚Ì‚ ‚½‚è”»’è‚Ìî•ñ‚ğİ’è
-	//testSkill.attackTiming = gNsSkillData::SkillAttackTiming
+	//// ã‚¹ã‚­ãƒ«ã®ã‚ãŸã‚Šåˆ¤å®šã®æƒ…å ±ã‚’è¨­å®š
+	//testSkill.attackTiming = Game::Combat::Skill::Data::SkillAttackTiming
 	//{
-	//	.attackLifeTimeMode = gNsSkillData::AttackLifeTimeMode::SyncWithSkillPhase, // UŒ‚”»’èƒ‰ƒCƒtƒ^ƒCƒ€‚ÌŠÇ—•û–@
-	//	.triggerTiming = gNsSkillData::SkillTriggerTiming::OnCastingEnd, // ƒXƒLƒ‹‚ÌƒgƒŠƒK[ƒ^ƒCƒ~ƒ“ƒO
-	//	.attackDuration = 1.0f, // UŒ‚”»’è‚Ì¶‘¶ŠÔi•bj (Projectileõ–½CDot‚ÌŒp‘±ŠÔ‚È‚Ç)
+	//	.attackLifeTimeMode = Game::Combat::Skill::Data::AttackLifeTimeMode::SyncWithSkillPhase, // æ”»æ’ƒåˆ¤å®šãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ã®ç®¡ç†æ–¹æ³•
+	//	.triggerTiming = Game::Combat::Skill::Data::SkillTriggerTiming::OnCastingEnd, // ã‚¹ã‚­ãƒ«ã®ãƒˆãƒªã‚¬ãƒ¼ã‚¿ã‚¤ãƒŸãƒ³ã‚°
+	//	.attackDuration = 1.0f, // æ”»æ’ƒåˆ¤å®šã®ç”Ÿå­˜æ™‚é–“ï¼ˆç§’ï¼‰ (Projectileå¯¿å‘½ï¼ŒDotã®ç¶™ç¶šæ™‚é–“ãªã©)
 	//};
 
 	//db.AddSkill(testSkill);
 
-	//// ƒeƒXƒg—pƒXƒLƒ‹’è‹`2
+	//// ãƒ†ã‚¹ãƒˆç”¨ã‚¹ã‚­ãƒ«å®šç¾©2
 	//SkillDefinition testSkill2;
 	//testSkill2.id = 4;
 	//testSkill2.name = "Test Skill 2";
 
-	//// ƒXƒLƒ‹‚ÌƒRƒXƒg‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ã‚³ã‚¹ãƒˆã‚’å®šç¾©
 	//testSkill2.cost = SkillCost{
-	//	.manaCost = 0.0f, // ƒ}ƒiƒRƒXƒg
-	//	.staminaCost = 0.0f, // ƒXƒ^ƒ~ƒiƒRƒXƒg
-	//	.healthCost = 0.0f // ƒwƒ‹ƒXƒRƒXƒg
+	//	.manaCost = 0.0f, // ãƒãƒŠã‚³ã‚¹ãƒˆ
+	//	.staminaCost = 0.0f, // ã‚¹ã‚¿ãƒŸãƒŠã‚³ã‚¹ãƒˆ
+	//	.healthCost = 0.0f // ãƒ˜ãƒ«ã‚¹ã‚³ã‚¹ãƒˆ
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒtƒF[ƒYƒ^ƒCƒ~ƒ“ƒO‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ãƒ•ã‚§ãƒ¼ã‚ºã‚¿ã‚¤ãƒŸãƒ³ã‚°ã‚’å®šç¾©
 	//testSkill2.phaseTiming = SkillPhaseTiming{
-	//	.castTime = 1.0f, // ƒLƒƒƒXƒgƒ^ƒCƒ€(”­¶‚Ü‚Å‚ÌŠÔ)
-	//	.recoveryTime = 1.0f, // ƒŠƒJƒoƒŠ[ƒ^ƒCƒ€(ƒXƒLƒ‹I—¹Œã‚Ì‘Ò‹@ŠÔ)
-	//	.duration = 2.0f, // action‚Ì‘±ŠÔ
+	//	.castTime = 1.0f, // ã‚­ãƒ£ã‚¹ãƒˆã‚¿ã‚¤ãƒ (ç™ºç”Ÿã¾ã§ã®æ™‚é–“)
+	//	.recoveryTime = 1.0f, // ãƒªã‚«ãƒãƒªãƒ¼ã‚¿ã‚¤ãƒ (ã‚¹ã‚­ãƒ«çµ‚äº†å¾Œã®å¾…æ©Ÿæ™‚é–“)
+	//	.duration = 2.0f, // actionã®æŒç¶šæ™‚é–“
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒA[ƒ}[î•ñ‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ã‚¢ãƒ¼ãƒãƒ¼æƒ…å ±ã‚’å®šç¾©
 	//testSkill2.armorInfo = SkillArmorInfo{
-	//	.superArmorType = gNsSkillData::SkillSuperArmorType::Unbreakable, // ƒX[ƒp[ƒA[ƒ}[‚Ìí—Ş
-	//	.guardType = gNsSkillData::SkillGuardType::ForwardGuard// ‘O•ûƒK[ƒh
+	//	.superArmorType = Game::Combat::Skill::Data::SkillSuperArmorType::Unbreakable, // ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼ã®ç¨®é¡
+	//	.guardType = Game::Combat::Skill::Data::SkillGuardType::ForwardGuard// å‰æ–¹ã‚¬ãƒ¼ãƒ‰
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒqƒbƒgŒø‰Ê‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ãƒ’ãƒƒãƒˆåŠ¹æœã‚’å®šç¾©
 	//testSkill2.hitEffect = SkillHitEffect{
-	//	.onHitEffect = gNsSkillData::OnHitEffectType::Stun, // ƒqƒbƒg‚ÌŒø‰Ê
-	//	.statusEffectType = gNsSkillData::SkillStatusEffectType::Poison// •t—^‚·‚éó‘ÔˆÙí‚Ìí—Ş
+	//	.onHitEffect = Game::Combat::Skill::Data::OnHitEffectType::Stun, // ãƒ’ãƒƒãƒˆæ™‚ã®åŠ¹æœ
+	//	.statusEffectType = Game::Combat::Skill::Data::SkillStatusEffectType::Poison// ä»˜ä¸ã™ã‚‹çŠ¶æ…‹ç•°å¸¸ã®ç¨®é¡
 	//};
 
-	//// ƒXƒLƒ‹‚Ìƒ`ƒƒ[ƒWî•ñ‚ğ’è‹`
+	//// ã‚¹ã‚­ãƒ«ã®ãƒãƒ£ãƒ¼ã‚¸æƒ…å ±ã‚’å®šç¾©
 	//testSkill2.chargeInfo = SkillChargeInfo{
-	//	.isChargeSkill = false, // ƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚©‚Ç‚¤‚©
-	//	.chargeTime = 0.0f // ƒ`ƒƒ[ƒWŠÔiƒ`ƒƒ[ƒW®ƒXƒLƒ‹‚Ìê‡j
+	//	.isChargeSkill = false, // ãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã‹ã©ã†ã‹
+	//	.chargeTime = 0.0f // ãƒãƒ£ãƒ¼ã‚¸æ™‚é–“ï¼ˆãƒãƒ£ãƒ¼ã‚¸å¼ã‚¹ã‚­ãƒ«ã®å ´åˆï¼‰
 	//};
 
-	//// ƒXƒLƒ‹‚ÌƒLƒƒƒ“ƒZƒ‹‰Â”\‚ÈƒtƒF[ƒY‚ğ’è‹`
-	//testSkill2.cancelBehavior = SkillCancelPhase::DuringActive; // ƒAƒNƒeƒBƒu’†‚ÉƒLƒƒƒ“ƒZƒ‹‰Â”\
+	//// ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½ãªãƒ•ã‚§ãƒ¼ã‚ºã‚’å®šç¾©
+	//testSkill2.cancelBehavior = SkillCancelPhase::DuringActive; // ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ä¸­ã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½
 
-	//// ”»’è‚Æ‹OÕ‚Ì’è‹`
-	//testSkill2.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Circle2DAttack
+	//// åˆ¤å®šã¨è»Œè·¡ã®å®šç¾©
+	//testSkill2.shape = Game::Combat::Skill::Component::Attack2DShape{ Game::Combat::Skill::Component::Circle2DAttack
 	//{
-	//	.center = CanonicalDefaults::kLocalCenterXZ, // ’†SˆÊ’u
-	//	.radius = 15.0f // ”¼Œa
+	//	.center = CanonicalDefaults::kLocalCenterXZ, // ä¸­å¿ƒä½ç½®
+	//	.radius = 15.0f // åŠå¾„
 	//} };
-	//testSkill2.trajectoryType = TrajectoryType::None; // ‹OÕƒ^ƒCƒvF©ŒÈ’†S‚Ì‰ñ“]
-	//testSkill2.trajectoryParams = gNsSkillData::SkillTrajectory::StaticTrajectory{}; // Ã“I‹OÕƒpƒ‰ƒ[ƒ^
+	//testSkill2.trajectoryType = TrajectoryType::None; // è»Œè·¡ã‚¿ã‚¤ãƒ—ï¼šè‡ªå·±ä¸­å¿ƒã®å›è»¢
+	//testSkill2.trajectoryParams = Game::Combat::Skill::Data::SkillTrajectory::StaticTrajectory{}; // é™çš„è»Œè·¡ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 
-	//// ƒXƒLƒ‹‚ÌƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì“¯Šú^”ñ“¯Šú‚ğ’è‹`
-	//testSkill2.castSyncType = SkillCastSyncType::Synchronous; // ƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì“¯Šú
-	//testSkill2.movementLockType = SkillMovementLockType::Locked; // ƒXƒLƒ‹‚ÌˆÚ“®ƒƒbƒNƒ^ƒCƒvFLocked
+	//// ã‚¹ã‚­ãƒ«ã®ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®åŒæœŸï¼éåŒæœŸã‚’å®šç¾©
+	//testSkill2.castSyncType = SkillCastSyncType::Synchronous; // ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®åŒæœŸ
+	//testSkill2.movementLockType = SkillMovementLockType::Locked; // ã‚¹ã‚­ãƒ«ã®ç§»å‹•ãƒ­ãƒƒã‚¯ã‚¿ã‚¤ãƒ—ï¼šLocked
 
-	//// ƒXƒLƒ‹‚Ì‚ ‚½‚è”»’è‚Ìî•ñ‚ğİ’è
-	//testSkill2.attackTiming = gNsSkillData::SkillAttackTiming
+	//// ã‚¹ã‚­ãƒ«ã®ã‚ãŸã‚Šåˆ¤å®šã®æƒ…å ±ã‚’è¨­å®š
+	//testSkill2.attackTiming = Game::Combat::Skill::Data::SkillAttackTiming
 	//{
-	//	.attackLifeTimeMode = gNsSkillData::AttackLifeTimeMode::IndependentEntityLifetime, // UŒ‚”»’èƒ‰ƒCƒtƒ^ƒCƒ€‚ÌŠÇ—•û–@
-	//	.triggerTiming = gNsSkillData::SkillTriggerTiming::OnCastingEnd, // ƒXƒLƒ‹‚ÌƒgƒŠƒK[ƒ^ƒCƒ~ƒ“ƒO
-	//	.attackDuration = 5.0f, // UŒ‚”»’è‚Ì¶‘¶ŠÔi•bj (Projectileõ–½CDot‚ÌŒp‘±ŠÔ‚È‚Ç)
+	//	.attackLifeTimeMode = Game::Combat::Skill::Data::AttackLifeTimeMode::IndependentEntityLifetime, // æ”»æ’ƒåˆ¤å®šãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ã®ç®¡ç†æ–¹æ³•
+	//	.triggerTiming = Game::Combat::Skill::Data::SkillTriggerTiming::OnCastingEnd, // ã‚¹ã‚­ãƒ«ã®ãƒˆãƒªã‚¬ãƒ¼ã‚¿ã‚¤ãƒŸãƒ³ã‚°
+	//	.attackDuration = 5.0f, // æ”»æ’ƒåˆ¤å®šã®ç”Ÿå­˜æ™‚é–“ï¼ˆç§’ï¼‰ (Projectileå¯¿å‘½ï¼ŒDotã®ç¶™ç¶šæ™‚é–“ãªã©)
 	//};
 
 	//db.AddSkill(testSkill2);
 
-	//gNsSkillData::SkillDefinition slash;
+	//Game::Combat::Skill::Data::SkillDefinition slash;
 	//slash.id = 1;
 	//slash.name = "Basic Slash";
-	//slash.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Circle2DAttack{CanonicalDefaults::kLocalCenterXZ, 5.0f} };
+	//slash.shape = Game::Combat::Skill::Component::Attack2DShape{ Game::Combat::Skill::Component::Circle2DAttack{CanonicalDefaults::kLocalCenterXZ, 5.0f} };
 	//slash.duration = 1.0f;
-	//slash.trajectoryType = gNsSkillData::TrajectoryType::LinearForward;
-	//slash.trajectoryParams = gNsSkillData::SkillTrajectory::LinearTrajectoryParams
+	//slash.trajectoryType = Game::Combat::Skill::Data::TrajectoryType::LinearForward;
+	//slash.trajectoryParams = Game::Combat::Skill::Data::SkillTrajectory::LinearTrajectoryParams
 	//{
 	//	.speed = 20.0f
 	//};
-	//slash.cancelBehavior = gNsSkillData::SkillCancelPhase::All;// ‘S‚Ä‚ÌƒtƒF[ƒY‚ÅƒLƒƒƒ“ƒZƒ‹‰Â”\
-	//slash.castSyncType = gNsSkillData::SkillCastSyncType::Asynchronous;// ƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì”ñ“¯Šú
-	//slash.superArmorType = gNsSkillData::SkillSuperArmorType::None;// ƒX[ƒp[ƒA[ƒ}[‚È‚µ
-	//slash.guardType = gNsSkillData::SkillGuardType::None;// ƒK[ƒh‚È‚µ
-	//slash.onHitEffect = gNsSkillData::OnHitEffectType::None;// ƒqƒbƒg‚ÌŒø‰Ê‚È‚µ
-	//slash.statusEffectType = gNsSkillData::SkillStatusEffectType::Burn;// •t—^‚·‚éó‘ÔˆÙí: ‰Î
-	//slash.cancelableSkillIds = { 2, 3 };// ‚±‚ÌƒXƒLƒ‹’†‚ÉƒLƒƒƒ“ƒZƒ‹‚µ‚Ä”­“®‰Â”\‚ÈƒXƒLƒ‹ID
+	//slash.cancelBehavior = Game::Combat::Skill::Data::SkillCancelPhase::All;// å…¨ã¦ã®ãƒ•ã‚§ãƒ¼ã‚ºã§ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½
+	//slash.castSyncType = Game::Combat::Skill::Data::SkillCastSyncType::Asynchronous;// ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®éåŒæœŸ
+	//slash.superArmorType = Game::Combat::Skill::Data::SkillSuperArmorType::None;// ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼ãªã—
+	//slash.guardType = Game::Combat::Skill::Data::SkillGuardType::None;// ã‚¬ãƒ¼ãƒ‰ãªã—
+	//slash.onHitEffect = Game::Combat::Skill::Data::OnHitEffectType::None;// ãƒ’ãƒƒãƒˆæ™‚ã®åŠ¹æœãªã—
+	//slash.statusEffectType = Game::Combat::Skill::Data::SkillStatusEffectType::Burn;// ä»˜ä¸ã™ã‚‹çŠ¶æ…‹ç•°å¸¸: ç«å‚·
+	//slash.cancelableSkillIds = { 2, 3 };// ã“ã®ã‚¹ã‚­ãƒ«ä¸­ã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã—ã¦ç™ºå‹•å¯èƒ½ãªã‚¹ã‚­ãƒ«ID
 	//db.AddSkill(slash);
 
-	//gNsSkillData::SkillDefinition slash2;
+	//Game::Combat::Skill::Data::SkillDefinition slash2;
 	//slash2.id = 2;
 	//slash2.name = "Power Slash";
-	//slash2.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Sector2DAttack{
+	//slash2.shape = Game::Combat::Skill::Component::Attack2DShape{ Game::Combat::Skill::Component::Sector2DAttack{
 	//	.center = CanonicalDefaults::kLocalCenterXZ,
 	//	. direction = CanonicalDefaults::kLocalForwardXZ, 
-	//	. angle = 0.5236f, // –ñ57“x
+	//	. angle = 0.5236f, // ç´„57åº¦
 	//	. radius = 10.0f
-	//} };// -Z•ûŒü‚ª‘O•û
+	//} };// -Zæ–¹å‘ãŒå‰æ–¹
 	//slash2.duration = 1.0f;
-	//slash2.cancelBehavior = gNsSkillData::SkillCancelPhase::DuringRecovery;// ƒŠƒJƒoƒŠ[’†‚ÉƒLƒƒƒ“ƒZƒ‹‰Â”\
-	//slash2.castSyncType = gNsSkillData::SkillCastSyncType::Synchronous;// ƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì“¯Šú
-	//slash2.superArmorType = gNsSkillData::SkillSuperArmorType::Invincible;// ƒX[ƒp[ƒA[ƒ}[F–³“Gó‘Ô
-	//slash2.guardType = gNsSkillData::SkillGuardType::ForwardGuard;// ‘O•ûƒK[ƒh
-	//slash2.onHitEffect = gNsSkillData::OnHitEffectType::Stun;// ƒqƒbƒg‚ÌŒø‰ÊFƒXƒ^ƒ“
-	//slash2.statusEffectType = gNsSkillData::SkillStatusEffectType::None;// •t—^‚·‚éó‘ÔˆÙí: ‚È‚µ
-	//slash2.cancelableSkillIds = { 1, 3 };// ‚±‚ÌƒXƒLƒ‹’†‚ÉƒLƒƒƒ“ƒZƒ‹‚µ‚Ä”­“®‰Â”\‚ÈƒXƒLƒ‹ID
+	//slash2.cancelBehavior = Game::Combat::Skill::Data::SkillCancelPhase::DuringRecovery;// ãƒªã‚«ãƒãƒªãƒ¼ä¸­ã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½
+	//slash2.castSyncType = Game::Combat::Skill::Data::SkillCastSyncType::Synchronous;// ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®åŒæœŸ
+	//slash2.superArmorType = Game::Combat::Skill::Data::SkillSuperArmorType::Invincible;// ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼ï¼šç„¡æ•µçŠ¶æ…‹
+	//slash2.guardType = Game::Combat::Skill::Data::SkillGuardType::ForwardGuard;// å‰æ–¹ã‚¬ãƒ¼ãƒ‰
+	//slash2.onHitEffect = Game::Combat::Skill::Data::OnHitEffectType::Stun;// ãƒ’ãƒƒãƒˆæ™‚ã®åŠ¹æœï¼šã‚¹ã‚¿ãƒ³
+	//slash2.statusEffectType = Game::Combat::Skill::Data::SkillStatusEffectType::None;// ä»˜ä¸ã™ã‚‹çŠ¶æ…‹ç•°å¸¸: ãªã—
+	//slash2.cancelableSkillIds = { 1, 3 };// ã“ã®ã‚¹ã‚­ãƒ«ä¸­ã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã—ã¦ç™ºå‹•å¯èƒ½ãªã‚¹ã‚­ãƒ«ID
 	//db.AddSkill(slash2);
 
-	//gNsSkillData::SkillDefinition blade;
+	//Game::Combat::Skill::Data::SkillDefinition blade;
 	//blade.id = 3;
 	//blade.name = "Blade";
-	//blade.shape = gNsSkillComp::Attack2DShape{ gNsSkillComp::Rectangle2DAttack{glm::vec2(0.0f, 5.0f), CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f} };
+	//blade.shape = Game::Combat::Skill::Component::Attack2DShape{ Game::Combat::Skill::Component::Rectangle2DAttack{glm::vec2(0.0f, 5.0f), CanonicalDefaults::kLocalForwardXZ, 1.0f, 10.0f} };
 	//blade.duration = 1.0f;
-	//// ƒXƒLƒ‹ŠïÕ‚Ì’ŠÛ’è‹`‚Ì‘I‘ğ
-	//blade.trajectoryType = gNsSkillData::TrajectoryType::RotateAroundSelf;
-	//blade.trajectoryParams = gNsSkillData::SkillTrajectory::RotateTrajectoryParams
-	//{// ŠÖ”’è‹`
+	//// ã‚¹ã‚­ãƒ«å¥‡è·¡ã®æŠ½è±¡å®šç¾©ã®é¸æŠ
+	//blade.trajectoryType = Game::Combat::Skill::Data::TrajectoryType::RotateAroundSelf;
+	//blade.trajectoryParams = Game::Combat::Skill::Data::SkillTrajectory::RotateTrajectoryParams
+	//{// é–¢æ•°å®šç¾©
 	//	.startAngle = 60.0f,
 	//	.endAngle = -60.0f
 	//};
-	//blade.cancelBehavior = gNsSkillData::SkillCancelPhase::DuringCast | gNsSkillData::SkillCancelPhase::DuringActive;// ƒLƒƒƒXƒg’†‚ÆƒAƒNƒeƒBƒu’†‚ÉƒLƒƒƒ“ƒZƒ‹‰Â”\
-	//blade.castSyncType = gNsSkillData::SkillCastSyncType::Synchronous;// ƒLƒƒƒXƒgó‘Ô‚ÆUŒ‚”»’è‚Ì“¯Šú
-	//blade.superArmorType = gNsSkillData::SkillSuperArmorType::None;// ƒX[ƒp[ƒA[ƒ}[‚È‚µ
-	//blade.guardType = gNsSkillData::SkillGuardType::None;// ‚È‚µ
-	//blade.onHitEffect = gNsSkillData::OnHitEffectType::Knockback;// ƒqƒbƒg‚ÌŒø‰ÊFƒmƒbƒNƒoƒbƒN
-	//blade.statusEffectType = gNsSkillData::SkillStatusEffectType::Poison;// •t—^‚·‚éó‘ÔˆÙí: “Å
-	//blade.cancelableSkillIds = { 1, 2 };// ‚±‚ÌƒXƒLƒ‹’†‚ÉƒLƒƒƒ“ƒZƒ‹‚µ‚Ä”­“®‰Â”\‚ÈƒXƒLƒ‹ID
+	//blade.cancelBehavior = Game::Combat::Skill::Data::SkillCancelPhase::DuringCast | Game::Combat::Skill::Data::SkillCancelPhase::DuringActive;// ã‚­ãƒ£ã‚¹ãƒˆä¸­ã¨ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ä¸­ã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½
+	//blade.castSyncType = Game::Combat::Skill::Data::SkillCastSyncType::Synchronous;// ã‚­ãƒ£ã‚¹ãƒˆçŠ¶æ…‹ã¨æ”»æ’ƒåˆ¤å®šã®åŒæœŸ
+	//blade.superArmorType = Game::Combat::Skill::Data::SkillSuperArmorType::None;// ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒãƒ¼ãªã—
+	//blade.guardType = Game::Combat::Skill::Data::SkillGuardType::None;// ãªã—
+	//blade.onHitEffect = Game::Combat::Skill::Data::OnHitEffectType::Knockback;// ãƒ’ãƒƒãƒˆæ™‚ã®åŠ¹æœï¼šãƒãƒƒã‚¯ãƒãƒƒã‚¯
+	//blade.statusEffectType = Game::Combat::Skill::Data::SkillStatusEffectType::Poison;// ä»˜ä¸ã™ã‚‹çŠ¶æ…‹ç•°å¸¸: æ¯’
+	//blade.cancelableSkillIds = { 1, 2 };// ã“ã®ã‚¹ã‚­ãƒ«ä¸­ã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã—ã¦ç™ºå‹•å¯èƒ½ãªã‚¹ã‚­ãƒ«ID
 	//db.AddSkill(blade);
 
 

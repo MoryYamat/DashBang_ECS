@@ -1,8 +1,8 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Game::Feature::Character
 {
@@ -10,8 +10,8 @@ namespace Game::Feature::Character
 	class CharacterSkillFeature
 	{
 	public:
-		static void UpdateCharacterSkillExecution(eNsECS::EntityMgr& ecs, float deltaTime);
+		static void UpdateCharacterSkillExecution(Engine::ECS::EntityMgr& ecs, float deltaTime);
 		
-		static void UpdateCharacterSkillIntentResolver(eNsECS::EntityMgr& ecs);
+		static void UpdateCharacterSkillIntentResolver(Engine::ECS::EntityMgr& ecs);
 	};
 } // namespace Game::Character::Control::Skill

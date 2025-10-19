@@ -1,4 +1,4 @@
-#include "CameraControlSystem.h"
+ï»¿#include "CameraControlSystem.h"
 
 // Core/ECS
 #include "Engine/ECS/Component/Common/TransformComponent.h"
@@ -11,25 +11,27 @@
 #include <algorithm>
 
 //
-// ƒJƒƒ‰©‘Ì‚ª’¼ÚInput‚ğó‚¯‚Äu“®‚¢‚Ä‚¢‚év
-// –{“–‚ÍA
-// ƒvƒŒƒCƒ„[(PlayerActor)‚ªInput‚ğó‚¯æ‚è
-// ƒJƒƒ‰(CameraActor)‚ªPlayerActor‚É’Ç]‚·‚é
-// ‚Æ‚¢‚¤Œ`‚ª‚¢‚¢‚Æv‚¤
+// ã‚«ãƒ¡ãƒ©è‡ªä½“ãŒç›´æ¥Inputã‚’å—ã‘ã¦ã€Œå‹•ã„ã¦ã„ã‚‹ã€
+// æœ¬å½“ã¯ã€
+// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼(PlayerActor)ãŒInputã‚’å—ã‘å–ã‚Š
+// ã‚«ãƒ¡ãƒ©(CameraActor)ãŒPlayerActorã«è¿½å¾“ã™ã‚‹
+// ã¨ã„ã†å½¢ãŒã„ã„ã¨æ€ã†
 //
 
 
-// The internal state of eInputStatef is not rewritten here.
-// The internal state of eInputStatef is not rewritten here.
-// The internal state of eInputStatef is not rewritten here.
-// eInputStatee‚Ì“à•”ó‘Ô‚Í‚±‚±‚Å‚Í‘‚«Š·‚¦‚È‚¢
-void Game::Camera::Input::UpdateCamera(eNsECS::EntityMgr& ecs, gNsInput::InputState& input, float deltaTime)
+// The internal state of â€˜InputStateâ€™ is not rewritten here.
+// The internal state of â€˜InputStateâ€™ is not rewritten here.
+// The internal state of â€˜InputStateâ€™ is not rewritten here.
+// â€˜InputStateâ€˜ã®å†…éƒ¨çŠ¶æ…‹ã¯ã“ã“ã§ã¯æ›¸ãæ›ãˆãªã„
+void Game::Camera::Input::UpdateCamera(Engine::ECS::EntityMgr& ecs, Game::Input::InputState& input, float deltaTime)
 {
+	namespace Comp = Engine::ECS::Component;
+	namespace gInput = Game::Input;
 
-	for (eNsECS::Entity entity : ecs.view<eNsCommonComp::TransformComponent, eNsCamComp::CameraComponent, eNsTagComp::PlayerControllerComponent>())
+	for (Engine::ECS::Entity entity : ecs.view<Comp::Common::TransformComponent, Comp::Camera::CameraComponent, Comp::Tags::PlayerControllerComponent>())
 	{
-		auto& transformComp = ecs.get<eNsCommonComp::TransformComponent>(entity);
-		auto& cameraComp = ecs.get<eNsCamComp::CameraComponent>(entity);
+		auto& transformComp = ecs.get<Comp::Common::TransformComponent>(entity);
+		auto& cameraComp = ecs.get<Comp::Camera::CameraComponent>(entity);
 
 		float velocity = cameraComp.moveSpeed * deltaTime;
 
@@ -37,13 +39,13 @@ void Game::Camera::Input::UpdateCamera(eNsECS::EntityMgr& ecs, gNsInput::InputSt
 		// It defines the movement
 		// It defines the movement
 		// It defines the movement
-		if (input.isPressed(gNsInput::InputAction::MoveForward))
+		if (input.isPressed(gInput::InputAction::MoveForward))
 			transformComp.position += cameraComp.front * velocity;
-		if (input.isPressed(gNsInput::InputAction::MoveBackward))
+		if (input.isPressed(gInput::InputAction::MoveBackward))
 			transformComp.position -= cameraComp.front * velocity;
-		if (input.isPressed(gNsInput::InputAction::MoveRight))
+		if (input.isPressed(gInput::InputAction::MoveRight))
 			transformComp.position += cameraComp.right * velocity;
-		if (input.isPressed(gNsInput::InputAction::MoveLeft))
+		if (input.isPressed(gInput::InputAction::MoveLeft))
 			transformComp.position -= cameraComp.right * velocity;
 
 
@@ -56,10 +58,10 @@ void Game::Camera::Input::UpdateCamera(eNsECS::EntityMgr& ecs, gNsInput::InputSt
 		{
 			cameraComp.yaw += input.mouseDelta.x * cameraComp.mouseSensitivity;
 
-			// ã‰º”½“]
+			// ä¸Šä¸‹åè»¢
 			cameraComp.pitch -= input.mouseDelta.y * cameraComp.mouseSensitivity;
 
-			// pitch§ŒÀ
+			// pitchåˆ¶é™
 			cameraComp.pitch = std::clamp(cameraComp.pitch, -89.0f, 89.0f);
 			updateCameraVector(cameraComp);
 		}
@@ -68,11 +70,11 @@ void Game::Camera::Input::UpdateCamera(eNsECS::EntityMgr& ecs, gNsInput::InputSt
 		{
 			if (input.mouseCaptured)
 			{
-				eNsWindow::WindowManager::CaptureMouse();
+				Engine::Window::WindowManager::CaptureMouse();
 			}
 			else
 			{
-				eNsWindow::WindowManager::ReleaseMouse();
+				Engine::Window::WindowManager::ReleaseMouse();
 			}
 
 			// fix later
@@ -89,7 +91,7 @@ void Game::Camera::Input::UpdateCamera(eNsECS::EntityMgr& ecs, gNsInput::InputSt
 }
 
 // 
-void Game::Camera::Input::updateCameraVector(eNsCamComp::CameraComponent& cameraComp)
+void Game::Camera::Input::updateCameraVector(Engine::ECS::Component::Camera::CameraComponent& cameraComp)
 {
 	glm::vec3 front;
 	front.x = cos(glm::radians(cameraComp.yaw)) * cos(glm::radians(cameraComp.pitch));

@@ -1,4 +1,4 @@
-#include "CharacterMovementIntentResolver.hpp"
+ï»¿#include "CharacterMovementIntentResolver.hpp"
 
 #include "Game/Character/Control/Movement/Component/Intent/MovementIntentComponent.h"
 #include "Game/Character/FSM/Movement/StateModel/MovementFSMTransitionRequestComponent.hpp"
@@ -7,26 +7,30 @@
 
 #include "Game/Character/FSM/Movement/MovementStateTags.hpp"
 
+#include "Engine/ECS/Ops/CoreOps.hpp"
+
 #include <typeindex>
 #include <cstdint>
 #include <glm/glm.hpp>
 
-// FIXME: ‚»‚à‚»‚à•s—v‚Ì‰Â”\«
-// TDDO: FSM\‘¢‚ÌŒ^(í’“Œ^ / ƒgƒŠƒK[Œ^)‚ÌØ‚è•ª‚¯
-// TODO: .priority‚Ì§Œä
-void Game::Character::Control::Movement::UpdateMovementIntentResolverSystem(eNsECS::EntityMgr& ecs)
+// FIXME: ãã‚‚ãã‚‚ä¸è¦ã®å¯èƒ½æ€§
+// TDDO: FSMæ§‹é€ ã®å‹(å¸¸é§å‹ / ãƒˆãƒªã‚¬ãƒ¼å‹)ã®åˆ‡ã‚Šåˆ†ã‘
+// TODO: .priorityã®åˆ¶å¾¡
+void Game::Character::Control::Movement::UpdateMovementIntentResolverSystem(Engine::ECS::EntityMgr& ecs)
 {
 	using namespace Game::Character::FSM::Movement;
 	using namespace Game::Character::Intent;
 
-	for (eNsECS::Entity e : ecs.view<
+	namespace Ops = Engine::ECS::Ops;
+
+	for (Engine::ECS::Entity e : ecs.view<
 		MovementIntentComponent,
 		MovementStateComponent,
 		MovementFSMTransitionRequestComponent>())
 	{
-		const auto& intent = ecs.get<MovementIntentComponent>(e);
-		const auto& state = ecs.get<MovementStateComponent>(e);
-		auto& reqComp = ecs.get<MovementFSMTransitionRequestComponent>(e);
+		const auto& intent = Ops::Get<MovementIntentComponent>(ecs, e);
+		const auto& state = Ops::Get<MovementStateComponent>(ecs, e);
+		auto& reqComp = Ops::Get<MovementFSMTransitionRequestComponent>(ecs, e);
 
 		std::type_index requested =
 			(intent.isActive && glm::length(intent.direction) > 0.001f)

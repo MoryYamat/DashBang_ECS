@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Engine/ECS/EntityManager.h"
 
@@ -9,24 +9,24 @@
 #include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
 #include "Game/Combat/Skill/Component/SkillEffectExecutionRecordComponent.hpp"
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 #include "IEffectTemplate.hpp"
 
-// TODO: SkillExecutionComponent‚Ì‰Šúó‘Ô‚Æ‰Šú‰»•û–@‚ğ‚æ‚è—Ç‚¢•û–@‚ğl‚¦‚é
-// ToDo: •¡”•›ì—p‚ğ‚Ü‚Æ‚ß‚é`CompositeEffect`‚ğ“±“ü‚·‚ê‚ÎCFSM’è‹`‚Ì‹Lq—Í‚ª‚ ‚ª‚é
-// TODO: ”Ä—p“I‚ÈuActoró‘Ô‰Šú‰»v‚Ì•›ì—pƒVƒXƒeƒ€‚ğ—pˆÓ‚·‚é
+// TODO: SkillExecutionComponentã®åˆæœŸçŠ¶æ…‹ã¨åˆæœŸåŒ–æ–¹æ³•ã‚’ã‚ˆã‚Šè‰¯ã„æ–¹æ³•ã‚’è€ƒãˆã‚‹
+// ToDo: è¤‡æ•°å‰¯ä½œç”¨ã‚’ã¾ã¨ã‚ã‚‹`CompositeEffect`ã‚’å°å…¥ã™ã‚Œã°ï¼ŒFSMå®šç¾©ã®è¨˜è¿°åŠ›ãŒã‚ãŒã‚‹
+// TODO: æ±ç”¨çš„ãªã€ŒActorçŠ¶æ…‹åˆæœŸåŒ–ã€ã®å‰¯ä½œç”¨ã‚·ã‚¹ãƒ†ãƒ ã‚’ç”¨æ„ã™ã‚‹
 namespace Game::Combat::Skill::FSM::Effect
 {
 	using namespace Game::Combat::Skill::Component;
 	using namespace Game::Combat::Skill::FSM;
 
-	// SkillExecutionî•ñ‚ğƒŠƒZƒbƒg
+	// SkillExecutionæƒ…å ±ã‚’ãƒªã‚»ãƒƒãƒˆ
 	struct ResetExecutionStateEffect :IEffectTemplate
 	{
 		void execute(
-			eNsECS::EntityMgr& ecs,
-			eNsECS::Entity caster,
+			Engine::ECS::EntityMgr& ecs,
+			Engine::ECS::Entity caster,
 			const SkillDef& def,
 			const SkillFSMContext& ctx
 		) const override
@@ -43,7 +43,7 @@ namespace Game::Combat::Skill::FSM::Effect
 			if (ecs.hasComponent<SkillEffectExecutionRecordComponent>(caster))
 			{
 				auto& record = ecs.get<SkillEffectExecutionRecordComponent>(caster);
-				record.clear();// •›ì—pÀsƒƒO‚ğƒŠƒZƒbƒg
+				record.clear();// å‰¯ä½œç”¨å®Ÿè¡Œãƒ­ã‚°ã‚’ãƒªã‚»ãƒƒãƒˆ
 				std::cout << "[ResetExecutionStateEffect] Cleared effect execution record for caster: " << caster.id << "\n";
 			}
 		}

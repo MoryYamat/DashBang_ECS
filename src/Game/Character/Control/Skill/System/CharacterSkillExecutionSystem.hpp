@@ -1,23 +1,15 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Engine/ECS/EntityManager.h"
 
 
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Game::Character::Control::Skill
 {
-	// ƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹ÀsƒVƒXƒeƒ€
-	void UpdateCharacterSkillExecution(eNsECS::EntityMgr& ecs, float deltaTime);
+	// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«å®Ÿè¡Œã‚·ã‚¹ãƒ†ãƒ 
+	void UpdateCharacterSkillExecution(Engine::ECS::EntityMgr& ecs, float deltaTime);
 
-	// ƒXƒLƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX‚ğì¬‚µCƒRƒ“ƒeƒLƒXƒgî•ñ‚ğİ’è‚·‚é
-	eNsECS::Entity CreateSkillInstanceWithContext
-	(
-		eNsECS::EntityMgr& ecs,
-		eNsECS::Entity caster,
-		int skillId,
-		const eNsLogic2DComp::Logic2DTransformComponent& casterTransform
-	);
 }

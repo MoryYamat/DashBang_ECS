@@ -1,4 +1,4 @@
-#include "ExtractSupport.h"
+ï»¿#include "ExtractSupport.h"
 
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
@@ -8,20 +8,20 @@
 
 
 glm::ivec4 Game::Collision::Utils::GetTileSearchBounds(
-	const gNsCollData::PlayerCollisionContext& playerCollisionCtx,
-	const eNsLogic2DComp::TileMapComponent& tileMapComp
+	const Game::Collision::Data::PlayerCollisionContext& playerCollisionCtx,
+	const Engine::ECS::Component::Logic2D::TileMapComponent& tileMapComp
 )
 {
-	// ‰~‚Ì’†S‚ğTileMapã‚Ìƒ[ƒJƒ‹À•W‚É•ÏŠ·
+	// å††ã®ä¸­å¿ƒã‚’TileMapä¸Šã®ãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™ã«å¤‰æ›
 	glm::vec2 relative = playerCollisionCtx.center - tileMapComp.origin;
 
-	// ƒ^ƒCƒ‹ƒCƒ“ƒfƒbƒNƒX”ÍˆÍ(•t‹ß‚Ìƒ^ƒCƒ‹‚¾‚¯)
+	// ã‚¿ã‚¤ãƒ«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ç¯„å›²(ä»˜è¿‘ã®ã‚¿ã‚¤ãƒ«ã ã‘)
 	int colStart = static_cast<int>(std::floor((relative.x - playerCollisionCtx.radius) / tileMapComp.tileSize)) - 1;
 	int colEnd = static_cast<int>(std::ceil((relative.x + playerCollisionCtx.radius) / tileMapComp.tileSize)) + 1;
 	int rowStart = static_cast<int>(std::floor((relative.y - playerCollisionCtx.radius) / tileMapComp.tileSize)) - 1;
 	int rowEnd = static_cast<int>(std::ceil((relative.y + playerCollisionCtx.radius) / tileMapComp.tileSize)) + 1;
 
-	// ”ÍˆÍƒNƒ‰ƒ“ƒv(ˆÀ‘S‚Éƒ^ƒCƒ‹ƒAƒNƒZƒX)
+	// ç¯„å›²ã‚¯ãƒ©ãƒ³ãƒ—(å®‰å…¨ã«ã‚¿ã‚¤ãƒ«ã‚¢ã‚¯ã‚»ã‚¹)
 	colStart = std::max(0, colStart);
 	colEnd = std::min(tileMapComp.numCols - 1, colEnd);
 	rowStart = std::max(0, rowStart);

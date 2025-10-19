@@ -1,4 +1,4 @@
-// ECS‚âComponent‚©‚ç•K—vî•ñ‚ğ’ŠoE•ÏŠ·‚·‚é•â•ŠÖ”
+ï»¿// ECSã‚„Componentã‹ã‚‰å¿…è¦æƒ…å ±ã‚’æŠ½å‡ºãƒ»å¤‰æ›ã™ã‚‹è£œåŠ©é–¢æ•°
 // Auxiliary functions to extract and convert necessary information from ECS and Component
 
 #pragma once
@@ -15,15 +15,15 @@
 #include <utility>
 #include <optional>
 
-#include "Common/GameNamespaceDecl.h"
+
 
 namespace Game::Collision::Utils
 {
 	// A function that uses information from the TileMapComponent to find the index range (rows and columns) of tiles that can intersect with the circle.
-	// ‰~‚ÆŒğ·‚µ‚¤‚éƒ^ƒCƒ‹‚ÌƒCƒ“ƒfƒbƒNƒX”ÍˆÍisE—ñj‚ğTileMapComponent‚Ìî•ñ‚ğg‚Á‚Ä‹‚ß‚éŠÖ”
+	// å††ã¨äº¤å·®ã—ã†ã‚‹ã‚¿ã‚¤ãƒ«ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ç¯„å›²ï¼ˆè¡Œãƒ»åˆ—ï¼‰ã‚’TileMapComponentã®æƒ…å ±ã‚’ä½¿ã£ã¦æ±‚ã‚ã‚‹é–¢æ•°
 	glm::ivec4 GetTileSearchBounds(
-		const gNsCollData::PlayerCollisionContext& playerCollisionCtx,
-		const eNsLogic2DComp::TileMapComponent& tileMapComp
+		const Game::Collision::Data::PlayerCollisionContext& playerCollisionCtx,
+		const Engine::ECS::Component::Logic2D::TileMapComponent& tileMapComp
 	);
 
 

@@ -1,10 +1,9 @@
-// ƒLƒƒƒ‰ƒNƒ^[§ŒäˆÓ}
+ï»¿// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼åˆ¶å¾¡æ„å›³
 
 #pragma once
 
 #include "Game/Combat/Skill/MasterData/SkillSlot.h"
 
-#include "Common/GameNamespaceDecl.h"
 
 #include <vector>
 
@@ -13,10 +12,10 @@ namespace Game::Character::Control::Skill
 {
 	struct SkillIntentComponent
 	{
-		// —v‹‚³‚ê‚½ƒXƒLƒ‹ƒXƒƒbƒg
-		std::vector<gNsSkillData::SkillSlot> requestedSlots;
+		// è¦æ±‚ã•ã‚ŒãŸã‚¹ã‚­ãƒ«ã‚¹ãƒ­ãƒƒãƒˆ
+		std::vector<Game::Combat::Skill::Data::SkillSlot> requestedSlots;
 
-		// ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚é‚©‚Ç‚¤‚©
+		// ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹ã‹ã©ã†ã‹
 		bool isActive = false;
 	};
 }

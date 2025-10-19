@@ -20,100 +20,43 @@
 
 #include <cstdint>
 
-eNsECS::Entity Game::Actor::Map::TileMapActor::Create(
-	eNsECS::EntityMgr& ecs,
-	const eNsCommonComp::TransformComponent& transform,
-	const eNsGfxModel::ModelData& modelData,
+Engine::ECS::Entity Game::Actor::Map::TileMapActor::Create(
+	Engine::ECS::EntityMgr& ecs,
+	const Engine::ECS::Component::Common::TransformComponent& transform,
+	const Engine::Graphics::Model::ModelData& modelData,
 	float tileSize
 )
 {
 	namespace Ops = Engine::ECS::Ops;
 	namespace Comp = Engine::ECS::Component;
+	
 
-	eNsECS::Entity e = ecs.createEntity();
+	Engine::ECS::Entity e = ecs.createEntity();
 
 	// コンポーネント初期化
 	// TerrainMeshの情報をコピーする
-	eNsLogic2DComp::Logic2DTransformComponent tempLogic2D = 
-		gNsInit::Logic2D::InitLogic2DTransformFromModel(transform, modelData);
+	Comp::Logic2D::Logic2DTransformComponent tempLogic2D = 
+		Game::Init::Logic2D::InitLogic2DTransformFromModel(transform, modelData);
 	// ecs.addComponent(entity, logic2DComp);
 
 	// タイルマップ情報初期化
-	eNsLogic2DComp::TileMapComponent tileMapComp;
+	Comp::Logic2D::TileMapComponent tileMapComp;
 	tileMapComp.tileSize = tileSize;
-	tileMapComp = gNsInit::Logic2D::InitTileMapFromBounds(transform, modelData, tempLogic2D, tileSize);
-	gNsInit::Logic2D::InitTileMapTiles(tileMapComp);
+	tileMapComp = Game::Init::Logic2D::InitTileMapFromBounds(transform, modelData, tempLogic2D, tileSize);
+	Game::Init::Logic2D::InitTileMapTiles(tileMapComp);
 	Ops::Add<Comp::Logic2D::TileMapComponent>(ecs, e, tileMapComp);
 
 	// 論理transformの再初期化(タイルマップ自体は回転を考えない)
-	eNsLogic2DComp::Logic2DTransformComponent fixedLogic2D;
+	Comp::Logic2D::Logic2DTransformComponent fixedLogic2D;
 	fixedLogic2D.positionXZ = tempLogic2D.positionXZ;
 	fixedLogic2D.rotation = 0.0f;
 	Ops::Add<Comp::Logic2D::Logic2DTransformComponent>(ecs, e, fixedLogic2D);
 
 
-	// TileMapにCollisionComponentは不要なはず
-	// TileMapにCollisionComponentは不要なはず
-	// TileMapにCollisionComponentは不要なはず
-	// Collision Component
-	//eNsLogic2DComp::CollisionComponent collisionComp;
-	//// calc world size on the xz plane
-	//glm::vec2 worldSize = gNsInit::Logic2D::GetModelXZSizeWithScale(transform, modelData);
-
-	//float rotRad = tempLogic2D.rotation;// 描画基準と論理基準の整合性を考える
-	//// Front = Z axis basis
-	//glm::vec2 axisZ = glm::normalize(eNsLogic2DMath::CalcForwardFromYaw((rotRad)));
-	//glm::vec2 axisX = eNsLogic2DMath::CalcRightFromYaw(rotRad);
-	////collisionComp.collider.obb2D.axisX = axisX;
-	////collisionComp.collider.obb2D.axisZ = axisZ;
-	//collisionComp.collider.shape = eNsLogic2DComp::Obb2D{
-	//	.center = glm::vec2(0.0f),
-	//	.halfExtents = worldSize * 0.5f,
-	//	.axisX = axisX,
-	//	.axisZ = axisZ
-	//};
-
-	//// calc world center on the xz plane
-	////glm::vec3 localCenter = modelData.GetCenter();
-	////glm::vec3 worldCenter3D = transform.toMatrix() * glm::vec4(localCenter, 1.0f);
-	////glm::vec2 worldCenterXZ = glm::vec2(worldCenter3D.x, worldCenter3D.z);
-	////collisionComp.collider.obb2D.center = worldCenterXZ;
-
-	//ecs.addComponent(entity, collisionComp);
-
 	Ops::Add<Comp::Tags::MainTileMapTag>(ecs, e, Comp::Tags::MainTileMapTag{});
 
-	//ecs.addComponent(entity,
-	//	gNsCollComp::CollisionMaskComponent{
-	//		.selfLayer = gNsCollData::Layer::Tile,
-	//		.collidesWithMask = static_cast<uint32_t>(
-	//			gNsCollData::Layer::Player |
-	//			gNsCollData::Layer::Enemy
-	//			)});
 
-	eNsDebugLog::debugLog("Tile Map Actor Created Successfully!", "TileMapActor.cpp(Create)");
+	Engine::Debug::Logging::debugLog("Tile Map Actor Created Successfully!", "TileMapActor.cpp(Create)");
 	
 	return e;
 }
-
-//Game::Actor::Map::TileMapActor::TileMapActor(eNsECS::EntityMgr& ecs)
-//{
-//	eNsECS::Entity entity = ecs.createEntity();
-//
-//	eNsLogic2DComp::TileMapComponent tileMapComp;
-//
-//	// 配列の情報設定
-//	tileMapComp.numCols = 10;
-//	tileMapComp.numRows = 10;
-//
-//	// その他の情報
-//	tileMapComp.tileSize = 0.5f;
-//	tileMapComp.origin = glm::vec2(tileMapComp.numCols * tileMapComp.tileSize * -0.5f, tileMapComp.numRows * tileMapComp.tileSize * -0.5f);
-//
-//	// 配列作成
-//	tileMapComp.tiles.resize(tileMapComp.numRows, std::vector<eNsLogic2DComp::Tile>(tileMapComp.numCols));
-//
-//	ecs.addComponent(entity, tileMapComp);
-//
-//	eNsDebugLog::GeneralLog("TileMapActor.cpp", "Tilemap creation completed successfully");
-//}

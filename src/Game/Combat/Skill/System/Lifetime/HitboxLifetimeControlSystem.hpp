@@ -1,16 +1,16 @@
-// ƒXƒLƒ‹‚É‚æ‚è¶¬‚³‚ê‚½Hitbox Entity‚Ìõ–½‚ğstate‚È‚Ç‚ÌˆË‘¶‚ğl—¶‚µ‚ÄƒRƒ“ƒgƒ[ƒ‹‚·‚éƒVƒXƒeƒ€
+ï»¿// ã‚¹ã‚­ãƒ«ã«ã‚ˆã‚Šç”Ÿæˆã•ã‚ŒãŸHitbox Entityã®å¯¿å‘½ã‚’stateãªã©ã®ä¾å­˜ã‚’è€ƒæ…®ã—ã¦ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã™ã‚‹ã‚·ã‚¹ãƒ†ãƒ 
 
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Game::Combat::Skill::System
 {
 	class HitboxLifetimeControlSystem
 	{
 	public:
-		static void Update(eNsECS::EntityMgr& ecs, float deltaTime);
+		static void Update(Engine::ECS::EntityMgr& ecs, float deltaTime);
 	};
 }

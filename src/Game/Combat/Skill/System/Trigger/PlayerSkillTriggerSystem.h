@@ -1,4 +1,4 @@
-// íœ—\’èF”p~DIntentResolver‚É‚æ‚éTrigger”»’è‚Ì•¡G‰»‚É”º‚¤Ó–±‚Ì”p~
+ï»¿// å‰Šé™¤äºˆå®šï¼šå»ƒæ­¢ï¼IntentResolverã«ã‚ˆã‚‹Triggeråˆ¤å®šã®è¤‡é›‘åŒ–ã«ä¼´ã†è²¬å‹™ã®å»ƒæ­¢
 
 #pragma once
 
@@ -7,18 +7,18 @@
 
 #include "Game/Combat/Skill/System/Trigger/SkillInputMap.h"
 
-#include "Common/EngineNamespaceDecl.h"
-#include "Common/GameNamespaceDecl.h"
+
+
 
 namespace Game::Combat::Skill::Trigger
 {
 	class PlayerSkillTriggerSystem
 	{
 	public:
-		static void TriggerPlayerSkillsFromIntent(eNsECS::EntityMgr& ecs);
+		static void TriggerPlayerSkillsFromIntent(Engine::ECS::EntityMgr& ecs);
 		
-		// íœ—\’è:ŒÃ‚¢ƒo[ƒWƒ‡ƒ“
-		// static void TriggerSkillsFromInput(eNsECS::EntityMgr& ecs, SkillInputMap& inputMap);
+		// å‰Šé™¤äºˆå®š:å¤ã„ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+		// static void TriggerSkillsFromInput(Engine::ECS::EntityMgr& ecs, SkillInputMap& inputMap);
 
 		// static void Update(ECS& ecs, SkillInputMap& SkillInputMap);
 	};

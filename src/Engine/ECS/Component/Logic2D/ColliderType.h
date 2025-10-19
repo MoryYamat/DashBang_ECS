@@ -1,5 +1,5 @@
-// Collision shape local definition **Use in conjunction with world transformation info when used**
-// ƒRƒŠƒWƒ‡ƒ“‚ÌŒ`óƒ[ƒJƒ‹’è‹` **g—p‚Éƒ[ƒ‹ƒh•ÏŠ·î•ñ‚Æ‘g‚İ‡‚í‚¹‚Äg‚¤**
+ï»¿// Collision shape local definition **Use in conjunction with world transformation info when used**
+// ã‚³ãƒªã‚¸ãƒ§ãƒ³ã®å½¢çŠ¶ãƒ­ãƒ¼ã‚«ãƒ«å®šç¾© **ä½¿ç”¨æ™‚ã«ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›æƒ…å ±ã¨çµ„ã¿åˆã‚ã›ã¦ä½¿ã†**
 // 
 #pragma once
 
@@ -7,7 +7,7 @@
 
 #include <cmath>
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 #include <variant>
 #include <cassert>
@@ -26,41 +26,41 @@ namespace Engine::ECS::Component::Logic2D
 		Capsule3D,
 	};
 
-	// 2D‰~
+	// 2Då††
 	struct Circle2D
 	{
-		// ƒ[ƒJƒ‹ƒIƒtƒZƒbƒg
+		// ãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆ
 		glm::vec2 center;
 		float radius;
 	};
 
-	// 2D³•ûŒ`
+	// 2Dæ­£æ–¹å½¢
 	struct Box2D
 	{
-		// ƒ[ƒJƒ‹ƒIƒtƒZƒbƒg
+		// ãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆ
 		glm::vec2 center;
 		glm::vec2 halfExtents;
 	};
 
 	// Oriented Bounding Box
-	// ‰ñ“]‚ ‚è‹«ŠEƒ{ƒbƒNƒX
+	// å›è»¢ã‚ã‚Šå¢ƒç•Œãƒœãƒƒã‚¯ã‚¹
 	struct Obb2D
 	{
-		// ƒ[ƒJƒ‹ƒIƒtƒZƒbƒg
+		// ãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆ
 		glm::vec2 center;//
 		glm::vec2 halfExtents; // (width/2, height/2)
-		glm::vec2 axisX; // X²•ûŒü‚Ì’PˆÊƒxƒNƒgƒ‹
-		glm::vec2 axisZ;// axis‚É’¼Œğ
+		glm::vec2 axisX; // Xè»¸æ–¹å‘ã®å˜ä½ãƒ™ã‚¯ãƒˆãƒ«
+		glm::vec2 axisZ;// axisã«ç›´äº¤
 
-		// “_‚ªŠÜ‚Ü‚ê‚é‚©‚Ç‚¤‚©‚ğ”»’è
+		// ç‚¹ãŒå«ã¾ã‚Œã‚‹ã‹ã©ã†ã‹ã‚’åˆ¤å®š
 		bool contains(const glm::vec2& pointXZ) const
 		{
-			// ‘Š‘ÎƒxƒNƒgƒ‹
+			// ç›¸å¯¾ãƒ™ã‚¯ãƒˆãƒ«
 			glm::vec2 d = pointXZ - center;
-			float dx = glm::dot(d, axisX);// ƒ[ƒJƒ‹x²‚Ö‚Ì“Š‰e
-			float dz = glm::dot(d, axisZ);// ƒ[ƒJƒ‹z²‚Ö‚Ì“Š‰e
+			float dx = glm::dot(d, axisX);// ãƒ­ãƒ¼ã‚«ãƒ«xè»¸ã¸ã®æŠ•å½±
+			float dz = glm::dot(d, axisZ);// ãƒ­ãƒ¼ã‚«ãƒ«zè»¸ã¸ã®æŠ•å½±
 
-			// “Š‰e‚Ìâ‘Î’l‚Æƒ‚ƒfƒ‹”¼Œa(XZ‚»‚ê‚¼‚ê‚ğ)”äŠr‚µ‚Ä”»’è
+			// æŠ•å½±ã®çµ¶å¯¾å€¤ã¨ãƒ¢ãƒ‡ãƒ«åŠå¾„(XZãã‚Œãã‚Œã‚’)æ¯”è¼ƒã—ã¦åˆ¤å®š
 			return std::abs(dx) <= halfExtents.x && std::abs(dz) <= halfExtents.y;
 		}
 	};
@@ -72,9 +72,9 @@ namespace Engine::ECS::Component::Logic2D
 	// Collider Data Structure
 	struct Collider
 	{
-		//eNsLogic2DComp::ColliderType type;
+		//Engine::ECS::Component::Logic2D::ColliderType type;
 
-		// ƒpƒtƒH[ƒ}ƒ“ƒX‚ÆˆÀ‘S«‚ğ‚‚ß‚é•û–@‚ğl‚¦‚é‚Ü‚Å‚ÍVariant‚Å
+		// ãƒ‘ãƒ•ã‚©ãƒ¼ãƒãƒ³ã‚¹ã¨å®‰å…¨æ€§ã‚’é«˜ã‚ã‚‹æ–¹æ³•ã‚’è€ƒãˆã‚‹ã¾ã§ã¯Variantã§
 		CollideVariant shape;
 
 		ColliderType getType() const
@@ -109,7 +109,7 @@ namespace Engine::ECS::Component::Logic2D
 		}
 		const Obb2D& AsObb2D() const 
 		{
-			assert(IsObb2D());// ŠJ”­‚Ì‚İƒ`ƒFƒbƒN
+			assert(IsObb2D());// é–‹ç™ºæ™‚ã®ã¿ãƒã‚§ãƒƒã‚¯
 			return std::get<Obb2D>(shape); 
 		}
 		
@@ -119,21 +119,21 @@ namespace Engine::ECS::Component::Logic2D
 
 //struct AABB3D
 //{
-//	// ƒ[ƒJƒ‹ƒIƒtƒZƒbƒg
+//	// ãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆ
 //	glm::vec3 min;
 //	glm::vec3 max;
 //};
 
 //struct Sphere3D
 //{
-//	// ƒ[ƒJƒ‹ƒIƒtƒZƒbƒg
+//	// ãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆ
 //	glm::vec3 center;
 //	float radius;
 //};
 
 //struct Capsule3D
 //{
-//	// ƒ[ƒJƒ‹ƒIƒtƒZƒbƒg
+//	// ãƒ­ãƒ¼ã‚«ãƒ«ã‚ªãƒ•ã‚»ãƒƒãƒˆ
 //	glm::vec3 base;
 //	glm::vec3 tip;
 //	float radius;

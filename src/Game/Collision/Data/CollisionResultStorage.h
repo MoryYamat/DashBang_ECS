@@ -1,4 +1,4 @@
-//
+ï»¿//
 
 #pragma once
 
@@ -7,10 +7,6 @@
 #include <glm/glm.hpp>
 
 #include <vector>
-
-#include "Common/EngineNamespaceDecl.h"
-
-#include "Common/GameNamespaceDecl.h"
 
 #include <glm/glm.hpp>
 #include <cstdint>
@@ -21,7 +17,7 @@ namespace Game::Collision::Data
 	{
 		Solid,
 		Hitbox
-	};// •¨— or ƒqƒbƒg
+	};// ç‰©ç† or ãƒ’ãƒƒãƒˆ
 
 	enum class ContactPhase : uint8_t
 	{
@@ -43,27 +39,27 @@ namespace Game::Collision::Data
 
 	struct Contact
 	{
-		eNsECS::Entity a;
-		eNsECS::Entity b;
+		Engine::ECS::Entity a;
+		Engine::ECS::Entity b;
 		ContactChannel channel;
 		ContactPhase phase;
 		ContactPayload payload;
-		uint64_t key; // (a,b,channel) ƒnƒbƒVƒ…
+		uint64_t key; // (a,b,channel) ãƒãƒƒã‚·ãƒ¥
 	};
 
-	// Õ“Ë‚ÌÚ×î•ñ(–@ü•ûŒü‚È‚Ç)
+	// è¡çªã®è©³ç´°æƒ…å ±(æ³•ç·šæ–¹å‘ãªã©)
 	struct ContactInfo
 	{
-		glm::vec2 contactNormal;// Õ“Ë–Ê–@ü•ûŒü
-		float penetrationDepth;// ‚ß‚è‚İ—Ê
+		glm::vec2 contactNormal;// è¡çªé¢æ³•ç·šæ–¹å‘
+		float penetrationDepth;// ã‚ã‚Šè¾¼ã¿é‡
 	};
 
-	// Õ“ËŒ‹‰Ê
+	// è¡çªçµæœ
 	struct CollisionResult
 	{
-		eNsECS::Entity entityA;// Õ“Ë‘ÌA
-		eNsECS::Entity entityB;// Õ“Ë‘ÌB
-		ContactInfo contact;// Õ“Ë‚ÌÚ×î•ñ(–@ü•ûŒü‚È‚Ç)
+		Engine::ECS::Entity entityA;// è¡çªä½“A
+		Engine::ECS::Entity entityB;// è¡çªä½“B
+		ContactInfo contact;// è¡çªã®è©³ç´°æƒ…å ±(æ³•ç·šæ–¹å‘ãªã©)
 	};
 
 	struct ContactBus
@@ -87,7 +83,7 @@ namespace Game::Collision::Data
 		}
 	};
 
-	// Bufferƒf[ƒ^(–ˆƒtƒŒ[ƒ€XV)
+	// Bufferãƒ‡ãƒ¼ã‚¿(æ¯ãƒ•ãƒ¬ãƒ¼ãƒ æ›´æ–°)
 	struct CollisionResultBuffer
 	{
 		std::vector<CollisionResult> results;
@@ -97,17 +93,17 @@ namespace Game::Collision::Data
 
 	struct CollisionContact
 	{
-		eNsECS::Entity entityA;// Õ“Ë‘ÌA
-		eNsECS::Entity entityB;// Õ“Ë‘ÌB
-		glm::vec2 contactNormal;// Õ“Ë–Ê–@ü•ûŒü
-		float penetrationDepth;// ‚ß‚è‚İ—Ê
+		Engine::ECS::Entity entityA;// è¡çªä½“A
+		Engine::ECS::Entity entityB;// è¡çªä½“B
+		glm::vec2 contactNormal;// è¡çªé¢æ³•ç·šæ–¹å‘
+		float penetrationDepth;// ã‚ã‚Šè¾¼ã¿é‡
 
-		CollisionContact(eNsECS::Entity a, eNsECS::Entity b, const glm::vec2& normal = glm::vec2(0.0f), float penetration = 0.0f)
+		CollisionContact(Engine::ECS::Entity a, Engine::ECS::Entity b, const glm::vec2& normal = glm::vec2(0.0f), float penetration = 0.0f)
 			: entityA(a), entityB(b), contactNormal(normal), penetrationDepth(penetration) {
 		}
 	};
 
-	// 1ƒtƒŒ[ƒ€‚ÌƒRƒŠƒWƒ‡ƒ“î•ñƒoƒbƒtƒ@
+	// 1ãƒ•ãƒ¬ãƒ¼ãƒ ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³æƒ…å ±ãƒãƒƒãƒ•ã‚¡
 	class CollisionResultStorage
 	{
 	public:
@@ -118,14 +114,14 @@ namespace Game::Collision::Data
 		// 
 		const std::vector<CollisionContact>& GetAll() const;
 
-		// 1ƒtƒŒ[ƒ€‚²‚Æ‚É‰Šú‰»
+		// 1ãƒ•ãƒ¬ãƒ¼ãƒ ã”ã¨ã«åˆæœŸåŒ–
 		// Initialize every frame
 		void Clear();
 
-		// “Á’èƒGƒ“ƒeƒBƒeƒB‚ÉŠÖ‚·‚éÕ“Ë‚¾‚¯‚ğæ“¾
-		std::vector<CollisionContact> GetContactsInvolving(eNsECS::Entity entity) const;
+		// ç‰¹å®šã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ã«é–¢ã™ã‚‹è¡çªã ã‘ã‚’å–å¾—
+		std::vector<CollisionContact> GetContactsInvolving(Engine::ECS::Entity entity) const;
 
-		// Õ“Ë‘ÎÛî•ñ‚ÌŠi”[
+		// è¡çªå¯¾è±¡æƒ…å ±ã®æ ¼ç´
 		void AddTileCollision(const std::vector<glm::ivec2>& indices);
 
 		const std::vector<glm::ivec2>& GetTileCollisions() const
@@ -139,9 +135,9 @@ namespace Game::Collision::Data
 		std::vector<glm::ivec2> mTileCollisions;
 
 
-		// unordered_multimap<Entity, CollisionContact> ‚ğ•¹—p‚µ‚ÄŒŸõÅ“K‰»
+		// unordered_multimap<Entity, CollisionContact> ã‚’ä½µç”¨ã—ã¦æ¤œç´¢æœ€é©åŒ–
 
-		// FrameScopedStorage<CollisionResultStorage> ‚È‚Ç‚Åƒ‰ƒCƒtƒTƒCƒNƒ‹ŠÇ—‚Ì–¾¦‰»
+		// FrameScopedStorage<CollisionResultStorage> ãªã©ã§ãƒ©ã‚¤ãƒ•ã‚µã‚¤ã‚¯ãƒ«ç®¡ç†ã®æ˜ç¤ºåŒ–
 	};
 
 

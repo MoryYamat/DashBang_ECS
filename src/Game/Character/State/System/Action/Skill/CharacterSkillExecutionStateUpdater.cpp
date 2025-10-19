@@ -1,67 +1,67 @@
-#include "CharacterSkillExecutionStateUpdater.hpp"
+ï»¿#include "CharacterSkillExecutionStateUpdater.hpp"
 
 #include "Game/Character/State/Component/Action/Skill/CharacterSkillExecutionStateComponent.hpp"
 
 #include "Game/Combat/Skill/Component/SkillInstanceComponent.h"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 #include "Engine/Debug/DebugUtils.h"
 
 
-// ”p~—\’èFSkillSystem‚ğ”²–{“I‰ü‘PFŒ^‹ì“®FSM‚ğ“±“ü
+// å»ƒæ­¢äºˆå®šï¼šSkillSystemã‚’æŠœæœ¬çš„æ”¹å–„ï¼šå‹é§†å‹•FSMã‚’å°å…¥
 void Game::Character::State::Action::UpdateCharacterSkillExecutionStateFromInstance
 (
-	eNsECS::EntityMgr& ecs,
+	Engine::ECS::EntityMgr& ecs,
 	float deltaTime
 )
 {
-	for (eNsECS::Entity eSkill : ecs.view<gNsSkillComp::SkillInstanceComponent>())
+	for (Engine::ECS::Entity eSkill : ecs.view<Game::Combat::Skill::Component::SkillInstanceComponent>())
 	{
-		const auto& skillInstance = ecs.get<gNsSkillComp::SkillInstanceComponent>(eSkill);
-		eNsECS::Entity eCaster = skillInstance.caster;
+		const auto& skillInstance = ecs.get<Game::Combat::Skill::Component::SkillInstanceComponent>(eSkill);
+		Engine::ECS::Entity eCaster = skillInstance.caster;
 
-		// ƒLƒƒƒ‰ƒNƒ^[‚ªSkillExecutionStateComponent‚ğ‚Á‚Ä‚¢‚é‚©Šm”F
-		if (!ecs.hasComponent<gNsCharaActionState::CharacterSkillExecutionStateComponent>(eCaster))
-			continue;// ‚È‚¯‚ê‚Î”ò‚Î‚·
+		// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãŒSkillExecutionStateComponentã‚’æŒã£ã¦ã„ã‚‹ã‹ç¢ºèª
+		if (!ecs.hasComponent<Game::Character::State::Action::CharacterSkillExecutionStateComponent>(eCaster))
+			continue;// ãªã‘ã‚Œã°é£›ã°ã™
 
-		auto& skillExec = ecs.get<gNsCharaActionState::CharacterSkillExecutionStateComponent>(eCaster);
+		auto& skillExec = ecs.get<Game::Character::State::Action::CharacterSkillExecutionStateComponent>(eCaster);
 
-		// ‘O‰ñ‚Ìó‘Ô‚ğ‹L˜^
+		// å‰å›ã®çŠ¶æ…‹ã‚’è¨˜éŒ²
 		skillExec.previousPhase = skillExec.currentPhase;
 
-		using Phase = gNsSkillComp::SkillPhase;
-		using ExecPhase = gNsCharaActionState::CharacterSkillExecutionPhase;
+		using Phase = Game::Combat::Skill::Component::SkillPhase;
+		using ExecPhase = Game::Character::State::Action::CharacterSkillExecutionPhase;
 
-		// ƒXƒLƒ‹‚ÌƒtƒF[ƒY‚ÉŠî‚Ã‚¢‚Äó‘Ô‚ğXV
-		// ŒŸ“¢FƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹Àsó‘Ô‚ÉŠî‚Ã‚¢‚ÄCƒXƒLƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìó‘Ô‚ğXV‚·‚é‚×‚«‚Å‚Í‚È‚¢‚©H
-		// ŒŸ“¢FƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹Àsó‘Ô‚ÉŠî‚Ã‚¢‚ÄCƒXƒLƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìó‘Ô‚ğXV‚·‚é‚×‚«‚Å‚Í‚È‚¢‚©H
-		// ŒŸ“¢FƒLƒƒƒ‰ƒNƒ^[‚ÌƒXƒLƒ‹Àsó‘Ô‚ÉŠî‚Ã‚¢‚ÄCƒXƒLƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìó‘Ô‚ğXV‚·‚é‚×‚«‚Å‚Í‚È‚¢‚©H
+		// ã‚¹ã‚­ãƒ«ã®ãƒ•ã‚§ãƒ¼ã‚ºã«åŸºã¥ã„ã¦çŠ¶æ…‹ã‚’æ›´æ–°
+		// æ¤œè¨ï¼šã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«å®Ÿè¡ŒçŠ¶æ…‹ã«åŸºã¥ã„ã¦ï¼Œã‚¹ã‚­ãƒ«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®çŠ¶æ…‹ã‚’æ›´æ–°ã™ã‚‹ã¹ãã§ã¯ãªã„ã‹ï¼Ÿ
+		// æ¤œè¨ï¼šã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«å®Ÿè¡ŒçŠ¶æ…‹ã«åŸºã¥ã„ã¦ï¼Œã‚¹ã‚­ãƒ«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®çŠ¶æ…‹ã‚’æ›´æ–°ã™ã‚‹ã¹ãã§ã¯ãªã„ã‹ï¼Ÿ
+		// æ¤œè¨ï¼šã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ã‚¹ã‚­ãƒ«å®Ÿè¡ŒçŠ¶æ…‹ã«åŸºã¥ã„ã¦ï¼Œã‚¹ã‚­ãƒ«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®çŠ¶æ…‹ã‚’æ›´æ–°ã™ã‚‹ã¹ãã§ã¯ãªã„ã‹ï¼Ÿ
 		switch (skillInstance.phase)
 		{
 		case Phase::Casting:
 			skillExec.currentPhase = ExecPhase::Casting;
-			// eNsDebugLog::GeneralLog("CharacterSkillExecutionStateUpdater", "Skill Execution Phase: Casting");
+			// Engine::Debug::Logging::GeneralLog("CharacterSkillExecutionStateUpdater", "Skill Execution Phase: Casting");
 			break;
 		case Phase::Active:
 			skillExec.currentPhase = ExecPhase::Active;
-			// eNsDebugLog::GeneralLog("CharacterSkillExecutionStateUpdater", "Skill Execution Phase: Active");
+			// Engine::Debug::Logging::GeneralLog("CharacterSkillExecutionStateUpdater", "Skill Execution Phase: Active");
 			break;
 		case Phase::Recovery:
 			skillExec.currentPhase = ExecPhase::Recovery;
-			// eNsDebugLog::GeneralLog("CharacterSkillExecutionStateUpdater", "Skill Execution Phase: Recovery");
+			// Engine::Debug::Logging::GeneralLog("CharacterSkillExecutionStateUpdater", "Skill Execution Phase: Recovery");
 			break;
 		case Phase::Completed:
 			skillExec.currentPhase = ExecPhase::Completed;
-			// eNsDebugLog::GeneralLog("CharacterSkillExecutionStateUpdater", "Skill Execution Phase: Completed");
+			// Engine::Debug::Logging::GeneralLog("CharacterSkillExecutionStateUpdater", "Skill Execution Phase: Completed");
 			break;
 		case Phase::Interrupted:
 			skillExec.currentPhase = ExecPhase::Interrupted;
-			// eNsDebugLog::GeneralLog("CharacterSkillExecutionStateUpdater", "Skill Execution Phase: Interrupted");
+			// Engine::Debug::Logging::GeneralLog("CharacterSkillExecutionStateUpdater", "Skill Execution Phase: Interrupted");
 			break;
 		default:
 			skillExec.currentPhase = ExecPhase::None;
-			// eNsDebugLog::GeneralLog("CharacterSkillExecutionStateUpdater", "Skill Execution Phase: None");
+			// Engine::Debug::Logging::GeneralLog("CharacterSkillExecutionStateUpdater", "Skill Execution Phase: None");
 			break;
 		}
 

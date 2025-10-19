@@ -18,7 +18,7 @@ namespace Game::Character::FSM::Movement::Effect
 	{
 		glm::vec2 direction;
 
-		void apply(eNsECS::EntityMgr& ecs, eNsECS::Entity entity, const MovementFSMContext& ctx) const override
+		void apply(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity entity, const MovementFSMContext& ctx) const override
 		{
 			if (!ecs.hasComponent<Velocity2DComponent>(entity)) return ;
 			if(!ecs.hasComponent<CharacterStatsComponent>(entity)) return;
@@ -33,7 +33,7 @@ namespace Game::Character::FSM::Movement::Effect
 	// MOVING -> IDLE
 	struct ResetMovementVelocity : IEffectTemplate
 	{
-		void apply(eNsECS::EntityMgr& ecs, eNsECS::Entity entity, const MovementFSMContext& ctx) const override
+		void apply(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity entity, const MovementFSMContext& ctx) const override
 		{
 			if (!ecs.hasComponent<Velocity2DComponent>(entity)) return;
 

@@ -1,17 +1,17 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Engine/ECS/EntityManager.h"
 
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 namespace Game::Combat::Skill::System
 {
-	// ƒXƒLƒ‹‚Ìƒ‰ƒCƒtƒ^ƒCƒ€‚ğŠÇ—‚·‚éƒVƒXƒeƒ€
+	// ã‚¹ã‚­ãƒ«ã®ãƒ©ã‚¤ãƒ•ã‚¿ã‚¤ãƒ ã‚’ç®¡ç†ã™ã‚‹ã‚·ã‚¹ãƒ†ãƒ 
 	// System to manage the lifetime of skills
 	class AttackLifetimeSystem
 	{
 	public:
-		static void Update(eNsECS::EntityMgr& ecs, float deltaTime);
+		static void Update(Engine::ECS::EntityMgr& ecs, float deltaTime);
 	};
 }

@@ -1,4 +1,4 @@
-// Initialize logical data from drawing data
+ï»¿// Initialize logical data from drawing data
 
 #pragma once
 
@@ -11,14 +11,13 @@
 
 #include <string>
 
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Game::Init::Logic2D
 {
 	// 3D -> 2D
-	eNsLogic2DComp::Logic2DTransformComponent InitLogic2DTransformFromModel(
-		const eNsCommonComp::TransformComponent& transformComp
-		, const eNsGfxModel::ModelData& modelData
+	Engine::ECS::Component::Logic2D::Logic2DTransformComponent InitLogic2DTransformFromModel(
+		const Engine::ECS::Component::Common::TransformComponent& transformComp
+		, const Engine::Graphics::Model::ModelData& modelData
 	);
 
 	// 3D -> 3D
@@ -27,8 +26,8 @@ namespace Game::Init::Logic2D
 	//===============================
 	
 	// Get logical XZ size from model size, taking into account scale
-	// // ƒXƒP[ƒ‹‚ğl—¶‚µ‚Äƒ‚ƒfƒ‹ƒTƒCƒY‚©‚ç˜_—XZƒTƒCƒY‚ğæ“¾‚µ‚Ü‚·
-	glm::vec2 GetModelXZSizeWithScale(const eNsCommonComp::TransformComponent& transformComp, const eNsGfxModel::ModelData& modelData);
+	// // ã‚¹ã‚±ãƒ¼ãƒ«ã‚’è€ƒæ…®ã—ã¦ãƒ¢ãƒ‡ãƒ«ã‚µã‚¤ã‚ºã‹ã‚‰è«–ç†XZã‚µã‚¤ã‚ºã‚’å–å¾—ã—ã¾ã™
+	glm::vec2 GetModelXZSizeWithScale(const Engine::ECS::Component::Common::TransformComponent& transformComp, const Engine::Graphics::Model::ModelData& modelData);
 
 
 }
@@ -46,11 +45,11 @@ namespace Game::Init::Logic2D
 
 	// For initializing collision shape 
 	// When the maximum axis of the model's size on the XZ plane is the radius
-	// ƒ‚ƒfƒ‹‚ÌXZ•½–Ê‚É‚¨‚¯‚é‘å‚«‚³‚ÌÅ‘å²‚ğ”¼Œa‚É‚·‚éê‡
+	// ãƒ¢ãƒ‡ãƒ«ã®XZå¹³é¢ã«ãŠã‘ã‚‹å¤§ãã•ã®æœ€å¤§è»¸ã‚’åŠå¾„ã«ã™ã‚‹å ´åˆ
 
 	float EstimateRadiusFromModelXZ(
-		const eNsCommonComp::TransformComponent& transformComp,
-		const eNsGfxModel::ModelData& modelData,
+		const Engine::ECS::Component::Common::TransformComponent& transformComp,
+		const Engine::Graphics::Model::ModelData& modelData,
 		RadiusEstimateStrategy strategy = RadiusEstimateStrategy::MaxAxis
 	);
 }

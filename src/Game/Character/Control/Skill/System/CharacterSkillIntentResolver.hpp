@@ -19,6 +19,5 @@ namespace Game::Character::Control::Skill
 		const Game::Combat::Skill::Data::SkillEntry& entry
 	);
 
-	// 削除予定：キャラクターのスキルの意図を反映するかしないか判定するシステム（FSM実装後廃止）
-	void UpdateCharacterSkillIntentResovlver(Engine::ECS::EntityMgr& ecs);
+
 }

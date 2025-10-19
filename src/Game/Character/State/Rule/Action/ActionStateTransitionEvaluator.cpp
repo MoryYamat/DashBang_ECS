@@ -3,10 +3,10 @@
 
 bool Game::Character::State::Action::AreConditionsMet
 (
-	const gNsCharaActionState::CharacterActionStateComponent& action,
-	const gNsCharaActionState::CharacterSkillExecutionStateComponent& skillExec,
+	const Game::Character::State::Action::CharacterActionStateComponent& action,
+	const Game::Character::State::Action::CharacterSkillExecutionStateComponent& skillExec,
 	float deltaTime,
-	const std::vector<gNsCharaActionState::TransitionCondition>& conditions
+	const std::vector<Game::Character::State::Action::TransitionCondition>& conditions
 )
 {
 	for (const auto& cond : conditions)
@@ -19,19 +19,19 @@ bool Game::Character::State::Action::AreConditionsMet
 
 bool Game::Character::State::Action::EvaluateCondition
 (
-	const gNsCharaActionState::CharacterActionStateComponent& action,
-	const gNsCharaActionState::CharacterSkillExecutionStateComponent& skillExec,
+	const Game::Character::State::Action::CharacterActionStateComponent& action,
+	const Game::Character::State::Action::CharacterSkillExecutionStateComponent& skillExec,
 	float deltaTime,
-	const gNsCharaActionState::TransitionCondition& condition
+	const Game::Character::State::Action::TransitionCondition& condition
 )
 {
-	using Condition = gNsCharaActionState::TransitionConditionType;
+	using Condition = Game::Character::State::Action::TransitionConditionType;
 	switch (condition.type)
 	{
 	case Condition::SkillTriggered:
 		// キャラクターのスキル実行状態が開始されたかどうか
-		return skillExec.previousPhase == gNsCharaActionState::CharacterSkillExecutionPhase::None
-			&& skillExec.currentPhase == gNsCharaActionState::CharacterSkillExecutionPhase::Casting;
+		return skillExec.previousPhase == Game::Character::State::Action::CharacterSkillExecutionPhase::None
+			&& skillExec.currentPhase == Game::Character::State::Action::CharacterSkillExecutionPhase::Casting;
 		// Fixme: ActionDurationElapsedという名前はあいまいで誤解が生じやすい：例えば，SkillExitTriggeredのように，スキルが終了するトリガーが発生したことがわかるような名前がよい
 	case Condition::ActionDurationElapsed:
 		// キャラクターのスキル実行状態が完了したか，スキル実行が中断された場合

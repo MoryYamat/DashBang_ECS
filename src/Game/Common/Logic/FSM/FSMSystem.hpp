@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Engine/ECS/EntityMgr.hpp"
 
@@ -6,7 +6,7 @@
 #include "Game/Common/Logic/FSM/FSMStateComponent.hpp"
 #include "Game/Common/Logic/FSM/Condition/ConditionRegistry.hpp"
 
-#include "Common/EngineNamespaceDecl.h"
+
 
 #include <typeindex>
 
@@ -15,12 +15,12 @@ namespace Game::Common::Logic::FSM
 	template<typename FSMDef, typename Context>
 	struct FSMSystem
 	{
-		using Axis = typename FSMDef::AxisType; // FSM‚Ì²
+		using Axis = typename FSMDef::AxisType; // FSMã®è»¸
 		using StateComponent = FSMStateComponent<Axis>;
 		using Registry = ConditionRegistry<Context>;
 
-		// –ˆƒtƒŒ[ƒ€ó‘Ô‚ğXV‚·‚é
-		void update(eNsECS::EntityMgr& ecs, const Registry& registry, const Context& ctx)
+		// æ¯ãƒ•ãƒ¬ãƒ¼ãƒ çŠ¶æ…‹ã‚’æ›´æ–°ã™ã‚‹
+		void update(Engine::ECS::EntityMgr& ecs, const Registry& registry, const Context& ctx)
 		{
 			auto transitions =  buildRuntimeTransitions<FSMDef>(registry);
 

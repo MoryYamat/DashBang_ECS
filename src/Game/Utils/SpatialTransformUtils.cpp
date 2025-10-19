@@ -1,4 +1,4 @@
-#include "SpatialTransformUtils.h"
+ï»¿#include "SpatialTransformUtils.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -7,44 +7,44 @@
 
 glm::vec2 Game::Utils::GetLogicDirectionFromCursorToTarget(
 	const glm::vec2& screenMousePos, 
-	const eNsGfxRender::RenderContext& renderContext,
+	const Engine::Graphics::Render::RenderContext& renderContext,
 	const glm::vec2& playerLogicPosXZ // Character position in logical coordinates
 )
 {
 	glm::vec2 mouseWorldXZ = ProjectScreenToLogicXZPlane(screenMousePos, renderContext);
 
-	// ƒLƒƒƒ‰ƒNƒ^[‚©‚ç‚Ì‘Š‘ÎˆÊ’uƒxƒNƒgƒ‹(˜_—‹óŠÔ‚Å‚Ì)•ûŒü‚ğŒvZ
+	// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‹ã‚‰ã®ç›¸å¯¾ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«(è«–ç†ç©ºé–“ã§ã®)æ–¹å‘ã‚’è¨ˆç®—
 	glm::vec2 direction = mouseWorldXZ - playerLogicPosXZ;
 
 	//DebugUtils::LogVector("SpatialTransformUtils.cpp(mouseToLogic)", direction);
 
-	// ³‹K‰»‚·‚é‚Æ‚æ‚¢
+	// æ­£è¦åŒ–ã™ã‚‹ã¨ã‚ˆã„
 	return direction;
 }
 
-// ƒ}ƒEƒX‚ÌƒXƒNƒŠ[ƒ“À•W‚©‚çƒ[ƒ‹ƒhÀ•W(XZ•½–Ê:y=0)‚Ö‚Ì“Š‰eˆÊ’u‚Ìæ“¾
-glm::vec2 Game::Utils::ProjectScreenToLogicXZPlane(const glm::vec2& screenMousePos, const eNsGfxRender::RenderContext& renderContext)
+// ãƒã‚¦ã‚¹ã®ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã‹ã‚‰ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™(XZå¹³é¢:y=0)ã¸ã®æŠ•å½±ä½ç½®ã®å–å¾—
+glm::vec2 Game::Utils::ProjectScreenToLogicXZPlane(const glm::vec2& screenMousePos, const Engine::Graphics::Render::RenderContext& renderContext)
 {
-	// Screen coordinates ¨ NDC ¨ world ray (near/far)
-	// ƒXƒNƒŠ[ƒ“À•W ¨ NDC ¨ ƒ[ƒ‹ƒhƒŒƒCinear/farj (ƒ}ƒEƒXƒ|ƒCƒ“ƒ^‚ÌRAY)
+	// Screen coordinates â†’ NDC â†’ world ray (near/far)
+	// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ â†’ NDC â†’ ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒ¬ã‚¤ï¼ˆnear/farï¼‰ (ãƒã‚¦ã‚¹ãƒã‚¤ãƒ³ã‚¿ã®RAY)
 	glm::vec3 nearPoint = glm::unProject(glm::vec3(screenMousePos.x, renderContext.viewport.w - screenMousePos.y, 0.0f),
 		renderContext.viewMatrix, renderContext.projectionMatrix, renderContext.viewport);
 
 	glm::vec3 farPoint = glm::unProject(glm::vec3(screenMousePos.x, renderContext.viewport.w - screenMousePos.y, 1.0f),
 		renderContext.viewMatrix, renderContext.projectionMatrix, renderContext.viewport);
 
-	// ³‹K‰»‚ÌˆÀ‘S«‚ğ‚‚ß‚éˆ—‚ğÀ‘•‚·‚é•K—v‚ª‚ ‚é
-	// nan(not a Number)‚ª“ü‚é‰Â”\«‚ª‚ ‚é.
-	// nan(not a Number)‚ª“ü‚é‰Â”\«‚ª‚ ‚é.
-	// nan(not a Number)‚ª“ü‚é‰Â”\«‚ª‚ ‚é.
-	// ƒ}ƒEƒXƒŒƒC i‚ÌƒxƒNƒgƒ‹)
+	// æ­£è¦åŒ–ã®å®‰å…¨æ€§ã‚’é«˜ã‚ã‚‹å‡¦ç†ã‚’å®Ÿè£…ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
+	// nan(not a Number)ãŒå…¥ã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹.
+	// nan(not a Number)ãŒå…¥ã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹.
+	// nan(not a Number)ãŒå…¥ã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹.
+	// ãƒã‚¦ã‚¹ãƒ¬ã‚¤ ï¼ˆã®ãƒ™ã‚¯ãƒˆãƒ«)
 	glm::vec3 rayDir = glm::normalize(farPoint - nearPoint);
 
-	// 0œZ–h~
+	// 0é™¤ç®—é˜²æ­¢
 	if (rayDir.y == 0.0f) return glm::vec2(0.0f);
 	// nearPoint.y + t * rayDir.y = (y=0)
 	float t = -nearPoint.y / rayDir.y;
-	// ’n–Ê(Y=0)‚Æ‚ÌŒğ·“_ 
+	// åœ°é¢(Y=0)ã¨ã®äº¤å·®ç‚¹ 
 	glm::vec3 intersection = nearPoint + t * rayDir;
 
 	glm::vec2 mouseWorldXZ(intersection.x, intersection.z);

@@ -1,11 +1,10 @@
-// Test Terrain Actor
+﻿// Test Terrain Actor
 
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"
 #include "Engine/Graphics/Renderer/Shader.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
 
 namespace Game::Actor::Map
@@ -13,6 +12,6 @@ namespace Game::Actor::Map
 	class TestBaseTerrainActor
 	{
 	public:
-		TestBaseTerrainActor(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader);
+		TestBaseTerrainActor(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader* shader);
 	};
 }

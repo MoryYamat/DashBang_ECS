@@ -1,4 +1,4 @@
-// MouseCursor Actor 
+﻿// MouseCursor Actor 
 
 #pragma once 
 
@@ -6,13 +6,12 @@
 
 #include "Game/Input/InputState.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Game::Actor::AnalogInput
 {
 	class MouseCursorActor
 	{
 	public:
-		MouseCursorActor(eNsECS::EntityMgr& ecs);
+		MouseCursorActor(Engine::ECS::EntityMgr& ecs);
 	};
 }

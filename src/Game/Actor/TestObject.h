@@ -1,4 +1,4 @@
-// test 
+﻿// test 
 
 
 #pragma once
@@ -7,14 +7,13 @@
 
 #include "Engine/Graphics/Renderer/Shader.h"
 
-#include "Common/EngineNamespaceDecl.h"
 
 namespace Game::Actor
 {
 	class TestObject
 	{
 	public:
-		TestObject(eNsECS::EntityMgr& ecs, eNsGfxRender::Shader* shader);
+		TestObject(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader* shader);
 
 	private:
 

@@ -17,9 +17,9 @@
 #include <cstdint>
 #include <iostream>
 
-Game::Actor::Camera::FollowCameraActor::FollowCameraActor(eNsECS::EntityMgr& ecs)
+Game::Actor::Camera::FollowCameraActor::FollowCameraActor(Engine::ECS::EntityMgr& ecs)
 {
-	eNsECS::Entity entity = ecs.createEntity();
+	Engine::ECS::Entity entity = ecs.createEntity();
 
 	//CameraComponent camComp;
 	//FollowCameraComponent followCamComp;
@@ -69,8 +69,8 @@ Game::Actor::Camera::FollowCameraActor::FollowCameraActor(eNsECS::EntityMgr& ecs
 
 // 現在未使用
 void Game::Actor::Camera::FollowCameraActor::initializeFollowCameraGetFront(
-	eNsCamComp::FollowCameraComponent& followCamComp
-		, eNsLogic2DComp::Logic2DTransformComponent& targetLogic2DTransform
+	Engine::ECS::Component::Camera::FollowCameraComponent& followCamComp
+		, Engine::ECS::Component::Logic2D::Logic2DTransformComponent& targetLogic2DTransform
 	)
 {
 	// Calculating camera position
@@ -86,12 +86,12 @@ void Game::Actor::Camera::FollowCameraActor::initializeFollowCameraGetFront(
 // 現在未使用
 // Calculates the coordinate data for drawing the camera component from logical data
 void Game::Actor::Camera::FollowCameraActor::initializeCameraVectors(
-	eNsCamComp::CameraComponent& camComp
-	, eNsCommonComp::TransformComponent& camTransform
-	, eNsCommonComp::TransformComponent& targetTransformComp)
+	Engine::ECS::Component::Camera::CameraComponent& camComp
+	, Engine::ECS::Component::Common::TransformComponent& camTransform
+	, Engine::ECS::Component::Common::TransformComponent& targetTransformComp)
 {
 	// debugging
-	eNsDebugLog::GeneralLog("FollowCameraActor.cpp", "Initializing camera vectors...");
+	Engine::Debug::Logging::GeneralLog("FollowCameraActor.cpp", "Initializing camera vectors...");
 
 	camComp.front = glm::normalize(targetTransformComp.position - camTransform.position);
 	camComp.right = glm::normalize(glm::cross(camComp.front, camComp.up));

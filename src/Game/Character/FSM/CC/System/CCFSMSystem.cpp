@@ -12,7 +12,7 @@
 
 namespace Game::Character::FSM::CC::System
 {
-	void CCFSMSysmtem(eNsECS::EntityMgr& ecs)
+	void CCFSMSysmtem(Engine::ECS::EntityMgr& ecs)
 	{
 		using namespace Engine::Time;
 		using namespace Game::Character::Control::CC::Component;

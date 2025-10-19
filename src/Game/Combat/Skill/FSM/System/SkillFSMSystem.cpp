@@ -11,7 +11,7 @@
 
 #include "Game/Combat/Skill/FSM/SkillStateTags.hpp"
 
-#include "Common/GameNamespaceDecl.h"
+
 
 #include <iostream>
 #include <functional>
@@ -19,7 +19,7 @@
 // TODO: ExecutionComponentの内部情報をリセットする機構を実装する必要あり
 // TODO: 遷移評価だけなので `break`を消すために，遷移priorityのいい初期化，定義方法を考える
 // TODO: 多段遷移を考える
-void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, float deltaTime)
+void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
 	using namespace Game::Combat::Skill::Database;
 	using namespace Game::Combat::Skill::Component;
@@ -28,7 +28,7 @@ void Game::Combat::Skill::FSM::UpdateSkillFSMSystem(eNsECS::EntityMgr& ecs, floa
 
 	auto& db = ecs.getResource<Game::Combat::Skill::Database::SkillDatabase>();
 
-	for (eNsECS::Entity eExec : ecs.view<
+	for (Engine::ECS::Entity eExec : ecs.view<
 		SkillExecutionContextComponent
 	>())
 	{
