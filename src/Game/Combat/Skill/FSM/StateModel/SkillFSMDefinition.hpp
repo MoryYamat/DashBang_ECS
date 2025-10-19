@@ -1,4 +1,4 @@
-// SkillPhase’è‹`‚âFSM\‘¢Có‘ÔŒ^
+ï»¿// SkillPhaseå®šç¾©ã‚„FSMæ§‹é€ ï¼ŒçŠ¶æ…‹å‹
 #pragma once
 
 
@@ -15,17 +15,14 @@
 
 namespace Game::Combat::Skill::FSM
 {
-	using namespace Game::Combat::Skill::FSM::Effect;
-
-	using namespace Game::Combat::Skill::FSM::Reset;
 
 	struct SkillFSMDefinition
 	{
 		uint32_t id;
 		std::vector<SkillTransition> transitions;
-		std::type_index initialState = typeid(SkillPhase::Casting);// –¾¦“I‚É‰Šúó‘Ô‚ğ’è‹`
+		std::type_index initialState = typeid(SkillPhase::Casting);// æ˜ç¤ºçš„ã«åˆæœŸçŠ¶æ…‹ã‚’å®šç¾©
 
-		std::vector<SkillEffectHook> effectHooks;
-		std::vector<SkillFSMResetHook> resetHooks;
+		std::vector<Game::Combat::Skill::FSM::Effect::SkillEffectHook> effectHooks;
+		std::vector<Game::Combat::Skill::FSM::Reset::SkillFSMResetHook> resetHooks;
 	};
 }

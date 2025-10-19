@@ -41,7 +41,6 @@ namespace Game::Combat::Skill::Component
 		OnCanceled, // スキルのキャンセル
 	};
 
-	using namespace Game::Combat::Skill::FSM;
 
 	// スキル実行状態メタ情報
 	struct SkillExecutionContextComponent
@@ -53,7 +52,7 @@ namespace Game::Combat::Skill::Component
 		float phaseElapsedTime = 0.0f;
 		bool isInterrupted = false;
 
-		std::type_index previousState = StateTag::NONE;
+		std::type_index previousState = Game::Combat::Skill::FSM::StateTag::NONE;
 
 		void reset(std::type_index& previous)
 		{

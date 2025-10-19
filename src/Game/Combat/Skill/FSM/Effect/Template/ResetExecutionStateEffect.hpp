@@ -18,8 +18,7 @@
 // TODO: 汎用的な「Actor状態初期化」の副作用システムを用意する
 namespace Game::Combat::Skill::FSM::Effect
 {
-	using namespace Game::Combat::Skill::Component;
-	using namespace Game::Combat::Skill::FSM;
+
 
 	// SkillExecution情報をリセット
 	struct ResetExecutionStateEffect :IEffectTemplate
@@ -27,10 +26,12 @@ namespace Game::Combat::Skill::FSM::Effect
 		void execute(
 			Engine::ECS::EntityMgr& ecs,
 			Engine::ECS::Entity caster,
-			const SkillDef& def,
-			const SkillFSMContext& ctx
+			const Game::Combat::Skill::Def::SkillDef& def,
+			const Game::Combat::Skill::FSM::SkillFSMContext& ctx
 		) const override
 		{
+			using namespace Game::Combat::Skill::Component;
+
 			if (!ecs.hasComponent<SkillExecutionContextComponent>(caster)) return;
 
 			auto& exec = ecs.get<SkillExecutionContextComponent>(caster);

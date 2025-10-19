@@ -26,18 +26,20 @@
 
 namespace Game::Character::FSM::Movement::Effect::FSMScoped
 {
-	using namespace Engine::ECS::Component::Logic2D;
-	using namespace Game::Character::Stats;
-	using namespace Game::Character::FSM::Movement;
-	using namespace Game::Common::Logic::FSM::Query;
 
-	using namespace Game::Combat::Skill::FSM;
 
 	struct ApplyMovementVelocityFSM : IFSMScopedEffect
 	{
 
-		void update(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity entity, const MovementFSMContext& ctx, float deltaTime) const override
+		void update(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity entity
+			, const Game::Character::FSM::Movement::MovementFSMContext& ctx, float deltaTime) const override
 		{
+			using namespace Engine::ECS::Component::Logic2D;
+			using namespace Game::Character::Stats;
+			using namespace Game::Character::FSM::Movement;
+			using namespace Game::Common::Logic::FSM::Query;
+			using namespace Game::Combat::Skill::FSM;
+
 			const auto& clock = Engine::Time::worldClock(ecs);
 
 			if (!ecs.hasComponent<Velocity2DComponent>(entity)) return;

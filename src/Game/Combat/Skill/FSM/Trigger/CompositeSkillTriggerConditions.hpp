@@ -1,7 +1,7 @@
-#pragma once
+﻿#pragma once
 
 
-#include "Game/Combat/Skill/FSM/Condition/ISkillTriggerCondition.hpp"
+#include "Game/Combat/Skill/FSM/Trigger/ISkillTriggerCondition.hpp"
 
 #include <memory>
 
@@ -17,7 +17,7 @@ namespace Game::Combat::Skill::FSM::Condition
 		explicit SkillTriggerCondition_And(std::vector<std::shared_ptr<ISkillTriggerCondition>> conds)
 			: conditions(std::move(conds)) { }
 
-		bool evaluate(const SkillStateComponent& state, const SkillDef& def) const override
+		bool evaluate(const Game::Combat::Skill::FSM::StateModel::SkillStateComponent& state, const Game::Combat::Skill::Def::SkillDef& def) const override
 		{
 			for (const auto& cond : conditions)
 			{

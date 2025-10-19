@@ -15,13 +15,11 @@
 
 namespace Game::Character::FSM::Movement
 {
-	using namespace Game::Character::FSM::Movement::Effect;
-	using namespace Game::Character::FSM::Movement::Effect::FSMScoped;
 	struct MovementFSMDefinition
 	{
 		std::type_index initialState = typeid(StateTag::IDLE);
 		std::vector<MovementTransition> transitions;
-		std::vector<MovementEffectHook> effectHooks;// stateScoped Effect
-		std::vector<std::shared_ptr<IFSMScopedEffect>> fsmScopedEffects;// fsm scoped effect
+		std::vector<Game::Character::FSM::Movement::Effect::MovementEffectHook> effectHooks;// stateScoped Effect
+		std::vector<std::shared_ptr<Game::Character::FSM::Movement::Effect::FSMScoped::IFSMScopedEffect>> fsmScopedEffects;// fsm scoped effect
 	};
 }

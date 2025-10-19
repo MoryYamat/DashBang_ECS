@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/ECS/EntityManager.h"
 #include "Engine/ECS/Entity.h"
@@ -9,19 +9,16 @@
 
 namespace Game::Combat::Skill::FSM::Reset
 {
-	using namespace Engine::ECS;
-
-	using namespace Game::Combat::Skill::Def;
 
 	struct IResetHandler
 	{
 		virtual ~IResetHandler() = default;
 
 		virtual void execute(
-			EntityMgr& ecs,
-			Entity caster,
-			const SkillDef& def,
-			const SkillFSMContext& ctx
+			Engine::ECS::EntityMgr& ecs,
+			Engine::ECS::Entity caster,
+			const Game::Combat::Skill::Def::SkillDef& def,
+			const Game::Combat::Skill::FSM::SkillFSMContext& ctx
 		)const = 0;
 	};
 }

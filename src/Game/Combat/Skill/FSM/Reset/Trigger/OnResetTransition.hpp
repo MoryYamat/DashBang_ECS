@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 
 #include "IResetTrigger.hpp"
@@ -9,9 +9,7 @@
 
 namespace Game::Combat::Skill::FSM::Reset
 {
-	using namespace Game::Combat::Skill::FSM;
 
-	using namespace Game::Combat::Skill::Def;
 
 	struct OnResetTransition : IResetTrigger
 	{
@@ -22,14 +20,14 @@ namespace Game::Combat::Skill::FSM::Reset
 			: from(from), to(to) { }
 
 		bool evaluate(
-			const SkillFSMContext& ctx,
-			const SkillDef& def,
+			const Game::Combat::Skill::FSM::SkillFSMContext& ctx,
+			const Game::Combat::Skill::Def::SkillDef& def,
 			std::type_index current,
 			std::type_index previous
 		) const override
 		{
 			// std::nullptr => any state 
-			if (from.has_value() && previous != from.value()) return false;// from‚ª—LŒø‚©‚Â ˆÈ‘O‚Ìó‘Ô‚ªfrom‚Ì’l‚Æ“¯‚¶‚Å‚ ‚ê‚Î•]‰¿‚·‚é from‚ªnullopt‚È‚çprevious‚ğ–³‹‚·‚é
+			if (from.has_value() && previous != from.value()) return false;// fromãŒæœ‰åŠ¹ã‹ã¤ ä»¥å‰ã®çŠ¶æ…‹ãŒfromã®å€¤ã¨åŒã˜ã§ã‚ã‚Œã°è©•ä¾¡ã™ã‚‹ fromãŒnulloptãªã‚‰previousã‚’ç„¡è¦–ã™ã‚‹
 			return current == to;
 		}
 	};

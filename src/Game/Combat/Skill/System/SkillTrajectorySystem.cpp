@@ -24,6 +24,7 @@ void Game::Combat::Skill::System::SkillTrajectorySystem::Update(Engine::ECS::Ent
 	using namespace Game::Combat::Skill::Component;
 	using namespace Game::ECS::Component;
 	using namespace Engine::ECS::Component::Logic2D;
+	using namespace Game::Combat::Skill::Data::SkillTrajectory;
 
 	for (Engine::ECS::Entity e : ecs.view<
 		Attack2DAreaComponent,

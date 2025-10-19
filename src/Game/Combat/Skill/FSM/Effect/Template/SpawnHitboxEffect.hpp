@@ -25,21 +25,23 @@
 // TODO: CollisionMaskComponentの初期化
 namespace Game::Combat::Skill::FSM::Effect
 {
-	using namespace Game::Combat::Skill::Component;
-	using namespace Game::ECS::Component;
-	using namespace Engine::ECS::Component::Logic2D;
-	
-	using namespace Game::Collision::Component;
+
 
 	struct SpawnHitboxEffect : IEffectTemplate
 	{
 		void execute(
 			Engine::ECS::EntityMgr& ecs,
 			Engine::ECS::Entity caster,
-			const SkillDef& def,
-			const SkillFSMContext& ctx
+			const Game::Combat::Skill::Def::SkillDef& def,
+			const Game::Combat::Skill::FSM::SkillFSMContext& ctx
 		) const override
 		{
+			using namespace Game::Combat::Skill::Component;
+			using namespace Game::ECS::Component;
+			using namespace Engine::ECS::Component::Logic2D;
+
+			using namespace Game::Collision::Component;
+
 			namespace Ops = Engine::ECS::Ops;
 			if (!def.spawnHitArea.has_value()) return;
 

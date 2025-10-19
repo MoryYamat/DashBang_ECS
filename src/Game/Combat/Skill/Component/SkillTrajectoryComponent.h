@@ -17,8 +17,7 @@
 
 namespace Game::Combat::Skill::Component
 {
-	using namespace Game::Combat::Skill::Data::SkillTrajectory;
-
+	
 	struct SkillTrajectoryComponent
 	{
 		//// 進行中の経過時間
@@ -29,13 +28,13 @@ namespace Game::Combat::Skill::Component
 
 		using TrajectoryVariant = std::variant<
 			std::monostate, 
-			StaticTrajectory, 
-			RotateTrajectoryParams, 
-			LinearTrajectoryParams, 
-			CurvedTrajectoryParams
+			Game::Combat::Skill::Data::SkillTrajectory::StaticTrajectory, 
+			Game::Combat::Skill::Data::SkillTrajectory::RotateTrajectoryParams, 
+			Game::Combat::Skill::Data::SkillTrajectory::LinearTrajectoryParams, 
+			Game::Combat::Skill::Data::SkillTrajectory::CurvedTrajectoryParams
 		>;
 
-		TrajectoryVariant trajectory = StaticTrajectory{};
+		TrajectoryVariant trajectory = Game::Combat::Skill::Data::SkillTrajectory::StaticTrajectory{};
 
 		// 実行時の具体的挙動 (Transformを時間で返す)
 		// std::function<Engine::ECS::Component::Logic2D::Transform2DComponent(float)> trajectoryFunc;

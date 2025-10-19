@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Game/Character/FSM/CC/StateModel/CCFSMDefinition.hpp"
 
@@ -7,13 +7,12 @@
 #include <iostream>
 namespace Game::Character::FSM::CC::Database
 {
-	using namespace Game::Character::FSM::CC::StateModel;
 
 	struct CCFSMDatabase
 	{
-		std::unordered_map<std::string, CCFSMDefinition> definitions;
+		std::unordered_map<std::string, Game::Character::FSM::CC::StateModel::CCFSMDefinition> definitions;
 
-		void Add(const std::string& id, const CCFSMDefinition& def)
+		void Add(const std::string& id, const Game::Character::FSM::CC::StateModel::CCFSMDefinition& def)
 		{
 			if (definitions.count(id))
 			{
@@ -31,7 +30,7 @@ namespace Game::Character::FSM::CC::Database
 			return definitions.find(id) != definitions.end();
 		}
 
-		const CCFSMDefinition& Get(const std::string& id) const
+		const Game::Character::FSM::CC::StateModel::CCFSMDefinition& Get(const std::string& id) const
 		{
 			return definitions.at(id);
 		}

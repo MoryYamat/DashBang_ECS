@@ -1,4 +1,4 @@
-// ó‘Ô‘JˆÚ‚Å”­‰Î
+ï»¿// çŠ¶æ…‹é·ç§»ã§ç™ºç«
 
 #pragma once
 
@@ -20,7 +20,7 @@ namespace Game::Combat::Skill::FSM::Effect
 			: from(from), to(to) { }
 
 		bool evaluate(const SkillFSMContext& ctx,
-			const SkillDef& def,
+			const Game::Combat::Skill::Def::SkillDef& def,
 			const std::type_index& currentState,
 			const std::type_index& previousState) const override
 		{

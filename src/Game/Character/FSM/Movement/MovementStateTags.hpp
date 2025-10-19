@@ -6,14 +6,12 @@
 
 namespace Game::Character::FSM::Movement::AxisTag
 {
-	using namespace Game::Character::FSM::Movement;
-	inline const std::type_index MovementAxis = typeid(MovementAxis);
+	inline const std::type_index MovementAxis = typeid(Game::Character::FSM::Movement::MovementAxis);
 }
 
 namespace Game::Character::FSM::Movement::StateTag
 {
-	using namespace Game::Character::FSM::Movement;
 
-	inline const std::type_index IDLE = typeid(MovementState::Idle);
-	inline const std::type_index MOVING = typeid(MovementState::Moving);
+	inline const std::type_index IDLE = typeid(Game::Character::FSM::Movement::MovementState::Idle);
+	inline const std::type_index MOVING = typeid(Game::Character::FSM::Movement::MovementState::Moving);
 }

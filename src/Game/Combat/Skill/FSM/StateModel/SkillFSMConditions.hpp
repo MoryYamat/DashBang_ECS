@@ -1,25 +1,24 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Game/Combat/Skill/FSM/StateModel/SkillFSMContext.hpp"
 #include "Game/Combat/Skill/Def/SkillDef.hpp"
 
 namespace Game::Combat::Skill::FSM
 {
-	using namespace Game::Combat::Skill::Def;
 
-	// ƒXƒLƒ‹‚Ìó‘Ô‘JˆÚğŒ‚ğ’è‹`‚·‚éƒCƒ“ƒ^[ƒtƒF[ƒX
+	// ã‚¹ã‚­ãƒ«ã®çŠ¶æ…‹é·ç§»æ¡ä»¶ã‚’å®šç¾©ã™ã‚‹ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
 	struct ISkillFSMCondition
 	{
-		virtual ~ISkillFSMCondition() = default;// ƒfƒtƒHƒ‹ƒg
+		virtual ~ISkillFSMCondition() = default;// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ
 		virtual bool evaluate(
 			const SkillFSMContext& ctx, 
-			const SkillDef& def) const = 0;// ƒˆ‰¼‘zŠÖ”
+			const Game::Combat::Skill::Def::SkillDef& def) const = 0;// ç´”ç²‹ä»®æƒ³é–¢æ•°
 	};
 
 	struct CastTimeElapsed : ISkillFSMCondition
 	{
 		bool evaluate(
-			const SkillFSMContext& ctx, const SkillDef& def) const override
+			const SkillFSMContext& ctx, const Game::Combat::Skill::Def::SkillDef& def) const override
 		{
 			return ctx.phaseElapsedTime >= def.castDuration;
 		}
@@ -27,7 +26,7 @@ namespace Game::Combat::Skill::FSM
 
 	struct ActiveTimeElapsed : ISkillFSMCondition
 	{
-		bool evaluate(const SkillFSMContext& ctx, const SkillDef& def) const override
+		bool evaluate(const SkillFSMContext& ctx, const Game::Combat::Skill::Def::SkillDef& def) const override
 		{
 			return ctx.phaseElapsedTime >= def.activeDuration;
 		}
@@ -35,7 +34,7 @@ namespace Game::Combat::Skill::FSM
 
 	struct RecoveryTimeElapsed : ISkillFSMCondition
 	{
-		bool evaluate(const SkillFSMContext& ctx, const SkillDef& def) const override
+		bool evaluate(const SkillFSMContext& ctx, const Game::Combat::Skill::Def::SkillDef& def) const override
 		{
 			return ctx.phaseElapsedTime >= def.recoveryDuration;
 		}
@@ -43,7 +42,7 @@ namespace Game::Combat::Skill::FSM
 
 	struct IsInterrupted : ISkillFSMCondition
 	{
-		bool evaluate(const SkillFSMContext& ctx, const SkillDef& def) const override
+		bool evaluate(const SkillFSMContext& ctx, const Game::Combat::Skill::Def::SkillDef& def) const override
 		{
 			return ctx.isInterrupted;
 		}
@@ -52,15 +51,15 @@ namespace Game::Combat::Skill::FSM
 	// 
 	struct AlwaysTrue : ISkillFSMCondition
 	{
-		bool evaluate(const SkillFSMContext&, const SkillDef&) const override { return true; }
+		bool evaluate(const SkillFSMContext&, const Game::Combat::Skill::Def::SkillDef&) const override { return true; }
 	};
 
-	// None‚ÉƒŠƒZƒbƒg‚·‚é
+	// Noneã«ãƒªã‚»ãƒƒãƒˆã™ã‚‹
 	struct ResetToNoneCondition : ISkillFSMCondition
 	{
-		bool evaluate(const SkillFSMContext&, const SkillDef&) const override
+		bool evaluate(const SkillFSMContext&, const Game::Combat::Skill::Def::SkillDef&) const override
 		{
-			return true;// "to = None"‚ÉŒÀ’è‚³‚ê‚Äg‚í‚ê‚é‘O’ñ
+			return true;// "to = None"ã«é™å®šã•ã‚Œã¦ä½¿ã‚ã‚Œã‚‹å‰æ
 		}
 	};
 }

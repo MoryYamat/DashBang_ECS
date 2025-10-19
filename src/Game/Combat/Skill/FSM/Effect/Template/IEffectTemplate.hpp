@@ -9,8 +9,6 @@
 
 namespace Game::Combat::Skill::FSM::Effect
 {
-	using namespace Game::Combat::Skill::Def;
-	using namespace Game::Combat::Skill::FSM;
 
 	// 最適化問題
 	struct IEffectTemplate
@@ -20,8 +18,8 @@ namespace Game::Combat::Skill::FSM::Effect
 		virtual void execute(
 			Engine::ECS::EntityMgr& ecs,
 			Engine::ECS::Entity caster,
-			const SkillDef& def,
-			const SkillFSMContext& ctx
+			const Game::Combat::Skill::Def::SkillDef& def,
+			const Game::Combat::Skill::FSM::SkillFSMContext& ctx
 		) const = 0;
 	};
 }

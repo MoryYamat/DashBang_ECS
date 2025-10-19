@@ -10,8 +10,6 @@
 // これは不使用なので削除可
 namespace Game::Character::FSM::Movement::Effect
 {
-	using namespace Engine::ECS::Component::Logic2D;
-	using namespace Game::Character::Stats;
 
 	// IDLE -> MOVING
 	struct ApplyMovementVelocity : IEffectTemplate
@@ -20,11 +18,11 @@ namespace Game::Character::FSM::Movement::Effect
 
 		void apply(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity entity, const MovementFSMContext& ctx) const override
 		{
-			if (!ecs.hasComponent<Velocity2DComponent>(entity)) return ;
-			if(!ecs.hasComponent<CharacterStatsComponent>(entity)) return;
+			if (!ecs.hasComponent<Engine::ECS::Component::Logic2D::Velocity2DComponent>(entity)) return ;
+			if(!ecs.hasComponent<Game::Character::Stats::CharacterStatsComponent>(entity)) return;
 
-			auto& vel = ecs.get<Velocity2DComponent>(entity);
-			const auto& stats = ecs.get<CharacterStatsComponent>(entity);
+			auto& vel = ecs.get<Engine::ECS::Component::Logic2D::Velocity2DComponent>(entity);
+			const auto& stats = ecs.get<Game::Character::Stats::CharacterStatsComponent>(entity);
 
 			vel.velocity = glm::normalize(ctx.direction) * stats.moveSpeed;
 		}
@@ -35,9 +33,9 @@ namespace Game::Character::FSM::Movement::Effect
 	{
 		void apply(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity entity, const MovementFSMContext& ctx) const override
 		{
-			if (!ecs.hasComponent<Velocity2DComponent>(entity)) return;
+			if (!ecs.hasComponent<Engine::ECS::Component::Logic2D::Velocity2DComponent>(entity)) return;
 
-			auto& vel = ecs.get<Velocity2DComponent>(entity);
+			auto& vel = ecs.get<Engine::ECS::Component::Logic2D::Velocity2DComponent>(entity);
 
 			vel.velocity = glm::vec2(0.0f);
 

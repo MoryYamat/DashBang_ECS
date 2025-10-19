@@ -9,11 +9,11 @@
 
 namespace Game::Character::FSM::Movement::Effect::FSMScoped
 {
-	using namespace Game::Character::FSM::Movement;
 
 	struct IFSMScopedEffect
 	{
 		virtual ~IFSMScopedEffect() = default;
-		virtual void update(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity entity, const MovementFSMContext& ctx, float deltaTime) const = 0;
+		virtual void update(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity entity
+			, const Game::Character::FSM::Movement::MovementFSMContext& ctx, float deltaTime) const = 0;
 	};
 }

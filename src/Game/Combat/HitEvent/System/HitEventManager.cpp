@@ -1,5 +1,6 @@
 ﻿#include "HitEventManager.hpp"
 
+#include "Engine/ECS/EntityManager.h"
 #include "Engine/Time/WorldClock.hpp"
 
 #include "Game/Combat/HitEvent/Data/HitEvent.hpp"
@@ -25,7 +26,7 @@ namespace Game::Combat::HitEvent::System
 	using namespace Game::Combat::Skill::Data;
 	using namespace Game::Combat::Skill::Def;
 
-	void HitEventManager(EntityMgr& ecs)
+	void HitEventManager(Engine::ECS::EntityMgr& ecs)
 	{
 		// const auto& clock = worldClock(ecs);
 		auto& skillDb = skillDatabase(ecs);

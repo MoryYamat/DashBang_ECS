@@ -6,11 +6,6 @@
 
 namespace Game::Combat::HitEvent::Data
 {
-	using namespace Engine::ECS;
-
-	using namespace Game::Combat::Skill::Def;
-
-
 	using EventID = uint32_t;
 
 	struct HitEvent
@@ -18,10 +13,10 @@ namespace Game::Combat::HitEvent::Data
 
 		EventID eventId = 0;
 
-		Entity skill = Entity::INVALID;
-		Entity target = Entity::INVALID;
+		Engine::ECS::Entity skill = Engine::ECS::Entity::INVALID;
+		Engine::ECS::Entity target = Engine::ECS::Entity::INVALID;
 
-		SkillID skillId = 0;
+		Game::Combat::Skill::Def::SkillID skillId = 0;
 
 		float SpawnTime = 0.0f;
 

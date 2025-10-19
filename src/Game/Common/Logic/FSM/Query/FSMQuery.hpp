@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Engine/ECS/Entity.h"
 #include "Engine/ECS/EntityManager.h"
@@ -10,18 +10,17 @@
 
 namespace Game::Common::Logic::FSM::Query
 {
-	using namespace Engine::ECS;
 
-	// Entity‚ÌFSM‚ÌŒ»İ‚Ìó‘Ô‚ğŠÏ‘ªEÆ‰ï‚·‚éQuery
+	// Entityã®FSMã®ç¾åœ¨ã®çŠ¶æ…‹ã‚’è¦³æ¸¬ãƒ»ç…§ä¼šã™ã‚‹Query
 	class FSMQuery
 	{
 	private:
-		Entity entity;
-		EntityMgr& ecs;
+		Engine::ECS::Entity entity;
+		Engine::ECS::EntityMgr& ecs;
 
 	public:
 
-		FSMQuery(const Entity e, EntityMgr& ecs)
+		FSMQuery(const Engine::ECS::Entity e, Engine::ECS::EntityMgr& ecs)
 			: entity(e), ecs(ecs) { }
 
 		template<FSMStateComponent StateComponent>

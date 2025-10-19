@@ -6,16 +6,14 @@
 
 namespace Game::Character::FSM::CC::AxisTag
 {
-	using namespace Game::Character::FSM::CC::StateModel;
-	inline const std::type_index CCAxis = typeid(CCAxis);
+	inline const std::type_index CCAxis = typeid(Game::Character::FSM::CC::StateModel::CCAxis);
 }
 
 namespace Game::Character::FSM::CC::StateTag
 {
-	using namespace Game::Character::FSM::CC::StateModel;
 
-	inline const std::type_index NONE = typeid(CCState::None);
-	inline const std::type_index STUNNED = typeid(CCState::Stunned);
-	inline const std::type_index KNOCKDOWNED = typeid(CCState::Knockdowned);
-	inline const std::type_index IMMUNE = typeid(CCState::Immune);
+	inline const std::type_index NONE = typeid(Game::Character::FSM::CC::StateModel::CCState::None);
+	inline const std::type_index STUNNED = typeid(Game::Character::FSM::CC::StateModel::CCState::Stunned);
+	inline const std::type_index KNOCKDOWNED = typeid(Game::Character::FSM::CC::StateModel::CCState::Knockdowned);
+	inline const std::type_index IMMUNE = typeid(Game::Character::FSM::CC::StateModel::CCState::Immune);
 }

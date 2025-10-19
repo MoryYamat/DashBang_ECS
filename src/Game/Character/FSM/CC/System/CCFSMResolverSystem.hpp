@@ -12,9 +12,7 @@
 
 namespace Game::Character::FSM::CC::System
 {
-	using namespace Game::Character::FSM::CC::StateEffect;
-	using namespace Game::Character::FSM::CC::StateModel;
-
+	
 	class CCFSMResolverSystem
 	{
 	public:
@@ -26,10 +24,10 @@ namespace Game::Character::FSM::CC::System
 
 		static void tryTriggerEffect(
 			Engine::ECS::EntityMgr& ecs,
-			const CCFSMStateEffectHook& hook,
+			const Game::Character::FSM::CC::StateEffect::CCFSMStateEffectHook& hook,
 			const Engine::ECS::Entity entity,
-			const CCFSMDefinition& def,
-			const CCFSMContext& ctx,
+			const Game::Character::FSM::CC::StateModel::CCFSMDefinition& def,
+			const Game::Character::FSM::CC::StateModel::CCFSMContext& ctx,
 			const std::type_index& current,
 			const std::type_index& previous
 		);
@@ -37,7 +35,7 @@ namespace Game::Character::FSM::CC::System
 		static void tryTriggerReset(
 			Engine::ECS::EntityMgr& ecs,
 			const Engine::ECS::Entity entity,
-			const CCFSMDefinition& def,
+			const Game::Character::FSM::CC::StateModel::CCFSMDefinition& def,
 			const std::type_index& current,
 			const std::type_index& previous
 		);

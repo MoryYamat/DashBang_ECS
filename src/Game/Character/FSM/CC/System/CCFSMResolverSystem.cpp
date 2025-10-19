@@ -171,21 +171,21 @@ namespace Game::Character::FSM::CC::System
 	// record へ Effect関数オブジェクトの型をhash化して登録する
 	void CCFSMResolverSystem::tryTriggerEffect(
 		Engine::ECS::EntityMgr& ecs,
-		const CCFSMStateEffectHook& hook,
+		const Game::Character::FSM::CC::StateEffect::CCFSMStateEffectHook& hook,
 		const Engine::ECS::Entity entity,
-		const CCFSMDefinition& def,
-		const CCFSMContext& ctx,
+		const Game::Character::FSM::CC::StateModel::CCFSMDefinition& def,
+		const Game::Character::FSM::CC::StateModel::CCFSMContext& ctx,
 		const std::type_index& current,
 		const std::type_index& previous
 	)
 	{
-		if (!ecs.hasComponent<CCStateEffectExecutionRecordComponent>(entity))
+		if (!ecs.hasComponent<Game::Character::FSM::CC::StateEffect::CCStateEffectExecutionRecordComponent>(entity))
 		{
-			Ops::Add<CCStateEffectExecutionRecordComponent>(ecs, entity, CCStateEffectExecutionRecordComponent{});
+			Ops::Add<Game::Character::FSM::CC::StateEffect::CCStateEffectExecutionRecordComponent>(ecs, entity, Game::Character::FSM::CC::StateEffect::CCStateEffectExecutionRecordComponent{});
 			//ecs.addComponent(entity, CCStateEffectExecutionRecordComponent{});
 		}
 
-		auto& record = ecs.get<CCStateEffectExecutionRecordComponent>(entity);
+		auto& record = ecs.get<Game::Character::FSM::CC::StateEffect::CCStateEffectExecutionRecordComponent>(entity);
 
 		std::size_t hash = std::type_index(typeid(*hook.handler)).hash_code();
 
@@ -230,9 +230,10 @@ namespace Game::Character::FSM::CC::System
 	void CCFSMResolverSystem::tryTriggerReset(
 		Engine::ECS::EntityMgr& ecs,
 		const Engine::ECS::Entity entity,
-		const CCFSMDefinition& def,
+		const Game::Character::FSM::CC::StateModel::CCFSMDefinition& def,
 		const std::type_index& current,
-		const std::type_index& previous)
+		const std::type_index& previous
+	)
 	{
 		for (const auto& hook : def.resetHooks)
 		{

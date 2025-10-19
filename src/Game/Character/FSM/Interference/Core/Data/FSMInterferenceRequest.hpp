@@ -9,7 +9,6 @@
 
 namespace Game::Character::FSM::Interference::Core::Data
 {
-	using namespace Engine::ECS;
 
 	enum class InterferenceMode
 	{
@@ -41,8 +40,8 @@ namespace Game::Character::FSM::Interference::Core::Data
 
 		float durationSec = 0.0f;// 最初干渉時間
 
-		std::optional<Entity> issuerEntity; // Entity(optional) // 干渉の起点
-		std::optional<Entity> targetEntity; // 対象のエンティティ
+		std::optional<Engine::ECS::Entity> issuerEntity; // Entity(optional) // 干渉の起点
+		std::optional<Engine::ECS::Entity> targetEntity; // 対象のエンティティ
 
 		FSMInterferenceRequest(std::type_index issuerAxis, std::type_index targetAxis) 
 			: issuerAxis(issuerAxis), targetAxis(targetAxis), severity(ControlSeverity::Low), mode(InterferenceMode::None){}

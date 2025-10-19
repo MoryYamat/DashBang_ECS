@@ -1,5 +1,7 @@
 ﻿#include "InitHitEventDatabase.hpp"
 
+#include "Engine/ECS/EntityManager.h"
+
 #include "Game/Combat/HitEvent/Data/HitEvent.hpp"
 
 #include "Game/Combat/HitEvent/Database/HitEventDatabase.hpp"
@@ -10,7 +12,7 @@ namespace Game::Combat::HitEvent::Init
 {
 	using namespace Game::Combat::HitEvent::Database;
 
-	void InitHitEventDatabase(EntityMgr& ecs)
+	void InitHitEventDatabase(Engine::ECS::EntityMgr& ecs)
 	{
 		auto& hitDb = ecs.createResource<HitEventDatabase>();
 

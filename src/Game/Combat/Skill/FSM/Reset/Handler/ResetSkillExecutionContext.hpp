@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/ECS/EntityManager.h"
 #include "Engine/ECS/Entity.h"
@@ -13,23 +13,19 @@
 
 namespace Game::Combat::Skill::FSM::Reset
 {
-	using namespace Engine::ECS;
-	using namespace Game::Combat::Skill::Def;
-	using namespace Game::Combat::Skill::Component;
-	using namespace Game::Combat::Skill::FSM;
 
 	struct ResetSkillExecutionContext : IResetHandler
 	{
 		void execute(
-			EntityMgr& ecs,
-			Entity caster,
-			const SkillDef&,
-			const SkillFSMContext&
+			Engine::ECS::EntityMgr& ecs,
+			Engine::ECS::Entity caster,
+			const Game::Combat::Skill::Def::SkillDef&,
+			const Game::Combat::Skill::FSM::SkillFSMContext&
 		)const override
 		{
-			if (ecs.hasComponent<SkillExecutionContextComponent>(caster))
+			if (ecs.hasComponent<Game::Combat::Skill::Component::SkillExecutionContextComponent>(caster))
 			{
-				auto& exec = ecs.get<SkillExecutionContextComponent>(caster);
+				auto& exec = ecs.get<Game::Combat::Skill::Component::SkillExecutionContextComponent>(caster);
 				exec.elapsedTime = 0.0f;
 				exec.phaseElapsedTime = 0.0f;
 				exec.isInterrupted = false;

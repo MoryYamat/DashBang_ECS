@@ -1,11 +1,11 @@
 ﻿#pragma once
 
-#include "Engine/ECS/EntityManager.h"
+// #include "Engine/ECS/EntityManager.h"
 
+namespace Engine::ECS { class EntityMgr; }
 
 namespace Game::Combat::HitEvent::Init
 {
-	using namespace Engine::ECS;
 
-	void InitHitEventDatabase(EntityMgr& ecs);
+	void InitHitEventDatabase(Engine::ECS::EntityMgr& ecs);
 }
