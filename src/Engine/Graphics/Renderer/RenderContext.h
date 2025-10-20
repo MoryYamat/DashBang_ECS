@@ -1,4 +1,4 @@
-// Render Data
+ï»¿// Render Data
 
 #pragma once
 
@@ -6,16 +6,17 @@
 
 #include <GLM/glm.hpp>
 
+
 namespace Engine::Graphics::Render
 {
 	struct RenderContext
 	{
-		glm::vec3 cameraPosition = glm::vec3(1.0f);// ƒJƒƒ‰ˆÊ’u
-		glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);// ƒJƒƒ‰frontƒxƒNƒgƒ‹
-		glm::vec3 cameraRight = glm::vec3(1.0f, 0.0f, 0.0f);// ƒJƒƒ‰RightƒxƒNƒgƒ‹
-		glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);// ƒJƒƒ‰UpƒxƒNƒgƒ‹
-		glm::mat4 viewMatrix = glm::mat4(1.0f);// views—ñ
-		glm::mat4 projectionMatrix = glm::mat4(1.0f);// “Š‰es—ñ
+		glm::vec3 cameraPosition = glm::vec3(1.0f);// ã‚«ãƒ¡ãƒ©ä½ç½®
+		glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);// ã‚«ãƒ¡ãƒ©frontãƒ™ã‚¯ãƒˆãƒ«
+		glm::vec3 cameraRight = glm::vec3(1.0f, 0.0f, 0.0f);// ã‚«ãƒ¡ãƒ©Rightãƒ™ã‚¯ãƒˆãƒ«
+		glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);// ã‚«ãƒ¡ãƒ©Upãƒ™ã‚¯ãƒˆãƒ«
+		glm::mat4 viewMatrix = glm::mat4(1.0f);// viewè¡Œåˆ—
+		glm::mat4 projectionMatrix = glm::mat4(1.0f);// æŠ•å½±è¡Œåˆ—
 		glm::vec4 viewport = glm::vec4(1.0f);// viewport
 	};
 }

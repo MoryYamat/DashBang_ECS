@@ -160,6 +160,7 @@ bool GameApp::GameApp::Initialize()
 
 	//glViewport(0, 0, mWindow_Width, mWindow_Height);
 	
+
 	mWindow = std::make_unique<Engine::Window::Window>();
 	if (!mWindow->Initialize(windowWidth, windowHeight, "Game"))
 	{
