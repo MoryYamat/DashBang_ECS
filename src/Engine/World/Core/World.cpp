@@ -1,26 +1,46 @@
 ﻿#include "World.hpp"
 
-
+#include "Engine/ECS/Core/Registry.hpp"
+#include "Engine/World/Core/Resource.hpp"
 
 namespace Engine::World::Core
 {
-	Entity World::Create()
+	class World::Impl
 	{
-		uint32_t id = nextId++;
-		mAlive.insert(id);
-		return Entity{ id };
+	public:
+		Engine::ECS::Core::Registry ecs;
+		Resource resources;
+	};
+
+	World::World() : p_(new Impl{}) {}
+	World::~World() { delete p_; }
+
+	Engine::ECS::Core::Entity World::Create()
+	{
+		return p_->ecs.Create();
 	}
 
-	void World::Destroy(Entity e)
+	void World::Destroy(Engine::ECS::Core::Entity e)
 	{
-		if (!IsAlive(e)) return;
-		for (auto& [_, pool] : mComponentPools) pool.erase(e.id);
-		mAlive.erase(e.id);
+		p_->ecs.Destroy(e);
 	}
 
-	bool World::IsAlive(Entity e) const 
+	bool World::IsAlive(Engine::ECS::Core::Entity e) const
 	{
-		return mAlive.count(e.id) != 0;
+		return p_->ecs.IsAlive(e);
 	}
+
+	Engine::ECS::Core::Registry& World::Registry()
+	{
+		return p_->ecs;
+	}
+
+	const Engine::ECS::Core::Registry& World::Registry() const
+	{
+		return p_->ecs;
+	}
+
+	Resource& World::Resources() { return p_->resources; }
+	const Resource& World::Resources() const { return p_->resources; }
 
 }

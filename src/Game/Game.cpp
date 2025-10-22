@@ -34,6 +34,9 @@
 #include "Engine/Graphics/Model/AssimpImporter.h"
 #include "Engine/Graphics/Animation/AnimationSystem.hpp"
 
+// Time
+#include "Engine/Time/WorldClock.hpp"
+
 // Debug
 #include "Engine/Debug/DebugSystems/LogicDebugDrawSystem.h"
 #include "Engine/Config/CanonicalDefaults.h"
@@ -220,6 +223,8 @@ void GameApp::GameApp::RunLoop()
 		generateOutputs();
 		glfwPollEvents();
 	}
+
+	// Update();
 }
 
 void GameApp::GameApp::updateGameLogics()
@@ -389,4 +394,20 @@ void GameApp::GameApp::updateGameLogics(Engine::World::Core::WorldCtx& ctx)
 void GameApp::GameApp::generateOutputs(const Engine::World::Core::WorldCtx& ctx)
 {
 
+}
+
+void GameApp::GameApp::Update(Engine::World::Core::WorldCtx& ctx, float realDt)
+{
+
+	Engine::Time::WorldClockSystem::BeginFrame(ctx, realDt);
+
+	while (Engine::Time::WorldClockSystem::PopFixedStep(ctx))
+	{
+		// updateGameLogic(ctx);
+	}
+
+	generateOutputs(ctx);
+
+	//
+	Engine::Time::WorldClockSystem::EndFrame(ctx);
 }

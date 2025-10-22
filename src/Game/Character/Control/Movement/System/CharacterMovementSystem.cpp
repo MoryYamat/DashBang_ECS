@@ -10,7 +10,7 @@
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 
-// 削除予定：現在未使用
+// 使用中
 void Game::Character::Movement::CharacterMovementSystem(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
 	namespace Ops = Engine::ECS::Ops;

@@ -28,14 +28,9 @@
 
 // World
 // #include "Engine/World/Core/World.hpp"
+#include "Engine/World/Public/WorldFwd.hpp"
 
 #include <memory>
-
-namespace Engine::World::Core
-{
-	class World;
-	struct WorldCtx;
-}
 
 namespace GameApp
 {
@@ -97,6 +92,8 @@ namespace GameApp
 
 		void generateOutputs();
 		void generateOutputs(const Engine::World::Core::WorldCtx& ctx);
+
+		void Update(Engine::World::Core::WorldCtx& ctx, float realDt);
 
 		void loadData();
 	

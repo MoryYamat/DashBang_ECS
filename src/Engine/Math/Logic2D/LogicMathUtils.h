@@ -85,7 +85,7 @@ namespace Engine::Math::Logic2D
 	// [0, 2pi) の角度を [-pi, pi]にマップ
 	inline float ToSignedPi(float rad)
 	{
-		const float twoPi = 2.0f * glm::pi<float>();
+		constexpr float twoPi = 2.0f * glm::pi<float>();
 		float a = std::fmod(rad + glm::pi<float>(), twoPi);
 		if (a < 0.0f) a += twoPi;
 		return a - glm::pi<float>();

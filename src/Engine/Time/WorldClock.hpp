@@ -13,11 +13,12 @@ namespace Engine::Time
 {
 	struct WorldClockData
 	{
+		// 旧バージョン
 		float now = 0.0f; // 単調増加の世界時刻(秒) max: 3.402823466 E + 38
 		float dt = 0.0f; // 直近フレームのΔt()
 		float scale = 1.0f; // スローや倍速用
 		bool paused = false;// ポーズ用
-
+		// 
 
 		float frameDt = 0.f;// 実測Δt
 		float timeScale = 1.f;// スローモ
@@ -27,7 +28,7 @@ namespace Engine::Time
 		float accumulator = 0.f; // フレーム間の持ち越し
 		float alpha = 0.f;// 補間率 accumulator/fixedDt
 		int stepsThisFrame = 0;	//今フレで回した固定ステップ回数
-		uint64_t frame = 0;// 描画フレーム数
+		uint64_t frame = 0;// 描画フレーム数	uint64_t = 1.8 * 10^19 | 260fps * 60sec * 60min * 24h * 365days * 100year = 7.56 * 10^11
 		uint64_t tick = 0;// 固定ステップの総回数
 	};
 
