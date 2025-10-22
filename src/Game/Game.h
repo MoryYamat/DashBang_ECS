@@ -26,7 +26,16 @@
 // 
 #include "Game/Common/AppContext.h"
 
+// World
+// #include "Engine/World/Core/World.hpp"
+
 #include <memory>
+
+namespace Engine::World::Core
+{
+	class World;
+	struct WorldCtx;
+}
 
 namespace GameApp
 {
@@ -35,6 +44,7 @@ namespace GameApp
 	public:
 
 		GameApp();
+		~GameApp();
 
 		bool Initialize();
 		void Shutdown();
@@ -45,6 +55,8 @@ namespace GameApp
 	// できるだけ前方宣言を使用できる構造にする必要がある(構造破綻を防止するため)
 	// できるだけ前方宣言を使用できる構造にする必要がある(構造破綻を防止するため)
 	private:
+
+		std::unique_ptr<Engine::World::Core::World> world;
 
 		std::unique_ptr<Engine::Window::Window> mWindow;
 		std::unique_ptr<Engine::Input::InputManager> mInput;
@@ -81,11 +93,13 @@ namespace GameApp
 		// float mDeltaTime = 0.0f;
 
 		void updateGameLogics();
+		void updateGameLogics(Engine::World::Core::WorldCtx& ctx);
 
 		void generateOutputs();
+		void generateOutputs(const Engine::World::Core::WorldCtx& ctx);
 
 		void loadData();
-
+	
 		void unloadData();
 
 		void spawnAllActors();

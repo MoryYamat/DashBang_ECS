@@ -9,6 +9,8 @@
 #include "Engine/ECS/Entity.h"
 #include "Engine/ECS/EntityManager.h"
 
+#include "Engine/World/Core/World.hpp"
+#include "Engine/World/Core/WorldCtx.h"
 
 #include "Engine/ECS/GlobalSystem/GlobalCleanupSystem.h"
 
@@ -108,8 +110,10 @@ GameApp::GameApp::GameApp()
 	, windowWidth(1280)
 	, windowHeight(720)
 {
-
+	world = std::make_unique<Engine::World::Core::World>();
 }
+
+GameApp::GameApp::~GameApp() = default;
 
 // 終了処理
 void GameApp::GameApp::Shutdown()
@@ -210,6 +214,8 @@ void GameApp::GameApp::RunLoop()
 {
 	while (!glfwWindowShouldClose(mWindow->GetGLFWWindow()) && mIsRunning)
 	{
+		Engine::World::Core::WorldCtx ctx{ *world };
+
 		updateGameLogics();
 		generateOutputs();
 		glfwPollEvents();
@@ -373,3 +379,14 @@ void GameApp::GameApp::updateContext()
 	mRenderCtx.viewport = glm::vec4(0, 0, mWindow->GetWidth(), mWindow->GetHeight());
 }
 
+
+// -- world --
+void GameApp::GameApp::updateGameLogics(Engine::World::Core::WorldCtx& ctx)
+{
+
+}
+
+void GameApp::GameApp::generateOutputs(const Engine::World::Core::WorldCtx& ctx)
+{
+
+}

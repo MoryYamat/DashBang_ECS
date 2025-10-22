@@ -4,6 +4,8 @@
 
 #include "Engine/World/Traits/ComponentTraits.hpp"
 
+
+#include <iostream>
 #include <cstdint>
 #include <typeindex>
 #include <unordered_set>
@@ -25,9 +27,14 @@ namespace Engine::World::Core
 		std::unordered_map<std::type_index, std::shared_ptr<void>> mResources;
 
 	public:
-		World() = default;
+		World() 
+		{
+			std::cout << "world is created successfully\n";
+		}
+		World(const World&) = delete;
 
 		Entity Create();
+
 		void Destroy(Entity e);
 		bool IsAlive(Entity e) const;
 
@@ -149,6 +156,14 @@ namespace Engine::World::Core
 
 		template<typename T>
 		T& GetResouce()
+		{
+			auto* p = TryGetResource<T>();
+			assert(p && "GetResource<T>: missing");
+			return *p;
+		}
+
+		template<typename T>
+		const T& GetResouce() const 
 		{
 			auto* p = TryGetResource<T>();
 			assert(p && "GetResource<T>: missing");

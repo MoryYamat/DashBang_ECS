@@ -46,13 +46,19 @@ namespace Engine::World::Core
 
 		// resource
 		template<typename T, typename... Args>
-		T& CreateResource() { return w.CreateResource<T>(std::forward<Args>(args)...); }
+		T& CreateResource(Args&&... args) { return w.CreateResource<T>(std::forward<Args>(args)...); }
 
 		template<typename T>
-		T* TryGetResource() { return w.TryGetResouce<T>(); }
+		T* TryGetResource() { return w.TryGetResource<T>(); }
 
 		template<typename T>
-		T& TryGetResource() { return w.GetResouce<T>(); }
+		const T* TryGetResource() const { return w.TryGetResource<T>(); }
+
+		template<typename T>
+		T& GetResource() { return w.GetResouce<T>(); }
+
+		template<typename T>
+		const T& GetResource() const { return w.GetResouce<T>(); }
 
 		template<typename T>
 		void RemoveResource() { w.RemoveResource<T>(); }

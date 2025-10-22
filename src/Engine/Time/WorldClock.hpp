@@ -2,6 +2,13 @@
 
 #include "Engine/ECS/EntityManager.h"
 
+#include <cstdint>
+
+namespace Engine::World::Core
+{
+	struct WorldCtx;
+}
+
 namespace Engine::Time
 {
 	struct WorldClockData
@@ -10,6 +17,18 @@ namespace Engine::Time
 		float dt = 0.0f; // 直近フレームのΔt()
 		float scale = 1.0f; // スローや倍速用
 		bool paused = false;// ポーズ用
+
+
+		float frameDt = 0.f;// 実測Δt
+		float timeScale = 1.f;// スローモ
+
+		// 固定
+		float fixedDt = 1.f / 60; // 固定Δt（推奨 60Hz）
+		float accumulator = 0.f; // フレーム間の持ち越し
+		float alpha = 0.f;// 補間率 accumulator/fixedDt
+		int stepsThisFrame = 0;	//今フレで回した固定ステップ回数
+		uint64_t frame = 0;// 描画フレーム数
+		uint64_t tick = 0;// 固定ステップの総回数
 	};
 
 	class WorldClockSystem
@@ -17,6 +36,17 @@ namespace Engine::Time
 	public:
 		static void InitWorldClock(Engine::ECS::EntityMgr& ecs);
 		static void TickWorldClock(Engine::ECS::EntityMgr& ecs, float deltaTime);
+
+		static void InitWorldClock(Engine::World::Core::WorldCtx& ctx);
+
+		// フレーム先頭でdtの取り込みと「今フレで回せる回数を計算」
+		static void BeginFrame(Engine::World::Core::WorldCtx& ctx, float realDt);
+
+		// 固定ステップが残っていれば1回分を消費
+		static bool PopFixedStep(Engine::World::Core::WorldCtx& ctx);
+
+		// フレーム末尾: 描画補間率とフレームカウント更新
+		static void EndFrame(Engine::World::Core::WorldCtx& ctx);
 	};
 
 	// read only
@@ -30,4 +60,9 @@ namespace Engine::Time
 	{
 		return ecs.getResource<WorldClockData>();
 	}
+
+	//[[nodiscard]] inline WorldClockData& worldClock(Engine::World::Core::WorldCtx& ctx) noexcept
+	//{
+	//	return 
+	//}
 }
