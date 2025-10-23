@@ -9,9 +9,9 @@
 
 #include "Engine/ECS/Component/Graphics/MeshComponent.h"
 
-#include "Engine/Graphics/Model/ModelData.h"
+#include "Engine/Graphics/Private/Model/ModelData.h"
 
-#include "Engine/Graphics/Renderer/GPUBufferUtils.h"
+#include "Engine/Graphics/Private/Renderer/GPUBufferUtils.h"
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 

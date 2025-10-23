@@ -8,9 +8,9 @@
 #include "Engine/ECS/Component/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
 
-#include "Engine/Graphics/Renderer/Shader.h"
+#include "Engine/Graphics/Private/Renderer/Shader.h"
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 

@@ -6,7 +6,8 @@
 #include "Engine/ECS/EntityManager.h"
 
 #include "Engine/ECS/Component/Common/TransformComponent.h"
-#include "Engine/Graphics/Model/ModelData.h"
+//#include "Engine/Graphics/Private/Model/ModelData.h"
+#include "Engine/Graphics/Public/GraphicsFwd.hpp"
 
 
 namespace Game::Actor::Map

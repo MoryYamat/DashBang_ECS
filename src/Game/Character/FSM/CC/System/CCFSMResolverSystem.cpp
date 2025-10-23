@@ -17,7 +17,7 @@
 #include "Game/Character/FSM/CC/API/Internal/UpdateCCFSMContext.hpp"
 
 // clock
-#include "Engine/Time/WorldClock.hpp"
+#include "Engine/Time/Private/WorldClock.hpp"
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 

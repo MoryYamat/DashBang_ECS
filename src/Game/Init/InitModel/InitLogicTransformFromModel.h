@@ -2,7 +2,8 @@
 
 #pragma once
 
-#include "Engine/Graphics/Model/ModelData.h"
+// #include "Engine/Graphics/Private/Model/ModelData.h"
+#include "Engine/Graphics/Public/GraphicsFwd.hpp"
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 
 #include "Engine/ECS/Component/Common/TransformComponent.h"

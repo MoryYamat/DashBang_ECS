@@ -1,6 +1,8 @@
 ﻿#include "InitLogicTransformFromModel.h"
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
+
+#include "Engine/Graphics/Private/Model/ModelData.h"
 
 #include <iostream>
 

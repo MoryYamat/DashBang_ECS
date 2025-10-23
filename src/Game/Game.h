@@ -13,13 +13,13 @@
 #include "Engine/ECS/EntityManager.h"
 
 // Graphics
-#include "Engine/Graphics/Renderer/Shader.h"
-#include "Engine/Graphics/Renderer/RenderContext.h"
+#include "Engine/Graphics/Private/Renderer/Shader.h"
+#include "Engine/Graphics/Private/Renderer/RenderContext.h"
 
-#include "Engine/Window/Window.h"
+#include "Engine/Window/Private/Window.h"
 
 // Input
-#include "Engine/InputManager/InputManager.h"
+#include "Engine/InputManager/Private/InputManager.h"
 
 #include "Game/Collision/Data/CollisionResultStorage.h"
 
@@ -27,8 +27,8 @@
 #include "Game/Common/AppContext.h"
 
 // World
-// #include "Engine/World/Core/World.hpp"
-#include "Engine/World/Public/WorldFwd.hpp"
+// #include "Engine/WorldSystem/Private/Core/World.hpp"
+#include "Engine/WorldSystem/Public/WorldFwd.hpp"
 
 #include <memory>
 
@@ -51,7 +51,7 @@ namespace GameApp
 	// できるだけ前方宣言を使用できる構造にする必要がある(構造破綻を防止するため)
 	private:
 
-		std::unique_ptr<Engine::World::Core::World> world;
+		std::unique_ptr<Engine::WorldSystem::Core::World> world;
 
 		std::unique_ptr<Engine::Window::Window> mWindow;
 		std::unique_ptr<Engine::Input::InputManager> mInput;
@@ -88,12 +88,12 @@ namespace GameApp
 		// float mDeltaTime = 0.0f;
 
 		void updateGameLogics();
-		void updateGameLogics(Engine::World::Core::WorldCtx& ctx);
+		void updateGameLogics(Engine::WorldSystem::Core::WorldCtx& ctx);
 
 		void generateOutputs();
-		void generateOutputs(const Engine::World::Core::WorldCtx& ctx);
+		void generateOutputs(const Engine::WorldSystem::Core::WorldCtx& ctx);
 
-		void Update(Engine::World::Core::WorldCtx& ctx, float realDt);
+		void Update(Engine::WorldSystem::Core::WorldCtx& ctx, float realDt);
 
 		void loadData();
 	

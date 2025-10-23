@@ -4,7 +4,7 @@
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 
 glm::ivec4 Game::Collision::Utils::GetTileSearchBounds(

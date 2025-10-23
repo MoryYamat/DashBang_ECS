@@ -10,7 +10,7 @@
 
 #include "Game/Collision/Data/GenericShape2D.h"
 
-
+#include "Engine/ECS/EntityManager.h"
 
 
 #include <glm/glm.hpp>

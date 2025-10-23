@@ -14,6 +14,7 @@
 
 #include "Engine/ECS/Component/Camera/FollowCameraComponent.h"
 
+#include "Engine/Graphics/Private/Renderer/Shader.h"
 
 // input
 // #include "Core/ECS/Component/InputComponent.h"
@@ -55,11 +56,11 @@
 
 #include "Game/Character/State/Component/Action/Skill/CharacterSkillExecutionStateComponent.hpp"
 
-#include "Engine/Graphics/Model/ModelData.h"
-#include "Engine/Graphics/Model/AssimpImporter.h"
-#include "Engine/Graphics/Renderer/GPUBufferUtils.h"
+#include "Engine/Graphics/Private/Model/ModelData.h"
+#include "Engine/Graphics/Private/Model/AssimpImporter.h"
+#include "Engine/Graphics/Private/Renderer/GPUBufferUtils.h"
 
-#include "Engine/Graphics/Model/CgltfImporter.hpp"
+#include "Engine/Graphics/Private/Model/CgltfImporter.hpp"
 
 
 #include "Game/Init/InitModel/InitLogicTransformFromModel.h"
@@ -116,7 +117,7 @@
 #include "Game/ECS/Tags/CharacterAttribTags.h"
 #include "Game/ECS/Component/TeamComponent.h"
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 

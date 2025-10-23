@@ -1,6 +1,6 @@
 ﻿#include "SkillFSMInterferenceResolver.hpp"
 
-#include "Engine/Time/WorldClock.hpp"
+#include "Engine/Time/Private/WorldClock.hpp"
 
 #include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
 

@@ -26,11 +26,13 @@
 #include "Game/Collision/Component/CollisionMaskComponent.h"
 #include "Game/ECS/Component/TeamComponent.h"
 
-#include "Engine/Graphics/Model/ModelData.h"
-#include "Engine/Graphics/Model/AssimpImporter.h"
-#include "Engine/Graphics/Renderer/GPUBufferUtils.h"
+#include "Engine/Graphics/Private/Renderer/Shader.h"
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Graphics/Private/Model/ModelData.h"
+#include "Engine/Graphics/Private/Model/AssimpImporter.h"
+#include "Engine/Graphics/Private/Renderer/GPUBufferUtils.h"
+
+#include "Engine/Debug/Private/DebugUtils.h"
 
 #include "Game/Init/InitModel/InitLogicTransformFromModel.h"
 

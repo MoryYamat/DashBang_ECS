@@ -6,7 +6,7 @@
 
 #include "Game/ECS/Tags/CharacterAttribTags.h"
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 #include "Engine/Config/CanonicalDefaults.h"
 

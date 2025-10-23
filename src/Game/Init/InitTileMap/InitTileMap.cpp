@@ -1,16 +1,17 @@
 ﻿#include "InitTileMap.h"
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 #include "Game/Init/InitModel/InitLogicTransformFromModel.h"
 
 #include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
 #include "Engine/ECS/Component/Tags/ObstacleTagComponent.h"
 
+#include "Engine/Graphics/Private/Model/ModelData.h"
 
 #include "Engine/ECS/Component/Tags/MapTags.h"
 
-#include "Engine/Physics/Logic2D/DetectionFunctions.h"
+#include "Engine/Physics/Private/Logic2D/DetectionFunctions.h"
 
 #include <iostream>
 

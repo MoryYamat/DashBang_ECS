@@ -5,7 +5,7 @@
 
 
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 #include <string>
 

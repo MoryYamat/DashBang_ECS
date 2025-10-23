@@ -5,7 +5,7 @@
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Engine/Window/Window.h"
+#include "Engine/Window/Public/WindowFwd.hpp"
 
 
 namespace Engine::ECS::Meta::Init

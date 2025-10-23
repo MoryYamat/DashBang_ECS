@@ -1,6 +1,8 @@
-// models Material datas
+﻿// models Material datas
 
 #pragma once
+
+#include <glm/glm.hpp>
 
 namespace Engine::ECS::Component::Graphics
 {

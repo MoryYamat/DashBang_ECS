@@ -2,6 +2,8 @@
 
 #include "Game/Input/InputMapping.h"
 
+#include "Engine/InputManager/Private/RawinputState.h"
+
 #include <iostream>
 
 void Game::Input::InputRouterSystem(Engine::ECS::EntityMgr& ecs, const Engine::Input::RawInputState& rawInput)

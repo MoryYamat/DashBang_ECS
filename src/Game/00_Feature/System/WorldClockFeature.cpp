@@ -1,7 +1,7 @@
 ﻿#include "WorldClockFeature.hpp"
 
 
-#include "Engine/Time/WorldClock.hpp"
+#include "Engine/Time/Private/WorldClock.hpp"
 
 namespace Game::Feature::System
 {

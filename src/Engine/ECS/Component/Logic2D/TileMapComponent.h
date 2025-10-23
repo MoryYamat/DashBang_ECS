@@ -1,4 +1,4 @@
-// TileMap base/unit data
+ï»¿// TileMap base/unit data
 
 #pragma once
 
@@ -17,11 +17,11 @@ namespace Engine::ECS::Component::Logic2D
 	// Data for the entire TileMap
 	struct TileMapComponent
 	{
-		int numCols;// ‰¡‚Ì–‡”
-		int numRows;// c‚Ì–‡”
-		float tileSize = 1.0f;// ƒ^ƒCƒ‹‚Ì1•Ó‚ÌƒTƒCƒY
+		int numCols;// æ¨ªã®æšæ•°
+		int numRows;// ç¸¦ã®æšæ•°
+		float tileSize = 1.0f;// ã‚¿ã‚¤ãƒ«ã®1è¾ºã®ã‚µã‚¤ã‚º
 
-		glm::vec2 origin = { 0, 0 };// ƒ^ƒCƒ‹‚Ì¶‰º‚Ì`ƒ[ƒ‹ƒhÀ•W`
+		glm::vec2 origin = { 0, 0 };// ã‚¿ã‚¤ãƒ«ã®å·¦ä¸‹ã®`ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™`
 
 		std::vector<std::vector<Tile>> tiles;
 

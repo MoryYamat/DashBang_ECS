@@ -7,12 +7,12 @@
 #include "Engine/ECS/Component/Common/TransformComponent.h"
 #include "Engine/ECS/Component/Graphics/ShaderComponent.h"
 
-#include "Engine/Graphics/Model/ModelData.h"
+#include "Engine/Graphics/Private/Model/ModelData.h"
 
-#include "Engine/Graphics/Model/AssimpImporter.h"
+#include "Engine/Graphics/Private/Model/AssimpImporter.h"
 
-#include "Engine/Graphics/Renderer/Shader.h"
-#include "Engine/Graphics/Renderer/GPUBufferUtils.h"
+#include "Engine/Graphics/Private/Renderer/Shader.h"
+#include "Engine/Graphics/Private/Renderer/GPUBufferUtils.h"
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 

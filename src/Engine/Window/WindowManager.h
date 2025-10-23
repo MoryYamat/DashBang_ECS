@@ -1,41 +1,41 @@
-// for systems window manager
+ï»¿// for systems window manager
 
 #pragma once
 
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 
-// ƒEƒBƒ“ƒhƒE‚ÉŠÖ‚·‚éƒf[ƒ^‚Æˆ—‚ğ‚Ü‚Æ‚ß‚½ƒNƒ‰ƒX
+// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«é–¢ã™ã‚‹ãƒ‡ãƒ¼ã‚¿ã¨å‡¦ç†ã‚’ã¾ã¨ã‚ãŸã‚¯ãƒ©ã‚¹
 // A class that collects window-related data and operations.
-// iŒ»İ–¢g—pjƒOƒ[ƒoƒ‹ƒNƒ‰ƒX‚¾‚Á‚½‚½‚ß (íœ—\’è)
-// iŒ»İ–¢g—pjƒOƒ[ƒoƒ‹ƒNƒ‰ƒX‚¾‚Á‚½‚½‚ß (íœ—\’è)
-// iŒ»İ–¢g—pjƒOƒ[ƒoƒ‹ƒNƒ‰ƒX‚¾‚Á‚½‚½‚ß (íœ—\’è)
-// iŒ»İ–¢g—pjƒOƒ[ƒoƒ‹ƒNƒ‰ƒX‚¾‚Á‚½‚½‚ß (íœ—\’è)
+// ï¼ˆç¾åœ¨æœªä½¿ç”¨ï¼‰ã‚°ãƒ­ãƒ¼ãƒãƒ«ã‚¯ãƒ©ã‚¹ã ã£ãŸãŸã‚ (å‰Šé™¤äºˆå®š)
+// ï¼ˆç¾åœ¨æœªä½¿ç”¨ï¼‰ã‚°ãƒ­ãƒ¼ãƒãƒ«ã‚¯ãƒ©ã‚¹ã ã£ãŸãŸã‚ (å‰Šé™¤äºˆå®š)
+// ï¼ˆç¾åœ¨æœªä½¿ç”¨ï¼‰ã‚°ãƒ­ãƒ¼ãƒãƒ«ã‚¯ãƒ©ã‚¹ã ã£ãŸãŸã‚ (å‰Šé™¤äºˆå®š)
+// ï¼ˆç¾åœ¨æœªä½¿ç”¨ï¼‰ã‚°ãƒ­ãƒ¼ãƒãƒ«ã‚¯ãƒ©ã‚¹ã ã£ãŸãŸã‚ (å‰Šé™¤äºˆå®š)
 
 namespace Engine::Window
 {
-	class WindowManager
-	{
-	public:
-		static bool Initialize(int width, int height, const char* title);
-		static void Shutdown();
+	//class WindowManager
+	//{
+	//public:
+	//	static bool Initialize(int width, int height, const char* title);
+	//	static void Shutdown();
 
-		static void UpdateViewport();
-		static void SetSize(int widht, int height);
+	//	static void UpdateViewport();
+	//	static void SetSize(int widht, int height);
 
-		static int GetWidth() { return sWidth; }
-		static int GetHeight() { return sHeight; }
-		static float GetAspect() { return static_cast<float>(sWidth) / (sHeight); }
-		static GLFWwindow* GetWindow() { return sWindow; }
+	//	static int GetWidth() { return sWidth; }
+	//	static int GetHeight() { return sHeight; }
+	//	static float GetAspect() { return static_cast<float>(sWidth) / (sHeight); }
+	//	static GLFWwindow* GetWindow() { return sWindow; }
 
-		static void CaptureMouse();
-		static void ReleaseMouse();
+	//	static void CaptureMouse();
+	//	static void ReleaseMouse();
 
-	private:
-		static GLFWwindow* sWindow;
-		static int sWidth;
-		static int sHeight;
+	//private:
+	//	static GLFWwindow* sWindow;
+	//	static int sWidth;
+	//	static int sHeight;
 
-		static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
-	};
+	//	static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
+	//};
 }

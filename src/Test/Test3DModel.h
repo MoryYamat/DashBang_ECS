@@ -2,7 +2,8 @@
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Engine/Graphics/Renderer/Shader.h"
+// #include "Engine/Graphics/Private/Renderer/Shader.h"
+#include "Engine/Graphics/Public/GraphicsFwd.hpp"
 
 
 

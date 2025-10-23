@@ -4,8 +4,10 @@
 
 #include "Engine/ECS/EntityManager.h"
 
-#include "Engine/InputManager/RawInputState.h"
-#include "Engine/Graphics/Renderer/RenderContext.h"
+//#include "Engine/InputManager/RawInputState.h"
+#include "Engine/InputManager/Public/InputFwd.hpp"
+// #include "Engine/Graphics/Renderer/RenderContext.h"
+#include "Engine/Graphics/Public/GraphicsFwd.hpp"
 
 
 

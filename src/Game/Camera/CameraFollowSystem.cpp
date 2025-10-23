@@ -4,7 +4,7 @@
 
 
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 #include <glm/gtx/rotate_vector.hpp>
 

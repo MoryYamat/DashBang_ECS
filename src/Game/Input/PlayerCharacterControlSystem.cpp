@@ -3,7 +3,7 @@
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
 
-#include "Engine/InputManager/InputManager.h"
+#include "Engine/InputManager/Private/InputManager.h"
 
 // collision
 #include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
@@ -11,7 +11,7 @@
 
 #include "Game/Input/InputActionComponent.h"
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 #include "Game/Utils/SpatialTransformUtils.h"
 

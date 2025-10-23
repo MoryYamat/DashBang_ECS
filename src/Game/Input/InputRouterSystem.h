@@ -4,7 +4,7 @@
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"
-#include "Engine/InputManager/RawInputState.h"
+#include "Engine/InputManager/Public/InputFwd.hpp"
 #include "Game/Input/InputMapping.h"
 #include "Game/Input/InputActionComponent.h"
 

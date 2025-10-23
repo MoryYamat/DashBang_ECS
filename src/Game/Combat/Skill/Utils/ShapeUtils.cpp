@@ -1,8 +1,8 @@
 ﻿#include "ShapeUtils.h"
 
-#include "Engine/Math/Logic2D/LogicMathUtils.h"
+#include "Engine/Math/Private/Logic2D/LogicMathUtils.h"
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 #include <variant>
 

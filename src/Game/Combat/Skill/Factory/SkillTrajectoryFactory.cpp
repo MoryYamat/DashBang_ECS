@@ -1,6 +1,6 @@
 ﻿#include "SkillTrajectoryFactory.h"
 
-#include "Engine/Math/MathUtils.h"
+#include "Engine/Math/Private/MathUtils.h"
 
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/glm.hpp>

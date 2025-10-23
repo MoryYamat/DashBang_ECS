@@ -1,6 +1,7 @@
 ﻿#pragma once
 
-#include "Engine/Graphics/Model/AnimationEval.hpp"
+#include "Engine/Graphics/Private/Animation/AnimationEval.hpp"
+#include "Engine/Graphics/Private/Model/ModelData.h"
 
 #include <vector>
 #include <string>
@@ -17,7 +18,7 @@ namespace Engine::ECS::Component::Graphics
 
 		std::vector<glm::mat4> palette;
 
-		std::vector<Engine::Graphics::Model::Animation::TRS> localTRS;
+		std::vector<Engine::Graphics::Animation::TRS> localTRS;
 	};
 
 	inline bool SetClipByName

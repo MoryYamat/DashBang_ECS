@@ -4,7 +4,8 @@
 
 #include <GLM/glm.hpp>
 
-#include "Engine/Graphics/Model/ModelData.h"
+#include "Engine/Graphics/Private/Model/ModelData.h"
+// #include "Engine/Graphics/Public/GraphicsFwd.h"
 
 #include <iostream>
 

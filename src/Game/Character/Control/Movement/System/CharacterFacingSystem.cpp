@@ -9,7 +9,7 @@
 
 #include "Engine/Config/CanonicalDefaults.h"
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 

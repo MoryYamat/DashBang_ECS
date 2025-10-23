@@ -1,6 +1,6 @@
 ﻿#include "SkillFSMResolverSystem.hpp"
 
-#include "Engine/Time/WorldClock.hpp"
+#include "Engine/Time/Private/WorldClock.hpp"
 
 #include "Game/Combat/Skill/Component/SkillEffectExecutionRecordComponent.hpp"
 

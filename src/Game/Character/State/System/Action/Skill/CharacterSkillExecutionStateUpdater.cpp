@@ -6,7 +6,7 @@
 
 
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 
 // 廃止予定：SkillSystemを抜本的改善：型駆動FSMを導入

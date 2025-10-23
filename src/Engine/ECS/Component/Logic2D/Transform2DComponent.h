@@ -5,7 +5,7 @@
 
 #include "Engine/Config/CanonicalDefaults.h"
 
-#include "Engine/Math/Logic2D/LogicMathUtils.h"
+#include "Engine/Math/Private/Logic2D/LogicMathUtils.h"
 
 #include <glm/gtx/rotate_vector.hpp>
 

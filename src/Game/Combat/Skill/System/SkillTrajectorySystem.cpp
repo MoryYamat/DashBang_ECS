@@ -10,9 +10,9 @@
 #include "Game/ECS/Component/LifetimeComponent.hpp"
 
 
-#include "Engine/Math/MathUtils.h"
+#include "Engine/Math/Private/MathUtils.h"
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 #include <glm/glm.hpp>
 

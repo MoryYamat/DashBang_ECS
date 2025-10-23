@@ -9,8 +9,8 @@
 #include "Engine/ECS/Entity.h"
 #include "Engine/ECS/EntityManager.h"
 
-#include "Engine/World/Core/World.hpp"
-#include "Engine/World/Core/WorldCtx.h"
+#include "Engine/WorldSystem/Private/Core/World.hpp"
+#include "Engine/WorldSystem/Private/Core/WorldCtx.h"
 
 #include "Engine/ECS/GlobalSystem/GlobalCleanupSystem.h"
 
@@ -26,19 +26,19 @@
 // Window
 
 // physics
-#include "Engine/Physics/Logic2D/DetectionFunctions.h"
+#include "Engine/Physics/Private/Logic2D/DetectionFunctions.h"
 #include "Engine/ECS/Component/Logic2D/ColliderType.h"
 
 // Graphic
-#include "Engine/Graphics/Renderer/RenderSystem.h"
-#include "Engine/Graphics/Model/AssimpImporter.h"
-#include "Engine/Graphics/Animation/AnimationSystem.hpp"
+#include "Engine/Graphics/Private/Renderer/RenderSystem.h"
+#include "Engine/Graphics/Private/Model/AssimpImporter.h"
+#include "Engine/Graphics/Private/Animation/AnimationSystem.hpp"
 
 // Time
-#include "Engine/Time/WorldClock.hpp"
+#include "Engine/Time/Private/WorldClock.hpp"
 
 // Debug
-#include "Engine/Debug/DebugSystems/LogicDebugDrawSystem.h"
+#include "Engine/Debug/Private/DebugSystems/LogicDebugDrawSystem.h"
 #include "Engine/Config/CanonicalDefaults.h"
 
 // ======================= Game =======================
@@ -99,7 +99,7 @@
 #include "Game/Combat/Skill/System/SkillTrajectorySystem.h"
 
 // Game/Sync
-#include "Engine/Sync/LogicToTransformSystem.h"
+#include "Engine/Sync/Private/LogicToTransformSystem.h"
 
 
 
@@ -113,7 +113,7 @@ GameApp::GameApp::GameApp()
 	, windowWidth(1280)
 	, windowHeight(720)
 {
-	world = std::make_unique<Engine::World::Core::World>();
+	world = std::make_unique<Engine::WorldSystem::Core::World>();
 }
 
 GameApp::GameApp::~GameApp() = default;
@@ -217,7 +217,7 @@ void GameApp::GameApp::RunLoop()
 {
 	while (!glfwWindowShouldClose(mWindow->GetGLFWWindow()) && mIsRunning)
 	{
-		Engine::World::Core::WorldCtx ctx{ *world };
+		Engine::WorldSystem::Core::WorldCtx ctx{ *world };
 
 		updateGameLogics();
 		generateOutputs();
@@ -386,17 +386,17 @@ void GameApp::GameApp::updateContext()
 
 
 // -- world --
-void GameApp::GameApp::updateGameLogics(Engine::World::Core::WorldCtx& ctx)
+void GameApp::GameApp::updateGameLogics(Engine::WorldSystem::Core::WorldCtx& ctx)
 {
 
 }
 
-void GameApp::GameApp::generateOutputs(const Engine::World::Core::WorldCtx& ctx)
+void GameApp::GameApp::generateOutputs(const Engine::WorldSystem::Core::WorldCtx& ctx)
 {
 
 }
 
-void GameApp::GameApp::Update(Engine::World::Core::WorldCtx& ctx, float realDt)
+void GameApp::GameApp::Update(Engine::WorldSystem::Core::WorldCtx& ctx, float realDt)
 {
 
 	Engine::Time::WorldClockSystem::BeginFrame(ctx, realDt);

@@ -1,6 +1,6 @@
 ﻿#include "IntersectsGenericShape2D.h"
 
-#include "Engine/Physics/Logic2D/DetectionFunctions.h"
+#include "Engine/Physics/Private/Logic2D/DetectionFunctions.h"
 
 #include <iostream>
 

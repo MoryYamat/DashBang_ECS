@@ -1,6 +1,6 @@
 ﻿#include "MovementStateTransitionEvaluator.hpp"
 
-#include "Engine/Math/Logic2D/LogicMathUtils.h"
+#include "Engine/Math/Private/Logic2D/LogicMathUtils.h"
 
 // 遷移条件をすべて評価
 bool Game::Character::State::Movement::AreConditionsMet

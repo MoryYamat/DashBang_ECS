@@ -3,7 +3,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Graphics/Private/Renderer/RenderContext.h"
+
+#include "Engine/Debug/Private/DebugUtils.h"
 
 glm::vec2 Game::Utils::GetLogicDirectionFromCursorToTarget(
 	const glm::vec2& screenMousePos, 

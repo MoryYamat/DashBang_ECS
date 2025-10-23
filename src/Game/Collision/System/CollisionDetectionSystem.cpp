@@ -1,6 +1,6 @@
 ﻿#include "CollisionDetectionSystem.h"
 
-#include "Engine/Time/WorldClock.hpp"
+#include "Engine/Time/Private/WorldClock.hpp"
 
 #include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
@@ -37,7 +37,7 @@
 // HitEvent
 #include "Game/Combat/HitEvent/Data/HitEvent.hpp"
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 #include <glm/glm.hpp>
 

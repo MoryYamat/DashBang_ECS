@@ -13,7 +13,7 @@
 #include "Game/Character/Control/Movement/Component/Intent/FacingIntentComponent.h"
 
 
-#include "Engine/InputManager/RawInputState.h"
+#include "Engine/InputManager/Public/InputFwd.hpp"
 
 
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"

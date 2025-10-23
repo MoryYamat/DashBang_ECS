@@ -1,13 +1,14 @@
 ﻿#pragma once
 
-#include "Engine/World/Public/WorldFwd.hpp"
+#include "Engine/ECS/Public/Entity.hpp"
+#include <glm/glm.hpp>
 
 namespace Engine::Component
 {
 	struct FollowCameraComponent
 	{
 		// target's entity id 
-		Entity targetEntity = Entity::INVALID;
+		Engine::ECS::Core::Entity targetEntity = Engine::ECS::Core::INVALID;
 		glm::vec3 offset = { 0.0f, 10.0f, -10.0f };
 	};
 }

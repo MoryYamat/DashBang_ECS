@@ -19,15 +19,16 @@
 #include "Game/Init/InitModel/InitLogicTransformFromModel.h"
 #include "Game/Init/InitTileMap/InitTileMap.h"
 
-#include "Engine/Graphics/Model/ModelData.h"
+#include "Engine/Graphics/Private/Model/ModelData.h"
 
-#include "Engine/Graphics/Model/AssimpImporter.h"
-#include "Engine/Graphics/Model/CgltfImporter.hpp"
-#include "Engine/Graphics/Renderer/GPUBufferUtils.h"
+#include "Engine/Graphics/Private/Renderer/Shader.h"
+#include "Engine/Graphics/Private/Model/AssimpImporter.h"
+#include "Engine/Graphics/Private/Model/CgltfImporter.hpp"
+#include "Engine/Graphics/Private/Renderer/GPUBufferUtils.h"
 
-#include "Engine/Math/Logic2D/LogicMathUtils.h"
+#include "Engine/Math/Private/Logic2D/LogicMathUtils.h"
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 #include "Game/Actor/Map/TileMapActor.h"
 

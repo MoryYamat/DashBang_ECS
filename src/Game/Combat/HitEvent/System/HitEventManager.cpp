@@ -1,7 +1,7 @@
 ﻿#include "HitEventManager.hpp"
 
 #include "Engine/ECS/EntityManager.h"
-#include "Engine/Time/WorldClock.hpp"
+#include "Engine/Time/Private/WorldClock.hpp"
 
 #include "Game/Combat/HitEvent/Data/HitEvent.hpp"
 #include "Game/Combat/HitEvent/Database/HitEventDatabase.hpp"

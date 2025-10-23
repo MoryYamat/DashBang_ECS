@@ -4,9 +4,10 @@
 
 #include "Game/Utils/SpatialTransformUtils.h"
 
+#include "Engine/InputManager/Private/RawInputState.h"
 
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 void Game::Input::Analog::RouteAnalogInput(Engine::ECS::EntityMgr& ecs, const Engine::Input::RawInputState& rawInput, const Engine::Graphics::Render::RenderContext& renderContext)
 {

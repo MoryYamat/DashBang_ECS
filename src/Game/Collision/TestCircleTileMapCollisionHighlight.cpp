@@ -1,8 +1,8 @@
 ﻿#include "TestCircleTileMapCollisionHighlight.h"
 
-#include "Engine/Physics/Logic2D/DetectionFunctions.h"
+#include "Engine/Physics/Private/Logic2D/DetectionFunctions.h"
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 //void Game::Collision::Utils::TestCircleTileMapCollisionHighlight(
 //	const Engine::ECS::Component::Logic2D::CollisionComponent& collisionComp,

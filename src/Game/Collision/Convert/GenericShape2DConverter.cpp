@@ -1,6 +1,6 @@
 ﻿#include "GenericShape2DConverter.h"
 
-#include "Engine/Math/Logic2D/LogicMathUtils.h"
+#include "Engine/Math/Private/Logic2D/LogicMathUtils.h"
 
 #include <variant>
 

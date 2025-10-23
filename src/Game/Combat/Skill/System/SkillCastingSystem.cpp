@@ -16,9 +16,9 @@
 #include "Game/ECS/Component/TeamComponent.h"
 #include "Game/ECS/Component/LifetimeComponent.hpp"
 
-#include "Engine/Math/MathUtils.h"
+#include "Engine/Math/Private/MathUtils.h"
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 
 // 削除予定：型ベースFSM導入後廃止予定

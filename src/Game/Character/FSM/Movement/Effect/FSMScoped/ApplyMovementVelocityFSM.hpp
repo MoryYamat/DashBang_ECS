@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Engine/Time/WorldClock.hpp"
+#include "Engine/Time/Private/WorldClock.hpp"
 
 #include "Engine/ECS/Entity.h"
 #include "Engine/ECS/EntityManager.h"

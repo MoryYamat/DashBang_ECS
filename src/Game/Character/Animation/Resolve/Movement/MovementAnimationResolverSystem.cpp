@@ -13,7 +13,7 @@
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 
-#include "Engine/Math/Logic2D/LogicMathUtils.h"
+#include "Engine/Math/Private/Logic2D/LogicMathUtils.h"
 
 #include <glm/gtc/constants.hpp>
 

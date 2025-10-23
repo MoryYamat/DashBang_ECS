@@ -6,9 +6,9 @@
 
 #include "Game/Input/InputState.h"
 
-#include "Engine/InputManager/RawInputState.h"
+#include "Engine/InputManager/Private/RawInputState.h"
 
-#include "Engine/Graphics/Renderer/RenderContext.h"
+#include "Engine/Graphics/Private/Renderer/RenderContext.h"
 
 
 

@@ -1,10 +1,10 @@
 ﻿#include "PlayerTileCollisionExtractor.h"
 
-#include "Engine/Physics/Logic2D/DetectionFunctions.h"
+#include "Engine/Physics/Private/Logic2D/DetectionFunctions.h"
 
 #include "Game/Collision/Utils/ExtractSupport.h"
 
-#include "Engine/Debug/DebugUtils.h"
+#include "Engine/Debug/Private/DebugUtils.h"
 
 #include <iostream>
 
