@@ -1,6 +1,6 @@
 ﻿#include "WorldClock.hpp"
 
-#include "Engine/WorldSystem/Private/Core/WorldCtx.h"
+#include "Engine/WorldSystem/Private/Core/WorldCtx.hpp"
 #include "Engine/WorldSystem/Private/Core/WorldAccess.hpp"
 
 #include <algorithm>

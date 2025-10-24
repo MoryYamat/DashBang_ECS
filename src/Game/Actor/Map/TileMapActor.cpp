@@ -9,10 +9,10 @@
 #include "Engine/ECS/Component/Tags/TileMapTag.h"
 
 
-#include "Game/Collision/Component/CollisionMaskComponent.h"
+#include "Game/Collision/Private/Component/CollisionMaskComponent.h"
 
-#include "Game/Init/InitModel/InitLogicTransformFromModel.h"
-#include "Game/Init/InitTileMap/InitTileMap.h"
+#include "Game/Init/Private/InitModel/InitLogicTransformFromModel.h"
+#include "Game/Init/Private/InitTileMap/InitTileMap.h"
 
 #include "Engine/Debug/Private/DebugUtils.h"
 

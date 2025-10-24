@@ -10,7 +10,7 @@
 #include "Engine/ECS/EntityManager.h"
 
 #include "Engine/WorldSystem/Private/Core/World.hpp"
-#include "Engine/WorldSystem/Private/Core/WorldCtx.h"
+#include "Engine/WorldSystem/Private/Core/WorldCtx.hpp"
 
 #include "Engine/ECS/GlobalSystem/GlobalCleanupSystem.h"
 
@@ -44,15 +44,9 @@
 // ======================= Game =======================
 
 //Game/ Feature
-#include "Game/00_Feature/Character/Movement/MovementFeature.h"
+#include "Game/00_Feature/Private/Character/Movement/MovementFeature.h"
 //Game/ Layer
-#include "Game/01_Layer/InitializeLayerFeature.h"
-#include "Game/01_Layer/InputLayerFeature.h"
-#include "Game/01_Layer/IntentLayerFeature.h"
-#include "Game/01_Layer/ResolverLayerFeature.hpp"
-#include "Game/01_Layer/LogicLayerFeature.h"
-#include "Game/01_Layer/StateLayerFeature.hpp"
-#include "Game/01_Layer/LocomotionResolverLayerFeature.hpp"
+#include "Game/01_Layer/Private/AllLayerFeatureSystem.hpp"
 
 //Game/Actor
 #include "Game/Actor/CameraActor.h"
@@ -67,36 +61,34 @@
 #include "Game/Actor/Map/Obstacle/TestRockActor.h"
 
 // Game/Camera
-#include "Game/Camera/CameraFollowSystem.h"
+#include "Game/Camera/Private/CameraFollowSystem.h"
 
 // Game/Input
-#include "Game/Camera/CameraControlSystem.h"
-#include "Game/Input/PlayerCharacterControlSystem.h"
-#include "Game/Input/MouseCursorUpdateSystem.h"
-#include "Game/Input/InputRouterSystem.h"
-#include "Game/Input/AnalogInput/AnalogInputRoutingSystem.h"
+#include "Game/Camera/Private/CameraControlSystem.h"
+#include "Game/Input/Private/InputRouterSystem.h"
+#include "Game/Input/Private/AnalogInput/AnalogInputRoutingSystem.h"
 
 // Game/Input/Intent
-#include "Game/Input/Intent/PlayerMovementIntentMapper.h"
+#include "Game/Input/Private/Intent/PlayerMovementIntentMapper.h"
 
 // Game Init
-#include "Game/Init/InitTileMap/InitTileMap.h"
-#include "Game/Init/InitComponent/InputBindingInit.h"
+#include "Game/Init/Private/InitTileMap/InitTileMap.h"
+#include "Game/Init/Private/InitComponent/InputBindingInit.h"
 
 // collision systems
-#include "Game/Collision/System/CollisionDetectionSystem.h"
+#include "Game/Collision/Private/System/CollisionDetectionSystem.h"
 
 // skill
-#include "Game/Combat/Skill/System/Trigger/PlayerSkillTriggerSystem.h"
-#include "Game/Combat/Skill/System/SkillCastingSystem.h"
-#include "Game/Combat/Skill/MasterData/SkillSlot.h"
-#include "Game/Combat/Skill/System/UpdateSkillLifetimes.h"
-#include "Game/Combat/Skill/System/UpdateSkillPhase.h"
+#include "Game/Combat/Private/Skill/System/Trigger/PlayerSkillTriggerSystem.h"
+#include "Game/Combat/Private/Skill/System/SkillCastingSystem.h"
+#include "Game/Combat/Private/Skill/MasterData/SkillSlot.h"
+#include "Game/Combat/Private/Skill/System/UpdateSkillLifetimes.h"
+#include "Game/Combat/Private/Skill/System/UpdateSkillPhase.h"
 
 // skill trajectory
-#include "Game/Combat/Skill/Component/SkillTrajectoryComponent.h"
-#include "Game/Combat/Skill/MasterData/SkillTrajectoryData.h"
-#include "Game/Combat/Skill/System/SkillTrajectorySystem.h"
+#include "Game/Combat/Private/Skill/Component/SkillTrajectoryComponent.h"
+#include "Game/Combat/Private/Skill/MasterData/SkillTrajectoryData.h"
+#include "Game/Combat/Private/Skill/System/SkillTrajectorySystem.h"
 
 // Game/Sync
 #include "Engine/Sync/Private/LogicToTransformSystem.h"

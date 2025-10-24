@@ -18,12 +18,12 @@
 
 // input
 // #include "Core/ECS/Component/InputComponent.h"
-#include "Game/Input/InputActionComponent.h"
+#include "Game/Input/Private/InputActionComponent.h"
 
 // Intent
-#include "Game/Character/Control/Movement/Component/Intent/MovementIntentComponent.h"
-#include "Game/Character/Control/Movement/Component/Intent/FacingIntentComponent.h"
-#include "Game/Character/Stats/Component/CharacterStatsComponent.h"
+#include "Game/Character/Private/Control/Movement/Component/Intent/MovementIntentComponent.h"
+#include "Game/Character/Private/Control/Movement/Component/Intent/FacingIntentComponent.h"
+#include "Game/Character/Private/Stats/Component/CharacterStatsComponent.h"
 
 // test color
 #include "Engine/ECS/Component/Graphics/MaterialComponent.h"
@@ -39,22 +39,22 @@
 //#include "Core/ECS/Component/Collision/ColliderType.h"
 
 // collision comp
-#include "Game/Collision/Component/CollisionMaskComponent.h"
+#include "Game/Collision/Private/Component/CollisionMaskComponent.h"
 
 // Skill
-#include "Game/Combat/Skill/Component/SkillInstanceComponent.h"
-#include "Game/Combat/Skill/Component/ActiveSkillCasterComponent.h"
-#include "Game/Combat/Skill/Component/SkillSlotAssignmentComponent.h"
+#include "Game/Combat/Private/Skill/Component/SkillInstanceComponent.h"
+#include "Game/Combat/Private/Skill/Component/ActiveSkillCasterComponent.h"
+#include "Game/Combat/Private/Skill/Component/SkillSlotAssignmentComponent.h"
 
-#include "Game/Combat/Skill/Component/SkillInputBindingComponent.h"
+#include "Game/Combat/Private/Skill/Component/SkillInputBindingComponent.h"
 
-#include "Game/Combat/Skill/Context/Component/SkillExecutionContextComponent.hpp"
+#include "Game/Combat/Private/Skill/Context/Component/SkillExecutionContextComponent.hpp"
 
 
 // intent
-#include "Game/Character/Control/Skill/Intent/SkillIntentComponent.hpp"
+#include "Game/Character/Private/Control/Skill/Intent/SkillIntentComponent.hpp"
 
-#include "Game/Character/State/Component/Action/Skill/CharacterSkillExecutionStateComponent.hpp"
+#include "Game/Character/Private/State/Component/Action/Skill/CharacterSkillExecutionStateComponent.hpp"
 
 #include "Engine/Graphics/Private/Model/ModelData.h"
 #include "Engine/Graphics/Private/Model/AssimpImporter.h"
@@ -63,59 +63,59 @@
 #include "Engine/Graphics/Private/Model/CgltfImporter.hpp"
 
 
-#include "Game/Init/InitModel/InitLogicTransformFromModel.h"
-#include "Game/Init/InitTileMap/InitTileMap.h"
+#include "Game/Init/Private/InitModel/InitLogicTransformFromModel.h"
+#include "Game/Init/Private/InitTileMap/InitTileMap.h"
 
 
 
 // character 
 
 // animation
-#include "Game/Character/Animation/Query/Locomotion/LocomotionAnimationQueryComponent.hpp"
-#include "Game/Character/Animation/Resolve/Movement/MovementAnimDecisionComponent.hpp"
-#include "Game/Character/Animation/Profile/AnimationProfileComponent.hpp"
-#include "Game/Character/Animation/Arbiter/FinalAnimationDecisionComponent.hpp"
+#include "Game/Character/Private/Animation/Query/Locomotion/LocomotionAnimationQueryComponent.hpp"
+#include "Game/Character/Private/Animation/Resolve/Movement/MovementAnimDecisionComponent.hpp"
+#include "Game/Character/Private/Animation/Profile/AnimationProfileComponent.hpp"
+#include "Game/Character/Private/Animation/Arbiter/FinalAnimationDecisionComponent.hpp"
 
-#include "Game/Character/Animation/Query/Skill/SkillAnimationQueryComponent.hpp"
-#include "Game/Character/Animation/Resolve/Skill/SkillAnimDecisionComponent.hpp"
+#include "Game/Character/Private/Animation/Query/Skill/SkillAnimationQueryComponent.hpp"
+#include "Game/Character/Private/Animation/Resolve/Skill/SkillAnimDecisionComponent.hpp"
 
-#include "Game/Character/Animation/Query/CC/CCAnimationQueryComponent.hpp"
-#include "Game/Character/Animation/Resolve/CC/CCAnimDecisionComponent.hpp"
+#include "Game/Character/Private/Animation/Query/CC/CCAnimationQueryComponent.hpp"
+#include "Game/Character/Private/Animation/Resolve/CC/CCAnimDecisionComponent.hpp"
 
 // life
-#include "Game/Character/State/Component/LifeStateComponent.hpp"
+#include "Game/Character/Private/State/Component/LifeStateComponent.hpp"
 // movement
-#include "Game/Character/State/Component/MovementStateComponent.hpp"
+#include "Game/Character/Private/State/Component/MovementStateComponent.hpp"
 // action
-#include "Game/Character/State/Component/Action/ActionStateComponent.hpp"
+#include "Game/Character/Private/State/Component/Action/ActionStateComponent.hpp"
 
 // =========== FSM ===========
 // 
 // movement
-#include "Game/Character/FSM/Movement/StateModel/MovementStateComponent.hpp"
-#include "Game/Character/FSM/Movement/StateModel/MovementFSMTransitionRequestComponent.hpp"
-#include "Game/Character/FSM/Movement/StateModel/MovementFSMLeaseComponent.hpp"
-#include "Game/Character/FSM/Movement/StateModel/MovementFSMInterferenceRequestComponent.hpp"
+#include "Game/Character/Private/FSM/Movement/StateModel/MovementStateComponent.hpp"
+#include "Game/Character/Private/FSM/Movement/StateModel/MovementFSMTransitionRequestComponent.hpp"
+#include "Game/Character/Private/FSM/Movement/StateModel/MovementFSMLeaseComponent.hpp"
+#include "Game/Character/Private/FSM/Movement/StateModel/MovementFSMInterferenceRequestComponent.hpp"
 //CC
-#include "Game/Character/FSM/CC/StateModel/CCStateComponent.hpp"
-#include "Game/Character/FSM/CC/StateModel/CCFSMTransitionRequestComponent.hpp"
-#include "Game/Character/FSM/CC/StateModel/CCDedupStampComponent.hpp"
+#include "Game/Character/Private/FSM/CC/StateModel/CCStateComponent.hpp"
+#include "Game/Character/Private/FSM/CC/StateModel/CCFSMTransitionRequestComponent.hpp"
+#include "Game/Character/Private/FSM/CC/StateModel/CCDedupStampComponent.hpp"
 
-#include "Game/Character/Control/CC/Component/CCAntiChainComponent.hpp"
+#include "Game/Character/Private/Control/CC/Component/CCAntiChainComponent.hpp"
 
 // skill
-#include "Game/Combat/Skill/FSM/StateModel/SkillStateComponent.hpp"
-#include "Game/Combat/Skill/FSM/StateModel/SkillFSMTransitionRequestComponent.hpp"
-#include "Game/Combat/Skill/Component/SkillExecutionContextComponent.hpp"
-#include "Game/Combat/Skill/Component/SkillEffectExecutionRecordComponent.hpp"
-#include "Game/Combat/Skill/FSM/StateModel/SkillFSMInterferenceRequestComponent.hpp"
-#include "Game/Combat/Skill/FSM/StateModel/SkillFSMLeaseComponent.hpp"
+#include "Game/Combat/Private/Skill/FSM/StateModel/SkillStateComponent.hpp"
+#include "Game/Combat/Private/Skill/FSM/StateModel/SkillFSMTransitionRequestComponent.hpp"
+#include "Game/Combat/Private/Skill/Component/SkillExecutionContextComponent.hpp"
+#include "Game/Combat/Private/Skill/Component/SkillEffectExecutionRecordComponent.hpp"
+#include "Game/Combat/Private/Skill/FSM/StateModel/SkillFSMInterferenceRequestComponent.hpp"
+#include "Game/Combat/Private/Skill/FSM/StateModel/SkillFSMLeaseComponent.hpp"
 
 // CC
 
 // Game ECS
-#include "Game/ECS/Tags/CharacterAttribTags.h"
-#include "Game/ECS/Component/TeamComponent.h"
+#include "Game/ECS/Private/Tags/CharacterAttribTags.h"
+#include "Game/ECS/Private/Component/TeamComponent.h"
 
 #include "Engine/Debug/Private/DebugUtils.h"
 

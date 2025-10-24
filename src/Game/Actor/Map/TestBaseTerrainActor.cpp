@@ -16,8 +16,8 @@
 
 #include "Engine/ECS/Component/Tags/MapTags.h"
 
-#include "Game/Init/InitModel/InitLogicTransformFromModel.h"
-#include "Game/Init/InitTileMap/InitTileMap.h"
+#include "Game/Init/Private/InitModel/InitLogicTransformFromModel.h"
+#include "Game/Init/Private/InitTileMap/InitTileMap.h"
 
 #include "Engine/Graphics/Private/Model/ModelData.h"
 

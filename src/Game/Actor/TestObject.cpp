@@ -10,7 +10,7 @@
 
 // input
 // #include "Core/ECS/Component/InputComponent.h"
-#include "Game/Input/InputActionComponent.h"
+#include "Game/Input/Private/InputActionComponent.h"
 
 // test color
 #include "Engine/ECS/Component/Graphics/MaterialComponent.h"
@@ -23,8 +23,8 @@
 
 #include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
 
-#include "Game/Collision/Component/CollisionMaskComponent.h"
-#include "Game/ECS/Component/TeamComponent.h"
+#include "Game/Collision/Private/Component/CollisionMaskComponent.h"
+#include "Game/ECS/Private/Component/TeamComponent.h"
 
 #include "Engine/Graphics/Private/Renderer/Shader.h"
 
@@ -34,7 +34,7 @@
 
 #include "Engine/Debug/Private/DebugUtils.h"
 
-#include "Game/Init/InitModel/InitLogicTransformFromModel.h"
+#include "Game/Init/Private/InitModel/InitLogicTransformFromModel.h"
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 

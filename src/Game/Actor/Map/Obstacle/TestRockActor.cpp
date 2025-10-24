@@ -15,7 +15,7 @@
 
 #include "Engine/Graphics/Private/Model/ModelData.h"
 
-#include "Game/Init/InitModel/InitLogicTransformFromModel.h"
+#include "Game/Init/Private/InitModel/InitLogicTransformFromModel.h"
 
 #include "Engine/Graphics/Private/Model/AssimpImporter.h"
 #include "Engine/Graphics/Private/Model/CgltfImporter.hpp"
@@ -23,7 +23,7 @@
 
 #include "Engine/Math/Private/Logic2D/LogicMathUtils.h"
 
-#include "Game/Collision/Component/CollisionMaskComponent.h"
+#include "Game/Collision/Private/Component/CollisionMaskComponent.h"
 
 #include "Engine/Debug/Private/DebugUtils.h"
 

@@ -5,7 +5,7 @@
 // #include "Engine/Graphics/Private/Renderer/RenderContext.h"
 #include "Engine/Graphics/Public/GraphicsFwd.hpp"
 
-#include "Game/Collision/Data/CollisionResultStorage.h"
+#include "Game/Collision/Private/Data/CollisionResultStorage.h"
 
 
 namespace Engine::Debug::Drawing::Logic2D

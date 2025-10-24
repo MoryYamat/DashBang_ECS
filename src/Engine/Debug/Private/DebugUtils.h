@@ -7,7 +7,7 @@
 
 #include "Engine/ECS/Component/Logic2D/TileMapComponent.h"
 
-#include "Game/Collision/Data/CollisionResultStorage.h"
+#include "Game/Collision/Private/Data/CollisionResultStorage.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>

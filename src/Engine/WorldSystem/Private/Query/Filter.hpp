@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "Engine/ECS/Public/Entity.hpp"
-#include "Engine/WorldSystem/Core/WorldFacade.hpp"
+#include "Engine/WorldSystem/Private/Core/WorldAccess.hpp"
 
 namespace Engine::WorldSystem::Query
 {
@@ -10,7 +10,7 @@ namespace Engine::WorldSystem::Query
 	template<typename... Cs>
 	struct All
 	{
-		bool operator()(const Core::WorldRead& rw, Core::Entity e) const
+		bool operator()(const Core::WorldRead& rw, Engine::ECS::Core::Entity e) const
 		{
 			return ((rw.TryGet<Cs>(e) != nullptr) && ...);
 		}
@@ -20,10 +20,10 @@ namespace Engine::WorldSystem::Query
 	template<typename... Cs>
 	struct Any
 	{
-		bool operator()(const Core::WorldRead& rw, Core::Entity e) const
+		bool operator()(const Core::WorldRead& rw, Engine::ECS::Core::Entity e) const
 		{
 			if constexpr (sizeof...(Cs) == 0) return true;
-			return ((rw.TryGet<Cs>(e) != nullptr || ...));
+			return ((rw.TryGet<Cs>(e) != nullptr) || ...);
 		}
 	};
 
@@ -34,7 +34,7 @@ namespace Engine::WorldSystem::Query
 	{
 		L l;
 		R r;
-		bool operator()(const Core::WorldRead& rw, Core::Entity e) const
+		bool operator()(const Core::WorldRead& rw, Engine::ECS::Core::Entity e) const
 		{
 			return l(rw, e) && r(rw, e);
 		}
@@ -46,7 +46,7 @@ namespace Engine::WorldSystem::Query
 	{
 		L l;
 		R r;
-		bool operator()(const Core::WorldRead& rw, Core::Entity e) const
+		bool operator()(const Core::WorldRead& rw, Engine::ECS::Core::Entity e) const
 		{
 			return l(rw, e) || r(rw, e);
 		}
@@ -56,7 +56,7 @@ namespace Engine::WorldSystem::Query
 	struct Not
 	{
 		P p;
-		bool operator()(const Core::WorldRead& rw, Core::Entity e) const
+		bool operator()(const Core::WorldRead& rw, Engine::ECS::Core::Entity e) const
 		{
 			return !p(rw, e);
 		}

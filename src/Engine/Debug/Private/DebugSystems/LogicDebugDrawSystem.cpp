@@ -19,12 +19,12 @@
 #include "Engine/Graphics/Private/Renderer/RenderContext.h"
 
 // Game
-#include "Game/Collision/TestCircleTileMapCollisionHighlight.h"
-#include "Game/Combat/Skill/Component/Attack2DAreaComponent.h"
+#include "Game/Collision/Private/TestCircleTileMapCollisionHighlight.h"
+#include "Game/Combat/Private/Skill/Component/Attack2DAreaComponent.h"
 
-#include "Game/Combat/Skill/Utils/ShapeUtils.h"
+#include "Game/Combat/Private/Skill/Utils/ShapeUtils.h"
 
-#include "Game/ECS/Tags/CharacterAttribTags.h"
+#include "Game/ECS/Private/Tags/CharacterAttribTags.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>

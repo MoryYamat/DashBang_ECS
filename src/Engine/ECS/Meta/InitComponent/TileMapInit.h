@@ -9,7 +9,7 @@
 
 #include "Engine/ECS/Component/Logic2D/TileMapComponent.h"
 
-#include "Game/Init/InitTileMap/InitTileMap.h"
+#include "Game/Init/Private/InitTileMap/InitTileMap.h"
 
 
 namespace Engine::ECS::Meta::Init

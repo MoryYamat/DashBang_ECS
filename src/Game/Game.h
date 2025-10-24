@@ -21,10 +21,10 @@
 // Input
 #include "Engine/InputManager/Private/InputManager.h"
 
-#include "Game/Collision/Data/CollisionResultStorage.h"
+#include "Game/Collision/Private/Data/CollisionResultStorage.h"
 
 // 
-#include "Game/Common/AppContext.h"
+#include "Game/Common/Private/AppContext.h"
 
 // World
 // #include "Engine/WorldSystem/Private/Core/World.hpp"
