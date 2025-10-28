@@ -11,12 +11,14 @@
 #include <vector>
 #include <string>
 
+#include <cassert>
+
 namespace Engine::FSM::Core
 {
 	// 全FSM空間の中で一意
 	struct AxisID
 	{
-		std::uint16_t id;// 仮
+		std::uint32_t id;// 仮
 	};
 
 	// 全FSM空間の中で一意
@@ -51,10 +53,10 @@ namespace Engine::FSM::Core
 		EntityKey entity;
 	};
 
-	struct TransitionView
-	{
-		std::span<const Transition> outgoing(StateID s) const;// 遷移集合を検索し抽出
-	};
+	//struct TransitionView
+	//{
+	//	std::span<const Transition> outgoing(StateID s) const;// 遷移集合を検索し抽出
+	//};
 
 	// 
 	struct EnvSnapshot
@@ -64,7 +66,28 @@ namespace Engine::FSM::Core
 
 	struct CondTable
 	{
-		bool eval(CondID id, const EnvSnapshot& env, const EvalCtx& ctx) const;
+		// TODO 事前コンパイル方式: オーサリング時に式→バイトコードへコンパイル(実行時は配列を順に読むだけ)
+		using Fn = bool(*)(const EnvSnapshot&, const EvalCtx&);
+		std::vector<Fn> fns;// index == CondID.id
+
+		void ensureSize(std::size_t n)
+		{
+			if (fns.size() < n) fns.resize(n, nullptr);
+		}
+
+		void set(CondID id, Fn fn)
+		{
+			ensureSize(id.id + 1);
+			fns[id.id] = fn;
+		}
+
+		bool eval(CondID id, const EnvSnapshot& env, const EvalCtx& ctx) const
+		{
+			const auto i = id.id;
+			assert(i < fns.size());
+			auto* fn = (i < fns.size()) ? fns[i] : nullptr;
+			return fn ? fn(env, ctx) : false;
+		}
 	};
 
 	constexpr std::uint8_t kMaxPrio = 255;
@@ -81,7 +104,7 @@ namespace Engine::FSM::Core
 		StateID to;
 		CondID cond{};
 		bool changed{ false };
-		Reason reason{ 0 };
+		Reason reason{ Reason::None };
 	};
 
 	struct CanonicalAxis
@@ -96,4 +119,36 @@ namespace Engine::FSM::Core
 		std::string axisName;
 		std::uint32_t schemaVersion;
 	};
+
+
+	struct TransitionView_CSR
+	{
+		std::span<const Transition> edges;
+		std::span<const std::uint32_t> headIndex;// [stateCount + 1]
+
+		[[nodiscard]] std::span<const Transition> outgoing(StateID s) const noexcept
+		{
+			assert(s.id + 1 < headIndex.size());
+			const auto b = headIndex[s.id];
+			const auto e = headIndex[s.id + 1];
+			return { edges.data() + b, static_cast<size_t>(e - b) };
+		}
+	};
+
+	[[nodiscard]] inline TransitionView_CSR MakeTransitionView(const CanonicalAxis& ca) noexcept
+	{
+		return TransitionView_CSR{
+			std::span<const Transition>(ca.edges.data(), ca.edges.size()),
+			std::span<const std::uint32_t>(ca.headIndex.data(), ca.headIndex.size())
+		};
+	}
+
+	[[nodiscard]] Decision TransitionSelector
+	(
+		StateID from,
+		const TransitionView_CSR& tv,
+		const CondTable& ct,
+		const EnvSnapshot& env,
+		const EvalCtx& ctx
+	);
 }

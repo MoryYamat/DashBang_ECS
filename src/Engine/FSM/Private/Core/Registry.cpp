@@ -133,7 +133,7 @@ namespace Engine::FSM::Core
 			{
 				auto itFrom = state2idx.find(at.from);
 				auto itTo = state2idx.find(at.to);
-				auto itCond = state2idx.find(at.cond);
+				auto itCond = state2idx.find(at.from);
 
 				bool ok = true;
 				if (itFrom == state2idx.end())

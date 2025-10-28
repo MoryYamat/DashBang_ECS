@@ -7,7 +7,7 @@ namespace Engine::FSM::Core
 	Decision TransitionSelector
 	(
 		StateID from,
-		const TransitionView& tv,
+		const TransitionView_CSR& tv,
 		const CondTable& conditions,
 		const EnvSnapshot& env,
 		const EvalCtx& ctx
