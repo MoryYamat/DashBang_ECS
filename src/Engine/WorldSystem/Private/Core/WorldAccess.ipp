@@ -56,6 +56,18 @@ namespace Engine::WorldSystem::Core
 		w.Registry().RemoveComponent<T>(e);
 	}
 
+	template<typename T>
+	[[nodiscard]] T& WorldWrite::Get(Engine::ECS::Core::Entity e)
+	{
+		return w.Registry().Get<T>(e);
+	}
+
+	template<typename T>
+	[[nodiscard]] const T& WorldWrite::Get(Engine::ECS::Core::Entity e) const
+	{
+		return w.Registry().Get<T>(e);
+	}
+
 	//読み取り
 	template<typename T>
 	[[nodiscard]] bool WorldWrite::Has(Engine::ECS::Core::Entity e) const

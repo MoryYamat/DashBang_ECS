@@ -1,14 +1,16 @@
-//
+ï»¿//
 
 #pragma once
 
 #include <GLM/glm.hpp>
 
+// MovementIntentComponentã«çµ±åˆ
+// å‰Šé™¤äºˆå®š
 namespace Game::Character::Intent
 {
 	struct MovementIntentComponent
 	{
-		glm::vec2 direction = glm::vec2(0.0f);	// ƒ[ƒ‹ƒh‹óŠÔ‚É‚¨‚¯‚é•ûŒü// direction‚Íg—p‘¤‚Å³‹K‰»‚·‚é
-		bool isActive = false;					// ˆÓ}‚Æ‚µ‚Ä‚ÌˆÚ“®‚Ì—L–³
+		glm::vec2 direction = glm::vec2(0.0f);	// ãƒ¯ãƒ¼ãƒ«ãƒ‰ç©ºé–“ã«ãŠã‘ã‚‹æ–¹å‘// directionã¯ä½¿ç”¨å´ã§æ­£è¦åŒ–ã™ã‚‹
+		bool isActive = false;					// æ„å›³ã¨ã—ã¦ã®ç§»å‹•ã®æœ‰ç„¡
 	};
 }

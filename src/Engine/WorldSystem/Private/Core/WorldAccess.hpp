@@ -42,6 +42,12 @@ namespace Engine::WorldSystem::Core
 		template<typename T>
 		void Remove(Engine::ECS::Core::Entity e);
 
+		template<typename T>
+		[[nodiscard]] T& Get(Engine::ECS::Core::Entity e);
+
+		template<typename T>
+		[[nodiscard]] const T& Get(Engine::ECS::Core::Entity e) const;
+
 		//読み取り
 		template<typename T>
 		[[nodiscard]] bool Has(Engine::ECS::Core::Entity e) const;

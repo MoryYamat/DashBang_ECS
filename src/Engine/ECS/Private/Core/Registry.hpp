@@ -9,6 +9,7 @@
 #include <memory>
 #include <utility>
 #include <cassert>
+
 namespace Engine::ECS::Core
 {
 	class Registry
@@ -71,6 +72,14 @@ namespace Engine::ECS::Core
 
 		template<typename T>
 		[[nodiscard]] T& Get(Entity e)
+		{
+			auto* p = TryGet<T>(e);
+			assert(p && "Get<T>: component missing");
+			return *p;
+		}
+
+		template<typename T>
+		[[nodiscard]] const T& Get(Entity e) const
 		{
 			auto* p = TryGet<T>(e);
 			assert(p && "Get<T>: component missing");

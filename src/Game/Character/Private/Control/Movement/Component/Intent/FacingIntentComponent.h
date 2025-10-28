@@ -4,6 +4,8 @@
 
 #include <glm/glm.hpp>
 
+// MovementIntentComponentに統合
+// 削除予定
 namespace Game::Character::Intent
 {
 	struct FacingIntentComponent

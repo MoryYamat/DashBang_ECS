@@ -36,6 +36,7 @@ namespace Engine::WorldSystem::Core
 		template<typename T>				T* TryGetResource();
 		template<typename T>		  const T* TryGetResource() const;
 		template<typename T>				T& GetResource();
+		template<typename T>		  const T& GetResource() const;
 		template<typename T>			  bool HasResource() const;
 		template<typename T>			  void RemoveResource();
 	};

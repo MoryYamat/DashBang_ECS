@@ -18,8 +18,5 @@ void Game::Input::Setting::InitSkillInputMap(Engine::ECS::EntityMgr& ecs)
 
 namespace Game::Input::Setting
 {
-	void InitSkillInputMap(Engine::WorldSystem::Core::WorldCtx& ctx)
-	{
 
-	}
 }

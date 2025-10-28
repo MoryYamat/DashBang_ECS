@@ -20,31 +20,33 @@
 
 namespace Game::Input
 {
-	struct InputState
-	{
-		std::unordered_map<InputAction, bool> actions;
+	// 削除
+	// 現在未使用
+	//struct InputState
+	//{
+	//	std::unordered_map<InputAction, bool> actions;
 
-		std::unordered_map<InputAction, bool> previousActions;
+	//	std::unordered_map<InputAction, bool> previousActions;
 
-		// スクリーン上のマウス座標
-		glm::vec2 screenMousePosition = glm::vec2(0.0f);
-		glm::vec2 viewportSize = glm::vec2(0.0f, 0.0f);
+	//	// スクリーン上のマウス座標
+	//	glm::vec2 screenMousePosition = glm::vec2(0.0f);
+	//	glm::vec2 viewportSize = glm::vec2(0.0f, 0.0f);
 
-		// マウス変位のためのデータ
-		glm::vec2 mousePosition = glm::vec2(0.0f);
-		glm::vec2 mouseDelta = glm::vec2(0.0f);
+	//	// マウス変位のためのデータ
+	//	glm::vec2 mousePosition = glm::vec2(0.0f);
+	//	glm::vec2 mouseDelta = glm::vec2(0.0f);
 
-		float scrollDelta = 0.0f;
-		bool mouseCaptured = true;
-		bool requestMouseCaptureToggle = false;
+	//	float scrollDelta = 0.0f;
+	//	bool mouseCaptured = true;
+	//	bool requestMouseCaptureToggle = false;
 
-		bool isPressed(InputAction action) const {
-			auto it = actions.find(action);
-			return it != actions.end() && it->second;
-		}
+	//	bool isPressed(InputAction action) const {
+	//		auto it = actions.find(action);
+	//		return it != actions.end() && it->second;
+	//	}
 
 
-		bool firstMouse = true;
-	};
+	//	bool firstMouse = true;
+	//};
 }
 

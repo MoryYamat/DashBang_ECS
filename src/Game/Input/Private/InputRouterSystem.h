@@ -16,5 +16,4 @@ namespace Game::Input
 	// GLFWの生の入力をComponentベースの抽象入力に割り当てる
 	void InputRouterSystem(Engine::ECS::EntityMgr& ecs, const Engine::Input::RawInputState& rawInput);
 
-	void InputRouterSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
 }

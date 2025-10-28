@@ -34,7 +34,7 @@ namespace Engine::WorldSystem::Core
 		const T* TryGet() const 
 		{
 			auto it = store_.find(typeid(T));
-			return (it == store_.end()) ? nullptr : static_cast<T*>(it->second.get());
+			return (it == store_.end()) ? nullptr : static_cast<const T*>(it->second.get());
 		}
 
 		template<typename T>
@@ -45,6 +45,14 @@ namespace Engine::WorldSystem::Core
 
 		template<typename T>
 		T& Get()
+		{
+			auto* p = TryGet<T>();
+			assert(p && "Resource missing");
+			return *p;
+		}
+
+		template<typename T>
+		const T& Get() const
 		{
 			auto* p = TryGet<T>();
 			assert(p && "Resource missing");

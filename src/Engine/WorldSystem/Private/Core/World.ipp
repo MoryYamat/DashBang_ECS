@@ -30,6 +30,12 @@ namespace Engine::WorldSystem::Core
 	}
 
 	template<typename T>
+	const T& World::GetResource() const
+	{
+		return Resources().Get<T>();
+	}
+
+	template<typename T>
 	bool World::HasResource() const
 	{
 		return Resources().Has<T>();

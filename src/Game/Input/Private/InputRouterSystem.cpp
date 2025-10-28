@@ -32,10 +32,3 @@ void Game::Input::InputRouterSystem(Engine::ECS::EntityMgr& ecs, const Engine::I
 	}
 }
 
-namespace Game::Input
-{
-	void InputRouterSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
-	{
-
-	}
-}
