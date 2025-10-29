@@ -19,7 +19,7 @@ namespace Game::FSM
 		{
 			CondTableStaging st;
 			Game::Character::FSM::Movement::BuildMovementCondTable_Stage(st);
-			map.emplace("movement", std::move(st));
+			map.emplace("Movement", std::move(st));
 		}
 
 		return map;

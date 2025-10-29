@@ -93,7 +93,7 @@
 // Game/Sync
 #include "Engine/Sync/Private/LogicToTransformSystem.h"
 
-
+#include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
 // Test
 //#include "Test/TriangleActor.h"
@@ -199,6 +199,9 @@ bool GameApp::GameApp::Initialize()
 
 	// 遅らせ初期化
 	Game::Layer::InitializeLayerFeature::DelayedInitialzation(mECS);
+
+	Engine::WorldSystem::Core::WorldCtx ctx{ *world };
+	Game::Layer::InitializeLayerFeature::DelayedInitialization(ctx);
 
 	loadData();
 

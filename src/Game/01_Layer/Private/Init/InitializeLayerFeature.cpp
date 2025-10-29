@@ -25,6 +25,7 @@
 // world
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
+
 void Game::Layer::InitializeLayerFeature::DelayedInitialzation(Engine::ECS::EntityMgr& ecs)
 {
 	// --------------------- 初期化順に注意 --------------------- 
@@ -62,10 +63,15 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialzation(Engine::ECS::Enti
 	Game::Feature::Character::Animation::CharacterAnimationFeature::InitProfileDatabase(ecs);// locomotion
 	Game::Feature::Character::Animation::CharacterAnimationFeature::InitSkillProfileDatabase(ecs);// skill
 	Game::Feature::Character::Animation::CharacterAnimationFeature::InitCCProfileDatabase(ecs);// cc
+
 }
 
 
+#include "Game/FSM/Public/FSMApi.hpp"
+#include "Game/Debug/Public/DebugApi.hpp"
 void Game::Layer::InitializeLayerFeature::DelayedInitialization(Engine::WorldSystem::Core::WorldCtx& ctx)
 {
+	Game::FSM::InitAllFSMs(ctx);
 
+	Game::FSM::Debug::SmokeTest_Movemet(ctx);
 }
