@@ -34,6 +34,7 @@ namespace Engine::FSM::Core
 		uint32_t version;
 	};
 
+	// TODO: 本当はAuthoringTransitionsを書くだけで成立するようにしたい
 	class FSMRegistry
 	{
 	private:

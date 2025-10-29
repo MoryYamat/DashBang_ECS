@@ -10,7 +10,7 @@
 #include <span>
 #include <vector>
 #include <string>
-
+#include <utility>
 #include <cassert>
 
 namespace Engine::FSM::Core
@@ -151,4 +151,47 @@ namespace Engine::FSM::Core
 		const EnvSnapshot& env,
 		const EvalCtx& ctx
 	);
+
+	// staging helper
+	struct CondTableStaging
+	{
+		std::vector<std::pair<std::string, CondTable::Fn>> byName;
+
+		void add(std::string name, CondTable::Fn fn)
+		{
+			byName.emplace_back(std::move(name), fn);
+		}
+	};
+
+	// build済みのCanonicalAxisにステージで貯めた名前付き関数群を整合させて流し込む
+	inline void FinalizeCondTable
+	(
+		const CanonicalAxis& ca,
+		const CondTableStaging& stage,
+		CondTable& out
+	)
+	{
+		//
+		for (const auto& [name, fn] : stage.byName)
+		{
+			const auto& v = ca.condNames;
+			auto it = std::lower_bound(v.begin(), v.end(), name);
+			//
+			assert(it != v.end() && *it == name && "Cond name not found in CanonicalAxis");
+			CondID id{ static_cast<std::uint32_t>(it - v.begin()) };
+			out.set(id, fn);
+		}
+	}
+
+
+	// 結果
+	struct FSMCatalog
+	{
+		std::vector<CanonicalAxis> axes;
+	};
+
+	struct FSMCondTables
+	{
+		std::vector<CondTable> byAxis;// size == FSMCatalog.axes.size();
+	};
 }

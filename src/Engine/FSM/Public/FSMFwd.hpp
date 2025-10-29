@@ -20,6 +20,10 @@ namespace Engine::FSM::Core
 	enum class Reason : std::uint8_t;
 	struct [[nodiscard]] Decision;
 
-
 	class FSMRegistry;
+
+	struct CondTableStaging;
+
+	struct FSMCatalog;
+	struct FSMCondTables;
 }

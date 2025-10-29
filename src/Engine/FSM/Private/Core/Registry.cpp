@@ -1,4 +1,4 @@
-﻿#include "Registry.hpp"
+﻿#include "Engine/FSM/Public/Core/Registry.hpp"
 
 #include "Engine/FSM/Public/Core/Types.hpp"
 
@@ -103,7 +103,7 @@ namespace Engine::FSM::Core
 				return a->def.axis < b->def.axis;
 			});
 
-		// 正規化
+		// 正規化(軸ごと)
 		for (const AuthoringSlot* slot : slots)
 		{
 			const auto& def = slot->def;
@@ -133,9 +133,9 @@ namespace Engine::FSM::Core
 			{
 				auto itFrom = state2idx.find(at.from);
 				auto itTo = state2idx.find(at.to);
-				auto itCond = state2idx.find(at.from);
+				auto itCond = cond2idx.find(at.cond);
 
-				bool ok = true;
+				bool ok = true;// 存在確認
 				if (itFrom == state2idx.end())
 				{
 					issues_.emplace_back(
@@ -204,7 +204,7 @@ namespace Engine::FSM::Core
 			for (const auto& r : rows) ++ca.headIndex[r.from + 1];
 			for (std::uint32_t i = 1; i <= stateCount; ++i) ca.headIndex[i] += ca.headIndex[i - 1];
 
-			// edges を詰めなおす
+			// edges を詰めなおす (全順序で不要だが念のため)
 			ca.edges.resize(rows.size());
 			{
 				std::vector<std::uint32_t> cursor = ca.headIndex;

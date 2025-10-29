@@ -1,13 +1,11 @@
 ﻿#pragma once
 
 #include "Engine/Public/EngineFwd.hpp"
-#include <span>
+#include "Engine/FSM/Public/FSMFwd.hpp"
 
 namespace Game::Character::FSM::Movement
 {
+	void RegisterMovementAuthoring(Engine::FSM::Core::FSMRegistry& reg);
 
-
-
-	void MovementTransitionResolver(Engine::WorldSystem::Core::WorldCtx& ctx
-		, std::span<Engine::ECS::Core::Entity> mover);
+	void BuildMovementCondTable_Stage(Engine::FSM::Core::CondTableStaging& stage);
 }
