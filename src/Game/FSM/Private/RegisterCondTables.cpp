@@ -24,4 +24,23 @@ namespace Game::FSM
 
 		return map;
 	}
+
+	Engine::FSM::Core::CondStagesPerAxisProfile CollectAllCondStagesWithProfiles()
+	{
+		CondStagesPerAxisProfile map;
+
+		// movement / default(0)
+		{
+			CondTableStaging st;
+			Game::Character::FSM::Movement::BuildMovementCondTable_Stage(st);
+			map.emplace(AxisProfileKey{ "Movement", 0 }, std::move(st));
+		}
+
+		// 
+		{
+
+		}
+
+		return map;
+	}
 }

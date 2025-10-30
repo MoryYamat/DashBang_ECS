@@ -3,6 +3,8 @@
 #include "Engine/WorldSystem/Public/WorldFwd.hpp"
 #include "Engine/FSM/Public/FSMFwd.hpp"
 
+#include "Engine/FSM/Public/Core/Types.hpp"
+
 #include <unordered_map>
 #include <string>
 
@@ -28,5 +30,7 @@ namespace Engine::FSM::Core
 						const std::unordered_map<std::string, CondTableStaging>& perAxis);
 
 
-
+	void InitFSMCondProfiles(Engine::WorldSystem::Core::WorldCtx& ctx);
+	void BuildCondProfiles(Engine::WorldSystem::Core::WorldCtx& ctx,
+		const CondStagesPerAxisProfile& perAxisProfile);
 }

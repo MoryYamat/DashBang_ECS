@@ -17,4 +17,7 @@ namespace Game::FSM
 
 	std::unordered_map<std::string, Engine::FSM::Core::CondTableStaging> CollectAllCondStages();
 
+
+	Engine::FSM::Core::CondStagesPerAxisProfile CollectAllCondStagesWithProfiles();
+
 }

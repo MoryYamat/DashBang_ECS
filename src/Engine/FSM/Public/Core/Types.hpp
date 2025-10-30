@@ -6,6 +6,7 @@
 
 #include "Engine/ECS/Public/Entity.hpp"
 
+#include <unordered_map>
 #include <cstdint>
 #include <span>
 #include <vector>
@@ -32,6 +33,8 @@ namespace Engine::FSM::Core
 	{
 		std::uint32_t id;// 仮
 	};
+
+	using CondProfileID = std::uint32_t;
 
 	struct Transition
 	{
@@ -163,25 +166,57 @@ namespace Engine::FSM::Core
 		}
 	};
 
+	struct AxisProfileKey
+	{
+		std::string axisName;
+		CondProfileID profileId{};
+		bool operator == (const AxisProfileKey& o) const noexcept
+		{
+			return profileId == o.profileId && axisName == o.axisName;
+		}
+	};
+
+	struct AxisProfileKeyHash
+	{
+		size_t operator()(const AxisProfileKey& k) const noexcept
+		{
+			return std::hash<std::string>{}(k.axisName) ^ (std::hash<std::uint32_t>{}(k.profileId) << 1);
+		}
+	};
+
+	using CondStagesPerAxisProfile
+		= std::unordered_map<AxisProfileKey, CondTableStaging, AxisProfileKeyHash>;
+
+
 	// build済みのCanonicalAxisにステージで貯めた名前付き関数群を整合させて流し込む
-	inline void FinalizeCondTable
+	inline bool FinalizeCondTable
 	(
 		const CanonicalAxis& ca,
 		const CondTableStaging& stage,
 		CondTable& out
 	)
 	{
+		bool ok = true;
 		//
 		for (const auto& [name, fn] : stage.byName)
 		{
 			const auto& v = ca.condNames;
 			auto it = std::lower_bound(v.begin(), v.end(), name);
 			//
-			assert(it != v.end() && *it == name && "Cond name not found in CanonicalAxis");
+			if (it == v.end() || *it != name)
+			{
+				// assert(it != v.end() && *it == name && "Cond name not found in CanonicalAxis");
+				ok = false;
+				continue;
+			}
 			CondID id{ static_cast<std::uint32_t>(it - v.begin()) };
 			out.set(id, fn);
 		}
+
+		return ok;
 	}
+
+
 
 
 	// 結果
@@ -194,4 +229,25 @@ namespace Engine::FSM::Core
 	{
 		std::vector<CondTable> byAxis;// size == FSMCatalog.axes.size();
 	};
+
+	struct FSMCondProfiles
+	{
+		std::vector<std::unordered_map<CondProfileID, CondTable>> byAxis;
+	};
+
+
+
+	inline const CondTable& ResolveCondTableForAxisProfile
+	(
+		const FSMCondProfiles& profs,
+		AxisID axis,
+		CondProfileID profileId
+	)
+	{
+		const auto& perAxis = profs.byAxis[axis.id];
+		if (auto it = perAxis.find(profileId); it != perAxis.end())
+			return it->second;
+
+		return perAxis.at(0);
+	}
 }

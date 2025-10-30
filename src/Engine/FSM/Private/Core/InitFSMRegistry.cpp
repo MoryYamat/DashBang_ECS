@@ -67,5 +67,43 @@ namespace Engine::FSM::Core
 		}
 	}
 
+	void InitFSMCondProfiles(Engine::WorldSystem::Core::WorldCtx& ctx)
+	{
+		auto& cat = ctx.ww.GetResource<FSMCatalog>();
+		if (!ctx.ww.HasResource<FSMCondProfiles>())
+			ctx.ww.CreateResource<FSMCondProfiles>();
+		auto& profs = ctx.ww.GetResource<FSMCondProfiles>();
+		profs.byAxis.clear();
+		profs.byAxis.resize(cat.axes.size());
+	}
 
+
+	void BuildCondProfiles(Engine::WorldSystem::Core::WorldCtx& ctx,
+		const CondStagesPerAxisProfile& perAxisProfile)
+	{
+		auto& cat = ctx.ww.GetResource<FSMCatalog>();
+		auto& profs = ctx.ww.GetResource<FSMCondProfiles>();
+
+		std::unordered_map<std::string, std::size_t> axisIndex;
+		axisIndex.reserve(cat.axes.size());
+		for (std::size_t i = 0; i < cat.axes.size(); ++i)
+		{
+			axisIndex.emplace(cat.axes[i].axisName, i);
+		}
+
+		for (const auto& [key, stage] : perAxisProfile)
+		{
+			auto itAx = axisIndex.find(key.axisName);
+			if (itAx == axisIndex.end()) continue;
+			auto ax = itAx->second;
+			CondTable& dst = profs.byAxis[ax][key.profileId];
+			FinalizeCondTable(cat.axes[ax], stage, dst);
+		}
+
+		for (std::size_t ax = 0; ax < cat.axes.size(); ++ax)
+		{
+			auto& perAxis = profs.byAxis[ax];
+			if (!perAxis.count(0)) perAxis.emplace(0, CondTable{});
+		}
+	}
 }
