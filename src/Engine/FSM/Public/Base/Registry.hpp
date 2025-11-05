@@ -31,6 +31,7 @@ namespace Engine::FSM::Base
 		Lenient// 可能な範囲で catalogを部分生成して返す(調査用途) 
 	};
 
+	// AxisDTO -> 辞書化 ・ 採番
 	struct AxisTable
 	{
 		AxisID id{};
@@ -57,6 +58,11 @@ namespace Engine::FSM::Base
 		std::vector<ProfileID>	local2GlobalProfile;	// fsm.profiles
 	};
 
+	struct ExtendsCheck
+	{
+		std::vector<std::uint32_t> topo;
+	};
+
 	class FSMRegistry
 	{
 	private:
@@ -81,6 +87,35 @@ namespace Engine::FSM::Base
 			FSMCheck& out
 		);
 
+		// プロファイルの継承を解いて(profile, slot)→CondID の表 condOf を作る処理
+		static void buildCondOf
+		(
+			const FSMDTO& fsm,
+			const AxisTable& at,
+			const ExtendsCheck& ec,
+			const std::vector<std::string>& profileOrder,
+			std::vector<CondID>& outCondOf
+		);
+
+		// Transitionを CSRに詰める
+		static void buildCSR
+		(
+			const FSMDTO& fsm,
+			const AxisTable& at,
+			const std::unordered_map<std::string, std::uint32_t>& stateLocalIndex,
+			std::vector<std::uint32_t>& ofs,
+			std::vector<TransitionEdge>& edges
+		);
+
+		// FSM をCanonical化
+		static CanonicalFSM makeCanonicalFSM
+		(
+			const FSMDTO& fsm,
+			const AxisTable& at,
+			const FSMCheck& chk,
+			BuildErrors& err
+		);
+
 	public:
 		void add(AxisDTO axis);
 		void add(FSMDTO fsm);
@@ -89,3 +124,10 @@ namespace Engine::FSM::Base
 	};
 
 }
+
+//
+// condOf（プロフィール継承の解決）を組み立てる
+// 
+// 遷移を(state, slot) マトリクスで CSR に詰める（ofs / edges）
+// 
+// local2Global * を埋めて CanonicalAxis.fsms に push

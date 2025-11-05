@@ -42,97 +42,18 @@ namespace Engine::FSM::Base
 		std::vector<ProfileBindDTO> binds;
 	};
 
+	// FSM定義 (Axis の要素を仮定してFSMを構成することを想定): DTO時点ではbuild時に整合を確認
 	struct FSMDTO
 	{
 		std::string axis;
 		std::string fsm;
-		std::vector<std::string> profiles;
-		std::vector<std::string> states;
+		std::vector<std::string> profiles;			// subset
+		std::vector<std::string> states;			// subset
 		std::vector<ProfileDefDTO> profile_defs;
 		std::vector<TransitionDTO> transitions;
 		std::uint16_t version = 1;
 	};
-
-
-
-
-	//struct AuthoringStateSet
-	//{
-	//	std::string SS_name;// State Set name
-	//	std::vector<std::string> SS; // state (from SU)
-	//};
-
-	//struct AuthoringConditionSlot
-	//{
-	//	std::string CS_name;				// Slot name (e.g., "PhaseAdvance")
-	//	std::vector<std::string> allowedCU; // allowed condition *labels* from CU (STCS)
-	//};
-
-	//struct AuthoringTransitionSlot
-	//{
-	//	std::string SS_name;// 属する状態集合(state set 名) 
-	//	std::string from;// state name from SU
-	//	std::string to; // state name from SU
-	//	std::string slot;// CS_name
-	//	std::uint8_t basePrio = 0;// 基礎優先度
-	//};
-
-	//// 条件セット全体の中身を差し替えるためのprofile
-	//struct AuthoringConditionProfile
-	//{
-	//	std::string profile_name;
-
-	//	// Slotごとに「採用するCUラベル」を1つ束縛
-	//	std::vector<std::pair<std::string /*slot*/, std::string /*CU_label*/>> bindings;
-	//};
-
-	//struct AuthoringFSMSet
-	//{
-	//	std::string FSMSubset_name;
-	//	std::vector<AuthoringStateSet> SS;			// state sets
-	//	std::vector<AuthoringConditionSlot> CS;		// slot -> allowed CU labels
-	//	std::vector<AuthoringTransitionSlot> TS;	// (from, to, slot) の列
-	//	std::vector<AuthoringConditionProfile> PF;	// Profile(差し替え束縛)
-	//};
-
-	//struct AuthoringFSMUniverse
-	//{
-	//	std::string axis;
-	//	std::vector<std::string> SU;		// State Universe
-	//	std::vector<std::string> CU;		// Condition Universe (選択可能な「条件式ラベル」)
-	//	std::vector<AuthoringFSMSet> FS;	// fsm sets;
-	//	std::uint32_t version = 1;
-	//};
-
-
 }
-
-// Use Case (json)
-// {
-//	"axis": "Skill",
-//	"version": 1,
-//	"stateU": ["Casting", "Active", "Recovery"],
-//	"condU": ["TimeElapsed", "AnimHit", "HitCountGte"],
-//	"slotU": ["PhaseAdvance", "Cancel"],
-//	"profiles": {
-//		"Default": {"PhaseAdvance": "TimeElapsed", "Cancel": "HitCoutGte"},
-//		"Skill_221": {"extends": "Default", "PhaseAdvance": "AnimHit"}
-//	},
-//	"slotAllowed": {
-//		"PhaseAdvance": ["AnimHit", "TimeElapsed"],
-//		"Cancel": ["HitCountGte"]
-//  },
-//	"slotPolicy": { "PhaseAdvance": "open", "Cancel": "closed"},
-//	"fsms": [{
-//		"name": "Skill_Phase",
-//		"states": ["Casting", "Active", "Recovery"],
-//		"transitions": [
-//			{"from": "Casting", "to": "Active", "slot": "PhaseAdvance", "prio": 0},
-//			{"from": "Active", "to": "Recovery", "slot": "PhaseAdvance", "prio": 0}
-//		]
-//	}]
-// }
-//
 
 // Use Case (yaml)
 // 軸マニフェスト
@@ -168,3 +89,31 @@ namespace Engine::FSM::Base
 // - {from: Casting, to: Active, slot: PhaseAdvance, prio: 0}
 // - {from: Active, to: Recovery, slot: PhaseAdvance, prio: 0}
 //
+
+// Use Case (json)
+// {
+//	"axis": "Skill",
+//	"version": 1,
+//	"stateU": ["Casting", "Active", "Recovery"],
+//	"condU": ["TimeElapsed", "AnimHit", "HitCountGte"],
+//	"slotU": ["PhaseAdvance", "Cancel"],
+//	"profiles": {
+//		"Default": {"PhaseAdvance": "TimeElapsed", "Cancel": "HitCoutGte"},
+//		"Skill_221": {"extends": "Default", "PhaseAdvance": "AnimHit"}
+//	},
+//	"slotAllowed": {
+//		"PhaseAdvance": ["AnimHit", "TimeElapsed"],
+//		"Cancel": ["HitCountGte"]
+//  },
+//	"slotPolicy": { "PhaseAdvance": "open", "Cancel": "closed"},
+//	"fsms": [{
+//		"name": "Skill_Phase",
+//		"states": ["Casting", "Active", "Recovery"],
+//		"transitions": [
+//			{"from": "Casting", "to": "Active", "slot": "PhaseAdvance", "prio": 0},
+//			{"from": "Active", "to": "Recovery", "slot": "PhaseAdvance", "prio": 0}
+//		]
+//	}]
+// }
+//
+

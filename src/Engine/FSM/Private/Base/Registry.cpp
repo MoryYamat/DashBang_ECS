@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <unordered_set>
 #include <unordered_map>
+#include <queue>
 
 namespace Engine::FSM::Base
 {
@@ -74,6 +75,24 @@ namespace Engine::FSM::Base
 
 		// Catalog skeleton 
 		FSMCatalog cat = assembleCatalogSkeleton(tables);
+
+		// 軸名→rank
+		std::unordered_map<std::string, std::uint32_t> axisNameToRank;
+		for (std::uint32_t r = 0; r < order.size(); ++r)
+		{
+			axisNameToRank.emplace(axes_[order[r]].axis, r);
+		}
+
+		// 各FSMを検証→Canonical化→push
+		for (const auto& fsm : fsms_)
+		{
+			FSMCheck chk;
+			if (!validateFSM(fsm, axisNameToRank, tables, err, chk)) continue;
+
+			const AxisTable& at = tables[chk.axisRank];
+			CanonicalFSM cfsm = makeCanonicalFSM(fsm, at, chk, err);
+			cat.axes[chk.axisRank].fsms.emplace_back(std::move(cfsm));
+		}
 
 		if (policy == BuildStrictness::Strict && !err.ok())
 		{
@@ -173,7 +192,7 @@ namespace Engine::FSM::Base
 		{
 			if (names[i].empty())
 			{
-				err.err(owner + ": " + what + " contains empty name at index" + std::to_string(i));
+				err.err(owner + ": " + what + " contains empty name at index " + std::to_string(i));
 				ok = false;
 				continue;
 			}
@@ -187,6 +206,116 @@ namespace Engine::FSM::Base
 		return ok;
 	}
 
+	static bool checkProfileDefs
+	(
+		const FSMDTO& fsm,
+		const AxisTable& at,
+		BuildErrors& err,
+		ExtendsCheck& out
+	)
+	{
+		bool ok = true;
+		const std::string owner = "FSM '" + fsm.fsm + "' (axis '" + fsm.axis + "')";
+
+		// name -> idx
+		std::unordered_map<std::string, std::uint32_t> name2idx;
+		name2idx.reserve(fsm.profile_defs.size());
+		for (std::uint32_t i = 0; i < fsm.profile_defs.size(); ++i)
+		{
+			const auto& d = fsm.profile_defs[i];
+			if (d.name.empty())
+			{
+				err.err(owner + ": profile_defs has empty name");
+				ok = false;
+				continue;
+			}
+			if (!name2idx.emplace(d.name, i).second)
+			{
+				err.err(owner + ": duplicate profile_def '" + d.name + "'");
+				ok = false;
+			}
+		}
+
+		// 定義確認
+		for (auto& pn : fsm.profiles)
+		{
+			if (name2idx.find(pn) == name2idx.end())
+			{
+				err.err(owner + ": profile '" + pn + "' has no definition in profile_defs");
+				ok = false;
+			}
+		}
+
+		// 参照存在 & 自己参照禁止、3) DAG チェック（Kahn）
+		const std::uint32_t N = (std::uint32_t)fsm.profile_defs.size();
+		std::vector<std::uint32_t> indeg(N, 0);
+		std::vector<std::vector<std::uint32_t>> adj(N);
+
+		for (std::uint32_t i = 0; i < N; ++i)
+		{
+			const auto& d = fsm.profile_defs[i];
+			if (d.extends.empty()) continue;// 親なし
+			auto it = name2idx.find(d.extends);
+			if (it == name2idx.end())// 存在しない親
+			{
+				err.err(owner + ": profile_def '" + d.name + "' extends unknown '" + d.extends + "'");
+				ok = false;
+				continue;
+			}
+			std::uint32_t p = it->second;// 親ノードのindex
+			if (p == i)//自己参照
+			{
+				err.err(owner + ": profile_def '" + d.name + "' extends itself");
+				ok = false;
+				continue;
+			}
+			adj[p].push_back(i);
+			indeg[i]++;				// 次数カウント
+		}
+
+		// kahn
+		std::queue<std::uint32_t> q;
+		for (std::uint32_t i = 0; i < N; ++i)
+		{
+			if (indeg[i] == 0) q.push(i);// 親ノードをキューへ
+		}
+		out.topo.clear();
+		out.topo.reserve(N);
+		while (!q.empty())
+		{
+			auto u = q.front();
+			q.pop();
+			out.topo.push_back(u);				// 親→子の順に並ぶ
+			for (auto v : adj[u])				// 「uへの依存」を1つ外す
+				if (--indeg[v] == 0) q.push(v);	// もう待ち親がなければ次に処理可能へ
+		}
+		if (out.topo.size() != N)
+		{
+			err.err(owner + ": profile_defs has cyclic extends");
+			ok = false;
+		}
+
+		//binds の slot/cond が Axisに存在
+		for (auto& d : fsm.profile_defs)
+		{
+			for (auto& b : d.binds)
+			{
+				if (at.slotByName.find(b.slot) == at.slotByName.end())
+				{
+					err.err(owner + ": profiledef '" + d.name + "' uses unknown slot '" + b.slot + "'");
+					ok = false;
+				}
+				if (at.condByName.find(b.cond) == at.condByName.end())
+				{
+					err.err(owner + ": profile_def '" + d.name + "' uses unknown cond '" + b.cond + "'");
+					ok = false;
+				}
+			}
+		}
+		return ok;
+	}
+
+	// FSMDTO を検証
 	bool FSMRegistry::validateFSM
 	(
 		const FSMDTO& fsm,
@@ -220,7 +349,7 @@ namespace Engine::FSM::Base
 			auto it = at.stateByName.find(fsm.states[i]);
 			if (it == at.stateByName.end())
 			{
-				err.err(owner + ": unknown state " + fsm.states[i] + "'");
+				err.err(owner + ": unknown state '" + fsm.states[i] + "'");
 				ok = false;
 				continue;
 			}
@@ -283,7 +412,179 @@ namespace Engine::FSM::Base
 				}
 			}
 		}
+		ExtendsCheck ec;
+		ok &= checkProfileDefs(fsm, at, err, ec);
 
 		return ok;
+	}
+
+
+	void FSMRegistry::buildCondOf
+	(
+		const FSMDTO& fsm,
+		const AxisTable& at,
+		const ExtendsCheck& ec,
+		const std::vector<std::string>& profileOrder,
+		std::vector<CondID>& outCondOf
+	)
+	{
+		const std::uint32_t S = (std::uint32_t)at.slotOrder.size();
+		const std::uint32_t P = (std::uint32_t)profileOrder.size();
+		outCondOf.assign(P * S, CondID{ UINT32_MAX });// 未設定はinvalid
+
+		// name → idx (defs用)
+		std::unordered_map<std::string, std::uint32_t> defIndex;
+		defIndex.reserve(fsm.profile_defs.size());
+		for (std::uint32_t i = 0; i < fsm.profile_defs.size(); ++i)
+		{
+			defIndex.emplace(fsm.profile_defs[i].name, i);
+		}
+
+		// defs にスロット配列を持たせてから topo 順 で解決
+		std::vector<std::vector<CondID>> defSlots(fsm.profile_defs.size(), std::vector<CondID>(S, CondID{ UINT32_MAX }));
+
+		// まず binds をその定義自身の配列に適用
+		for (std::uint32_t i = 0; i < fsm.profile_defs.size(); ++i)
+		{
+			const auto& d = fsm.profile_defs[i];
+			auto& arr = defSlots[i];
+			for (auto& b : d.binds)
+			{
+				const uint32_t s = at.slotByName.at(b.slot).v;	// slot → slotID(idx)
+				arr[s] = at.condByName.at(b.cond);				// // profiles[0] : [CondID, CondID,...],
+			}
+		}
+
+		// 継承解決
+		// 親→子でコピー上書き(topo は親が先)
+		for (auto u : ec.topo)// topoの中身はpro_defのidx
+		{
+			const auto& d = fsm.profile_defs[u];
+			if (!d.extends.empty())
+			{
+				std::uint32_t p = defIndex.at(d.extends);// 親のid
+				for (std::uint32_t s = 0; s < S; ++s)
+				{
+					// 子がbindしている値は無視
+					if (!defSlots[u][s].valid()) defSlots[u][s] = defSlots[p][s];// 親の値で補完(無効値も引き継ぐ)
+				}
+			}
+		}
+
+		// fsm.profilesの順で　condOf に反映 (defs にあるが profiles にないものは無視)
+		for (std::uint32_t p = 0; p < P; ++p)
+		{
+			auto it = defIndex.find(profileOrder[p]);
+			if (it == defIndex.end()) continue;
+			const auto& src = defSlots[it->second];
+			for (std::uint32_t s = 0; s < S; ++s)
+			{
+				outCondOf[p * S + s] = src[s];// ソートしたものを代入しcondOfを得る
+			}
+		}
+	}
+
+	void FSMRegistry::buildCSR
+	(
+		const FSMDTO& fsm,
+		const AxisTable& at,
+		const std::unordered_map<std::string, std::uint32_t>& stateLocalIndex,// fsm.state名 → ローカルindex
+		std::vector<std::uint32_t>& ofs,
+		std::vector<TransitionEdge>& edges
+	)
+	{
+		const std::uint32_t N = (std::uint32_t)fsm.states.size();
+		const std::uint32_t S = (std::uint32_t)at.slotOrder.size();
+
+		// セルごとの一時バケツ
+		std::vector<std::vector<TransitionEdge>> buckets(N * S);
+
+		// DTO遷移をローカルindexへ写像して投入
+		for (const auto& tr : fsm.transitions)
+		{
+			auto itFrom = stateLocalIndex.find(tr.from);
+			auto itTo = stateLocalIndex.find(tr.to);
+			auto itSlot = at.slotByName.find(tr.slot);
+			if (itFrom == stateLocalIndex.end() ||
+				itTo == stateLocalIndex.end() ||
+				itSlot == at.slotByName.end())
+			{
+				// validate済みだが念のため
+				continue;
+			}
+			const std::uint32_t from = itFrom->second;
+			const std::uint32_t to = itTo->second;
+			const std::uint32_t s = itSlot->second.v;
+
+			const std::uint32_t cell = from * S + s;
+			buckets[cell].push_back(TransitionEdge{ to, tr.prio });// [cell_i[(to_j,prio_k)](遷移元(idx)(遷移先,優先度))
+		}
+
+		// セル内のソート
+		for (auto& v : buckets)
+		{
+			// (prio降順, to 昇順)
+			std::stable_sort(v.begin(), v.end(),
+				[](const TransitionEdge& a, const TransitionEdge& b)
+				{
+					if (a.prio != b.prio) return a.prio > b.prio;
+					return a.toIdx < b.toIdx;
+				});
+		}
+
+		// ofs と edges へフラット化
+		ofs.assign(N * S + 1, 0);
+		std::uint32_t total = 0;
+		for (std::uint32_t i = 0; i < N * S; ++i)
+		{
+			ofs[i] = total;// row_ptr
+			total += (std::uint32_t)buckets[i].size();
+		}
+		ofs[N * S] = total;// 最後埋め
+
+		// 埋めなおし
+		edges.clear();
+		edges.reserve(total);
+		for (std::uint32_t i = 0; i < N * S; ++i)
+		{
+			edges.insert(edges.end(), buckets[i].begin(), buckets[i].end());//
+		}
+	}
+
+
+	CanonicalFSM FSMRegistry::makeCanonicalFSM
+	(
+		const FSMDTO& fsm,
+		const AxisTable& at,
+		const FSMCheck& chk,
+		BuildErrors& err
+	)
+	{
+		CanonicalFSM cfsm{};
+		cfsm.numStates = (std::uint32_t)fsm.states.size();
+		cfsm.numSlots = (std::uint32_t)at.slotOrder.size();
+		cfsm.numProfiles = (std::uint32_t)fsm.profiles.size();
+		cfsm.version = fsm.version;
+
+		// condOf
+		ExtendsCheck ec;
+		(void)checkProfileDefs(fsm, at, err, ec);
+		buildCondOf(fsm, at, ec, fsm.profiles, cfsm.condOf);
+
+		// CSR
+		std::unordered_map<std::string, std::uint32_t> stateLocalIndex;
+		for (std::uint32_t i = 0; i < fsm.states.size(); ++i) stateLocalIndex.emplace(fsm.states[i], i);
+		buildCSR(fsm, at, stateLocalIndex, cfsm.ofs, cfsm.edges);
+
+		// local -> global
+		cfsm.local2GlobalState = chk.local2GlobalState;
+		cfsm.local2GlobalProfile = chk.local2GlobalProfile;
+		cfsm.local2GlobalSlot.resize(at.slotOrder.size());
+		for (std::uint32_t s = 0; s < at.slotOrder.size(); ++s)
+		{
+			cfsm.local2GlobalSlot[s] = at.slotByName.at(at.slotOrder[s]);
+		}
+
+		return cfsm;
 	}
 }
