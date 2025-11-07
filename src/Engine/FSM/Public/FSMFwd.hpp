@@ -28,3 +28,8 @@ namespace Engine::FSM::Core
 	struct FSMCatalog;
 	struct FSMCondTables;
 }
+
+namespace Engine::FSM::Base
+{
+	class FSMRegistry;
+}

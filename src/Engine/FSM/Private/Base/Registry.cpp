@@ -50,6 +50,10 @@ namespace Engine::FSM::Base
 
 		const auto axisIndex = indexAxes(axes_, err);
 
+		std::printf("FSMRegistry::build: axes_.size=%zu fsms_.size=%zu\n",
+			axes_.size(), fsms_.size());
+
+
 		// 辞書順で Axis の並びを決定 → 先頭から0..N-1を採番
 		std::vector<std::uint32_t> order;
 		order.reserve(axes_.size());
@@ -105,6 +109,7 @@ namespace Engine::FSM::Base
 	AxisTable FSMRegistry::makeAxisTables(const AxisDTO& a, BuildErrors& err)
 	{
 		AxisTable t{};
+		t.axisName = a.axis;
 		t.version = a.version;
 
 		// 共通ヘルパ: ユニバース配列を検査→辞書順ユニーク→name→ID と order を埋める
@@ -174,7 +179,16 @@ namespace Engine::FSM::Base
 		for (const auto& t : tables)
 		{
 			CanonicalAxis ax{};
+			ax.axisName = t.axisName;
 			ax.axis = t.id;			// AxisID をそのまま反映
+
+
+			// Axis 全域の辞書順オーダを丸ごとコピー
+			ax.stateOrder = t.stateOrder;
+			ax.condOrder = t.condOrder;
+			ax.slotOrder = t.slotOrder;
+			ax.profileOrder = t.profileOrder;
+
 
 			// ax.fsms はこの段階で空 (後でFSMを詰める)
 			cat.axes.emplace_back(std::move(ax));

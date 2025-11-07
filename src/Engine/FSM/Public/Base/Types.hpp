@@ -3,10 +3,13 @@
 #include <cstdint>
 #include <vector>
 #include <utility>
+#include <string>
+#include <string_view>
 
 #include <span>
 
 #include <unordered_map>
+#include <cassert>
 
 namespace Engine::FSM::Base
 {
@@ -105,11 +108,118 @@ namespace Engine::FSM::Base
 	struct CanonicalAxis
 	{
 		AxisID axis;
+		std::string axisName;
+
+		// 軸宇宙（辞書順採番に使った最終順序）
+		std::vector<std::string> stateOrder;
+		std::vector<std::string> condOrder;
+		std::vector<std::string> slotOrder;
+		std::vector<std::string> profileOrder;
+
 		std::vector<CanonicalFSM> fsms;
 	};
 
 	struct FSMCatalog
 	{    
 		std::vector<CanonicalAxis> axes;
+	};
+
+
+	// Cond
+	struct EvalCtx
+	{
+		std::uint32_t entity;
+	};
+
+	struct EnvSnapshot
+	{
+		// 事前にまとめて計算した値．移動入力、時刻など
+		virtual ~EnvSnapshot() = default;
+	};
+
+	struct CondTable
+	{
+		using Fn = bool(*)(const EnvSnapshot&, const EvalCtx&);
+		std::vector<Fn> fns;
+
+		void init(std::size_t numConds)
+		{
+			fns.assign(numConds, nullptr);
+		}
+
+		void bind(CondID id, Fn fn)
+		{
+			if (!id.valid()) return;
+			if (id.v >= fns.size()) fns.resize(id.v + 1, nullptr);
+			fns[id.v] = fn;
+		}
+
+		bool eval(CondID c, const EnvSnapshot& env, const EvalCtx& ctx) const
+		{
+			const auto i = c.v;
+			if (!c.valid() || i >= fns.size()) return false;
+			Fn fn = fns[i];
+			return fn ? fn(env, ctx) : false;
+		}
+	};
+
+	struct AxisRuntime
+	{
+		AxisID id;
+		CondTable conds;
+		const CanonicalAxis* canon = nullptr;// 読み取り用
+	};
+
+	struct Decision
+	{
+		std::uint32_t from;	// local state idx
+		std::uint32_t to;	// local state idx (unchanged => from)
+		bool changed;
+	};
+
+	Decision DecideNext_BySingleSlot
+	(
+		const CanonicalFSM& f,
+		const AxisRuntime& ax,
+		std::uint32_t fromLocal,
+		std::uint32_t profileLocal,
+		std::uint32_t slotLocal,
+		const EnvSnapshot& env,
+		const EvalCtx& ctx
+	);
+
+	Decision DecideNext_Slots
+	(
+		const CanonicalFSM& f,
+		const AxisRuntime& ax,
+		std::uint32_t fromLocal,
+		std::uint32_t profileLocal,
+		std::span<const std::uint32_t> slots,
+		const EnvSnapshot& env,
+		const EvalCtx& ctx
+	);
+
+	struct NamedCondBinding
+	{
+		std::string_view name;
+		CondTable::Fn fn;
+	};
+
+	struct AxisRuntimeDB
+	{
+		std::unordered_map<std::string, AxisRuntime> axes;
+		AxisRuntime* get(const std::string& name)
+		{
+			auto it = axes.find(name);
+			return it != axes.end() ? &it->second : nullptr;
+		}
+
+		AxisRuntime& ensure(const CanonicalAxis& ax)
+		{
+			auto [it, ok] = axes.emplace(ax.axisName, AxisRuntime{});
+			it->second.id = ax.axis;
+			it->second.canon = &ax;
+			return it->second;
+		}
 	};
 }

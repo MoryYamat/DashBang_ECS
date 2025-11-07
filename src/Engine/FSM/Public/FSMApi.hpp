@@ -33,4 +33,5 @@ namespace Engine::FSM::Core
 	void InitFSMCondProfiles(Engine::WorldSystem::Core::WorldCtx& ctx);
 	void BuildCondProfiles(Engine::WorldSystem::Core::WorldCtx& ctx,
 		const CondStagesPerAxisProfile& perAxisProfile);
+
 }

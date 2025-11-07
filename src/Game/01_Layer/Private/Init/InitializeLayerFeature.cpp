@@ -71,7 +71,7 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialzation(Engine::ECS::Enti
 #include "Game/Debug/Public/DebugApi.hpp"
 void Game::Layer::InitializeLayerFeature::DelayedInitialization(Engine::WorldSystem::Core::WorldCtx& ctx)
 {
-	Game::FSM::InitAllFSMs(ctx);
+	Game::FSM::InitAllFSMs_Game(ctx);
 
 	Game::FSM::Debug::SmokeTest_Movemet(ctx);
 }

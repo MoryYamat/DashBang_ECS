@@ -34,6 +34,7 @@ namespace Engine::FSM::Base
 	// AxisDTO -> 辞書化 ・ 採番
 	struct AxisTable
 	{
+		std::string axisName;
 		AxisID id{};
 		std::uint16_t version = 1;
 

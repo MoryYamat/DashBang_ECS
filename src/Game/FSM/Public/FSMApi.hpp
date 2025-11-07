@@ -9,15 +9,16 @@
 namespace Game::FSM
 {
 	// Init AllFSMs
-	void InitAllFSMs(Engine::WorldSystem::Core::WorldCtx& ctx);
+	//void InitAllFSMs(Engine::WorldSystem::Core::WorldCtx& ctx);
+	bool InitAllFSMs_Game(Engine::WorldSystem::Core::WorldCtx& ctx);
 
 
 	// 
 	void RegisterAllAxes(Engine::WorldSystem::Core::WorldCtx& ctx);
 
-	std::unordered_map<std::string, Engine::FSM::Core::CondTableStaging> CollectAllCondStages();
+	//std::unordered_map<std::string, Engine::FSM::Core::CondTableStaging> CollectAllCondStages();
 
 
-	Engine::FSM::Core::CondStagesPerAxisProfile CollectAllCondStagesWithProfiles();
+	//Engine::FSM::Core::CondStagesPerAxisProfile CollectAllCondStagesWithProfiles();
 
 }
