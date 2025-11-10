@@ -1,11 +1,11 @@
-﻿#include "Engine/FSM/Public/Base/DTO.hpp"
-#include "Engine/FSM/Public/Base/Types.hpp"
+﻿#include "Engine/FSM/Public/Core/DTO.hpp"
+#include "Engine/FSM/Public/Core/Types.hpp"
 
-#include "Engine/FSM/Public/Base/Registry.hpp"
+#include "Engine/FSM/Public/Core/Registry.hpp"
 
 namespace Game::Character::FSM::Movement
 {
-	using namespace Engine::FSM::Base;
+	using namespace Engine::FSM::Core;
 
 	void makeAxis_Movement(FSMRegistry& reg)
 	{
@@ -32,9 +32,22 @@ namespace Game::Character::FSM::Movement
 			.name = "Default",
 			.extends = "",
 			.binds = {
-				{ "Transition", "canMove"},
-				{"Stop", "shouldStop"}
-			} 
+				ProfileBindDTO{
+				.slot = "Transition",
+				.cond = "canMove",
+				.params = {
+					ParameterDTO
+						{.name = "op", .value= ">"},
+			}
+			},
+				ProfileBindDTO{
+				.slot = "Stop",
+				.cond = "shouldStop",
+				.params =
+			{
+				ParameterDTO{.name = "th", .value = "0.25"},
+			}
+			}}
 			});
 
 		// transitions
@@ -46,7 +59,7 @@ namespace Game::Character::FSM::Movement
 		reg.add(std::move(f));
 	}
 
-	void RegisterMovementAxes(Engine::FSM::Base::FSMRegistry& reg)
+	void RegisterMovementAxes(Engine::FSM::Core::FSMRegistry& reg)
 	{
 		makeAxis_Movement(reg);
 		makeFSM_Movement(reg);

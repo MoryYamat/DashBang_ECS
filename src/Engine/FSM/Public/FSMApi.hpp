@@ -1,37 +1,24 @@
 ﻿#pragma once
 
-#include "Engine/WorldSystem/Public/WorldFwd.hpp"
-#include "Engine/FSM/Public/FSMFwd.hpp"
+#include "Engine/FSM/Public/Core/Registry.hpp"
+#include "Engine/Public/EngineFwd.hpp"
 
-#include "Engine/FSM/Public/Core/Types.hpp"
 
-#include <unordered_map>
+#include <span>
 #include <string>
 
 namespace Engine::FSM::Core
 {
+	using RegisterFn = void(*)(FSMRegistry& reg);  // DTO を reg.add(...) する
+
 	void InitFSMEngine(Engine::WorldSystem::Core::WorldCtx& ctx);
+	void RegisterAxes(Engine::WorldSystem::Core::WorldCtx& ctx, RegisterFn fn);   // 2)
 
-	void InitFSMRegistry(Engine::WorldSystem::Core::WorldCtx& ctx);
+	bool BuildFSMCatalog(Engine::WorldSystem::Core::WorldCtx& ctx, BuildStrictness policy = BuildStrictness::Lenient);
 
-	void InitFSMCatalog(Engine::WorldSystem::Core::WorldCtx& ctx);
-
-	// build後のCanonicalFSM → 各システムはこれを利用
-	void BuildCanonicalFSM(Engine::WorldSystem::Core::WorldCtx& ctx);
-
-	// InitFSMEngine();
-	// RegisterAllAxes();
-	// BuildCanonicalFSM();
-
-
-	// Cond
-	void InitFSMCondTables(Engine::WorldSystem::Core::WorldCtx& ctx);
-	void BuildCondTables(Engine::WorldSystem::Core::WorldCtx& ctx,
-						const std::unordered_map<std::string, CondTableStaging>& perAxis);
-
-
-	void InitFSMCondProfiles(Engine::WorldSystem::Core::WorldCtx& ctx);
-	void BuildCondProfiles(Engine::WorldSystem::Core::WorldCtx& ctx,
-		const CondStagesPerAxisProfile& perAxisProfile);
+	// 便利用：全部やる
+	bool InitAllFSMs(Engine::WorldSystem::Core::WorldCtx& ctx,
+		RegisterFn registerFn,
+		BuildStrictness policy = BuildStrictness::Strict);
 
 }

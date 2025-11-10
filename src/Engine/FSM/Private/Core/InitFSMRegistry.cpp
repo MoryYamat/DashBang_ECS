@@ -3,107 +3,80 @@
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
 #include "Engine/FSM/Public/Core/Registry.hpp"
-#include "Engine/FSM/Public/Core/Types.hpp"
+
+#include <iostream>
 
 namespace Engine::FSM::Core
 {
-	void InitFSMRegistry(Engine::WorldSystem::Core::WorldCtx& ctx)
-	{
-		if (!ctx.ww.HasResource<FSMRegistry>())
-		{
-			ctx.ww.CreateResource<FSMRegistry>();
-		}
-	}
-
-
-	void InitFSMCatalog(Engine::WorldSystem::Core::WorldCtx& ctx)
-	{
-		if (!ctx.ww.HasResource<FSMCatalog>())
-		{
-			ctx.ww.CreateResource<FSMCatalog>();
-		}
-	}
-
 	void InitFSMEngine(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
-		InitFSMRegistry(ctx);
-		InitFSMCatalog(ctx);
+		if (!ctx.ww.HasResource<FSMRegistry>())
+			ctx.ww.CreateResource<FSMRegistry>();
+		if (!ctx.ww.HasResource<FSMCatalog>())
+			ctx.ww.CreateResource<FSMCatalog>();
+		if (!ctx.ww.HasResource<AxisRuntimeDB>())
+			ctx.ww.CreateResource<AxisRuntimeDB>();
+
+	}
+	// 2) DTO 登録はここ**だけ**
+	void RegisterAxes(Engine::WorldSystem::Core::WorldCtx& ctx, RegisterFn fn)
+	{
+		auto& reg = ctx.ww.GetResource<FSMRegistry>();
+		reg = FSMRegistry{};          // クリーンに
+		if (fn) fn(reg);              // ゲーム側で reg.add(AxisDTO/FSMDTO) を行う
 	}
 
-	void BuildCanonicalFSM(Engine::WorldSystem::Core::WorldCtx& ctx)
+	bool BuildFSMCatalog(Engine::WorldSystem::Core::WorldCtx& ctx
+		, BuildStrictness policy)
 	{
 		auto& reg = ctx.ww.GetResource<FSMRegistry>();
 		auto& cat = ctx.ww.GetResource<FSMCatalog>();
-		cat.axes = reg.build();
-	}
+		BuildResult res = reg.build(policy);
 
+		auto& db = ctx.ww.GetResource<AxisRuntimeDB>();
 
-	void InitFSMCondTables(Engine::WorldSystem::Core::WorldCtx& ctx)
-	{
-		if (!ctx.ww.HasResource<FSMCondTables>())
+		if (!res.ok())
 		{
-			ctx.ww.CreateResource<FSMCondTables>();
-		}
-	}
-
-	void BuildCondTables(Engine::WorldSystem::Core::WorldCtx& ctx,
-		const std::unordered_map<std::string, CondTableStaging>& perAxis)
-	{
-		auto& cat = ctx.ww.GetResource<FSMCatalog>();
-		auto& set = ctx.ww.GetResource<FSMCondTables>();
-		set.byAxis.clear();
-		set.byAxis.resize(cat.axes.size());
-
-		for (std::size_t i = 0; i < cat.axes.size(); ++i)
-		{
-			const auto& ca = cat.axes[i];
-			auto it = perAxis.find(ca.axisName);
-			if (it == perAxis.end())
+			for (const auto& m : res.errors.msgs)
 			{
-				continue;
+				std::printf("ERR: %s\n", m.c_str());
 			}
-
-			FinalizeCondTable(ca, it->second, set.byAxis[i]);
+			cat = FSMCatalog{};
+			db = AxisRuntimeDB{};
+			return false;
 		}
+
+		cat = std::move(res.catalog);
+
+		//
+		db = AxisRuntimeDB{};
+		for (auto& ax : cat.axes)
+		{
+			db.ensure(ax);
+		}
+
+		for (auto& ax : cat.axes) {
+			std::printf("Axis '%s' condOrder:\n", ax.axisName.c_str());
+			for (auto& c : ax.condOrder)
+				std::printf("  - %s\n", c.c_str());
+		}
+
+
+		return true;
 	}
 
-	void InitFSMCondProfiles(Engine::WorldSystem::Core::WorldCtx& ctx)
+
+
+	bool InitAllFSMs(Engine::WorldSystem::Core::WorldCtx& ctx,
+		RegisterFn registerFn,
+		// CondProviderFn condProvider,
+		BuildStrictness policy)
 	{
-		auto& cat = ctx.ww.GetResource<FSMCatalog>();
-		if (!ctx.ww.HasResource<FSMCondProfiles>())
-			ctx.ww.CreateResource<FSMCondProfiles>();
-		auto& profs = ctx.ww.GetResource<FSMCondProfiles>();
-		profs.byAxis.clear();
-		profs.byAxis.resize(cat.axes.size());
+		InitFSMEngine(ctx);
+		RegisterAxes(ctx, registerFn);
+		if (!BuildFSMCatalog(ctx, policy)) return false;
+		return true;
+
 	}
 
-
-	void BuildCondProfiles(Engine::WorldSystem::Core::WorldCtx& ctx,
-		const CondStagesPerAxisProfile& perAxisProfile)
-	{
-		auto& cat = ctx.ww.GetResource<FSMCatalog>();
-		auto& profs = ctx.ww.GetResource<FSMCondProfiles>();
-
-		std::unordered_map<std::string, std::size_t> axisIndex;
-		axisIndex.reserve(cat.axes.size());
-		for (std::size_t i = 0; i < cat.axes.size(); ++i)
-		{
-			axisIndex.emplace(cat.axes[i].axisName, i);
-		}
-
-		for (const auto& [key, stage] : perAxisProfile)
-		{
-			auto itAx = axisIndex.find(key.axisName);
-			if (itAx == axisIndex.end()) continue;
-			auto ax = itAx->second;
-			CondTable& dst = profs.byAxis[ax][key.profileId];
-			FinalizeCondTable(cat.axes[ax], stage, dst);
-		}
-
-		for (std::size_t ax = 0; ax < cat.axes.size(); ++ax)
-		{
-			auto& perAxis = profs.byAxis[ax];
-			if (!perAxis.count(0)) perAxis.emplace(0, CondTable{});
-		}
-	}
 }

@@ -1,253 +1,282 @@
 ﻿#pragma once
 
-// 記号的な状態遷移のすべての体系を行うシステム(エンジン)
-// データ構造とインターフェース
-// 遷移システムを提供する
-
-#include "Engine/ECS/Public/Entity.hpp"
-
-#include <unordered_map>
 #include <cstdint>
-#include <span>
 #include <vector>
-#include <string>
 #include <utility>
+#include <string>
+#include <string_view>
+
+#include <span>
+#include <algorithm>
+#include <unordered_map>
 #include <cassert>
 
 namespace Engine::FSM::Core
 {
-	// 全FSM空間の中で一意
-	struct AxisID
-	{
-		std::uint32_t id;// 仮
-	};
-
-	// 全FSM空間の中で一意
-	struct StateID
-	{
-		std::uint32_t id;// 仮
-	};
-
-	// 各FSM空間の中で一意
-	struct CondID
-	{
-		std::uint32_t id;// 仮
-	};
-
-	using CondProfileID = std::uint32_t;
-
-	struct Transition
-	{
-		StateID to;
-		CondID cond;
-		std::uint8_t prio;
-		std::uint8_t flags{ 0 };
-		std::uint16_t pad{ 0 };
-	};
-
-
-	struct EntityKey
-	{
-		uintptr_t raw;
-	};
-
-	struct EvalCtx
-	{
-		EntityKey entity;
-	};
-
-	//struct TransitionView
-	//{
-	//	std::span<const Transition> outgoing(StateID s) const;// 遷移集合を検索し抽出
-	//};
-
-	// 
-	struct EnvSnapshot
-	{
-
-	};
-
-	struct CondTable
-	{
-		// TODO 事前コンパイル方式: オーサリング時に式→バイトコードへコンパイル(実行時は配列を順に読むだけ)
-		using Fn = bool(*)(const EnvSnapshot&, const EvalCtx&);
-		std::vector<Fn> fns;// index == CondID.id
-
-		void ensureSize(std::size_t n)
+	template<typename T>
+	struct StrongID 
+	{ 
+		std::uint32_t v = UINT32_MAX;
+		constexpr bool valid() const 
 		{
-			if (fns.size() < n) fns.resize(n, nullptr);
+			return v != UINT32_MAX;
 		}
 
-		void set(CondID id, Fn fn)
-		{
-			ensureSize(id.id + 1);
-			fns[id.id] = fn;
-		}
-
-		bool eval(CondID id, const EnvSnapshot& env, const EvalCtx& ctx) const
-		{
-			const auto i = id.id;
-			assert(i < fns.size());
-			auto* fn = (i < fns.size()) ? fns[i] : nullptr;
-			return fn ? fn(env, ctx) : false;
-		}
+		friend constexpr bool operator == (StrongID, StrongID) = default;
 	};
 
-	constexpr std::uint8_t kMaxPrio = 255;
+	struct StateTag {}; using StateID = StrongID<StateTag>;
+	struct CondTag {}; using CondID = StrongID<CondTag>;
+	struct SlotTag {}; using SlotID = StrongID<SlotTag>;
+	struct ProfileTag {}; using ProfileID = StrongID<ProfileTag>;
+	struct FSMTag {}; using FSMID = StrongID<FSMTag>;
+	struct AxisTag {}; using AxisID = StrongID<AxisTag>;
 
-	enum class Reason : std::uint8_t
+	inline constexpr StateID	kInvalidState {};
+	inline constexpr CondID		kInvalidCond {};
+	inline constexpr SlotID		kInvalidSlot {};
+	inline constexpr ProfileID	kInvalidProfile {};
+	inline constexpr FSMID		kInvalidFSM {};
+	inline constexpr AxisID		kInvalidAxis {};
+	
+	enum class CondKind : std::uint8_t
 	{
-		None = 0,
-		FirstTrue = 1,
-		HigherPrio = 2
+		Bit = 0,
+		CompareF = 1
 	};
 
-	struct [[nodiscard]] Decision
+	enum class CmpOp : std::uint8_t
 	{
-		StateID to;
-		CondID cond{};
-		bool changed{ false };
-		Reason reason{ Reason::None };
+		GT = 0,
+		GE = 1,
+		LT = 2,
+		LE = 3,
+		InRange = 4
+	};
+
+	struct DerivedCondSpec
+	{
+		CondKind kind{};
+		std::uint16_t field{};
+		CmpOp op{};
+		std::uint16_t u16_0{};
+		float f32_0{};
+		float f32_1{};
+		std::uint32_t outBitIndex{};
+	};
+
+	struct EnvAssemblerPlan
+	{
+		struct Op
+		{
+			CondKind kind{};
+			std::uint16_t field{};
+			CmpOp op{};
+			std::uint16_t u16_0{};
+			float f32_0{};
+			float f32_1{};
+			std::uint32_t outBitIndex{};
+		};
+		std::vector<Op> ops;
+	};
+
+	struct TransitionEdge 
+	{ 
+		std::uint32_t toIdx;
+		uint8_t prio; 
+	};
+
+	struct CanonicalFSM
+	{
+		FSMID id{};
+		std::string name;
+		std::uint32_t numStates = 0;
+		std::uint32_t numSlots = 0;
+		std::uint32_t numProfiles = 0;
+
+		// i番目の(state,slot)のedges開始位置 (ofs[i+1]-ofs[i]:出次数)
+		std::vector<uint32_t> ofs;			// size = numStates * numSlots + 1 
+		std::vector<TransitionEdge> edges;	// ソート後のtoのindex
+
+		std::vector<CondID> condOf;			// size = numProfiles * numSlots
+
+		// ローカル→グローバルの写像
+		std::vector<StateID> local2GlobalState;
+		std::vector<SlotID> local2GlobalSlot;
+		std::vector<ProfileID> local2GlobalProfile;
+
+		std::uint16_t version = 1;
 	};
 
 	struct CanonicalAxis
 	{
 		AxisID axis;
-		std::vector<StateID> stateIDs;
-		std::vector<Transition> edges;	// 遷移の平坦化配列
-		std::vector<uint32_t> headIndex;// 状態iの遷移リストの開始位置
-
-		std::vector<std::string> stateNames;
-		std::vector<std::string> condNames;
 		std::string axisName;
-		std::uint32_t schemaVersion;
+
+		// 軸宇宙（辞書順採番に使った最終順序）
+		std::vector<std::string> stateOrder;
+		std::vector<std::string> condOrder;
+		std::vector<std::string> slotOrder;
+		std::vector<std::string> profileOrder;
+
+		std::unordered_map<std::string, std::uint32_t> stateIdxByName;
+		std::unordered_map<std::string, std::uint32_t> condIdxByName;
+		std::unordered_map<std::string, std::uint32_t> slotIdxByName;
+		std::unordered_map<std::string, std::uint32_t> profileIdxByName;
+
+		std::vector<CanonicalFSM> fsms;
+		std::unordered_map<std::string, std::uint32_t> fsmIdxByName;
+
+		std::vector<DerivedCondSpec> derivedSpecs;
+
 	};
 
-
-	struct TransitionView_CSR
-	{
-		std::span<const Transition> edges;
-		std::span<const std::uint32_t> headIndex;// [stateCount + 1]
-
-		[[nodiscard]] std::span<const Transition> outgoing(StateID s) const noexcept
-		{
-			assert(s.id + 1 < headIndex.size());
-			const auto b = headIndex[s.id];
-			const auto e = headIndex[s.id + 1];
-			return { edges.data() + b, static_cast<size_t>(e - b) };
-		}
-	};
-
-	[[nodiscard]] inline TransitionView_CSR MakeTransitionView(const CanonicalAxis& ca) noexcept
-	{
-		return TransitionView_CSR{
-			std::span<const Transition>(ca.edges.data(), ca.edges.size()),
-			std::span<const std::uint32_t>(ca.headIndex.data(), ca.headIndex.size())
-		};
-	}
-
-	[[nodiscard]] Decision TransitionSelector
-	(
-		StateID from,
-		const TransitionView_CSR& tv,
-		const CondTable& ct,
-		const EnvSnapshot& env,
-		const EvalCtx& ctx
-	);
-
-	// staging helper
-	struct CondTableStaging
-	{
-		std::vector<std::pair<std::string, CondTable::Fn>> byName;
-
-		void add(std::string name, CondTable::Fn fn)
-		{
-			byName.emplace_back(std::move(name), fn);
-		}
-	};
-
-	struct AxisProfileKey
-	{
-		std::string axisName;
-		CondProfileID profileId{};
-		bool operator == (const AxisProfileKey& o) const noexcept
-		{
-			return profileId == o.profileId && axisName == o.axisName;
-		}
-	};
-
-	struct AxisProfileKeyHash
-	{
-		size_t operator()(const AxisProfileKey& k) const noexcept
-		{
-			return std::hash<std::string>{}(k.axisName) ^ (std::hash<std::uint32_t>{}(k.profileId) << 1);
-		}
-	};
-
-	using CondStagesPerAxisProfile
-		= std::unordered_map<AxisProfileKey, CondTableStaging, AxisProfileKeyHash>;
-
-
-	// build済みのCanonicalAxisにステージで貯めた名前付き関数群を整合させて流し込む
-	inline bool FinalizeCondTable
-	(
-		const CanonicalAxis& ca,
-		const CondTableStaging& stage,
-		CondTable& out
-	)
-	{
-		bool ok = true;
-		//
-		for (const auto& [name, fn] : stage.byName)
-		{
-			const auto& v = ca.condNames;
-			auto it = std::lower_bound(v.begin(), v.end(), name);
-			//
-			if (it == v.end() || *it != name)
-			{
-				// assert(it != v.end() && *it == name && "Cond name not found in CanonicalAxis");
-				ok = false;
-				continue;
-			}
-			CondID id{ static_cast<std::uint32_t>(it - v.begin()) };
-			out.set(id, fn);
-		}
-
-		return ok;
-	}
-
-
-
-
-	// 結果
 	struct FSMCatalog
-	{
+	{    
 		std::vector<CanonicalAxis> axes;
 	};
 
-	struct FSMCondTables
+
+	// Cond
+	struct EvalCtx
 	{
-		std::vector<CondTable> byAxis;// size == FSMCatalog.axes.size();
+		std::uint32_t entity;
 	};
 
-	struct FSMCondProfiles
+	struct EnvSnapshot
 	{
-		std::vector<std::unordered_map<CondProfileID, CondTable>> byAxis;
+		// 事前にまとめて計算した値．移動入力、時刻など
+		virtual ~EnvSnapshot() = default;
+
+		virtual bool testCondBit(std::uint32_t i) const { return false; }
+	};
+
+	struct BitEnvSnapshot : EnvSnapshot
+	{
+		using Word = std::uint32_t;
+		std::vector<Word> bits;// 真偽結果
+
+		static constexpr std::uint32_t kWordShift = 5;	//32bit
+		static constexpr std::uint32_t kWordMask = 31;	
+
+		void ensureSize(std::uint32_t numConds)
+		{
+			const auto words = (numConds + kWordMask) >> kWordShift;
+			if (bits.size() < words) bits.resize(words, Word{ 0 });
+		}
+
+		void clearAll()
+		{
+			std::fill(bits.begin(), bits.end(), Word{ 0 });
+		}
+
+		// v(true/false)をbitsに反映→ true:1 / false: 0
+		void set(std::uint32_t id, bool v)
+		{
+			const auto w = id >> kWordShift;		// wordブロック検出
+			const auto b = id & kWordMask;		// bit番号計算
+
+			if (w >= bits.size()) bits.resize(w + 1, Word{ 0 });
+			const Word m = Word{ 1 } << b;
+			if (v) bits[w] |= m;
+			else bits[w] &= ~m;
+		}
+
+		// 
+		bool testCondBit(std::uint32_t id) const override
+		{
+			const auto w = id >> kWordShift;
+			const auto b = id & kWordMask;
+			if (w >= bits.size()) return false;
+			const Word m = Word{ 1 } << b;
+			return (bits[w] & m) != 0;
+		}
 	};
 
 
 
-	inline const CondTable& ResolveCondTableForAxisProfile
+	//struct CondTable
+	//{
+	//	using Fn = bool(*)(const EnvSnapshot&, const EvalCtx&);
+	//	std::vector<Fn> fns;
+
+	//	void init(std::size_t numConds)
+	//	{
+	//		fns.assign(numConds, nullptr);
+	//	}
+
+	//	void bind(CondID id, Fn fn)
+	//	{
+	//		if (!id.valid()) return;
+	//		if (id.v >= fns.size()) fns.resize(id.v + 1, nullptr);
+	//		fns[id.v] = fn;
+	//	}
+
+	//	bool eval(CondID c, const EnvSnapshot& env, const EvalCtx& ctx) const
+	//	{
+	//		const auto i = c.v;
+	//		if (!c.valid() || i >= fns.size()) return false;
+	//		Fn fn = fns[i];
+	//		return fn ? fn(env, ctx) : false;
+	//	}
+	//};
+
+	struct AxisRuntime
+	{
+		AxisID id;
+		const CanonicalAxis* canon = nullptr;// 読み取り用
+
+		EnvAssemblerPlan plan;
+	};
+
+	struct Decision
+	{
+		std::uint32_t from;	// local state idx
+		std::uint32_t to;	// local state idx (unchanged => from)
+		bool changed;
+		std::uint8_t prio;
+		std::uint32_t slot;
+	};
+
+	Decision DecideNext_BySingleSlot
 	(
-		const FSMCondProfiles& profs,
-		AxisID axis,
-		CondProfileID profileId
-	)
-	{
-		const auto& perAxis = profs.byAxis[axis.id];
-		if (auto it = perAxis.find(profileId); it != perAxis.end())
-			return it->second;
+		const CanonicalFSM& f,
+		std::uint32_t fromLocal,
+		std::uint32_t profileLocal,
+		std::uint32_t slotLocal,
+		const EnvSnapshot& env
+	);
 
-		return perAxis.at(0);
-	}
+	Decision DecideNext_Slots
+	(
+		const CanonicalFSM& f,
+		std::uint32_t fromLocal,
+		std::uint32_t profileLocal,
+		std::span<const std::uint32_t> slots,
+		const EnvSnapshot& env
+	);
+
+	//struct NamedCondBinding
+	//{
+	//	std::string_view name;
+	//	// CondTable::Fn fn;
+	//};
+
+	struct AxisRuntimeDB
+	{
+		std::unordered_map<std::string, AxisRuntime> axes;
+		AxisRuntime* get(const std::string& name)
+		{
+			auto it = axes.find(name);
+			return it != axes.end() ? &it->second : nullptr;
+		}
+
+		AxisRuntime& ensure(const CanonicalAxis& ax)
+		{
+			auto [it, ok] = axes.emplace(ax.axisName, AxisRuntime{});
+			it->second.id = ax.axis;
+			it->second.canon = &ax;
+			return it->second;
+		}
+	};
 }

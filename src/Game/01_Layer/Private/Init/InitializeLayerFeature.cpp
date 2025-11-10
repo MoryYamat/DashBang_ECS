@@ -25,6 +25,7 @@
 // world
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
+#include <iostream>
 
 void Game::Layer::InitializeLayerFeature::DelayedInitialzation(Engine::ECS::EntityMgr& ecs)
 {
@@ -71,7 +72,10 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialzation(Engine::ECS::Enti
 #include "Game/Debug/Public/DebugApi.hpp"
 void Game::Layer::InitializeLayerFeature::DelayedInitialization(Engine::WorldSystem::Core::WorldCtx& ctx)
 {
-	Game::FSM::InitAllFSMs_Game(ctx);
+	if (!Game::FSM::InitAllFSMs_Game(ctx))
+	{
+		std::cout << "[fsms initialization failed]\n";
+	}
 
 	Game::FSM::Debug::SmokeTest_Movemet(ctx);
 }

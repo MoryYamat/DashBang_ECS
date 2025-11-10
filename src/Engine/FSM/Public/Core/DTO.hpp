@@ -9,7 +9,7 @@
 
 #include <unordered_map>
 
-namespace Engine::FSM::Base
+namespace Engine::FSM::Core
 {
 	struct AxisDTO
 	{
@@ -28,11 +28,18 @@ namespace Engine::FSM::Base
 		std::string slot;
 		std::uint8_t prio = 0;
 	};
+	
+	struct ParameterDTO
+	{
+		std::string name;	// "th", "slot", "low", "high"
+		std::string value;	// 文字列で受けて、ビルドで型にパース
+	};
 
 	struct ProfileBindDTO
 	{
 		std::string slot;
 		std::string cond;
+		std::vector<ParameterDTO> params;
 	};
 
 	struct ProfileDefDTO
