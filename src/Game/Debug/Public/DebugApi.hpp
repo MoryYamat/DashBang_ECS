@@ -5,5 +5,5 @@
 
 namespace Game::FSM::Debug
 {
-	void SmokeTest_Movemet(Engine::WorldSystem::Core::WorldCtx& ctx);
+	void SmokeTest_Movement(Engine::WorldSystem::Core::WorldCtx& ctx);
 }

@@ -77,5 +77,5 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialization(Engine::WorldSys
 		std::cout << "[fsms initialization failed]\n";
 	}
 
-	Game::FSM::Debug::SmokeTest_Movemet(ctx);
+	Game::FSM::Debug::SmokeTest_Movement(ctx);
 }

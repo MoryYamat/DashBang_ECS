@@ -11,6 +11,19 @@
 
 namespace Engine::FSM::Core
 {
+	struct CondDefDTO
+	{
+		std::string cond;		// cond名 (condUの要素と一致)
+		std::string kind;		// "Bit" | "CompareF" | "InRange"
+		std::string field;		// どの入力フィールドを見るか(movementInputMag)
+		std::string op;			// ">", ">=", "<", "<=", "in"
+		// 以下は必要な時だけ使う (文字列で受けてbuildでparase)
+		std::string th;			// CompareF用の閾値
+		std::string low;		// InRange用
+		std::string high;		// InRange用
+	};
+
+
 	struct AxisDTO
 	{
 		std::string axis;						// "Skill"
@@ -18,6 +31,7 @@ namespace Engine::FSM::Core
 		std::vector<std::string> condU;			// 軸全域の条件名
 		std::vector<std::string> slotU;			// 軸全域のスロット名
 		std::vector<std::string> profileU;		// 軸全域のプロファイル名
+		std::vector<CondDefDTO> condDefs;		
 		std::uint16_t version = 1;
 	};
 
@@ -28,18 +42,13 @@ namespace Engine::FSM::Core
 		std::string slot;
 		std::uint8_t prio = 0;
 	};
-	
-	struct ParameterDTO
-	{
-		std::string name;	// "th", "slot", "low", "high"
-		std::string value;	// 文字列で受けて、ビルドで型にパース
-	};
+
+
 
 	struct ProfileBindDTO
 	{
 		std::string slot;
 		std::string cond;
-		std::vector<ParameterDTO> params;
 	};
 
 	struct ProfileDefDTO

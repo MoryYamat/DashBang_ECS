@@ -14,11 +14,12 @@ namespace Game::Character::FSM::Movement
 
 	// void SetupMovementAxisRuntime(Engine::WorldSystem::Core::WorldCtx& ctx);
 
-	void makeAxis_Movement(Engine::FSM::Core::FSMRegistry& reg);
-	void makeFSM_Movement(Engine::FSM::Core::FSMRegistry& reg);
-	void RegisterMovementAxes(Engine::FSM::Core::FSMRegistry& reg);
+	// void makeAxis_Movement(Engine::FSM::Core::FSMRegistry& reg);
+	// void makeFSM_Movement(Engine::FSM::Core::FSMRegistry& reg);
+	// void RegisterMovementAxes(Engine::FSM::Core::FSMRegistry& reg);
+	Engine::FSM::Core::FieldResolver MakeMovementFieldResolver();
 	//void ProvideMovementConds(const Engine::FSM::Core::FSMCatalog& cat,
 	//	std::vector<Engine::FSM::Core::AxisCondBindings>& out);
-
+	// Engine::FSM::Core::FieldResolver MakeMovementFieldResolver();
 
 }

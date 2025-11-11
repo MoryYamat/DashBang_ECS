@@ -4,7 +4,7 @@
 #include <cassert>
 #include <string_view>
 
-
+// (state/cond/slot/prof/fsm)の(定義)文字列からを正規化済みIDを取得するヘルパー関数
 namespace Engine::FSM::Core::AxisLookup
 {
 

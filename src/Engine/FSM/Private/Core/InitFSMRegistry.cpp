@@ -26,8 +26,9 @@ namespace Engine::FSM::Core
 		if (fn) fn(reg);              // ゲーム側で reg.add(AxisDTO/FSMDTO) を行う
 	}
 
-	bool BuildFSMCatalog(Engine::WorldSystem::Core::WorldCtx& ctx
-		, BuildStrictness policy)
+	bool BuildFSMCatalog(Engine::WorldSystem::Core::WorldCtx& ctx,
+		FieldResolverProvider resolverProvider,
+		BuildStrictness policy)
 	{
 		auto& reg = ctx.ww.GetResource<FSMRegistry>();
 		auto& cat = ctx.ww.GetResource<FSMCatalog>();
@@ -50,9 +51,32 @@ namespace Engine::FSM::Core
 
 		//
 		db = AxisRuntimeDB{};
+
+		BuildErrors bakeErr;
+
 		for (auto& ax : cat.axes)
 		{
-			db.ensure(ax);
+			AxisRuntime& rt = db.ensure(ax);
+
+			// フィールド解決コールバック(ゲーム側で提供)
+			FieldResolver resolver;
+			if (!resolverProvider || !resolverProvider(ax.axisName, resolver))
+			{
+				bakeErr.err("Axis '" + ax.axisName + "': FieldResolver not provided");
+				continue;
+			}
+			BakeEnvAssemblerPlan(ax, rt, resolver, bakeErr);
+		}
+
+		if (!bakeErr.ok())
+		{
+			for (auto& m : bakeErr.msgs) std::printf("ERR: %s\n", m.c_str());
+			if (policy == BuildStrictness::Strict)
+			{
+				cat = FSMCatalog{};
+				db = AxisRuntimeDB{};
+				return false;
+			}
 		}
 
 		for (auto& ax : cat.axes) {
@@ -69,12 +93,12 @@ namespace Engine::FSM::Core
 
 	bool InitAllFSMs(Engine::WorldSystem::Core::WorldCtx& ctx,
 		RegisterFn registerFn,
-		// CondProviderFn condProvider,
+		FieldResolverProvider resolverProvider,
 		BuildStrictness policy)
 	{
 		InitFSMEngine(ctx);
 		RegisterAxes(ctx, registerFn);
-		if (!BuildFSMCatalog(ctx, policy)) return false;
+		if (!BuildFSMCatalog(ctx, resolverProvider, policy)) return false;
 		return true;
 
 	}

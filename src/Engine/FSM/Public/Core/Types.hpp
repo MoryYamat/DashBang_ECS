@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <unordered_map>
 #include <cassert>
+#include <functional>
 
 namespace Engine::FSM::Core
 {
@@ -42,9 +43,13 @@ namespace Engine::FSM::Core
 	enum class CondKind : std::uint8_t
 	{
 		Bit = 0,
-		CompareF = 1
+		CompareF = 1,
+		InRange = 2,
 	};
 
+	// kind == Bit: なし
+	// kind == CompareF: GT/GE/LT/LE
+	// kind == InRange:  InRange
 	enum class CmpOp : std::uint8_t
 	{
 		GT = 0,
@@ -63,6 +68,7 @@ namespace Engine::FSM::Core
 		float f32_0{};
 		float f32_1{};
 		std::uint32_t outBitIndex{};
+		std::string fieldName;			// AxisDTO.condDefs.field を保持
 	};
 
 	struct EnvAssemblerPlan
@@ -193,34 +199,6 @@ namespace Engine::FSM::Core
 		}
 	};
 
-
-
-	//struct CondTable
-	//{
-	//	using Fn = bool(*)(const EnvSnapshot&, const EvalCtx&);
-	//	std::vector<Fn> fns;
-
-	//	void init(std::size_t numConds)
-	//	{
-	//		fns.assign(numConds, nullptr);
-	//	}
-
-	//	void bind(CondID id, Fn fn)
-	//	{
-	//		if (!id.valid()) return;
-	//		if (id.v >= fns.size()) fns.resize(id.v + 1, nullptr);
-	//		fns[id.v] = fn;
-	//	}
-
-	//	bool eval(CondID c, const EnvSnapshot& env, const EvalCtx& ctx) const
-	//	{
-	//		const auto i = c.v;
-	//		if (!c.valid() || i >= fns.size()) return false;
-	//		Fn fn = fns[i];
-	//		return fn ? fn(env, ctx) : false;
-	//	}
-	//};
-
 	struct AxisRuntime
 	{
 		AxisID id;
@@ -238,29 +216,6 @@ namespace Engine::FSM::Core
 		std::uint32_t slot;
 	};
 
-	Decision DecideNext_BySingleSlot
-	(
-		const CanonicalFSM& f,
-		std::uint32_t fromLocal,
-		std::uint32_t profileLocal,
-		std::uint32_t slotLocal,
-		const EnvSnapshot& env
-	);
-
-	Decision DecideNext_Slots
-	(
-		const CanonicalFSM& f,
-		std::uint32_t fromLocal,
-		std::uint32_t profileLocal,
-		std::span<const std::uint32_t> slots,
-		const EnvSnapshot& env
-	);
-
-	//struct NamedCondBinding
-	//{
-	//	std::string_view name;
-	//	// CondTable::Fn fn;
-	//};
 
 	struct AxisRuntimeDB
 	{
@@ -278,5 +233,59 @@ namespace Engine::FSM::Core
 			it->second.canon = &ax;
 			return it->second;
 		}
+
+
 	};
+
+
+
+
+	// ID→値
+	// フィールド読み出しインターフェース(ゲーム側スナップショット)
+	struct IFieldReader
+	{
+		virtual ~IFieldReader() = default;
+		virtual float getF32(std::uint16_t fieldIndex) const = 0;
+	};
+
+	// 部分評価: requiredBitsに含まれるoutBitIndexだけ実行
+	void ExecuteDerivedCondsFiltered
+	(
+		const EnvAssemblerPlan& plan,
+		std::span<const std::uint32_t> requiredBits,
+		const IFieldReader& reader,
+		BitEnvSnapshot& outBits
+	);
+
+	//struct NamedCondBinding
+	//{
+	//	std::string_view name;
+	//	// CondTable::Fn fn;
+	//};
+	
+	//struct CondTable
+	//{
+	//	using Fn = bool(*)(const EnvSnapshot&, const EvalCtx&);
+	//	std::vector<Fn> fns;
+	
+	//	void init(std::size_t numConds)
+	//	{
+	//		fns.assign(numConds, nullptr);
+	//	}
+	
+	//	void bind(CondID id, Fn fn)
+	//	{
+	//		if (!id.valid()) return;
+	//		if (id.v >= fns.size()) fns.resize(id.v + 1, nullptr);
+	//		fns[id.v] = fn;
+	//	}
+	
+	//	bool eval(CondID c, const EnvSnapshot& env, const EvalCtx& ctx) const
+	//	{
+	//		const auto i = c.v;
+	//		if (!c.valid() || i >= fns.size()) return false;
+	//		Fn fn = fns[i];
+	//		return fn ? fn(env, ctx) : false;
+	//	}
+	//};
 }

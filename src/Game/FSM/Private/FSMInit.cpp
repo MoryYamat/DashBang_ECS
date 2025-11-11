@@ -2,8 +2,9 @@
 // #include "Engine/FSM/Public/FSMApi.hpp"
 
 #include "Engine/FSM/Public/FSMApi.hpp"
-
+#include "Game/FSM/Private/InitFunctions.hpp"
 #include "Game/Character/Private/FSM/Public/FSMApi.hpp"
+#include "Game/Character/Private/FSM/Private/Movement/Public/MovementAxis.hpp"
 
 namespace Game::FSM
 {
@@ -20,14 +21,11 @@ namespace Game::FSM
 				Game::Character::FSM::Movement::RegisterMovementAxes(reg);
 			};
 
-		//auto condProvider = [](const FSMCatalog& cat, std::vector<AxisCondBindings>& out)
-		//	{
-		//		(void)cat;
-		//		Game::Character::FSM::Movement::ProvideMovementConds(cat, out);
-		//	};
+		// auto registerFn = MakeGameRegisterProvider();
 
+		auto resolverProvider = MakeGameResolverProvider();
 
-		return InitAllFSMs(ctx, registerFn, /*condProvider,*/ BuildStrictness::Strict);
+		return InitAllFSMs(ctx, registerFn, resolverProvider, BuildStrictness::Strict);
 	}
 
 }

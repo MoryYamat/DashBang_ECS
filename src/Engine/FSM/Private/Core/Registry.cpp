@@ -1,5 +1,7 @@
 ﻿#include "Engine/FSM/Public/Core/Registry.hpp"
 
+#include "Engine/FSM/Public/FSMApi.hpp"
+
 #include "Engine/FSM/Public/Core/Types.hpp"
 #include "Engine/FSM/Public/Core/DTO.hpp"
 
@@ -9,6 +11,7 @@
 #include <utility>
 #include <vector>
 #include <algorithm>
+#include <cstdlib>
 #include <unordered_set>
 #include <unordered_map>
 #include <queue>
@@ -23,6 +26,178 @@ namespace Engine::FSM::Core
 	void FSMRegistry::add(FSMDTO fsm)
 	{
 		fsms_.emplace_back(std::move(fsm));
+	}
+
+	// 文字列→CondKind
+	static bool parseCondKind(const std::string& s, CondKind& out)
+	{
+		if (s == "Bit") { out = CondKind::Bit;				return true; }
+		if (s == "CompareF") { out = CondKind::CompareF;	return true; }
+		if (s == "InRange") { out = CondKind::InRange;		return true; }
+		return false;
+	}
+
+	// 文字列→CmpOp
+	static bool parseCmpOp(const std::string& s, CmpOp& out)
+	{
+		if (s == ">") { out = CmpOp::GT;		return true; }
+		if (s == ">=") { out = CmpOp::GE;		return true; }
+		if (s == "<") { out = CmpOp::LT;		return true; }
+		if (s == "<=") { out = CmpOp::LE;		return true; }
+		if (s == "in") { out = CmpOp::InRange;	return true; }
+		return false;
+	}
+
+
+	static bool parseFloat(const std::string& s, float& out)
+	{
+		if (s.empty())
+			return false;
+		char* end = nullptr;
+		const char* str = s.c_str();
+		out = std::strtof(str, &end);// TODO: ロケール考慮する必要あり
+
+		// パースができていて、かつ全体を消費しているか？
+		if (end == str || *end != '\0')
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	// AxisDTO の condDefs を検証し、CanonicalAxis.derivedSpecsを作る
+	static void buildDerivedSpecsFromAxis
+	(
+		const AxisDTO& a,			// 元のAxisDTO
+		const AxisTable& t,			// 辞書化済み(condByName)
+		BuildErrors& err,
+		std::vector<DerivedCondSpec>& outSpecs
+	)
+	{
+		std::unordered_set<std::string> seen;
+		seen.reserve(a.condDefs.size());
+
+		for (const auto& d : a.condDefs)
+		{
+			const std::string owner = "Axis '" + a.axis + "' condDef '" + d.cond + "'";
+			if (d.cond.empty())
+			{
+				err.err(owner + " has empty cond name");
+				continue;
+			}
+			if (!seen.insert(d.cond).second)
+			{
+				err.err(owner + " duplicate condDef");
+				continue;
+			}
+			// cond が condU に存在
+			auto itCond = t.condByName.find(d.cond);
+			if (itCond == t.condByName.end())
+			{
+				err.err(owner + "refers to unknown cond in condU");
+				continue;
+			}
+
+			CondKind kind{};
+			if (!parseCondKind(d.kind, kind))
+			{
+				err.err(owner + " has invalid kind '" + d.kind + "'");
+				continue;
+			}
+
+			CmpOp op{};
+			if (kind == CondKind::Bit)
+			{
+				// op/field/th 等は未使用。何もせず許可
+			}
+			else if (kind == CondKind::CompareF)
+			{
+				if (!parseCmpOp(d.op, op) || (op != CmpOp::GT && op != CmpOp::GE && op != CmpOp::LT && op != CmpOp::LE))
+				{
+					err.err(owner + "invalid op for CompareF: '" + d.op + "'");
+					continue;
+				}
+				if (d.field.empty())
+				{
+					err.err(owner + " CompareF requires filed name");
+					continue;
+				}
+				float th{};
+				if (!parseFloat(d.th, th))
+				{
+					err.err(owner + " CompareF requires numeric 'th'");
+					continue;
+				}
+				DerivedCondSpec s{};
+				s.kind = kind;
+				s.op = op;
+				s.f32_0 = th;
+				s.f32_1 = 0.0f;
+				s.field = 0;
+				s.fieldName = d.field;
+				s.u16_0 = 0;
+				s.outBitIndex = itCond->second.v;
+				outSpecs.push_back(std::move(s));
+				continue;
+			}
+			else if (kind == CondKind::InRange)
+			{
+				if (!parseCmpOp(d.op, op) || op != CmpOp::InRange)
+				{
+					err.err(owner + " InRange requires op 'in'");
+					continue;
+				}
+				if (d.field.empty())
+				{
+					err.err(owner + " InRange requires field name");
+					continue;
+				}
+				float lo{}, hi{};
+				if (!parseFloat(d.low, lo) || !parseFloat(d.high, hi))
+				{
+					err.err(owner + " InRange requires numeric 'low' and 'high'");
+					continue;
+				}
+				if (lo > hi)
+				{
+					err.err(owner + " InRange low must be <= high");
+					continue;
+				}
+				DerivedCondSpec s{};
+				s.kind = kind;
+				s.op = op;
+				s.f32_0 = lo;
+				s.f32_1 = hi;
+				s.field = 0;
+				s.fieldName = d.field;
+				s.u16_0 = 0;
+				s.outBitIndex = itCond->second.v;
+				outSpecs.push_back(std::move(s));
+				continue;
+			}
+
+			// kind == Bit の時
+			DerivedCondSpec s{};
+			s.kind = kind;
+			s.op = CmpOp::GT;// 未使用
+			s.f32_0 = s.f32_1 = 0.0f;
+			s.field = 0;
+			s.fieldName.clear();
+			s.u16_0 = 0;
+			s.outBitIndex = itCond->second.v;
+			outSpecs.push_back(std::move(s));
+		}
+
+		// 追加の安全策：condU にあるのに condDefs が無い項目をどう扱うか（v1はエラー推奨）
+		// 必須にするなら以下を有効化
+		/*
+		for (const auto& name : t.condOrder) {
+			if (!seen.count(name)) {
+				err.err("Axis '" + a.axis + "': cond '" + name + "' is in condU but has no condDef");
+			}
+		}
+		*/
 	}
 
 	std::unordered_map<std::string, std::uint32_t>
@@ -48,7 +223,7 @@ namespace Engine::FSM::Core
 	{
 		BuildErrors err;
 
-		const auto axisIndex = indexAxes(axes_, err);
+		//const auto axisIndex = indexAxes(axes_, err);
 
 		std::printf("FSMRegistry::build: axes_.size=%zu fsms_.size=%zu\n",
 			axes_.size(), fsms_.size());
@@ -79,6 +254,34 @@ namespace Engine::FSM::Core
 
 		// Catalog skeleton 
 		FSMCatalog cat = assembleCatalogSkeleton(tables);
+
+		// Derived を カタログへ
+		for (std::uint32_t rank = 0; rank < order.size(); ++rank)
+		{
+			const std::uint32_t i = order[rank];
+			auto& ax = cat.axes[rank];
+			buildDerivedSpecsFromAxis(axes_[i], tables[rank], err, ax.derivedSpecs);
+		}
+
+		// build() の Derived 構築直後などに（デバッグ専用）
+		for (std::uint32_t rank = 0; rank < cat.axes.size(); ++rank) {
+			const auto& ax = cat.axes[rank];
+			std::printf("[Derived] Axis '%s' specs=%zu\n",
+				ax.axisName.c_str(), ax.derivedSpecs.size());
+			for (const auto& s : ax.derivedSpecs) {
+				const char* k =
+					(s.kind == CondKind::Bit) ? "Bit" :
+					(s.kind == CondKind::CompareF) ? "CompareF" : "InRange";
+				const char* o =
+					(s.op == CmpOp::GT) ? ">" :
+					(s.op == CmpOp::GE) ? ">=" :
+					(s.op == CmpOp::LT) ? "<" :
+					(s.op == CmpOp::LE) ? "<=" : "in";
+				std::printf("  - kind=%s op=%s field='%s' th=[%f,%f] outBit=%u\n",
+					k, o, s.fieldName.c_str(), s.f32_0, s.f32_1, s.outBitIndex);
+			}
+		}
+
 
 		// 軸名→rank
 		std::unordered_map<std::string, std::uint32_t> axisNameToRank;
@@ -618,4 +821,46 @@ namespace Engine::FSM::Core
 
 		return cfsm;
 	}
+
+	void BakeEnvAssemblerPlan
+	(
+		const CanonicalAxis& ax,
+		AxisRuntime& rt,
+		FieldResolver  resolveField,
+		BuildErrors& err
+	)
+	{
+		rt.plan.ops.clear();
+		const auto& specs = ax.derivedSpecs;
+
+		for (const auto& s : specs)
+		{
+			if (s.kind == CondKind::Bit)
+			{
+				continue;
+			}
+
+			EnvAssemblerPlan::Op op{};
+			op.kind = s.kind;
+			op.op = s.op;
+			op.f32_0 = s.f32_0;
+			op.f32_1 = s.f32_1;
+			op.u16_0 = s.u16_0;
+			op.outBitIndex = s.outBitIndex;
+
+			// fieldName -> field index を解決
+			std::uint16_t idx = 0;
+			if (!resolveField || !resolveField(s.fieldName, idx))
+			{
+				err.err("Axis '" + ax.axisName + "': unknown field '" + s.fieldName + "' for condBit " + std::to_string(s.outBitIndex));
+
+				continue;
+			}
+
+			op.field = idx;
+
+			rt.plan.ops.push_back(op);
+		}
+	}
+
 }
