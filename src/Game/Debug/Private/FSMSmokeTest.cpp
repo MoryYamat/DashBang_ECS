@@ -7,7 +7,6 @@
 
 #include "Engine/FSM/Public/Core/AxisLookup.hpp"
 
-#include "Game/Character/Private/FSM/Private/Movement/MovementEnv.hpp"
 
 #include "Game/Character/Private/FSM/Private/Movement/Public/MovementFieldReader.hpp"
 
@@ -203,10 +202,11 @@ namespace Game::FSM::Debug
         assert(rt && rt->canon);
         const CanonicalAxis& ax = *rt->canon;
 
-        const CanonicalFSM& fsm = ax.fsms[ax.fsmIdxByName.at("Basic")];
-        const uint32_t profile = ax.profileIdxByName.at("Default");
-        const uint32_t stIdle = ax.stateIdxByName.at("Idle");
-        const uint32_t stMoving = ax.stateIdxByName.at("Moving");
+        const CanonicalFSM& fsm = ax.fsms[FindFSMIdx(ax, "Basic")];
+        const uint32_t profile = FindProfileIdx(ax, "Default");
+        const uint32_t stIdle = FindStateIdx(ax, "Idle");
+        const uint32_t stMoving = FindStateIdx(ax, "Moving");
+
 
         // 1) 前計算テーブル
         PrecomputedEvalPlans plans = BuildEvalPlans(fsm);
