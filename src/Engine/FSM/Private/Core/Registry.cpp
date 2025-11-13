@@ -800,6 +800,12 @@ namespace Engine::FSM::Core
 		cfsm.numProfiles = (std::uint32_t)fsm.profiles.size();
 		cfsm.version = fsm.version;
 
+		auto it = at.condByName.find(kBuiltinAlwaysTrue);
+		if (it != at.condByName.end())
+		{
+			cfsm.alwaysTrueBit = it->second.v;
+		}
+
 		// condOf
 		ExtendsCheck ec;
 		(void)checkProfileDefs(fsm, at, err, ec);

@@ -1,5 +1,8 @@
 ﻿#pragma once
 
+
+#include "Engine/FSM/Public/Core/Analysis.hpp"
+
 #include <cstdint>
 #include <vector>
 #include <utility>
@@ -101,8 +104,8 @@ namespace Engine::FSM::Core
 		std::uint32_t numProfiles = 0;
 
 		// i番目の(state,slot)のedges開始位置 (ofs[i+1]-ofs[i]:出次数)
-		std::vector<uint32_t> ofs;			// size = numStates * numSlots + 1 
-		std::vector<TransitionEdge> edges;	// ソート後のtoのindex
+		std::vector<uint32_t> ofs;			// ofs[i] idx = (from,slot) の組を表す: size = numStates * numSlots + 1 
+		std::vector<TransitionEdge> edges;	// ソート後の (to, prio)の組
 
 		std::vector<CondID> condOf;			// size = numProfiles * numSlots
 
@@ -110,6 +113,9 @@ namespace Engine::FSM::Core
 		std::vector<StateID> local2GlobalState;
 		std::vector<SlotID> local2GlobalSlot;
 		std::vector<ProfileID> local2GlobalProfile;
+
+		// 常に真のCondID
+		std::uint32_t alwaysTrueBit = UINT32_MAX;
 
 		std::uint16_t version = 1;
 	};
@@ -205,6 +211,8 @@ namespace Engine::FSM::Core
 		const CanonicalAxis* canon = nullptr;// 読み取り用
 
 		EnvAssemblerPlan plan;
+
+		std::vector<PrecomputedEvalPlans> evals;
 	};
 
 	struct Decision

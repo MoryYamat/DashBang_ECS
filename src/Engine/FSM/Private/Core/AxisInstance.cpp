@@ -14,14 +14,26 @@ namespace Engine::FSM::Core
 	//	return f.ofs[cell] < f.ofs[cell + 1];
 	//}
 
+
+	bool AxisInstance::ApplyDecision(const Decision& d)
+	{
+		if (!d.changed) return false;
+		prevState = curState;
+		curState = d.to;
+		prevProfile = curProfile;
+
+		return true;
+	}
+
+
 	Decision AxisInstance::tick(const IFieldReader& reader)
 	{
 		assert(ax && fsm && plan && eval);
 
 		Decision d{};
 
-		d.from = stateLocal;
-		d.to = stateLocal;
+		d.from = curState;
+		d.to = curState;
 		d.changed = false;
 		d.prio = 0;
 		d.slot = UINT32_MAX;
@@ -40,7 +52,7 @@ namespace Engine::FSM::Core
 		for (auto s : candidateSlots)
 		{
 			// slot に割り当てられている条件(profile差替え済み)
-			const CondID cid = fsm->condOf[profileLocal * S + s];
+			const CondID cid = fsm->condOf[curProfile * S + s];
 			if (cid.valid())
 			{
 				// 必須ビットが立っていなければ不採用
@@ -48,7 +60,7 @@ namespace Engine::FSM::Core
 			}
 
 			// 条件を満たした最初の slot が「選ばれたslot」
-			const std::uint32_t cell = stateLocal * S + s;
+			const std::uint32_t cell = curState * S + s;
 			if (fsm->ofs[cell] == fsm->ofs[cell + 1]) continue;
 
 			const std::uint32_t a = fsm->ofs[cell];

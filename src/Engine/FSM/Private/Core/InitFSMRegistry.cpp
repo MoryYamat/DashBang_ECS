@@ -3,6 +3,7 @@
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
 #include "Engine/FSM/Public/Core/Registry.hpp"
+#include "Engine/FSM/Public/Core/Analysis.hpp"
 
 #include <iostream>
 
@@ -57,6 +58,13 @@ namespace Engine::FSM::Core
 		for (auto& ax : cat.axes)
 		{
 			AxisRuntime& rt = db.ensure(ax);
+
+			rt.evals.clear();
+			rt.evals.reserve(ax.fsms.size());
+			for (const auto& fsm : ax.fsms)
+			{
+				rt.evals.push_back(BuildEvalPlans(fsm));
+			}
 
 			// フィールド解決コールバック(ゲーム側で提供)
 			FieldResolver resolver;

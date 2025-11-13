@@ -19,9 +19,9 @@ namespace Game::Character::FSM::Movement
 	{
 		AxisDTO ax;
 		ax.axis = "Movement";
-		ax.stateU = { "Idle", "Moving" };
-		ax.condU = { "canMove", "shouldStop" };
-		ax.slotU = { "Transition", "Stop" };
+		ax.stateU = { "Idle", "Moving"};
+		ax.condU = { "canMove", "shouldStop", "AlwaysTrue"};
+		ax.slotU = { "Transition", "Stop" , "Hoge"};
 		ax.profileU = { "Default" };
 		ax.condDefs = {
 			{.cond = "canMove",    .kind = "CompareF", .field = "movementInputMag", .op = ">",  .th = "0.25" },
@@ -51,11 +51,17 @@ namespace Game::Character::FSM::Movement
 				ProfileBindDTO{
 				.slot = "Stop",
 				.cond = "shouldStop",
-			}}
+			},
+				ProfileBindDTO{
+				.slot = "Hoge",
+				.cond = "AlwaysTrue"
+			},
+			}
 			});
 
 		// transitions
 		f.transitions.push_back({ "Idle", "Moving", "Transition", 0 });
+		// f.transitions.push_back({ "Idle", "Moving", "Hoge", 0 });
 		f.transitions.push_back({ "Moving", "Idle", "Stop", 0 });
 		f.transitions.push_back({ "Moving", "Moving", "Transition", 1 });
 

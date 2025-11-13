@@ -16,6 +16,7 @@ namespace Engine::FSM::Core
 				out.ensureSize(words << BitEnvSnapshot::kWordShift);
 				for (size_t i = 0; i < words; ++i)
 				{
+					// OR合成
 					out.bits[i] |= src.bits[i];
 				}
 			};

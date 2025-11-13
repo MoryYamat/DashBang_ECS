@@ -51,6 +51,7 @@ namespace Engine::FSM::Core
 			set(CondChannel::DebugOverride, bit, false);
 		}
 
+		// 遷移評価前にビットをOR合成
 		void compose(BitEnvSnapshot& out, std::uint32_t numConds) const;
 
 		// ラッチ寿命管理
@@ -62,6 +63,6 @@ namespace Engine::FSM::Core
 	private:
 		// アクティブなラッチだけを保持(スパース)
 		std::unordered_map<std::uint32_t, std::uint16_t> framesLeft_;
-		std::unordered_map<std::uint32_t, float> secondLeft_;
+		std::unordered_map<std::uint32_t, float> secondsLeft_;
 	};
 }

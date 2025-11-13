@@ -11,6 +11,12 @@
 
 namespace Engine::FSM::Core
 {
+	inline constexpr const char* kBuiltinAlwaysTrue  = "AlwaysTrue";
+	
+	// 仕様
+	// AlwaysTrue: 恒真命題
+
+
 	struct CondDefDTO
 	{
 		std::string cond;		// cond名 (condUの要素と一致)
@@ -28,8 +34,8 @@ namespace Engine::FSM::Core
 	{
 		std::string axis;						// "Skill"
 		std::vector<std::string> stateU;		// 軸全域の状態名
-		std::vector<std::string> condU;			// 軸全域の条件名
-		std::vector<std::string> slotU;			// 軸全域のスロット名
+		std::vector<std::string> condU;			// 軸全域の条件名				// 自己ループは禁止(仕様) 無条件スロットアリ
+		std::vector<std::string> slotU;			// 軸全域のスロット名			(Slotは評価チャンネル名/ 特定遷移に依存しない条件名)
 		std::vector<std::string> profileU;		// 軸全域のプロファイル名
 		std::vector<CondDefDTO> condDefs;		
 		std::uint16_t version = 1;

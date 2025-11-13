@@ -25,7 +25,8 @@ namespace Engine::FSM::Core
 
 		// (prof, slot) -> CondID
 		const CondID cid = f.condOf[profileLocal * S + slotLocal];
-		if (!cid.valid() || !env.testCondBit(cid.v)) return d;
+		if (!cid.valid()) return d;
+		if (cid.v != f.alwaysTrueBit && !env.testCondBit(cid.v)) return d;
 
 		// CSR
 		const std::uint32_t cell = fromLocal * S + slotLocal;

@@ -20,8 +20,11 @@ namespace Engine::FSM::Core
 
 		// 実行状態
 		// チェーン遷移は現状考えない
-		std::uint32_t stateLocal = 0;		// 現在state (local)
-		std::uint32_t profileLocal = 0;		// 現在profile (local)
+		std::uint32_t curState = 0;		// 現在state (local)
+		std::uint32_t prevState= 0;		// 一つ前のstate (local)
+
+		std::uint32_t curProfile = 0;		// 現在profile (local)
+		std::uint32_t prevProfile = 0;		// 一つ前のprofile (local)
 
 		// 条件ビット
 		ConditionBank conds;				// Derived/Base/Latched/Override の4ch
@@ -45,8 +48,10 @@ namespace Engine::FSM::Core
 			fsm = &fsm_;
 			plan = &plan_;
 			eval = &eval_;
-			stateLocal = initStateLocal;
-			profileLocal = initProfileLocal;
+			curState = initStateLocal;
+			prevState = initStateLocal;
+			curProfile = initProfileLocal;
+			prevProfile = initProfileLocal;
 
 			// 事前にチャンネルのワード数を確保(軸の cond 個数に合わせる)
 			const std::uint32_t numConds = (std::uint32_t)ax->condOrder.size();
@@ -56,7 +61,7 @@ namespace Engine::FSM::Core
 
 		void refreshPlanForThisFrame()
 		{
-			const auto set = GetNextEvalSet(*eval, stateLocal, profileLocal);
+			const auto set = GetNextEvalSet(*eval, curState, curProfile);
 			requiredBits = set.condBits;
 			candidateSlots = set.slots;
 		}
@@ -73,7 +78,10 @@ namespace Engine::FSM::Core
 			refreshPlanForThisFrame();
 		}
 
+		bool ApplyDecision(const Decision& d);
+
 		// 1フレームの決定
+		//「同フレーム複数 tick はしない」
 		Decision tick(const IFieldReader& reader);
 
 
