@@ -6,4 +6,6 @@ namespace Game::Character::FSM::Movement
 
 	struct MovementStateComponent;
 
+	struct MovementFSMSystem;
+
 }

@@ -5,6 +5,11 @@
 
 #include "Game/Character/Private/FSM/Public/FSMApi.hpp"
 
+#include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
+
+#include "Game/Character/Private/FSM/Public/MovementAxisTypes.hpp"
+#include "Game/Character/Private/FSM/Public/MovementAxisApi.hpp"
+
 #include <string_view>
 
 namespace Game::FSM
@@ -25,5 +30,26 @@ namespace Game::FSM
 				// 他 Axis はここに追加("Skill" など)
 				return false;// 未登録Axis
 			};
+	}
+
+	inline bool InitGameCondTable(Engine::WorldSystem::Core::WorldCtx& ctx)
+	{
+		using namespace Game::Character::FSM::Movement;
+
+		bool ok = true;
+
+		{
+			auto& tbl = ctx.ww.CreateResource<MovementCondTable>();
+			if (!InitMovementCondTable(ctx, tbl))
+			{
+				std::printf("[InitGameCondTable] Failed to init MovementCondTable\n");
+				ok = false;
+			}
+		}
+
+		// 以下にほかの軸も追加していく
+
+
+		return ok;
 	}
 }

@@ -24,16 +24,6 @@ namespace Game::Feature::Character::FSM
 
 
 
-		static void InitializeMovementFSMDefinition(Engine::WorldSystem::Core::WorldCtx& ctx);
-
-		static void UpdateMovementIntentResolver(Engine::WorldSystem::Core::WorldCtx& ctx);
-
-		static void UpdateMovementFSMSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
-
-		static void UpdateMovementFSMResolverSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
-
-		static void UpdateMovementFSMScopedSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
-
-		static void UpdateMovementFSMInterferenceResolver(Engine::WorldSystem::Core::WorldCtx& ctx);
+		static void UpdateMovementPipeline(Engine::WorldSystem::Core::WorldCtx& ctx);
 	};
 }

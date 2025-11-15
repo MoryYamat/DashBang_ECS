@@ -36,6 +36,10 @@ namespace Engine::WorldSystem::Core
 	{
 		World& w;
 
+		Engine::ECS::Core::Entity Create() { return w.Create();}
+
+		void Destroy(Engine::ECS::Core::Entity e) {w.Destroy(e);}
+
 		template<typename T, typename... A>
 		T& Add(Engine::ECS::Core::Entity e, A&&... a);
 

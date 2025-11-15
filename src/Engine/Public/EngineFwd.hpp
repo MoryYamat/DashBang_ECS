@@ -14,3 +14,5 @@
 #include "Engine/Time/Public/WorldClockFwd.hpp"
 #include "Engine/Window/Public/WindowFwd.hpp"
 #include "Engine/WorldSystem/Public/WorldFwd.hpp"
+
+#include "Engine/FSM/Public/FSMFwd.hpp"

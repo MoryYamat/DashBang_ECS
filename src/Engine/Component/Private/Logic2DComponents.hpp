@@ -8,4 +8,5 @@
 #include "Engine/Component/Private/Logic2D/TileGridXZComponent.hpp"
 #include "Engine/Component/Private/Logic2D/TileMapComponent.hpp"
 #include "Engine/Component/Private/Logic2D/TileSpaceComponent.hpp"
+#include "Engine/Component/Private/Logic2D/Transform2DComponent.hpp"
 #include "Engine/Component/Private/Logic2D/Velocity2DComponent.hpp"

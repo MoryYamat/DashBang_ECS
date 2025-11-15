@@ -4,6 +4,7 @@
 #include "Engine/FSM/Public/Core/Analysis.hpp"
 
 #include <algorithm>
+#include <iostream>
 
 namespace Engine::FSM::Core
 {
@@ -21,6 +22,9 @@ namespace Engine::FSM::Core
 		prevState = curState;
 		curState = d.to;
 		prevProfile = curProfile;
+
+		//std::cout << "[ApplyDecision]: " << prevState << " changed to " << curState << "\n";
+		//// std::cout<<"[ApplyDecision]: "
 
 		return true;
 	}

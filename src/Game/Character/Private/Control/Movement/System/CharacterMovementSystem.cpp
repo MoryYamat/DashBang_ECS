@@ -3,7 +3,7 @@
 #include "Engine/ECS/Component/Logic2D/Velocity2DComponent.h"
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 
-#include "Game/Character/Private/Stats/Component/CharacterStatsComponent.h"
+#include "Game/Character/Private/Stats/Public/StatsComponent.hpp"
 
 #include "Game/Character/Private/Control/Movement/Component/Intent/MovementIntentComponent.h"
 #include "Game/Character/Private/Control/Movement/Component/Intent/FacingIntentComponent.h"

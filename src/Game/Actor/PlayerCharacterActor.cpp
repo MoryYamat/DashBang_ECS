@@ -23,7 +23,7 @@
 // Intent
 #include "Game/Character/Private/Control/Movement/Component/Intent/MovementIntentComponent.h"
 #include "Game/Character/Private/Control/Movement/Component/Intent/FacingIntentComponent.h"
-#include "Game/Character/Private/Stats/Component/CharacterStatsComponent.h"
+#include "Game/Character/Private/Stats/Public/StatsComponent.hpp"
 
 // test color
 #include "Engine/ECS/Component/Graphics/MaterialComponent.h"

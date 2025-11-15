@@ -4,15 +4,13 @@
 #include "Engine/FSM/Public/FSMApi.hpp"
 #include "Game/FSM/Private/InitFunctions.hpp"
 #include "Game/Character/Private/FSM/Public/FSMApi.hpp"
-#include "Game/Character/Private/FSM/Private/Movement/Public/MovementAxis.hpp"
+#include "Game/Character/Private/FSM/Public/MovementAxisApi.hpp"
 
 namespace Game::FSM
 {
 	// using namespace Engine::FSM::Core;
 
 	using namespace Engine::FSM::Core;
-
-
 
 	bool InitAllFSMs_Game(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
@@ -25,7 +23,14 @@ namespace Game::FSM
 
 		auto resolverProvider = MakeGameResolverProvider();
 
-		return InitAllFSMs(ctx, registerFn, resolverProvider, BuildStrictness::Strict);
+		if(!InitAllFSMs(ctx, registerFn, resolverProvider, BuildStrictness::Strict))
+			return false;
+
+		if (!InitGameCondTable(ctx))
+			return false;
+
+
+		return true;
 	}
 
 }

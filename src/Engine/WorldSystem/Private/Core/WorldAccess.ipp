@@ -44,6 +44,7 @@ namespace Engine::WorldSystem::Core
 		return w.HasResource<T>();
 	}
 
+
 	template<typename T, typename... A>
 	T& WorldWrite::Add(Engine::ECS::Core::Entity e, A&&... a)
 	{

@@ -13,6 +13,9 @@
 
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
+// #include "Game/Character/Private/FSM/Public/MovementAxisTypes.hpp"
+// #include "Game/Character/Private/FSM/Public/MovementAxisApi.hpp"
+
 void Game::Feature::Character::FSM::MovementFSMFeature::InitializeMovementFSMDefinition(Engine::ECS::EntityMgr& ecs)
 {
 	Game::Character::FSM::Movement::InitMovementFSMDatabase(ecs);
@@ -51,33 +54,4 @@ namespace Game::Feature::Character::FSM
 
 namespace Game::Feature::Character::FSM
 {
-	void MovementFSMFeature::InitializeMovementFSMDefinition(Engine::WorldSystem::Core::WorldCtx& ctx)
-	{
-		
-	}
-
-	void MovementFSMFeature::UpdateMovementIntentResolver(Engine::WorldSystem::Core::WorldCtx& ctx)
-	{
-		
-	}
-
-	void MovementFSMFeature::UpdateMovementFSMSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
-	{
-		
-	}
-
-	void MovementFSMFeature::UpdateMovementFSMResolverSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
-	{
-		
-	}
-
-	void MovementFSMFeature::UpdateMovementFSMScopedSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
-	{
-		
-	}
-
-	void MovementFSMFeature::UpdateMovementFSMInterferenceResolver(Engine::WorldSystem::Core::WorldCtx& ctx) 
-	{
-		
-	}
 }

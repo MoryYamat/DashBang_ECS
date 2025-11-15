@@ -23,7 +23,7 @@ namespace Game::Feature::System
 	// 
 	void WorldClockFeature::Init(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
-		
+		WorldClock::InitWorldClock(ctx);
 	}
 	void WorldClockFeature::Update(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{

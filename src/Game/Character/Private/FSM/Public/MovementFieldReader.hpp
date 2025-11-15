@@ -1,7 +1,9 @@
 ﻿#pragma once
 
+#include "Engine/FSM/Public/FSMApi.hpp"
+
+
 #include <cstdint>
-#include <string_view>
 
 namespace Game::Character::FSM::Movement
 {
@@ -25,4 +27,14 @@ namespace Game::Character::FSM::Movement
 		default: return "";
 		}
 	}
+
+	struct MovementFieldReader : Engine::FSM::Core::IFieldReader {
+		float movementInputMag = 0.f;
+		float getF32(std::uint16_t fieldIndex) const override {
+			switch (static_cast<Field>(fieldIndex)) {
+			case Field::MovementInputMag: return movementInputMag;
+			default: return 0.f;
+			}
+		}
+	};
 }

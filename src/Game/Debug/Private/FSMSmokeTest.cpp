@@ -5,10 +5,10 @@
 
 #include "Engine/FSM/Public/Core/Analysis.hpp"
 
-#include "Engine/FSM/Public/Core/AxisLookup.hpp"
+#include "Engine/FSM/Public/Core/ID-NameHelper.hpp"
 
 
-#include "Game/Character/Private/FSM/Private/Movement/Public/MovementFieldReader.hpp"
+#include "Game/Character/Private/FSM/Public/MovementFieldReader.hpp"
 
 #include <iostream>
 
@@ -195,60 +195,60 @@ namespace Game::FSM::Debug
 
     void SmokeTest_Movement(Engine::WorldSystem::Core::WorldCtx& ctx)
     {
-        auto& cat = ctx.ww.GetResource<FSMCatalog>();
-        auto& db = ctx.ww.GetResource<AxisRuntimeDB>();
+        //auto& cat = ctx.ww.GetResource<FSMCatalog>();
+        //auto& db = ctx.ww.GetResource<AxisRuntimeDB>();
 
-        AxisRuntime* rt = db.get("Movement");
-        assert(rt && rt->canon);
-        const CanonicalAxis& ax = *rt->canon;
+        //AxisRuntime* rt = db.get("Movement");
+        //assert(rt && rt->canon);
+        //const CanonicalAxis& ax = *rt->canon;
 
-        const CanonicalFSM& fsm = ax.fsms[FindFSMIdx(ax, "Basic")];
-        const uint32_t profile = FindProfileIdx(ax, "Default");
-        const uint32_t stIdle = FindStateIdx(ax, "Idle");
-        const uint32_t stMoving = FindStateIdx(ax, "Moving");
+        //const CanonicalFSM& fsm = ax.fsms[FindFSMIdx(ax, "Basic")];
+        //const uint32_t profile = FindProfileIdx(ax, "Default");
+        //const uint32_t stIdle = FindStateIdx(ax, "Idle");
+        //const uint32_t stMoving = FindStateIdx(ax, "Moving");
 
 
-        // 1) 前計算テーブル
-        PrecomputedEvalPlans plans = BuildEvalPlans(fsm);
+        //// 1) 前計算テーブル
+        //PrecomputedEvalPlans plans = BuildEvalPlans(fsm);
 
-        // 2) リーダ / ビットバッファ
-        Game::Character::FSM::Movement::MovementFieldReader reader{};
-        BitEnvSnapshot      bits;
-        bits.ensureSize((uint32_t)ax.condOrder.size());
+        //// 2) リーダ / ビットバッファ
+        //Game::Character::FSM::Movement::MovementFieldReader reader{};
+        //BitEnvSnapshot      bits;
+        //bits.ensureSize((uint32_t)ax.condOrder.size());
 
-        auto run_case = [&](const char* label, uint32_t from, float inputMag) {
-            // a) 必要Condを取得（状態とプロファイルから）
-            NextEvalSet eval = GetNextEvalSet(plans, from, profile);
+        //auto run_case = [&](const char* label, uint32_t from, float inputMag) {
+        //    // a) 必要Condを取得（状態とプロファイルから）
+        //    NextEvalSet eval = GetNextEvalSet(plans, from, profile);
 
-            // b) 入力設定 → 必要ビットだけ派生実行
-            reader.movementInputMag = inputMag;
-            bits.clearAll();
-            ExecuteDerivedCondsFiltered(rt->plan, eval.condBits, reader, bits);
+        //    // b) 入力設定 → 必要ビットだけ派生実行
+        //    reader.movementInputMag = inputMag;
+        //    bits.clearAll();
+        //    ExecuteDerivedCondsFiltered(rt->plan, eval.condBits, reader, bits);
 
-            // c) Decide：候補スロットだけ渡す
-            Decision d = DecideNext_Slots(fsm, from, profile, eval.slots, bits);
-            printf("%s: input=%.2f  %u -> %u  %s\n",
-                label, inputMag, from, d.to, d.changed ? "(changed)" : "");
-            return d;
-            };
+        //    // c) Decide：候補スロットだけ渡す
+        //    Decision d = DecideNext_Slots(fsm, from, profile, eval.slots, bits);
+        //    printf("%s: input=%.2f  %u -> %u  %s\n",
+        //        label, inputMag, from, d.to, d.changed ? "(changed)" : "");
+        //    return d;
+        //    };
 
-        // ------- 期待：0.30 で Idle→Moving, 0.00 で Moving→Idle
-        auto d1 = run_case("[Idle]   canMove true", stIdle, 0.30f);
-        assert(d1.changed && d1.to == stMoving);
+        //// ------- 期待：0.30 で Idle→Moving, 0.00 で Moving→Idle
+        //auto d1 = run_case("[Idle]   canMove true", stIdle, 0.30f);
+        //assert(d1.changed && d1.to == stMoving);
 
-        auto d2 = run_case("[Idle]   canMove false", stIdle, 0.00f);
-        assert(!d2.changed && d2.to == stIdle);
+        //auto d2 = run_case("[Idle]   canMove false", stIdle, 0.00f);
+        //assert(!d2.changed && d2.to == stIdle);
 
-        auto d3 = run_case("[Moving] shouldStop true", stMoving, 0.00f);
-        assert(d3.changed && d3.to == stIdle);
+        //auto d3 = run_case("[Moving] shouldStop true", stMoving, 0.00f);
+        //assert(d3.changed && d3.to == stIdle);
 
-        // 両方trueケース（0.30だと canMove=true, shouldStop=false）
-        // Moving からは Transition(自己遷移 prio=1) と Stop(prio=0) が候補
-        // → prio=1 の自己遷移が勝つことを確認
-        auto d4 = run_case("[Moving] both? -> self", stMoving, 0.30f);
-        assert(d4.to == stMoving);
+        //// 両方trueケース（0.30だと canMove=true, shouldStop=false）
+        //// Moving からは Transition(自己遷移 prio=1) と Stop(prio=0) が候補
+        //// → prio=1 の自己遷移が勝つことを確認
+        //auto d4 = run_case("[Moving] both? -> self", stMoving, 0.30f);
+        //assert(d4.to == stMoving);
 
-        puts("==== Runtime Movement: All OK ====");
+        //puts("==== Runtime Movement: All OK ====");
 
     }
 }

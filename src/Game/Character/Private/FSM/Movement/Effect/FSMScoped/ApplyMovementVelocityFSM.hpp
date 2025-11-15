@@ -7,7 +7,7 @@
 
 #include "Engine/ECS/Component/Logic2D/Velocity2DComponent.h"
 
-#include "Game/Character/Private/Stats/Component/CharacterStatsComponent.h"
+#include "Game/Character/Private/Stats/Public/StatsComponent.hpp"
 
 #include "Game/Character/Private/FSM/Movement/StateModel/MovementStateComponent.hpp"
 

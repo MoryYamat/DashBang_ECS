@@ -1,6 +1,6 @@
 ﻿// Movement Axis DTO
+#include "Game/Character/Private/FSM/Public/MovementAxisApi.hpp"
 
-#pragma once
 #include "Engine/FSM/Public/Core/DTO.hpp"
 #include "Engine/FSM/Public/Core/Types.hpp"
 #include "Engine/FSM/Public/FSMApi.hpp"
@@ -15,23 +15,23 @@ namespace Game::Character::FSM::Movement
 {
 	using namespace Engine::FSM::Core;
 
-	inline void makeAxis_Movement(FSMRegistry& reg)
+	static void makeAxis_Movement(FSMRegistry& reg)
 	{
 		AxisDTO ax;
 		ax.axis = "Movement";
-		ax.stateU = { "Idle", "Moving"};
-		ax.condU = { "canMove", "shouldStop", "AlwaysTrue"};
-		ax.slotU = { "Transition", "Stop" , "Hoge"};
+		ax.stateU = { "Idle", "Moving" };
+		ax.condU = { "canMove", "shouldStop", "AlwaysTrue" };
+		ax.slotU = { "Transition", "Stop" , "Hoge" };
 		ax.profileU = { "Default" };
 		ax.condDefs = {
-			{.cond = "canMove",    .kind = "CompareF", .field = "movementInputMag", .op = ">",  .th = "0.25" },
+			{.cond = "canMove",    .kind = "CompareF", .field = "movementInputMag", .op = ">",  .th = "0.00" },
 			{.cond = "shouldStop",    .kind = "CompareF", .field = "movementInputMag", .op = "<=",  .th = "0.00" },
 		};
 		ax.version = 1;
 		reg.add(std::move(ax));
 	}
 
-	inline void makeFSM_Movement(FSMRegistry& reg)
+	static void makeFSM_Movement(FSMRegistry& reg)
 	{
 		FSMDTO f;
 		f.axis = "Movement";
@@ -51,26 +51,20 @@ namespace Game::Character::FSM::Movement
 				ProfileBindDTO{
 				.slot = "Stop",
 				.cond = "shouldStop",
-			},
-				ProfileBindDTO{
-				.slot = "Hoge",
-				.cond = "AlwaysTrue"
-			},
+			}
 			}
 			});
 
 		// transitions
 		f.transitions.push_back({ "Idle", "Moving", "Transition", 0 });
-		// f.transitions.push_back({ "Idle", "Moving", "Hoge", 0 });
 		f.transitions.push_back({ "Moving", "Idle", "Stop", 0 });
-		f.transitions.push_back({ "Moving", "Moving", "Transition", 1 });
 
 		f.version = 1;
 
 		reg.add(std::move(f));
 	}
 
-	inline void RegisterMovementAxes(Engine::FSM::Core::FSMRegistry& reg)
+	void RegisterMovementAxes(Engine::FSM::Core::FSMRegistry& reg)
 	{
 		makeAxis_Movement(reg);
 		makeFSM_Movement(reg);

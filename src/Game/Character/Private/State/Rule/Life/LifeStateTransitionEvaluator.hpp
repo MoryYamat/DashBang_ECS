@@ -4,7 +4,7 @@
 
 #include "Game/Character/Private/State/Rule/Life/LifeStateTransitionRule.hpp"
 
-#include "Game/Character/Private/Stats/Component/CharacterStatsComponent.h"
+#include "Game/Character/Private/Stats/Public/StatsComponent.hpp"
 
 
 

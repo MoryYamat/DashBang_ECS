@@ -1,18 +1,18 @@
-// ƒLƒƒƒ‰ƒNƒ^[‚ÌŒÅ—L’l‚Ìƒf[ƒ^ŒQ
+ï»¿// ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®å›ºæœ‰å€¤ã®ãƒ‡ãƒ¼ã‚¿ç¾¤
 
 
 #pragma once
 
 namespace Game::Character::Stats
 {
-	struct CharacterStatsComponent
-	{
-		float maxHp = 100.0f;
-		float currentHP = 100.0f;
+	//struct CharacterStatsComponent
+	//{
+	//	float maxHp = 100.0f;
+	//	float currentHP = 100.0f;
 
 
-		float moveSpeed = 5.0f;// base move speed
-		float acceleration = 0.0f;
-	};
+	//	float moveSpeed = 5.0f;// base move speed
+	//	float acceleration = 0.0f;
+	//};
 }
 

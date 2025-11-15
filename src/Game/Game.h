@@ -87,7 +87,8 @@ namespace GameApp
 
 		// float mDeltaTime = 0.0f;
 
-		void updateGameLogics();
+		void updateGameLogics(float deltaTime);
+		// void updateGameLogics();
 		void updateGameLogics(Engine::WorldSystem::Core::WorldCtx& ctx);
 
 		void generateOutputs();
@@ -96,10 +97,12 @@ namespace GameApp
 		void Update(Engine::WorldSystem::Core::WorldCtx& ctx, float realDt);
 
 		void loadData();
+		void loadData(Engine::WorldSystem::Core::WorldCtx& ctx);
 	
 		void unloadData();
 
 		void spawnAllActors();
+		void spawnAllActors(Engine::WorldSystem::Core::WorldCtx& ctx);
 
 		void RunInitializationPhase();
 

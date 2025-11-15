@@ -28,6 +28,4 @@ namespace Engine::FSM::Core
 		static std::string_view AxisName();				//例: "Movement"
 		static std::string_view DefaultFSMName();		//例: "Basic"
 	};
-
-
 }

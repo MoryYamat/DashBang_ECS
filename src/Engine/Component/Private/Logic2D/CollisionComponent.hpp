@@ -8,11 +8,7 @@
 
 namespace Engine::Component
 {
-	struct CollisionComponent
-	{
-		Collider collider;
-		bool isStatic = true;
-	};
+
 
 	enum class ColliderType
 	{
@@ -106,5 +102,12 @@ namespace Engine::Component
 			return std::get<Obb2D>(shape);
 		}
 
+	};
+
+
+	struct CollisionComponent
+	{
+		Collider collider;
+		bool isStatic = true;
 	};
 }

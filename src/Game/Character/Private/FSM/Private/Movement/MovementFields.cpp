@@ -1,5 +1,4 @@
-﻿#include "Game/Character/Private/FSM/Private/Movement/Public/MovementFields.hpp"
-#include "Game/Character/Private/FSM/Private/Movement/Public/MovementFieldReader.hpp"
+﻿#include "Game/Character/Private/FSM/Public/MovementFieldReader.hpp"
 
 #include "Engine/FSM/Public/Core/Types.hpp"
 #include <unordered_map>

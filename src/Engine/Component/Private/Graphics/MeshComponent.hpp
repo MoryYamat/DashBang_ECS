@@ -2,8 +2,7 @@
 
 #include <GLM/glm.hpp>
 
-#include "Engine/Graphics/Model/ModelData.h"
-
+#include "Engine/Graphics/Private/Model/ModelData.h"
 #include <iostream>
 
 namespace Engine::Component

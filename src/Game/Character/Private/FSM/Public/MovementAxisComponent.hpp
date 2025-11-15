@@ -2,12 +2,22 @@
 
 #include "Engine/FSM/Public/Core/AxisComponent.hpp"
 
-#include "Game/Character/Private/FSM/Private/Movement/Public/MovementFieldReader.hpp"
+#include "Game/Character/Private/FSM/Public/MovementFieldReader.hpp"
+
+#include <cstdint>
 
 namespace Game::Character::FSM::Movement
 {
 	struct MovementTag{};
 	using MovementAxisComp = Engine::FSM::Core::AxisComponent<MovementTag, MovementFieldReader>;
+
+	struct MovementStateComp
+	{
+		std::uint32_t curState = 0;
+		std::uint32_t prevState = 0;
+
+		bool changedThisFrame = false;
+	};
 
 }
 

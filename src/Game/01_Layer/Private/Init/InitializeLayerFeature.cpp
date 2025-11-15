@@ -72,6 +72,9 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialzation(Engine::ECS::Enti
 #include "Game/Debug/Public/DebugApi.hpp"
 void Game::Layer::InitializeLayerFeature::DelayedInitialization(Engine::WorldSystem::Core::WorldCtx& ctx)
 {
+	// World Clock
+	Game::Feature::System::WorldClockFeature::Init(ctx);
+
 	if (!Game::FSM::InitAllFSMs_Game(ctx))
 	{
 		std::cout << "[fsms initialization failed]\n";

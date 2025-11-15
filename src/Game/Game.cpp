@@ -55,6 +55,7 @@
 #include "Game/Actor/MouseCursorActor.h"
 #include "Game/Actor/Map/TestBaseTerrainActor.h"
 #include "Game/Actor/TestObject.h"
+#include "Game/Actor/Private/TestActor.hpp"
 
 // Game/Actor/Map
 #include "Game/Actor/Map/TileMapActor.h"
@@ -204,31 +205,44 @@ bool GameApp::GameApp::Initialize()
 	Game::Layer::InitializeLayerFeature::DelayedInitialization(ctx);
 
 	loadData();
+	loadData(ctx);
 
 	return true;
 }
 
 void GameApp::GameApp::RunLoop()
 {
+
+
 	while (!glfwWindowShouldClose(mWindow->GetGLFWWindow()) && mIsRunning)
 	{
+		float currentFrame = static_cast<float>(glfwGetTime());
+		// mDeltaTime = currentFrame - mLastFrame;
+		float deltaTime = currentFrame - mLastFrame;
+		mLastFrame = currentFrame;
+		// std::cout << "[Game.cpp(DeltaTime)]: deltaTime: " << deltaTime << "\n";
+
 		Engine::WorldSystem::Core::WorldCtx ctx{ *world };
 
-		updateGameLogics();
+		updateGameLogics(deltaTime);
+		// updateGameLogics();
 		generateOutputs();
 		glfwPollEvents();
+
+		Update(ctx, deltaTime);
 	}
 
 	// Update();
 }
 
-void GameApp::GameApp::updateGameLogics()
+void GameApp::GameApp::updateGameLogics(float deltaTime)
 
 {	// Delta Time
-	float currentFrame = static_cast<float>(glfwGetTime());
-	// mDeltaTime = currentFrame - mLastFrame;
-	float deltaTime = currentFrame - mLastFrame;
-	mLastFrame = currentFrame;
+
+	//float currentFrame = static_cast<float>(glfwGetTime());
+	//// mDeltaTime = currentFrame - mLastFrame;
+	//float deltaTime = currentFrame - mLastFrame;
+	//mLastFrame = currentFrame;
 	// std::cout << "[Game.cpp(DeltaTime)]: deltaTime: " << deltaTime << "\n";
 
 	// debug用
@@ -317,6 +331,11 @@ void GameApp::GameApp::loadData()
 	std::cout << "[Game.cpp]: Data loading completed successfully." << std::endl;
 }
 
+void GameApp::GameApp::loadData(Engine::WorldSystem::Core::WorldCtx& ctx)
+{
+	GameApp::spawnAllActors(ctx);
+}
+
 void GameApp::GameApp::unloadData()
 {
 
@@ -347,23 +366,17 @@ void GameApp::GameApp::spawnAllActors()
 
 	// CameraActor camActor = CameraActor(mEcs);
 
+}
 
+
+void GameApp::GameApp::spawnAllActors(Engine::WorldSystem::Core::WorldCtx& ctx)
+{
+
+	Game::Actor::TestActor testActor = Game::Actor::TestActor(ctx);
 }
 
 void GameApp::GameApp::RunInitializationPhase()
 {
-	//for (Entity e : mEcs.view<TileMapComponent>())
-	//{
-	//	auto& tileMapComp = mEcs.get<TileMapComponent>(e);
-	//	GameInit::TileMapFromMesh::ApplyObstacleCollidersToTileMap(mEcs, tileMapComp);
-	//}
-
-	//for (Entity e : mEcs.view<FollowCameraComponent, CameraComponent, TransformComponent>())
-	//{
-	//	auto& followCamComp = mEcs.get<FollowCameraComponent>(e);
-	//	InitSystem<FollowCameraComponent>::Init(followCamComp, mEcs, e);
-	//}
-
 	Engine::ECS::Meta::Init::ApplyAllDeferredInitializations<
 		Engine::ECS::Component::Logic2D::TileMapComponent,
 		Engine::ECS::Component::Camera::FollowCameraComponent
@@ -383,7 +396,7 @@ void GameApp::GameApp::updateContext()
 // -- world --
 void GameApp::GameApp::updateGameLogics(Engine::WorldSystem::Core::WorldCtx& ctx)
 {
-
+	Game::Layer::StateLayerFeature::Update(ctx);
 }
 
 void GameApp::GameApp::generateOutputs(const Engine::WorldSystem::Core::WorldCtx& ctx)
@@ -398,7 +411,7 @@ void GameApp::GameApp::Update(Engine::WorldSystem::Core::WorldCtx& ctx, float re
 
 	while (Engine::Time::WorldClockSystem::PopFixedStep(ctx))
 	{
-		// updateGameLogic(ctx);
+		updateGameLogics(ctx);
 	}
 
 	generateOutputs(ctx);
