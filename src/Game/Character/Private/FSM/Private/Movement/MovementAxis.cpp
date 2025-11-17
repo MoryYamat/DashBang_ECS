@@ -19,7 +19,7 @@ namespace Game::Character::FSM::Movement
 	{
 		AxisDTO ax;
 		ax.axis = "Movement";
-		ax.stateU = { "Idle", "Moving" };
+		ax.stateU = {"A", "B", "C", "Idle", "Moving" };
 		ax.condU = { "canMove", "shouldStop", "AlwaysTrue" };
 		ax.slotU = { "Transition", "Stop" , "Hoge" };
 		ax.profileU = { "Default" };

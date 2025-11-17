@@ -1,6 +1,7 @@
-﻿#include "Game/Character/Private/FSM/Public/MovementFieldReader.hpp"
+﻿#include "Game/Character/Private/FSM/Public/MovementAxisComponent.hpp"
+#include "Engine/FSM/Public/FSMApi.hpp"
 
-#include "Engine/FSM/Public/Core/Types.hpp"
+// #include "Engine/FSM/Public/Core/Types.hpp"
 #include <unordered_map>
 #include <string>
 #include <string_view>

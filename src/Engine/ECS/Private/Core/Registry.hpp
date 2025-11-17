@@ -14,10 +14,14 @@ namespace Engine::ECS::Core
 {
 	class Registry
 	{
+	private:
 		std::uint32_t nextId_ = 1;
 		std::unordered_set<std::uint32_t> alive_;
 		std::unordered_map<std::type_index,
 			std::unordered_map<std::uint32_t, std::shared_ptr<void>>> pools_;
+
+		mutable std::unordered_map<std::type_index,
+			std::unordered_set<std::uint32_t>> warnedOnce_;
 
 	public:
 		// Entity
@@ -84,6 +88,38 @@ namespace Engine::ECS::Core
 			auto* p = TryGet<T>(e);
 			assert(p && "Get<T>: component missing");
 			return *p;
+		}
+
+		template<typename T>
+		[[nodiscard]] const T* TryGetWithWarnOnce(Entity e) const
+		{
+			const auto* p = TryGet<T>(e);
+			if (p) return p;
+
+			auto& warnedSet = warnedOnce_[typeid(T)];
+			if (!warnedSet.contains(e.id))
+			{
+				warnedSet.insert(e.id);
+				std::printf("[Warn] Entity %u missing component %s\n", e.id, typeid(T).name());
+			}
+
+			return nullptr;
+		}
+
+		template<typename T>
+		[[nodiscard]] T* TryGetWithWarnOnce(Entity e)
+		{
+			auto* p = TryGet<T>(e);
+			if (p) return p;
+
+			auto& warnedSet = warnedOnce_[typeid(T)];
+			if (!warnedSet.contains(e.id))
+			{
+				warnedSet.insert(e.id);
+				std::printf("[Warn] Entity %u missing component %s\n", e.id, typeid(T).name());
+			}
+
+			return nullptr;
 		}
 
 		template<typename T>

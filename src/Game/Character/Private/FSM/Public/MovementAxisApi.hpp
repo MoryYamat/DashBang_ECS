@@ -4,7 +4,7 @@
 #include "Engine/WorldSystem/Public/WorldFwd.hpp"
 
 //?
-#include "Game/Character/Private/FSM/Public/MovementAxisTypes.hpp"// 前方宣言ではだめか
+#include "Game/Character/Private/FSM/Public/MovementTypes.hpp"// 前方宣言ではだめか
 //?
 #include <string_view>
 
@@ -21,10 +21,17 @@ namespace Game::Character::FSM::Movement
 	void BuildMovementPipeline(Engine::WorldSystem::Core::WorldCtx& ctx, MovementPipeline& out);
 
 	void UpdateMovementAll(Engine::WorldSystem::Core::WorldCtx& ctx);
-	bool InitMovementTable(Engine::WorldSystem::Core::WorldCtx& ctx);
+
+	void ExecuteMovementOps(std::uint32_t mask, Engine::WorldSystem::Core::WorldCtx& ctx, const MovementPipelineEntry& ent, float dt);
+	void SetMovementVelComp(const MovementPipelineEntry& entry, Engine::WorldSystem::Core::WorldCtx& ctx);
+	void SetZeroVel(const MovementPipelineEntry& entry, Engine::WorldSystem::Core::WorldCtx& ctx);
 
 	bool InitMovementCondTable(Engine::WorldSystem::Core::WorldCtx& ctx, MovementCondTable& out);
-	bool InitMovementStateTable(Engine::WorldSystem::Core::WorldCtx& ctx, MovementStateTable& out)
+	bool InitMovementStateTable(Engine::WorldSystem::Core::WorldCtx& ctx, MovementStateTable& out);
+	bool InitMovementProfTable(Engine::WorldSystem::Core::WorldCtx& ctx, MovementProfileTable& out);
+	bool InitMovementLogicTable(Engine::WorldSystem::Core::WorldCtx& ctx, MovementLogicTable& out);
+	bool InitMovementTable(Engine::WorldSystem::Core::WorldCtx& ctx,
+		MovementCondTable& ctbl, MovementStateTable& stbl, MovementProfileTable& ptbl, MovementLogicTable& ltbl);
 }
 
 // 責務分離

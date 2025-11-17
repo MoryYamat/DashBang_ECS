@@ -1,24 +1,78 @@
 ﻿#pragma once
-
+#include "Engine/FSM/PUblic/FSMFwd.hpp"
 #include "Engine/FSM/Public/Core/AxisComponent.hpp"
-
-#include "Game/Character/Private/FSM/Public/MovementFieldReader.hpp"
 
 #include <cstdint>
 
 namespace Game::Character::FSM::Movement
 {
+	enum class Field : std::uint16_t
+	{
+		MovementInputMag = 0,
+		Count
+	};
+
+	constexpr std::uint16_t to_index(Field f)
+	{
+		return static_cast<std::uint16_t>(f);
+	}
+
+	// 逆引きやデバッグ用
+	constexpr std::string_view to_name(Field f)
+	{
+		switch (f)
+		{
+		case Field::MovementInputMag: return "movementInputMag";
+		default: return "";
+		}
+	}
+
+	struct MovementFieldReader : Engine::FSM::Core::IFieldReader {
+		float movementInputMag = 0.f;
+		float getF32(std::uint16_t fieldIndex) const override {
+			switch (static_cast<Field>(fieldIndex)) {
+			case Field::MovementInputMag: return movementInputMag;
+			default: return 0.f;
+			}
+		}
+	};
+
 	struct MovementTag{};
 	using MovementAxisComp = Engine::FSM::Core::AxisComponent<MovementTag, MovementFieldReader>;
 
 	struct MovementStateComp
 	{
-		std::uint32_t curState = 0;
-		std::uint32_t prevState = 0;
+		Engine::FSM::Core::StateID curState = Engine::FSM::Core::kInvalidState;		// 軸宇宙のID StateID.v
+		Engine::FSM::Core::StateID prevState = Engine::FSM::Core::kInvalidState;	// 軸宇宙のID StateID.v
+
+		Engine::FSM::Core::ProfileID curProf = Engine::FSM::Core::kInvalidProfile;	// 軸宇宙のID Profile.v
+		Engine::FSM::Core::ProfileID prevProf = Engine::FSM::Core::kInvalidProfile;
 
 		bool changedThisFrame = false;
-	};
 
+
+		void Transition(Engine::FSM::Core::StateID from, Engine::FSM::Core::StateID to)
+		{
+			curState = to;
+			prevState = from;
+			changedThisFrame = true;
+		}
+
+		void Transition(Engine::FSM::Core::StateID from, Engine::FSM::Core::StateID to,
+						Engine::FSM::Core::ProfileID pfrom, Engine::FSM::Core::ProfileID pto)
+		{
+			curState = to;
+			prevState = from;
+			curProf = pto;
+			prevProf = pfrom;
+			changedThisFrame = true;
+		}
+
+		void ResetChanged()
+		{
+			changedThisFrame = false;
+		}
+	};
 }
 
 namespace Engine::FSM::Core

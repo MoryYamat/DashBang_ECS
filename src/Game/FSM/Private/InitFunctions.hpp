@@ -7,7 +7,7 @@
 
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
-#include "Game/Character/Private/FSM/Public/MovementAxisTypes.hpp"
+#include "Game/Character/Private/FSM/Public/MovementTypes.hpp"
 #include "Game/Character/Private/FSM/Public/MovementAxisApi.hpp"
 
 #include <string_view>
@@ -32,17 +32,21 @@ namespace Game::FSM
 			};
 	}
 
-	inline bool InitGameCondTable(Engine::WorldSystem::Core::WorldCtx& ctx)
+	inline bool InitGameTable(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
 		using namespace Game::Character::FSM::Movement;
 
 		bool ok = true;
 
+		// TODO: API化
 		{
-			auto& tbl = ctx.ww.CreateResource<MovementCondTable>();
-			if (!InitMovementCondTable(ctx, tbl))
+			auto& cTbl = ctx.ww.CreateResource<MovementCondTable>();
+			auto& sTbl = ctx.ww.CreateResource<MovementStateTable>();
+			auto& pTbl = ctx.ww.CreateResource<MovementProfileTable>();
+			auto& lTbl = ctx.ww.CreateResource<MovementLogicTable>();
+			if (!InitMovementTable(ctx, cTbl, sTbl, pTbl, lTbl))
 			{
-				std::printf("[InitGameCondTable] Failed to init MovementCondTable\n");
+				std::printf("[InitGameCondTable] Failed to init MovementTable\n");
 				ok = false;
 			}
 		}

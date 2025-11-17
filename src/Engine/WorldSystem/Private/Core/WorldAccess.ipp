@@ -82,6 +82,18 @@ namespace Engine::WorldSystem::Core
 		return w.Registry().TryGet<T>(e);
 	}
 
+	template<typename T>
+	[[nodiscard]] T* WorldWrite::TryGetWithWarnOnce(Engine::ECS::Core::Entity e)
+	{
+		return w.Registry().TryGetWithWarnOnce<T>(e);
+	}
+
+	template<typename T>
+	[[nodiscard]] const T* WorldWrite::TryGetWithWarnOnce(Engine::ECS::Core::Entity e) const 
+	{
+		return w.Registry().TryGetWithWarnOnce<T>(e);
+	}
+
 	template<typename Fn>
 	void WorldWrite::ForEachAlive(Fn&& fn)
 	{

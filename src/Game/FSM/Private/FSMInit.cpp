@@ -26,7 +26,7 @@ namespace Game::FSM
 		if(!InitAllFSMs(ctx, registerFn, resolverProvider, BuildStrictness::Strict))
 			return false;
 
-		if (!InitGameCondTable(ctx))
+		if (!InitGameTable(ctx))
 			return false;
 
 

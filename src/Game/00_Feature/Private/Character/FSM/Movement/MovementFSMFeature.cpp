@@ -13,7 +13,7 @@
 
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
-// #include "Game/Character/Private/FSM/Public/MovementAxisTypes.hpp"
+// #include "Game/Character/Private/FSM/Public/MovementTypes.hpp"
 // #include "Game/Character/Private/FSM/Public/MovementAxisApi.hpp"
 
 void Game::Feature::Character::FSM::MovementFSMFeature::InitializeMovementFSMDefinition(Engine::ECS::EntityMgr& ecs)

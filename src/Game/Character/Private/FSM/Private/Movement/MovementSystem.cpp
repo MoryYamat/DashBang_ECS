@@ -1,8 +1,9 @@
-﻿#include "Game/Character/Private/FSM/Public/MovementAxisTypes.hpp"
+﻿#include "Game/Character/Private/FSM/Public/MovementTypes.hpp"
 #include "Game/Character/Private/FSM/Public/MovementAxisApi.hpp"
 
 #include "Engine/FSM/Public/Core/Types.hpp"
 #include "Engine/FSM/Public/Core/ID-NameHelper.hpp"
+#include "Engine/FSM/Public/Core/StateEvents.hpp"
 
 #include "Engine/Time/Private/WorldClock.hpp"
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
@@ -18,6 +19,8 @@
 
 namespace Game::Character::FSM::Movement
 {
+	using namespace Engine::FSM::Core;
+
 	void MovementEnvSystem::Update(std::span<MovementPipelineEntry> ents, const float dt)
 	{
 		// std::cout << "here\n";
@@ -35,7 +38,11 @@ namespace Game::Character::FSM::Movement
 			auto* moveIntentDir = ctx.rw.TryGet<Game::Character::Control::Movement::MovingIntentComponent>(entry.e);
 			glm::vec2 testDir;
 			static float testdt = 0.0f;
-			if (testdt < 10.0f)
+			if (testdt > 5.0f)
+			{
+				testDir = glm::vec2(0.0f);
+			}
+			else if (testdt < 10.0f)
 			{
 				testdt += dt;
 				testDir = glm::vec2(1.0f);
@@ -64,9 +71,14 @@ namespace Game::Character::FSM::Movement
 
 			if (inst.ApplyDecision(d))
 			{
-				entry.state->prevState = entry.state->curState;
-				entry.state->curState = inst.curState;
-				entry.state->changedThisFrame = d.changed;
+				const auto& fsm = *inst.fsm;
+				const Engine::FSM::Core::StateID s_gid = fsm.local2GlobalState[inst.curState];
+				const Engine::FSM::Core::ProfileID p_gid = fsm.local2GlobalProfile[inst.curProfile];
+				//entry.state->prevState = entry.state->curState;
+				//entry.state->curState = gid;
+				//entry.state->changedThisFrame = d.changed;
+
+				entry.state->Transition(entry.state->curState, s_gid, entry.state->curProf, p_gid);
 
 				Engine::FSM::Debug::PrintFSMInfo(entry.e, inst, d);
 			}
@@ -74,15 +86,66 @@ namespace Game::Character::FSM::Movement
 		}
 	}
 
+
+	void ExecuteMovementOps(std::uint32_t mask, Engine::WorldSystem::Core::WorldCtx& ctx,
+		const MovementPipelineEntry& ent, float dt)
+	{
+		// 
+		if (mask & OpBit(MovementOpKind::ApplyVelocityFromIntent))
+		{
+			// intent -> velocity
+			SetMovementVelComp(ent, ctx);
+		}
+		if (mask & OpBit(MovementOpKind::ZeroVelocity))
+		{
+			// TODO: velocity -> 0
+			SetZeroVel(ent, ctx);
+		}
+
+		// 将来その他のOpKind::についての処理を追加
+	}
+
 	void MovementLogicSystem::Update(std::span<MovementPipelineEntry> ents, const float dt)
 	{
+		auto* ltbl = ctx.rw.TryGetResource<MovementLogicTable>();
+
+		if (!ltbl) return;
+
 		for (auto& entry : ents)
 		{
+			auto* st = entry.state;
 			if (!entry.state) continue;
 
-			const auto cur = entry.state->curState;
+			StateEventView sev(entry.state->prevState, entry.state->curState, entry.state->changedThisFrame);
 
-			// switchではない方法で実装する
+			for (const auto& rule : ltbl->entries)
+			{
+				// state一致 & profile一致
+				if (rule.key.state != st->curState) continue;
+				if (rule.key.profile != st->curProf) continue;
+
+				// Trigger種別に応じてフィルタ
+				bool fire = false;
+				switch (rule.key.trigger)
+				{
+				case StateTriggerKind::WhileIn:
+					fire = sev.whileIn(rule.key.state);
+					break;
+				case StateTriggerKind::OnEnter:
+					fire = sev.onEnter(rule.key.state);
+					break;
+				case StateTriggerKind::OnExit:
+					fire = sev.onExit(rule.key.state);
+					break;
+				}
+
+				if (!fire) continue;
+
+				ExecuteMovementOps(rule.opMask, ctx, entry, dt);
+			}
+
+
+			entry.state->ResetChanged();
 		}
 	}
 
