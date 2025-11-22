@@ -1,4 +1,4 @@
-#include "DebugUtils.h"
+ï»¿#include "DebugUtils.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -7,12 +7,12 @@
 // Fixed Function Pipeline
 void Engine::Debug::Drawing::DrawCross(const glm::vec3& pos, float size, const glm::vec3& color)
 {
-	glUseProgram(0); // shader –³Œø‰»
-	glDisable(GL_DEPTH_TEST);// ƒeƒXƒg[“x
-	glLineWidth(2.0f);// ü‚Ì‘¾‚³
+	glUseProgram(0); // shader ç„¡åŠ¹åŒ–
+	glDisable(GL_DEPTH_TEST);// ãƒ†ã‚¹ãƒˆæ·±åº¦
+	glLineWidth(2.0f);// ç·šã®å¤ªã•
 
 	glBegin(GL_LINES);
-	glColor3f(color.r, color.g, color.b);// Ô
+	glColor3f(color.r, color.g, color.b);// èµ¤
 
 	// x line
 	glVertex3f(pos.x - size, pos.y, pos.z);
@@ -69,11 +69,11 @@ void Engine::Debug::Drawing::DrawFilledQuad(const glm::vec2& center, float size,
 	glDisable(GL_DEPTH_TEST);
 
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // ƒ¿ƒuƒŒƒ“ƒhİ’è
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Î±ãƒ–ãƒ¬ãƒ³ãƒ‰è¨­å®š
 
 	glColor4f(color.r, color.g, color.b, 0.3f);
 
-	// ’¸“_İ’è
+	// é ‚ç‚¹è¨­å®š
 	glBegin(GL_TRIANGLES);
 	glVertex3f(v0.x, v0.y, v0.z);
 	glVertex3f(v1.x, v1.y, v1.z);
@@ -99,7 +99,7 @@ void Engine::Debug::Drawing::DrawCircle2D(const glm::vec2& centerXZ, float radiu
 		float angle = (float)i / segments * 2.0f * glm::pi<float>();
 		float x = std::cos(angle) * radius;
 		float z = std::sin(angle) * radius;
-		points.push_back(glm::vec3(centerXZ.x + x, 0.01f, centerXZ.y + z)); // Y=0.01‚Å•‚‚©‚¹‚é
+		points.push_back(glm::vec3(centerXZ.x + x, 0.01f, centerXZ.y + z)); // Y=0.01ã§æµ®ã‹ã›ã‚‹
 	}
 
 	glUseProgram(0);
@@ -125,7 +125,7 @@ void Engine::Debug::Drawing::DrawFilledCircle2D(const glm::vec2& centerXZ, float
 	glDisable(GL_DEPTH_TEST);
 	glBegin(GL_TRIANGLE_FAN);
 	glColor4f(color.r, color.g, color.b, color.a);
-	glVertex3f(centerXZ.x, y, centerXZ.y); // ’†S
+	glVertex3f(centerXZ.x, y, centerXZ.y); // ä¸­å¿ƒ
 
 
 
@@ -167,7 +167,7 @@ void Engine::Debug::Drawing::DrawLine2D(const glm::vec2& a, const glm::vec2 b, c
 	// OpenGL Immediate Mode (for debug only)
 	glColor3f(color.r, color.g, color.b);
 	glBegin(GL_LINES);
-	glVertex3f(a.x, 0.1f, a.y); // Y=0.1f (’n–Ê‚©‚ç­‚µ•‚‚©‚¹‚Ä•`‰æ)
+	glVertex3f(a.x, 0.1f, a.y); // Y=0.1f (åœ°é¢ã‹ã‚‰å°‘ã—æµ®ã‹ã›ã¦æç”»)
 	glVertex3f(b.x, 0.1f, b.y);
 	glEnd();
 }
@@ -177,13 +177,13 @@ void Engine::Debug::Drawing::DrawSector2D(const glm::vec2 centerXZ, const glm::v
 	const int segments = 20;
 	const float halfAngle = angle / 2.0f;
 
-	// Šî€Šp“xidirection‚©‚çj
+	// åŸºæº–è§’åº¦ï¼ˆdirectionã‹ã‚‰ï¼‰
 	float baseAngle = std::atan2(direction.y, direction.x);
 
 	std::vector<glm::vec2> points;
-	points.push_back(centerXZ); // îŒ`‚Ì’†S
+	points.push_back(centerXZ); // æ‰‡å½¢ã®ä¸­å¿ƒ
 
-	// ‰~ŒÊ•”•ª‚Ì“_‚ğ¶¬
+	// å††å¼§éƒ¨åˆ†ã®ç‚¹ã‚’ç”Ÿæˆ
 	for (int i = 0; i <= segments; ++i)
 	{
 		float t = (float)i / (float)segments;
@@ -193,16 +193,16 @@ void Engine::Debug::Drawing::DrawSector2D(const glm::vec2 centerXZ, const glm::v
 		points.push_back(point);
 	}
 
-	// ü•`‰æF’†S‚©‚çî‚Ì‰‚Ö
+	// ç·šæç”»ï¼šä¸­å¿ƒã‹ã‚‰æ‰‡ã®ç¸ã¸
 	for (size_t i = 1; i < points.size(); ++i)
 	{
-		DrawLine2D(centerXZ, points[i], color); // ’†S¨‰‚Ìü
+		DrawLine2D(centerXZ, points[i], color); // ä¸­å¿ƒâ†’ç¸ã®ç·š
 	}
 
-	// ü•`‰æF‰~ŒÊ‚ğŒ‹‚Ô
+	// ç·šæç”»ï¼šå††å¼§ã‚’çµã¶
 	for (size_t i = 1; i < points.size() - 1; ++i)
 	{
-		DrawLine2D(points[i], points[i + 1], color); // ‰‚Ìü
+		DrawLine2D(points[i], points[i + 1], color); // ç¸ã®ç·š
 	}
 }
 
@@ -211,14 +211,14 @@ void Engine::Debug::Drawing::DrawFilledSector2D(const glm::vec2 centerXZ, const 
 	const int segments = 32;
 	const float halfAngle = angle / 2.0f;
 	const float baseAngle = std::atan2(direction.y, direction.x);
-	const float y = 0.05f; // ’n–Ê‚©‚ç­‚µ•‚‚©‚¹‚é
+	const float y = 0.05f; // åœ°é¢ã‹ã‚‰å°‘ã—æµ®ã‹ã›ã‚‹
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_DEPTH_TEST);
 	glBegin(GL_TRIANGLE_FAN);
 	glColor4f(color.r, color.g, color.b, color.a);
-	glVertex3f(centerXZ.x, y, centerXZ.y); // î‚Ì’†S
+	glVertex3f(centerXZ.x, y, centerXZ.y); // æ‰‡ã®ä¸­å¿ƒ
 
 	for (int i = 0; i <= segments; ++i)
 	{
@@ -231,20 +231,20 @@ void Engine::Debug::Drawing::DrawFilledSector2D(const glm::vec2 centerXZ, const 
 	glEnable(GL_DEPTH_TEST);
 }
 
-// Œ»İ–¢g—p
+// ç¾åœ¨æœªä½¿ç”¨
 void Engine::Debug::Drawing::DrawFilledSector2D(const glm::vec2 centerXZ, const float rotation, const float radius, const float angle, const glm::vec4& color)
 {
 	const int segments = 32;
 	const float halfAngle = angle / 2.0f;
 	const float baseAngle = rotation;
-	const float y = 0.05f; // ’n–Ê‚©‚ç­‚µ•‚‚©‚¹‚é
+	const float y = 0.05f; // åœ°é¢ã‹ã‚‰å°‘ã—æµ®ã‹ã›ã‚‹
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_DEPTH_TEST);
 	glBegin(GL_TRIANGLE_FAN);
 	glColor4f(color.r, color.g, color.b, color.a);
-	glVertex3f(centerXZ.x, y, centerXZ.y); // î‚Ì’†S
+	glVertex3f(centerXZ.x, y, centerXZ.y); // æ‰‡ã®ä¸­å¿ƒ
 
 	for (int i = 0; i <= segments; ++i)
 	{
@@ -279,11 +279,11 @@ void Engine::Debug::Drawing::DrawFilledRect2D(const glm::vec2 centerXZ, const gl
 	glDisable(GL_DEPTH_TEST);
 
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // ƒ¿ƒuƒŒƒ“ƒhİ’è
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Î±ãƒ–ãƒ¬ãƒ³ãƒ‰è¨­å®š
 
 	glColor4f(color.r, color.g, color.b, color.a);
 
-	// ’¸“_İ’è
+	// é ‚ç‚¹è¨­å®š
 	glBegin(GL_TRIANGLES);
 	glVertex3f(v0.x, v0.y, v0.z);
 	glVertex3f(v1.x, v1.y, v1.z);
@@ -323,11 +323,11 @@ void Engine::Debug::Drawing::DrawFilledRect2DOffeset(const glm::vec2 centerXZ, c
 	glDisable(GL_DEPTH_TEST);
 
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // ƒ¿ƒuƒŒƒ“ƒhİ’è
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Î±ãƒ–ãƒ¬ãƒ³ãƒ‰è¨­å®š
 
 	glColor4f(color.r, color.g, color.b, color.a);
 
-	// ’¸“_İ’è
+	// é ‚ç‚¹è¨­å®š
 	glBegin(GL_TRIANGLES);
 	glVertex3f(v0.x, v0.y, v0.z);
 	glVertex3f(v1.x, v1.y, v1.z);

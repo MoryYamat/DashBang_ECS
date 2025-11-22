@@ -17,16 +17,17 @@
 #include "Engine/Debug/Private/DebugUtils.h"
 
 #include "Engine/Graphics/Private/Renderer/RenderContext.h"
+#include "Engine/Graphics/Public/Types.hpp"
 
 // Game
-#include "Game/Collision/Private/TestCircleTileMapCollisionHighlight.h"
+ 
 #include "Game/Combat/Private/Skill/Component/Attack2DAreaComponent.h"
 
 #include "Game/Combat/Private/Skill/Utils/ShapeUtils.h"
 
-#include "Game/ECS/Private/Tags/CharacterAttribTags.h"
+#include "Game/ECS/Public/CharacterAttribTags.h"
 
-#include <glad/glad.h>
+//#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
@@ -36,7 +37,7 @@
 
 // デバッグ用（論理系）の描画する機能まとめてを提供
 void Engine::Debug::Drawing::Logic2D::Draw(Engine::ECS::EntityMgr& ecs,
-	const Engine::Graphics::Render::RenderContext& renderContext,
+	const Engine::Graphics::RenderContext& renderContext,
 	const Game::Collision::Data::CollisionResultStorage& collisionResult
 )
 {
@@ -61,7 +62,7 @@ void Engine::Debug::Drawing::Logic2D::Draw(Engine::ECS::EntityMgr& ecs,
 }
 
 // デバッグ用（論理座標）の点や矩形を描画する機能を提供
-void Engine::Debug::Drawing::Logic2D::DebugDrawLogicPlayerPositions(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext)
+void Engine::Debug::Drawing::Logic2D::DebugDrawLogicPlayerPositions(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::RenderContext& renderContext)
 {
 	//SetOpenGLMatrixState(renderContext);
 
@@ -93,7 +94,7 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawLogicPlayerPositions(Engine::ECS:
 }
 
 // デバッグ用、タイルマップを描画する機能を提供
-void Engine::Debug::Drawing::Logic2D::DebugDrawLogicTileMaps(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext)
+void Engine::Debug::Drawing::Logic2D::DebugDrawLogicTileMaps(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::RenderContext& renderContext)
 {
 	//SetOpenGLMatrixState(renderContext);
 
@@ -135,7 +136,7 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawLogicTileMaps(Engine::ECS::Entity
 }
 
 // uion使用時の条件分岐
-//void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerCollision(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext)
+//void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerCollision(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::RenderContext& renderContext)
 //{
 //	glm::vec3 color = glm::vec3(0.0f, 1.0f, 1.0f);
 //
@@ -155,7 +156,7 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawLogicTileMaps(Engine::ECS::Entity
 //}
 
 // variantの条件分岐
-void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerCollision(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext)
+void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerCollision(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::RenderContext& renderContext)
 {
 	glm::vec3 color = glm::vec3(0.0f, 1.0f, 1.0f);
 
@@ -181,7 +182,7 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerCollision(Engine::ECS::Enti
 }
 
 void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerAndTileMap(Engine::ECS::EntityMgr& ecs,
-	const Engine::Graphics::Render::RenderContext& renderContext,
+	const Engine::Graphics::RenderContext& renderContext,
 	const Game::Collision::Data::CollisionResultStorage& collisionResult)
 {
 	glm::vec3 color = glm::vec3(1.0f, 0.0f, 0.0f);
@@ -218,7 +219,7 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerAndTileMap(Engine::ECS::Ent
 }
 
 
-void Engine::Debug::Drawing::Logic2D::SetOpenGLMatrixState(const Engine::Graphics::Render::RenderContext& renderContext)
+void Engine::Debug::Drawing::Logic2D::SetOpenGLMatrixState(const Engine::Graphics::RenderContext& renderContext)
 {
 	// view/projection を事前にセット
 	// 固定機能パイプラインの古い機能
@@ -240,7 +241,7 @@ void Engine::Debug::Drawing::Logic2D::ResetOpenGLMatrixState()
 
 
 
-void  Engine::Debug::Drawing::Logic2D::RenderAttack2DAreas(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext)
+void  Engine::Debug::Drawing::Logic2D::RenderAttack2DAreas(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::RenderContext& renderContext)
 {
 	for (Engine::ECS::Entity e : ecs.view<Game::Combat::Skill::Component::Attack2DAreaComponent, Engine::ECS::Component::Logic2D::Transform2DComponent>())
 	{

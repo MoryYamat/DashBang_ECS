@@ -12,7 +12,7 @@ namespace Game::Actor::Map
 	class TestRockActor
 	{
 	public:
-		TestRockActor(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader* shader);
+		TestRockActor(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Shader* shader);
 
 	private:
 	};

@@ -1,6 +1,6 @@
 ﻿#include "Game/Actor/FollowCameraActor.h"
 
-#include "Engine/Window/WindowManager.h"
+ 
 
 #include "Engine/ECS/Entity.h"
 #include "Engine/ECS/Component/Tags/PlayerControllerComponent.h"
@@ -19,15 +19,15 @@
 
 Game::Actor::Camera::FollowCameraActor::FollowCameraActor(Engine::ECS::EntityMgr& ecs)
 {
-	Engine::ECS::Entity entity = ecs.createEntity();
+	//Engine::ECS::Entity entity = ecs.createEntity();
 
-	//CameraComponent camComp;
-	//FollowCameraComponent followCamComp;
-	//TransformComponent CamTransformComp;
+	////CameraComponent camComp;
+	////FollowCameraComponent followCamComp;
+	////TransformComponent CamTransformComp;
 
-	Engine::ECS::Ops::Add<Engine::ECS::Component::Camera::CameraComponent>(ecs, entity, Engine::ECS::Component::Camera::CameraComponent{});
-	Engine::ECS::Ops::Add<Engine::ECS::Component::Camera::FollowCameraComponent>(ecs, entity, Engine::ECS::Component::Camera::FollowCameraComponent{});
-	Engine::ECS::Ops::Add<Engine::ECS::Component::Common::TransformComponent>(ecs, entity, Engine::ECS::Component::Common::TransformComponent{});
+	//Engine::ECS::Ops::Add<Engine::ECS::Component::Camera::CameraComponent>(ecs, entity, Engine::ECS::Component::Camera::CameraComponent{});
+	//Engine::ECS::Ops::Add<Engine::ECS::Component::Camera::FollowCameraComponent>(ecs, entity, Engine::ECS::Component::Camera::FollowCameraComponent{});
+	//Engine::ECS::Ops::Add<Engine::ECS::Component::Common::TransformComponent>(ecs, entity, Engine::ECS::Component::Common::TransformComponent{});
 
 	//camComp.aspect = WindowManager::GetAspect();
 	// initialize camera vectors

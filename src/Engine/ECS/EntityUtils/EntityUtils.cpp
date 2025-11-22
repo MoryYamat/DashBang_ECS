@@ -1,12 +1,31 @@
 ﻿#include "EntityUtils.h"
 
 #include "Engine/ECS/Component/Utils/NameComponent.h"
-
 #include "Engine/ECS/Component/Tags/PendingDestroyComponent.h"
-
 #include "Engine/ECS/Ops/CoreOps.hpp"
 
+#include "Engine/Component/Private/Utils/NameComponent.hpp"
+#include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
+
 #include <iostream>
+
+
+namespace Engine::ECS::EntityUtils
+{
+	Engine::ECS::Core::Entity getEntityByName(Engine::WorldSystem::Core::WorldCtx& ctx, const std::string& name)
+	{
+		auto ents = Engine::WorldSystem::Query::ViewWhere(ctx.rw, Engine::WorldSystem::Query::All<Engine::Component::NameComponent>{});
+
+		for (auto e : ents)
+		{
+			const auto& nameComp = *ctx.rw.TryGet<Engine::Component::NameComponent>(e);
+			if (nameComp.name == name)
+			{
+				return e;
+			}
+		}
+	}
+}
 
 Engine::ECS::Entity Engine::ECS::EntityUtils::getEntityByName(EntityMgr& ecs, const std::string& name)
 {

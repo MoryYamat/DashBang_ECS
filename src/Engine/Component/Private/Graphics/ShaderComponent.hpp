@@ -1,11 +1,11 @@
 ﻿#pragma once
 
-#include "Engine/Graphics/Private/Renderer/Shader.h"
+#include "Engine/Graphics/Public/GraphicsFwd.hpp"
 
 namespace Engine::Component
 {
 	struct ShaderComponent
 	{
-		Engine::Graphics::Render::Shader* shader;
+		Engine::Graphics::Shader* shader;
 	};
 }

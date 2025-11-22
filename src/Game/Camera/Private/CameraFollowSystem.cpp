@@ -1,16 +1,80 @@
-﻿#include "CameraFollowSystem.h"
+﻿#include "Game/Camera/Public/CameraApi.hpp"
+
+#include "CameraFollowSystem.h"
 
 #include "Engine/ECS/Component/Camera/CameraComponent.h"
 
-
-
+//
+#include "Engine/ECS/Public/Entity.hpp"
+#include "Engine/Component/Private/Common/TransformComponent.hpp"
+#include "Engine/Component/Private/Camera/FollowCameraComponent.hpp"
+#include "Engine/Component/Private/Camera/CameraComponent.hpp"
+#include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
+//
 #include "Engine/Debug/Private/DebugUtils.h"
 
 #include <glm/gtx/rotate_vector.hpp>
 
 #include <iostream>
 
-// 使用中
+namespace Game::Camera
+{
+	static void setCameraVecs(
+		Engine::Component::CameraComponent& camComp
+		, Engine::Component::TransformComponent& camTransform
+		, const Engine::Component::TransformComponent& targetTransformComp
+	)
+	{
+		// この計算式
+		// frontOffset
+		// TODO: 最適化
+		camComp.front = glm::normalize(targetTransformComp.position - camTransform.position + camComp.frontOffset);
+		camComp.right = glm::normalize(glm::cross(camComp.front, camComp.up));
+	}
+
+	using namespace Engine::Component;
+	void Update(Engine::WorldSystem::Core::WorldCtx& ctx)
+	{
+		auto ents = Engine::WorldSystem::Query::ViewWhere(ctx.rw, Engine::WorldSystem::Query::All<CameraComponent,
+			FollowCameraComponent, TransformComponent>{});
+
+		for (const auto& e : ents)
+		{
+			auto& cam = ctx.ww.Get<CameraComponent>(e);
+			auto& follow = ctx.ww.Get<FollowCameraComponent>(e);
+			auto& trans = ctx.ww.Get<TransformComponent>(e);
+
+			if (!ctx.rw.Has<TransformComponent>(follow.targetEntity)) return;
+			const auto& target = ctx.ww.Get<TransformComponent>(follow.targetEntity);
+
+			trans.position = target.position + follow.offset;
+
+			setCameraVecs(cam, trans, target);
+
+			return;
+		}
+
+		//ctx.ww.ForEachAlive([&](Engine::ECS::Core::Entity e) {
+
+		//	auto* cam = ctx.ww.TryGet<CameraComponent>(e);
+		//	auto* follow = ctx.ww.TryGet<FollowCameraComponent>(e);
+		//	auto* trans = ctx.ww.TryGet<TransformComponent>(e);
+		//	if (!cam || !follow || !trans) return;
+
+		//	if (!ctx.rw.Has<TransformComponent>(follow->targetEntity)) return;
+
+		//	const auto& target = ctx.ww.Get<TransformComponent>(follow->targetEntity);
+
+		//	trans->position = target.position + follow->offset;
+
+		//	setCameraVecs(*cam, *trans, target);
+
+		//	return;
+		//});
+	}
+}
+
+//廃止予定
 void Game::Camera::Update(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
 	namespace Comp = Engine::ECS::Component;

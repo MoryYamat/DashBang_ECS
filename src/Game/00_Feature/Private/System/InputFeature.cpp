@@ -3,7 +3,11 @@
 #include "Game/Input/Private/SetMapping/SetInputMap.h"
 #include "Game/Input/Private/SetMapping/SetSkillInputMap.h"
 
+#include "Engine/InputManager/Public/Types.hpp"
+#include "Engine/Graphics/Public/Types.hpp"
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
+
+#include "Game/Input/Public/InputApi.hpp"
 
 void Game::Feature::Setting::InputFeature::InitInputMapping(Engine::ECS::EntityMgr& ecs)
 {
@@ -15,15 +19,22 @@ void Game::Feature::Setting::InputFeature::InitSkillInputMapping(Engine::ECS::En
 	Game::Input::Setting::InitSkillInputMap(ecs);
 }
 
-namespace Game::Feature::Setting
+namespace Game::Feature::Input
 {
 	void InputFeature::InitInputMapping(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
-		
+		Game::Input::SetInputMapping(ctx);
 	}
 
-	void InputFeature::InitSkillInputMapping(Engine::WorldSystem::Core::WorldCtx& ctx)
+	void InputFeature::InputRoutingSystem(Engine::WorldSystem::Core::WorldCtx& ctx, const Engine::Input::RawInputState& raw)
 	{
+		Game::Input::InputRouterSystem(ctx, raw);
+	}
 
+
+	void InputFeature::AnalogInputRoutingSystem(Engine::WorldSystem::Core::WorldCtx& ctx,
+		const Engine::Input::RawInputState& rawInput, const Engine::Graphics::RenderContext& renderContext)
+	{
+		Game::Input::RouteAnalogInput(ctx, rawInput, renderContext);
 	}
 }

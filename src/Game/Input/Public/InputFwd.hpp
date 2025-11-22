@@ -13,4 +13,5 @@ namespace Game::Input
 	struct InputActionComponent;
 	class InputMapping;
 	struct InputState;
+
 }

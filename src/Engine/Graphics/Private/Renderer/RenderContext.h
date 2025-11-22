@@ -2,7 +2,7 @@
 
 #pragma once
 
-// #include "Engine/Window/Private/Window.h"
+// #include "Engine/Window/Public/Window.h"
 
 #include <GLM/glm.hpp>
 
@@ -19,6 +19,7 @@ namespace Engine::Graphics::Render
 		glm::mat4 projectionMatrix = glm::mat4(1.0f);// 投影行列
 		glm::vec4 viewport = glm::vec4(1.0f);// viewport
 	};
+
 }
 
 

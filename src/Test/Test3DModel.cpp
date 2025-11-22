@@ -13,12 +13,13 @@
 
 #include "Engine/Graphics/Private/Renderer/Shader.h"
 #include "Engine/Graphics/Private/Renderer/GPUBufferUtils.h"
+#include "Engine/Graphics/Public/Types.hpp"
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 
 #include <iostream>
 
-Test::Actor::Test3DModel::Test3DModel(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader* shader)
+Test::Actor::Test3DModel::Test3DModel(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Shader* shader)
 {
 	namespace Ops = Engine::ECS::Ops;
 	namespace Comp = Engine::ECS::Component;

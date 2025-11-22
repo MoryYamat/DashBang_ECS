@@ -31,39 +31,41 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialzation(Engine::ECS::Enti
 {
 	// --------------------- 初期化順に注意 --------------------- 
 	
-	Game::Feature::System::WorldClockFeature::Init(ecs);
+	// ctx 終わった
+	//Game::Feature::System::WorldClockFeature::Init(ecs);
 
+	// ctx 終わった
 	// InputAction(抽象入力)の割り当て初期化
-	Game::Feature::Setting::InputFeature::InitInputMapping(ecs);
+	// Game::Feature::Setting::InputFeature::InitInputMapping(ecs);
 
 	// スキルスロット(Game::Combat::Skill::Data::SkillSlot)とInputAction(抽象入力)の割り当て初期化
-	Game::Feature::Setting::InputFeature::InitSkillInputMapping(ecs);
+	// Game::Feature::Setting::InputFeature::InitSkillInputMapping(ecs);
 
 	// スキルデータベース/定義初期化
-	Game::Feature::Combat::SkillFeature::InitializeSkillDatabase(ecs);
+	// Game::Feature::Combat::SkillFeature::InitializeSkillDatabase(ecs);
 
-	Game::Feature::Character::FSM::CCFSMFeature::InitCCFSMDefinitionDatabase(ecs);
+	// Game::Feature::Character::FSM::CCFSMFeature::InitCCFSMDefinitionDatabase(ecs);
 
 	// HitEvent
-	Game::Feature::Combat::HitEventFeature::InitializeHitEventDatabase(ecs);
+	// Game::Feature::Combat::HitEventFeature::InitializeHitEventDatabase(ecs);
 
 	// Collision Result Buffer
-	Game::Feature::CollisionFeature::InitCollisionBuffer(ecs);
+	// Game::Feature::CollisionFeature::InitCollisionBuffer(ecs);
 
 	// CharacterStateTransitionデータベース初期化
-	Game::Feature::Character::StateFeature::InitTransitionDatabase(ecs);
+	// Game::Feature::Character::StateFeature::InitTransitionDatabase(ecs);
 
 	// MovementFSMの定義を初期化
-	Game::Feature::Character::FSM::MovementFSMFeature::InitializeMovementFSMDefinition(ecs);
+	// Game::Feature::Character::FSM::MovementFSMFeature::InitializeMovementFSMDefinition(ecs);
 
 
 	// AntichainPolicy初期化
-	Game::Feature::Character::CharacterCCFeature::InitCCAntiChainPolicy(ecs);
+	// Game::Feature::Character::CharacterCCFeature::InitCCAntiChainPolicy(ecs);
 
 	// animation
-	Game::Feature::Character::Animation::CharacterAnimationFeature::InitProfileDatabase(ecs);// locomotion
-	Game::Feature::Character::Animation::CharacterAnimationFeature::InitSkillProfileDatabase(ecs);// skill
-	Game::Feature::Character::Animation::CharacterAnimationFeature::InitCCProfileDatabase(ecs);// cc
+	// Game::Feature::Character::Animation::CharacterAnimationFeature::InitProfileDatabase(ecs);// locomotion
+	// Game::Feature::Character::Animation::CharacterAnimationFeature::InitSkillProfileDatabase(ecs);// skill
+	// Game::Feature::Character::Animation::CharacterAnimationFeature::InitCCProfileDatabase(ecs);// cc
 
 }
 
@@ -75,10 +77,15 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialization(Engine::WorldSys
 	// World Clock
 	Game::Feature::System::WorldClockFeature::Init(ctx);
 
+	// Input
+	Game::Feature::Input::InputFeature::InitInputMapping(ctx);
+
 	if (!Game::FSM::InitAllFSMs_Game(ctx))
 	{
 		std::cout << "[fsms initialization failed]\n";
 	}
+
+	Game::Feature::Character::Animation::CharacterAnimationFeature::InitProfileDatabase(ctx);
 
 	Game::FSM::Debug::SmokeTest_Movement(ctx);
 }

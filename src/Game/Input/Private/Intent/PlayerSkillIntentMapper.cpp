@@ -7,7 +7,7 @@
 #include "Game/Combat/Private/Skill/Component/SkillInputBindingComponent.h"
 #include "Game/Combat/Private/Skill/Intent/Component/SkillIntentComponent.h"
 
-#include "Game/ECS/Private/Tags/CharacterAttribTags.h"
+#include "Game/ECS/Public/CharacterAttribTags.h"
 
 #include "Game/Character/Private/Control/Skill/Intent/SkillIntentComponent.hpp"
 

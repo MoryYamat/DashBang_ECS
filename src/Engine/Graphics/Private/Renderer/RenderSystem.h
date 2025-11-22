@@ -22,7 +22,7 @@ namespace Engine::Graphics::Render
 	void RenderSystem(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader& shader, float aspect, RenderContext& context);
 
 	// 現在未使用
-	// void UpdateRenderContext(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::RenderContext& context);
+	// void UpdateRenderContext(Engine::ECS::EntityMgr& ecs, Engine::Graphics::RenderContext& context);
 
 	void drawMesh(const Engine::ECS::Component::Graphics::MeshComponent& meshComp);
 

@@ -4,7 +4,7 @@
 
 #include "Engine/Component/Private/Logic2D/Velocity2DComponent.hpp"
 #include "Game/Character/Private/Stats/Public/StatsComponent.hpp"
-#include "Game/Character/Private/Control/Movement/Component/IntentComponent.hpp"
+#include "Game/Character/Private/Control/Public/IntentComponent.hpp"
 
 #include <iostream>
 #include <glm/glm.hpp>
@@ -20,7 +20,7 @@ namespace Game::Character::FSM::Movement
 		auto& vel = *entry.vel;
 
 		glm::vec2 dir{ 0.0f };
-		if (const auto* intent = ctx.ww.TryGetWithWarnOnce<Game::Character::Control::Movement::MovingIntentComponent>(entry.e))
+		if (const auto* intent = ctx.ww.TryGetWithWarnOnce<Game::Character::Control::MovingIntentComponent>(entry.e))
 		{
 			dir = intent->direction;
 		}
@@ -31,6 +31,7 @@ namespace Game::Character::FSM::Movement
 			speed = stats->moveSpeed;
 		}
 
+		// std::cout << "[speed] " << speed << "\n";
 		vel.velocity = dir * speed;
 	}
 

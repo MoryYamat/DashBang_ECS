@@ -14,7 +14,7 @@ namespace Game::Actor
 	class TestObject
 	{
 	public:
-		TestObject(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader* shader);
+		TestObject(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Shader* shader);
 
 	private:
 

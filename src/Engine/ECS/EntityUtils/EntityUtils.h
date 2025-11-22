@@ -5,6 +5,9 @@
 #include "Engine/ECS/Entity.h"
 #include "Engine/ECS/EntityManager.h"
 
+#include "Engine/WorldSystem/Public/WorldFwd.hpp"
+#include "Engine/ECS/Public/Entity.hpp"
+
 #include <cstdint>
 #include <string>
 
@@ -21,6 +24,8 @@ namespace Engine::ECS
 
 		// スキルインスタンスが子を持たない場合／オブジェクト単体を削除予約にマークする
 		void MarkForPendingDestroy(Engine::ECS::EntityMgr& ecs, Engine::ECS::Entity entity, int delayFrames = 0, bool fadeOut = false);
+
+		Engine::ECS::Core::Entity getEntityByName(Engine::WorldSystem::Core::WorldCtx& ctx, const std::string& name);
 	}
 }
 

@@ -10,7 +10,7 @@
 
 #include "Engine/FSM/Private/AllFSMSystem.hpp"
 
-#include "Game/Character/Private/Control/Movement/Component/IntentComponent.hpp"
+#include "Game/Character/Private/Control/Public/IntentComponent.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
@@ -35,25 +35,28 @@ namespace Game::Character::FSM::Movement
 			// 最初は requiredBits や candidateSlots を活かす実装でなくてもよい
 			// TODO: 上を活かす実装
 
-			auto* moveIntentDir = ctx.rw.TryGet<Game::Character::Control::Movement::MovingIntentComponent>(entry.e);
-			glm::vec2 testDir;
-			static float testdt = 0.0f;
-			if (testdt > 5.0f)
-			{
-				testDir = glm::vec2(0.0f);
-			}
-			else if (testdt < 10.0f)
-			{
-				testdt += dt;
-				testDir = glm::vec2(1.0f);
-			}
-			else
-			{
-				testDir = glm::vec2(0.0f);
-			}
+			//auto* moveIntentDir = ctx.rw.TryGet<Game::Character::Control::MovingIntentComponent>(entry.e);
+			//glm::vec2 testDir;
+			//static float testdt = 0.0f;
+			//if (testdt > 5.0f)
+			//{
+			//	testDir = glm::vec2(0.0f);
+			//}
+			//else if (testdt < 10.0f)
+			//{
+			//	testdt += dt;
+			//	testDir = glm::vec2(1.0f);
+			//}
+			//else
+			//{
+			//	testDir = glm::vec2(0.0f);
+			//}
 
-			// reader.movementInputMag = moveIntentDir ? glm::length2(moveIntentDir->direction) : 0.0f;
-			reader.movementInputMag = moveIntentDir ? glm::length2(testDir) : 0.0f;
+			auto* moveIntent = ctx.ww.TryGetWithWarnOnce<Game::Character::Control::MovingIntentComponent>(entry.e);
+			if (!moveIntent) continue;
+			reader.movementInputMag = moveIntent ? glm::length2(moveIntent->direction) : 0.0f;
+
+			// reader.movementInputMag = moveIntentDir ? glm::length2(testDir) : 0.0f;
 		}
 	}
 
@@ -114,31 +117,21 @@ namespace Game::Character::FSM::Movement
 		for (auto& entry : ents)
 		{
 			auto* st = entry.state;
-			if (!entry.state) continue;
+			if (!st) continue;
 
-			StateEventView sev(entry.state->prevState, entry.state->curState, entry.state->changedThisFrame);
+			StateEventView sev(
+				st->prevState, 
+				st->curState, 
+				st->prevProf,
+				st->curProf,
+				st->changedThisFrame
+			);
 
 			for (const auto& rule : ltbl->entries)
 			{
-				// state一致 & profile一致
-				if (rule.key.state != st->curState) continue;
-				if (rule.key.profile != st->curProf) continue;
-
 				// Trigger種別に応じてフィルタ
-				bool fire = false;
-				switch (rule.key.trigger)
-				{
-				case StateTriggerKind::WhileIn:
-					fire = sev.whileIn(rule.key.state);
-					break;
-				case StateTriggerKind::OnEnter:
-					fire = sev.onEnter(rule.key.state);
-					break;
-				case StateTriggerKind::OnExit:
-					fire = sev.onExit(rule.key.state);
-					break;
-				}
-
+				const auto& k = rule.key;
+				bool fire = sev.match(k.state, k.profile, k.trigger);
 				if (!fire) continue;
 
 				ExecuteMovementOps(rule.opMask, ctx, entry, dt);

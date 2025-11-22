@@ -8,7 +8,7 @@
 //#include "Game/Combat/Private/Skill/Component/SkillInstanceComponent.h"
 //#include "Game/Combat/Private/Skill/Intent/Component/SkillIntentComponent.h"
 //
-//#include "Game/ECS/Private/Tags/CharacterAttribTags.h"
+//#include "Game/ECS/Public/CharacterAttribTags.h"
 //
 //#include "Game/Combat/Private/Skill/Component/SkillSlotAssignmentComponent.h"
 //

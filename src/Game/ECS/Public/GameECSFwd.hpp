@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <cstdint>
+
 namespace Game::ECS::Component
 {
 	enum class Team : uint8_t;

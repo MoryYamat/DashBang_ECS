@@ -1,25 +1,39 @@
-﻿#include "AnalogInputRoutingSystem.h"
+﻿#include "Game/Input/Public/InputApi.hpp"
 
-#include "Engine/ECS/Component/Input/AnalogInputComponent.h"
 
-#include "Game/Utils/Private/SpatialTransformUtils.h"
 
-#include "Engine/InputManager/Private/RawInputState.h"
+#include "Engine/InputManager/Public/Types.hpp"
 
 
 #include "Engine/Debug/Private/DebugUtils.h"
 
-void Game::Input::Analog::RouteAnalogInput(Engine::ECS::EntityMgr& ecs, const Engine::Input::RawInputState& rawInput, const Engine::Graphics::Render::RenderContext& renderContext)
+
+#include "Engine/ECS/Public/Entity.hpp"
+#include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
+#include "Engine/Component/Private/Input/AnalogInputComponent.hpp"
+#include "Engine/Graphics/Public/Types.hpp"
+
+#include "Game/Utils/Public/GameUtilsApi.hpp"
+
+#include "Game/Utils/Private/SpatialTransformUtils.h"// 削除予定
+
+
+#include <cassert>
+
+namespace Game::Input
 {
-	for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Input::AnalogInputComponent>())
+	void RouteAnalogInput(Engine::WorldSystem::Core::WorldCtx& ctx,
+		const Engine::Input::RawInputState& rawInput, const Engine::Graphics::RenderContext& renderContext)
 	{
-		auto& analog = ecs.get<Engine::ECS::Component::Input::AnalogInputComponent>(e);
+		auto ents = Engine::WorldSystem::Query::ViewWhere(ctx.rw, Engine::WorldSystem::Query::All<Engine::Component::AnalogInputComponent>{});
 
-		// マウスのスクリーン座標からXZ平面への投影位置の計算
-		analog.cursorLogicPositionXZ = Game::Utils::ProjectScreenToLogicXZPlane(rawInput.mousePosition, renderContext);
-		analog.cursorDelta = rawInput.mouseDelta;
-		analog.scrollDelta = rawInput.scrollDelta;
+		for(const auto& e : ents)
+		{
+			auto& analog = ctx.ww.Get<Engine::Component::AnalogInputComponent>(e);
 
-		// Engine::Debug::Logging::LogVector("AnalogInputRoutingSystem.cpp(Route)", analog.cursorLogicPositionXZ);
+			analog.cursorLogicPositionXZ = Game::Utils::ProjectScreenToLogicXZPlane(rawInput.mousePosition, renderContext);
+			analog.cursorDelta = rawInput.mouseDelta;
+			analog.scrollDelta = rawInput.scrollDelta;
+		};
 	}
 }

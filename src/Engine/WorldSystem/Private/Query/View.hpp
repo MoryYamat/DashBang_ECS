@@ -20,17 +20,4 @@ namespace Engine::WorldSystem::Query
 
 		return out;
 	}
-
-
-	//template<typename... Cs>
-	//std::vector<Core::Entity> ViewAll(const Core::WorldRead& rw)
-	//{
-	//	std::vector<Core::Entity> out;
-	//	rw.ForEachAlive([&](Core::Entity e)
-	//		{
-	//			if ((rw.TryGet<Cs>(e) != nullptr && ...)) out.push_back(e);
-	//		});
-
-	//	return out;
-	//}
 }

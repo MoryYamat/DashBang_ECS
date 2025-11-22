@@ -14,6 +14,6 @@ namespace Game::Actor::Map
 	class TestBaseTerrainActor
 	{
 	public:
-		TestBaseTerrainActor(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader* shader);
+		TestBaseTerrainActor(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Shader* shader);
 	};
 }

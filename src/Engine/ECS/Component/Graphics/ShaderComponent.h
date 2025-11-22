@@ -7,7 +7,7 @@ namespace Engine::ECS::Component::Graphics
 {
 	struct ShaderComponent
 	{
-		Engine::Graphics::Render::Shader* shader;
+		Engine::Graphics::Shader* shader;
 	};
 }
 

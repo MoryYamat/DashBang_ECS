@@ -1,9 +1,6 @@
 ﻿// Game Loop
 #pragma once
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 // ======================= Common =======================
 
 
@@ -15,11 +12,13 @@
 // Graphics
 #include "Engine/Graphics/Private/Renderer/Shader.h"
 #include "Engine/Graphics/Private/Renderer/RenderContext.h"
-
-#include "Engine/Window/Private/Window.h"
+#include "Engine/Graphics/Public/Types.hpp"
 
 // Input
-#include "Engine/InputManager/Private/InputManager.h"
+#include "Engine/InputManager/Public/InputFwd.hpp"
+
+// window
+#include "Engine/Window/Public/WindowFwd.hpp"
 
 #include "Game/Collision/Private/Data/CollisionResultStorage.h"
 
@@ -51,23 +50,24 @@ namespace GameApp
 	// できるだけ前方宣言を使用できる構造にする必要がある(構造破綻を防止するため)
 	private:
 
-		std::unique_ptr<Engine::WorldSystem::Core::World> world;
-
-		std::unique_ptr<Engine::Window::Window> mWindow;
-		std::unique_ptr<Engine::Input::InputManager> mInput;
-		std::unique_ptr<Engine::Graphics::Render::Shader> mShader;
-		Engine::ECS::EntityMgr mECS;
-		Engine::Graphics::Render::RenderContext mRenderCtx;
+		std::unique_ptr<Engine::WorldSystem::Core::World> world_;
+		std::unique_ptr<Engine::Window::Window> window_;
+		std::unique_ptr<Engine::Input::InputManager> input_;
+		// std::unique_ptr<Engine::Graphics::Render::Shader> mShader;	// 削除予定
+		std::unique_ptr<Engine::Graphics::Shader> shader_;
+		// Engine::ECS::EntityMgr mECS;
+		// Engine::Graphics::Render::RenderContext mRenderCtx;			// 削除予定
+		Engine::Graphics::RenderContext renderCtx_;
 
 		// 参照の束 (所有しない)
-		Game::Common::AppContext mCtx;
+		// Game::Common::AppContext mCtx;
 
-		float mLastFrame = 0.0f;
+		float lastFrame_ = 0.0f;
 
 		// loop flag => 上手に使う方法
-		bool mIsRunning;
+		bool isRunning_;
 
-		int windowWidth, windowHeight;
+		int windowWidth_, windowHeight_;
 
 		// 
 		//// ecs
@@ -81,7 +81,7 @@ namespace GameApp
 
 		//Engine::Input::InputManager* mInputManager;
 
-		Game::Collision::Data::CollisionResultStorage mCollisionResults;
+		// Game::Collision::Data::CollisionResultStorage mCollisionResults;
 
 
 
@@ -92,7 +92,7 @@ namespace GameApp
 		void updateGameLogics(Engine::WorldSystem::Core::WorldCtx& ctx);
 
 		void generateOutputs();
-		void generateOutputs(const Engine::WorldSystem::Core::WorldCtx& ctx);
+		void generateOutputs(Engine::WorldSystem::Core::WorldCtx& ctx);
 
 		void Update(Engine::WorldSystem::Core::WorldCtx& ctx, float realDt);
 
@@ -105,6 +105,7 @@ namespace GameApp
 		void spawnAllActors(Engine::WorldSystem::Core::WorldCtx& ctx);
 
 		void RunInitializationPhase();
+		void RunInitializationPhase(Engine::WorldSystem::Core::WorldCtx& ctx);
 
 		void updateContext();
 

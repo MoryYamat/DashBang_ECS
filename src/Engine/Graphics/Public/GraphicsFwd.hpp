@@ -1,6 +1,12 @@
 ﻿#pragma once
 
+namespace Engine::Graphics
+{
+	class Shader;
+	struct RenderContext;
+}
 
+// 以下廃止予定
 namespace Engine::Graphics
 {
 	namespace Animation
@@ -23,12 +29,6 @@ namespace Engine::Graphics
 		struct ModelData;
 		struct MeshGPU;
 		struct ModelGPU;
-	}
-
-	namespace Render
-	{
-		struct RenderContext;
-		class Shader;
 	}
 }
 	

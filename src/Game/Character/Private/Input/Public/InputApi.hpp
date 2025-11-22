@@ -13,7 +13,7 @@ namespace Game::Character::Input
 
 	// TODO: routing // -> global resource 化?
 	void AnalogInputRouting(Engine::WorldSystem::Core::WorldCtx& ctx,
-		const Engine::Input::RawInputState& rawInput, const Engine::Graphics::Render::RenderContext& renderContext);
+		const Engine::Input::RawInputState& rawInput, const Engine::Graphics::RenderContext& renderContext);
 
 	void KeyInputRouting(Engine::WorldSystem::Core::WorldCtx& ctx,
 		const Engine::Input::RawInputState& rawInput);

@@ -9,6 +9,7 @@
 #include "Engine/ECS/Component/Camera/FollowCameraComponent.h"
 
 
+// 廃止: 削除予定
 // Camera Following System
 namespace Game::Camera
 {

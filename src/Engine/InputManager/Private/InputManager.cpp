@@ -1,8 +1,15 @@
-﻿#include "InputManager.h"
+﻿#include "Engine/InputManager/Public/Types.hpp"
+
+#include "Engine/Debug/Private/DebugUtils.h"
 
 #include <iostream>
 
-#include "Engine/Debug/Private/DebugUtils.h"
+ #include <glad/glad.h>
+#include <GLM/glm.hpp>
+#include <GLFW/glfw3.h>
+
+
+
 
 Engine::Input::InputManager::InputManager(GLFWwindow* window)
 	: mWindow(window)

@@ -1,5 +1,8 @@
 ﻿#include "Game.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 // std system
 #include <iostream>
 
@@ -19,11 +22,19 @@
 #include "Engine/ECS/Component/Logic2D/TileMapComponent.h"
 
 // Init Components (Must be included for specialization)
-#include "Engine/ECS/Meta/InitComponent/InitDispatcher.h"
+#include "Engine/ECS/Public/ECSApi.hpp"
+#include "Engine/ECS/Public/InitSpecialization/FollowCamInit.hpp"
+
+// #include "Engine/ECS/Meta/InitComponent/InitDispatcher.h"
 #include "Engine/ECS/Meta/InitComponent/TileMapInit.h"
-#include "Engine/ECS/Meta/InitComponent/FollowCameraInit.h"
+// #include "Engine/ECS/Meta/InitComponent/FollowCameraInit.h"
+
 
 // Window
+#include "Engine/Window/Public/Window.h"
+
+// input
+#include "Engine/InputManager/Public/Types.hpp"
 
 // physics
 #include "Engine/Physics/Private/Logic2D/DetectionFunctions.h"
@@ -33,6 +44,7 @@
 #include "Engine/Graphics/Private/Renderer/RenderSystem.h"
 #include "Engine/Graphics/Private/Model/AssimpImporter.h"
 #include "Engine/Graphics/Private/Animation/AnimationSystem.hpp"
+#include "Engine/Graphics/Public/GraphicsApi.hpp"
 
 // Time
 #include "Engine/Time/Private/WorldClock.hpp"
@@ -47,6 +59,7 @@
 #include "Game/00_Feature/Private/Character/Movement/MovementFeature.h"
 //Game/ Layer
 #include "Game/01_Layer/Private/AllLayerFeatureSystem.hpp"
+#include "Game/01_Layer/Public/LayerFeature.hpp"
 
 //Game/Actor
 #include "Game/Actor/CameraActor.h"
@@ -55,7 +68,10 @@
 #include "Game/Actor/MouseCursorActor.h"
 #include "Game/Actor/Map/TestBaseTerrainActor.h"
 #include "Game/Actor/TestObject.h"
-#include "Game/Actor/Private/TestActor.hpp"
+//
+#include "Game/Actor/Public/TestPlayerActor.hpp"
+#include "Game/Actor/Public/TestCamActor.hpp"
+#include "Game/Actor/Public/TestmapActor.hpp"
 
 // Game/Actor/Map
 #include "Game/Actor/Map/TileMapActor.h"
@@ -63,11 +79,10 @@
 
 // Game/Camera
 #include "Game/Camera/Private/CameraFollowSystem.h"
+#include "Game/Camera/Public/CameraApi.hpp"
 
 // Game/Input
-#include "Game/Camera/Private/CameraControlSystem.h"
-#include "Game/Input/Private/InputRouterSystem.h"
-#include "Game/Input/Private/AnalogInput/AnalogInputRoutingSystem.h"
+#include "Game/Input/Private/InputRouterSystem.h" 
 
 // Game/Input/Intent
 #include "Game/Input/Private/Intent/PlayerMovementIntentMapper.h"
@@ -102,11 +117,11 @@
 
 // コンストラクタ
 GameApp::GameApp::GameApp()
-	: mIsRunning(true)
-	, windowWidth(1280)
-	, windowHeight(720)
+	: isRunning_(true)
+	, windowWidth_(1280)
+	, windowHeight_(720)
 {
-	world = std::make_unique<Engine::WorldSystem::Core::World>();
+	world_ = std::make_unique<Engine::WorldSystem::Core::World>();
 }
 
 GameApp::GameApp::~GameApp() = default;
@@ -117,17 +132,19 @@ void GameApp::GameApp::Shutdown()
 	unloadData();
 
 	// Destroy all components
-	mCtx = {};
+	// mCtx = {};
 
-	mECS.Clear();
-
-
-	mShader.reset();
-	mInput.reset();
+	//mECS.Clear();
 
 
-	if(mWindow)mWindow->Shutdown();
-	mWindow.reset();
+	//mShader.reset();
+	input_.reset();
+
+	shader_.reset();
+
+
+	if(window_)window_->Shutdown();
+	window_.reset();
 
 	std::cout << "\n[Game.cpp (Shutdown)]: The application shut down successfully." << std::endl;
 }
@@ -161,50 +178,34 @@ bool GameApp::GameApp::Initialize()
 	//glViewport(0, 0, mWindow_Width, mWindow_Height);
 	
 
-	mWindow = std::make_unique<Engine::Window::Window>();
-	if (!mWindow->Initialize(windowWidth, windowHeight, "Game"))
+	window_ = std::make_unique<Engine::Window::Window>();
+	if (!window_->Initialize(windowWidth_, windowHeight_, "Game"))
 	{
 		std::cerr << "[Game.cpp]: Failed to Initialize WindowManager" << std::endl;
 		return false;
 	}
 	
 	// initialize input system
-	//InputManager::Initialize(WindowManager::GetWindow());
+	input_ = std::make_unique<Engine::Input::InputManager>(window_->GetGLFWWindow());
 
-	mInput = std::make_unique<Engine::Input::InputManager>(mWindow->GetGLFWWindow());
-	mShader = std::make_unique<Engine::Graphics::Render::Shader>
+	// shader
+	shader_ = std::make_unique<Engine::Graphics::Shader>
 		(
 			"shaders/basic.vertex.glsl", "shaders/basic.fragment.glsl"
 		);
-	// WindowManager::CaptureMouse();
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_FRAMEBUFFER_SRGB);// sRGB
+	glEnable(GL_FRAMEBUFFER_SRGB);// 
 
-	// ShaderInit
-	// mShader = new Engine::Graphics::Render::Shader("shaders/basic.vertex.glsl", "shaders/basic.fragment.glsl");
-
-	// Log
-	// std::cout << "[Game.cpp (Initialize)]: Application initialization completed successfully" << std::endl;
-
-	mCtx.ecs = &mECS;
-	mCtx.renderCtx = &mRenderCtx;
-	mCtx.window = mWindow.get();
-	mCtx.input = mInput.get();
-	mCtx.shader = mShader.get();
-
-
-
-	// Initialize Skill database
-	// InitializeSkills();
 
 	// 遅らせ初期化
-	Game::Layer::InitializeLayerFeature::DelayedInitialzation(mECS);
+	// Game::Layer::InitializeLayerFeature::DelayedInitialzation(mECS);
 
-	Engine::WorldSystem::Core::WorldCtx ctx{ *world };
+	Engine::WorldSystem::Core::WorldCtx ctx{ *world_ };
 	Game::Layer::InitializeLayerFeature::DelayedInitialization(ctx);
 
-	loadData();
+	// loadData();
+	// ctxバージョン
 	loadData(ctx);
 
 	return true;
@@ -214,21 +215,23 @@ void GameApp::GameApp::RunLoop()
 {
 
 
-	while (!glfwWindowShouldClose(mWindow->GetGLFWWindow()) && mIsRunning)
+	while (!glfwWindowShouldClose(window_->GetGLFWWindow()) && isRunning_)
 	{
 		float currentFrame = static_cast<float>(glfwGetTime());
 		// mDeltaTime = currentFrame - mLastFrame;
-		float deltaTime = currentFrame - mLastFrame;
-		mLastFrame = currentFrame;
+		float deltaTime = currentFrame - lastFrame_;
+		lastFrame_ = currentFrame;
 		// std::cout << "[Game.cpp(DeltaTime)]: deltaTime: " << deltaTime << "\n";
 
-		Engine::WorldSystem::Core::WorldCtx ctx{ *world };
+		Engine::WorldSystem::Core::WorldCtx ctx{ *world_ };
 
-		updateGameLogics(deltaTime);
+		//updateGameLogics(deltaTime);
 		// updateGameLogics();
-		generateOutputs();
+		//generateOutputs();
+
 		glfwPollEvents();
 
+		// ctxバージョン
 		Update(ctx, deltaTime);
 	}
 
@@ -249,91 +252,92 @@ void GameApp::GameApp::updateGameLogics(float deltaTime)
 
 
 	// delete PendingDestroyComponent
-	Engine::ECS::GrobalSystem::RunCleanup(mECS);
+	//Engine::ECS::GrobalSystem::RunCleanup(mECS);
 
 
 
 	// Input
-	mInput->Update();
+	//mInput->Update();
  
-	const Engine::Input::RawInputState& input = mInput->GetRawInput();
-	if (input.keyState.count(GLFW_KEY_ESCAPE) && input.keyState.at(GLFW_KEY_ESCAPE)) {
-		mIsRunning = false;
-	}
+	//const Engine::Input::RawInputState& input = mInput->GetRawInput();
+	//if (input.keyState.count(GLFW_KEY_ESCAPE) && input.keyState.at(GLFW_KEY_ESCAPE)) {
+	//	mIsRunning = false;
+	//}
 
 	// ECSのグローバルリソースからMappingを取得して，InputActionComponentを変更するように修正する
 	// 修正済みのため削除予定
 	// Game::Input::InputRouterSystem(mECS, mInputManager->GetRawInput(), mInputMapping);
 	// InputRouter
-	Game::Input::InputRouterSystem(mECS, mInput->GetRawInput());
-	Game::Input::Analog::RouteAnalogInput(mECS, mInput->GetRawInput(), mRenderCtx);
+	//Game::Input::InputRouterSystem(mECS, mInput->GetRawInput());
+	//Game::Input::Analog::RouteAnalogInput(mECS, mInput->GetRawInput(), mRenderCtx);
 
 	// 2D (Logic)-> 3D (Drawing)
-	Engine::Sync::LogicToTransformSystem::Apply2DToTransform(mECS, deltaTime);
+	//Engine::Sync::LogicToTransformSystem::Apply2DToTransform(mECS, deltaTime);
 
+	// ctx 終わった
 	// カメラ
-	Game::Camera::Update(mECS, deltaTime);
+	// Game::Camera::Update(mECS, deltaTime);
 	// GameSystemInput::UpdateCamera(mEcs, mInputState, mDeltaTime);
+	
 
-	GameApp::updateContext();
+	//GameApp::updateContext();
 
-	Game::Collision::System::UpdateCollisionResultStorage(mECS, mCollisionResults);
+	//Game::Collision::System::UpdateCollisionResultStorage(mECS, mCollisionResults);
 
-	// Update from the top layer	
-	Game::Layer::IntentLayerFeature::Update(mECS);
+	//// Update from the top layer	
+	//Game::Layer::IntentLayerFeature::Update(mECS);
 
 	// Resolver Layer
-	Game::Layer::ResolverLayerFeature::Update(mECS);
+	//Game::Layer::ResolverLayerFeature::Update(mECS);
 
 	// state layer
-	Game::Layer::StateLayerFeature::Update(mECS, deltaTime);
+	//Game::Layer::StateLayerFeature::Update(mECS, deltaTime);
 
 	// Logic Layer
-	Game::Layer::LogicLayerFeature::Update(mECS, deltaTime);
+	//Game::Layer::LogicLayerFeature::Update(mECS, deltaTime);
 
 	// Anim Layer
 	// locomotion
-	Game::Layer::LocomotionResolverLayerFeature::Update(mECS);
+	//Game::Layer::LocomotionResolverLayerFeature::Update(mECS);
 	// skill
-	Game::Layer::SkillAnimationResolverLayerFeature::Update(mECS);
+	//Game::Layer::SkillAnimationResolverLayerFeature::Update(mECS);
 	// cc
-	Game::Layer::CCAnimationResolverLayerFeature::Update(mECS);
+	//Game::Layer::CCAnimationResolverLayerFeature::Update(mECS);
 
+	// ctx 終わった
 	// Anim Layer へ移動
-	Engine::Graphics::Animation::System::AnimationSystem(mECS);
+	// Engine::Graphics::Animation::System::AnimationSystem(mECS);
 }
 
 void GameApp::GameApp::generateOutputs()
 {
-	glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
 
+	// ctx おわった
 	// An algorithm is needed to set the shader for each object.
 	// RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
 	// draw Layer へ移動
-	Engine::Graphics::Render::RenderSystem(mECS, *mShader, mWindow->GetAspect(), mRenderCtx);
+	// Engine::Graphics::Render::RenderSystem(mECS, *mShader, mWindow->GetAspect(), mRenderCtx);
 
+	// ctx まだ
 	// Draw Layerへ移動
-	Engine::Debug::Drawing::Logic2D::Draw(mECS, mRenderCtx, mCollisionResults);
+	// Engine::Debug::Drawing::Logic2D::Draw(mECS, mRenderCtx, mCollisionResults);
+	
 
 	//
-	glfwSwapBuffers(mWindow->GetGLFWWindow());
+	//glfwSwapBuffers(window_->GetGLFWWindow());
 }
 
 void GameApp::GameApp::loadData()
 {
-	GameApp::spawnAllActors();
+	//GameApp::spawnAllActors();
 
-	GameApp::RunInitializationPhase();
+	//GameApp::RunInitializationPhase();
 
 	std::cout << "[Game.cpp]: Data loading completed successfully." << std::endl;
-}
-
-void GameApp::GameApp::loadData(Engine::WorldSystem::Core::WorldCtx& ctx)
-{
-	GameApp::spawnAllActors(ctx);
 }
 
 void GameApp::GameApp::unloadData()
@@ -346,62 +350,103 @@ void GameApp::GameApp::spawnAllActors()
 {
 	//TriangleActor tri = TriangleActor(mEcs);
 
-//Test3DModel test3d = Test3DModel(mEcs, mShader);
+	//Test3DModel test3d = Test3DModel(mEcs, mShader);
 
-	Game::Actor::Player::PlayerCharacter player = Game::Actor::Player::PlayerCharacter(mECS, mShader.get());
+	//Game::Actor::Player::PlayerCharacter player = Game::Actor::Player::PlayerCharacter(mECS, mShader.get());
 
-	Game::Actor::Camera::FollowCameraActor followCam = Game::Actor::Camera::FollowCameraActor(mECS);
+	//Game::Actor::Camera::FollowCameraActor followCam = Game::Actor::Camera::FollowCameraActor(mECS);
 
-	Game::Actor::AnalogInput::MouseCursorActor mouseCursor = Game::Actor::AnalogInput::MouseCursorActor(mECS);
+	//Game::Actor::AnalogInput::MouseCursorActor mouseCursor = Game::Actor::AnalogInput::MouseCursorActor(mECS);
 
 	// TileMapActor tilemap = TileMapActor(mEcs);
 	// TestRockActor testRock = TestRockActor(mEcs, mShader);
 
 
-	Game::Actor::Map::TestBaseTerrainActor testTerrainMap = Game::Actor::Map::TestBaseTerrainActor(mECS, mShader.get());
+	//Game::Actor::Map::TestBaseTerrainActor testTerrainMap = Game::Actor::Map::TestBaseTerrainActor(mECS, mShader.get());
 
-	Game::Actor::Map::TestRockActor testRock = Game::Actor::Map::TestRockActor(mECS, mShader.get());
+	//Game::Actor::Map::TestRockActor testRock = Game::Actor::Map::TestRockActor(mECS, mShader.get());
 
-	Game::Actor::TestObject testObj = Game::Actor::TestObject(mECS, mShader.get());
+	//Game::Actor::TestObject testObj = Game::Actor::TestObject(mECS, mShader.get());
 
 	// CameraActor camActor = CameraActor(mEcs);
 
 }
 
 
-void GameApp::GameApp::spawnAllActors(Engine::WorldSystem::Core::WorldCtx& ctx)
-{
-
-	Game::Actor::TestActor testActor = Game::Actor::TestActor(ctx);
-}
-
 void GameApp::GameApp::RunInitializationPhase()
 {
-	Engine::ECS::Meta::Init::ApplyAllDeferredInitializations<
-		Engine::ECS::Component::Logic2D::TileMapComponent,
-		Engine::ECS::Component::Camera::FollowCameraComponent
-	// コンテキスト情報を渡す．
-	>(mECS, *mWindow);
+	// Engine::ECS::Meta::Init::ApplyAllDeferredInitializations<
+	// 	Engine::ECS::Component::Logic2D::TileMapComponent,
+	// 	Engine::ECS::Component::Camera::FollowCameraComponent
+	// // コンテキスト情報を渡す．
+	// >(mECS, *mWindow);
 
-	Game::Init::Input::InputBindingInitializationSystem(mECS);
+	// Game::Init::Input::InputBindingInitializationSystem(mECS);
 }
+
+
 
 void GameApp::GameApp::updateContext()
 {
 	// update RenderContext:: viewport 
-	mRenderCtx.viewport = glm::vec4(0, 0, mWindow->GetWidth(), mWindow->GetHeight());
+	renderCtx_.viewport = glm::vec4(0, 0, window_->GetWidth(), window_->GetHeight());
 }
 
 
 // -- world --
-void GameApp::GameApp::updateGameLogics(Engine::WorldSystem::Core::WorldCtx& ctx)
+// 
+void GameApp::GameApp::RunInitializationPhase(Engine::WorldSystem::Core::WorldCtx& ctx)
 {
-	Game::Layer::StateLayerFeature::Update(ctx);
+	Engine::ECS::Core::Init::ApplyAllDefferedInit<
+		Engine::Component::FollowCameraComponent
+	>(ctx, *window_);
+
+	// input
+	Game::Init::Input::InputBindingInitializationSystem(ctx);
 }
 
-void GameApp::GameApp::generateOutputs(const Engine::WorldSystem::Core::WorldCtx& ctx)
+void GameApp::GameApp::spawnAllActors(Engine::WorldSystem::Core::WorldCtx& ctx)
 {
 
+	Game::Actor::TestPlayerActor testActor = Game::Actor::TestPlayerActor(ctx, shader_.get());
+	//Game::Actor::TestFixedCamActor fixedCam = Game::Actor::TestFixedCamActor(ctx);
+	Game::Actor::TestFollowCamActor followCam = Game::Actor::TestFollowCamActor(ctx);
+	Game::Actor::TestPlayerCursorActor cursor = Game::Actor::TestPlayerCursorActor(ctx);
+	Game::Actor::TestTerrainMesh terrain = Game::Actor::TestTerrainMesh(ctx, shader_.get());
+}
+
+
+void GameApp::GameApp::updateGameLogics(Engine::WorldSystem::Core::WorldCtx& ctx)
+{
+	GameApp::updateContext();
+	input_->Update();
+	const auto& input = input_->GetRawInput();
+	if (input.keyState.count(GLFW_KEY_ESCAPE) && input.keyState.at(GLFW_KEY_ESCAPE))
+	{
+		isRunning_ = false;
+	}
+
+	Game::Layer::InputLayer::Update(ctx, input_->GetRawInput(), renderCtx_);
+
+	Game::Layer::IntentLayerFeature::Update(ctx);
+	Game::Layer::StateLayerFeature::Update(ctx);
+
+
+	Game::Layer::LogicLayerFeature::Update(ctx);
+}
+
+void GameApp::GameApp::generateOutputs(Engine::WorldSystem::Core::WorldCtx& ctx)
+{
+	// Game::Camera::Update(ctx);
+
+	glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Engine::Graphics::UpdateRendererAll(ctx, *shader_, window_->GetAspect(), renderCtx_);
+	Game::Layer::DrawLayerFeature::Update(ctx, *shader_, *window_, renderCtx_);
+
+
+	glfwSwapBuffers(window_->GetGLFWWindow());
 }
 
 void GameApp::GameApp::Update(Engine::WorldSystem::Core::WorldCtx& ctx, float realDt)
@@ -416,6 +461,36 @@ void GameApp::GameApp::Update(Engine::WorldSystem::Core::WorldCtx& ctx, float re
 
 	generateOutputs(ctx);
 
-	//
+	// 
 	Engine::Time::WorldClockSystem::EndFrame(ctx);
 }
+
+
+void GameApp::GameApp::loadData(Engine::WorldSystem::Core::WorldCtx& ctx)
+{
+	GameApp::spawnAllActors(ctx);
+
+	GameApp::RunInitializationPhase(ctx);
+}
+
+
+// Input までOK
+// 次は、移動による座標更新
+// カメラ追尾 OK
+// 
+//
+
+// FSM: Skill / CC
+// FSM: Interference
+// 
+// 
+
+// Skill Input -> Intent -> FSM -> ...系
+// 
+
+
+
+
+// TODO: 
+// Collision システムのデータ駆動化 / ライブラリ構造化
+//

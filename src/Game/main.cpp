@@ -6,8 +6,6 @@
 
 #include "Game/Game.h"
 
-#include "Engine/ECS/Entity.h"
-
 
 // main
 int main()

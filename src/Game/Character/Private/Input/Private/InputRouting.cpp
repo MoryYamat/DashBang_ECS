@@ -3,12 +3,12 @@
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
 #include "Engine/Component/Private/Input/AnalogInputComponent.hpp"
-#include "Engine/InputManager/Private/RawInputState.h"
+#include "Engine/InputManager/Public/Types.hpp"
 
 #include "Game/Character/Private/Input/Private/InputActionComponent.hpp"// FIXME: 定義場所変更を検討する必要あり
 #include "Game/Character/Private/Input/Private/InputMapping.hpp"		// FIXME: 定義場所変更を検討する必要あり
 
-#include "Game/Utils/Private/SpatialTransformUtils.h"
+#include "Game/Utils/Public/GameUtilsApi.hpp"
 
 namespace Game::Character::Input
 {
@@ -18,11 +18,11 @@ namespace Game::Character::Input
 	// analog
 	void AnalogInputRouting(Engine::WorldSystem::Core::WorldCtx& ctx
 		, const Engine::Input::RawInputState& rawInput
-		, const Engine::Graphics::Render::RenderContext& renderContext)
+		, const Engine::Graphics::RenderContext& renderContext)
 	{
 		auto ent = ViewWhere(ctx.rw, All<AnalogInputComponent>{});
 
-		for (auto e : ent)
+		for (const auto& e : ent)
 		{
 			auto& analog = ctx.ww.Get<AnalogInputComponent>(e);
 
@@ -41,7 +41,7 @@ namespace Game::Character::Input
 
 		auto ent = ViewWhere(ctx.rw, All<Game::Character::Input::InputActionComponent>{});
 
-		for (auto e : ent)
+		for (const auto& e : ent)
 		{
 			auto& input = ctx.ww.Get<Game::Character::Input::InputActionComponent>(e);
 

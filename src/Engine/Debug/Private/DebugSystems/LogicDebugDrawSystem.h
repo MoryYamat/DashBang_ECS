@@ -12,26 +12,26 @@ namespace Engine::Debug::Drawing::Logic2D
 {
 	// デバッグ用描画のインターフェース
 	void Draw(Engine::ECS::EntityMgr& ecs,
-		const Engine::Graphics::Render::RenderContext& renderContext,
+		const Engine::Graphics::RenderContext& renderContext,
 		const Game::Collision::Data::CollisionResultStorage& collisionResult);
 
 	// Playerアクターの位置・マウスポインタの位置を描画(デバッグ用)
-	void DebugDrawLogicPlayerPositions(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext);
+	void DebugDrawLogicPlayerPositions(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::RenderContext& renderContext);
 
 	// タイルマップのワイヤフレーム描画(デバッグ用)
-	void DebugDrawLogicTileMaps(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext);
+	void DebugDrawLogicTileMaps(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::RenderContext& renderContext);
 
 	// 2D円を描画(デバッグ用)
-	void DebugDrawPlayerCollision(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext);
+	void DebugDrawPlayerCollision(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::RenderContext& renderContext);
 
 
 	// TileMapとPlayerCircle2Dのコリジョンを描画
 	void DebugDrawPlayerAndTileMap(Engine::ECS::EntityMgr& ecs,
-		const Engine::Graphics::Render::RenderContext& renderContext,
+		const Engine::Graphics::RenderContext& renderContext,
 		const Game::Collision::Data::CollisionResultStorage& collisionResult);
 
 	// レンダーコンテキストをセット関数
-	void SetOpenGLMatrixState(const Engine::Graphics::Render::RenderContext& renderContext);
+	void SetOpenGLMatrixState(const Engine::Graphics::RenderContext& renderContext);
 
 	// レンダーコンテキストを解除する関数
 	void ResetOpenGLMatrixState();
@@ -44,5 +44,5 @@ namespace Engine::Debug::Drawing::Logic2D
 namespace Engine::Debug::Drawing::Logic2D
 {
 	// Skillの論理的効果範囲形状を描画する
-	void RenderAttack2DAreas(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::Render::RenderContext& renderContext);
+	void RenderAttack2DAreas(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::RenderContext& renderContext);
 }

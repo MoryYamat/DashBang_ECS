@@ -9,7 +9,7 @@
 #include "Game/Character/Private/Animation/Query/Locomotion/LocomotionAnimationQueryComponent.hpp"
 #include "Game/Character/Private/Animation/Resolve/Movement/MovementAnimDecisionComponent.hpp"
 
-#include "Game/ECS/Private/Tags/CharacterAttribTags.h"
+#include "Game/ECS/Public/CharacterAttribTags.h"
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 

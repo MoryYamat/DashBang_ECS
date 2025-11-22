@@ -1,4 +1,7 @@
-#include "Window.h"
+﻿#include "Engine/Window/Public/Window.h"
+
+#include <glad/glad.h>// 順序
+#include <GLFW/glfw3.h>
 
 #include <iostream>
 

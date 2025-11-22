@@ -1,0 +1,158 @@
+﻿#include "Game/Actor/Public/TestPlayerActor.hpp"
+
+#include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
+
+// ------------- engine ------------- 
+// component
+#include "Engine/Component/Private/Common/TransformComponent.hpp"
+#include "Engine/Component/Private/Logic2D/Logic2DComponent.hpp"
+#include "Engine/Component/Private/Logic2D/Transform2DComponent.hpp"
+#include "Engine/Component/Private/Logic2D/Velocity2DComponent.hpp"
+#include "Engine/Component/Private/Logic2D/CollisionComponent.hpp"
+
+#include "Engine/Component/Private/Graphics/ShaderComponent.hpp"
+#include "Engine/Component/Private/Graphics/MeshComponent.hpp"
+#include "Engine/Component/Private/Graphics/AnimatorComponent.hpp"
+#include "Engine/Component/Private/Utils/NameComponent.hpp"
+
+#include "Game/Input/Private/InputActionComponent.h"
+
+
+// graphics
+#include "Engine/Graphics/Private/Model/CgltfImporter.hpp"
+#include "Engine/Graphics/Private/Model/ModelData.h"
+#include "Engine/Graphics/Private/Renderer/GPUBufferUtils.h"
+#include "Engine/Graphics/Public/Types.hpp"
+
+// ------------- character ------------- 
+
+// control
+#include "Game/Character/Private/Control/Public/IntentComponent.hpp"
+
+// FSM
+// movement
+#include "Game/Character/Private/FSM/Public/MovementAxisComponent.hpp"
+#include "Game/Character/Private/FSM/Public/MovementAxisApi.hpp"
+
+// stats
+#include "Game/Character/Private/Stats/Public/StatsComponent.hpp"
+
+// tag
+#include "Game/ECS/Public/CharacterAttribTags.h"
+
+// ------------- init --------------
+#include "Game/Init/Private/InitModel/InitLogicTransformFromModel.h"
+#include "Game/Init/Public/InitApi.hpp"
+
+// cursor
+#include "Engine/Component/Private/Tags/PlayerControllerComponent.hpp"
+#include "Engine/Component/Private/Input/AnalogInputComponent.hpp"
+#include "Engine/Component/Private/Input/InputBindingComponent.hpp"
+
+#include <iostream>
+
+namespace Game::Actor
+{
+	using namespace Engine::WorldSystem::Core;
+	using namespace Engine::Component;
+
+	namespace MFSM = Game::Character::FSM::Movement;
+
+	namespace Ctrl = Game::Character::Control;
+
+	TestPlayerActor::TestPlayerActor(Engine::WorldSystem::Core::WorldCtx& ctx, Engine::Graphics::Shader* shader)
+	{
+		Engine::ECS::Core::Entity e = ctx.ww.Create();
+
+		// ------- Engine --------
+		// component
+		Engine::Graphics::Model::ModelData mdl 
+			= Engine::Graphics::Model::CgltfImporter::Import("Assets/Models/paladin/base_action_animation_diago.glb");// run_fwd_default/run_back/run_right/run_left/rolling_fwd_default
+		Engine::Graphics::Model::ModelGPU mGPU = Engine::Graphics::Render::GPUBufferUtils::createMeshGPUBuffers(mdl);
+
+		TransformComponent& tr = ctx.ww.Add<TransformComponent>(e);
+		Transform2DComponent& tr2d = ctx.ww.Add<Transform2DComponent>(e);
+		Logic2DTransformComponent& l2dts = ctx.ww.Add<Logic2DTransformComponent>(e);
+		l2dts = Game::Init::Logic2D::InitLogic2DTransformFromModel(tr, mdl);
+		Velocity2DComponent& vel = ctx.ww.Add<Velocity2DComponent>(e);
+
+		AnimatorComponent& anim = ctx.ww.Add<AnimatorComponent>(e);
+
+		CollisionComponent playerCollisionComp;
+		playerCollisionComp.collider.shape = Circle2D{
+			.center = glm::vec2(0.0f),// ローカルセンター
+			.radius = Game::Init::Logic2D::EstimateRadiusFromModelXZ(tr, mdl, Game::Init::Logic2D::RadiusEstimateStrategy::MaxAxis)
+		};
+		playerCollisionComp.isStatic = false;
+		CollisionComponent& coll = ctx.ww.Add<CollisionComponent>(e, playerCollisionComp);
+
+		//// skill animation
+		Engine::Graphics::Model::CgltfImporter::ImportAnimationsInto("Assets/Models/paladin/test_slash_outward_trim.glb", mdl);
+		
+		//// cc animation
+		Engine::Graphics::Model::CgltfImporter::ImportAnimationsInto("Assets/Models/paladin/stunned_default.glb", mdl);
+		Engine::Graphics::Model::CgltfImporter::ImportAnimationsInto("Assets/Models/paladin/falling_back_default.glb", mdl);
+
+
+		// set MeshComponent (move のため最後に追加)
+		MeshComponent& mesh = ctx.ww.Add<MeshComponent>(e, MeshComponent{
+			 std::move(mdl),
+			 std::move(mGPU)
+			});
+
+
+		// shader
+		ShaderComponent shaderComp;
+		shaderComp.shader = shader;
+		if (shaderComp.shader)
+		{
+			shaderComp.shader->Use();
+			shaderComp.shader->setMat4("model", tr.toMatrix());
+			std::cout << "[PlayerCharacterActor.cpp]: The model matrix was set successfully." << std::endl;
+		}
+		else
+		{
+			std::cout << "[PlayerCharacterActor.cpp]: Shader not found." << std::endl;
+		}
+		ctx.ww.Add<ShaderComponent>(e, shaderComp);
+
+
+
+		// ------------------------- Character -----------------------------
+
+		// control
+		Ctrl::MovingIntentComponent& mvint = ctx.ww.Add<Ctrl::MovingIntentComponent>(e);
+		Ctrl::FacingIntentComponent& facing = ctx.ww.Add<Ctrl::FacingIntentComponent>(e);
+
+		// fsm
+		MFSM::MovementStateComp& MFSMstate = ctx.ww.Add<MFSM::MovementStateComp>(e);
+		MFSM::MovementAxisComp& MFSMComp = ctx.ww.Add<MFSM::MovementAxisComp>(e);
+		if (!MFSM::InitMovementAxis(ctx, MFSMComp))
+		{
+			std::cout << "[TestActor]: Failed to initialize the movement axis component.\n";
+		}
+
+		// stats
+		ctx.ww.Add<Game::Character::Stats::CharacterStatsComponent>(e);
+
+		// ---------input-----------
+		ctx.ww.Add<Game::Input::InputActionComponent>(e);
+
+		// ---------tag ------------
+		ctx.ww.Add<Game::ECS::Tags::PlayerCharacterTag>(e);
+		NameComponent& name = ctx.ww.Add<NameComponent>(e);
+		name.name = "Player";
+
+		std::cout << "[Test Actor]: Test Actor Created.\n";
+	}
+
+
+	TestPlayerCursorActor::TestPlayerCursorActor(Engine::WorldSystem::Core::WorldCtx& ctx)
+	{
+		Engine::ECS::Core::Entity e = ctx.ww.Create();
+
+		ctx.ww.Add<AnalogInputComponent>(e);
+		ctx.ww.Add<PlayerControllerComponent>(e);
+		ctx.ww.Add<InputBindingComponent>(e);
+	}
+}

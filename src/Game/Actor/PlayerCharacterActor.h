@@ -15,7 +15,7 @@ namespace Game::Actor::Player
 	class PlayerCharacter
 	{
 	public:
-		PlayerCharacter(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Render::Shader* shader);
+		PlayerCharacter(Engine::ECS::EntityMgr& ecs, Engine::Graphics::Shader* shader);
 
 		~PlayerCharacter();
 

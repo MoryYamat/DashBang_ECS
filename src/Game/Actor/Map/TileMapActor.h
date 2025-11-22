@@ -15,18 +15,18 @@ namespace Game::Actor::Map
 	// (現在未使用)テストタイルマップ用(削除予定)
 	// (現在未使用)テストタイルマップ用(削除予定)
 	// (現在未使用)テストタイルマップ用(削除予定)
-	class TileMapActor
-	{
-	public:
+	//class TileMapActor
+	//{
+	//public:
 
-		// TerrainMeshから呼び出す (将来的には動的生成／削除およびLODに対応予定)
-		static Engine::ECS::Entity Create(
-			Engine::ECS::EntityMgr& ecs,
-			const Engine::ECS::Component::Common::TransformComponent& transform,
-			const Engine::Graphics::Model::ModelData& modelData,
-			float tileSize
-		);
+	//	// TerrainMeshから呼び出す (将来的には動的生成／削除およびLODに対応予定)
+	//	static Engine::ECS::Entity Create(
+	//		Engine::ECS::EntityMgr& ecs,
+	//		const Engine::ECS::Component::Common::TransformComponent& transform,
+	//		const Engine::Graphics::Model::ModelData& modelData,
+	//		float tileSize
+	//	);
 
-	};
+	//};
 }
 

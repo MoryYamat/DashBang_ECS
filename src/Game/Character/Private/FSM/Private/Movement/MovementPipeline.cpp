@@ -5,7 +5,7 @@
 #include "Game/Character/Private/FSM/Public/MovementAxisComponent.hpp"
 #include "Engine/Component/Private/Logic2D/Velocity2DComponent.hpp"
 #include "Game/Character/Private/Stats/Public/StatsComponent.hpp"
-#include "Game/Character/Private/Control/Movement/Component/IntentComponent.hpp"
+#include "Game/Character/Private/Control/Public/IntentComponent.hpp"
 
 namespace Game::Character::FSM::Movement
 {

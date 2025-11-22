@@ -12,13 +12,13 @@
 void Game::Layer::ResolverLayerFeature::Update(Engine::ECS::EntityMgr& ecs)
 {
 	// Update Character Skill Intent Resolver
-	Game::Feature::Character::CharacterSkillFeature::UpdateCharacterSkillIntentResolver(ecs);
+	// Game::Feature::Character::CharacterSkillFeature::UpdateCharacterSkillIntentResolver(ecs);
 
 	// Update Character Movement Intent Resolver
 	// Game::Feature::Character::FSM::MovementFSMFeature::UpdateMovementIntentResolver(ecs);// 削除予定：FSM導入後削除予定
 
 	// update Character CC Antichain Component
-	Game::Feature::Character::CharacterCCFeature::UpdateCCAntiChainSystem(ecs);
+	// Game::Feature::Character::CharacterCCFeature::UpdateCCAntiChainSystem(ecs);
 }
 
 void Game::Layer::ResolverLayerFeature::Update(Engine::WorldSystem::Core::WorldCtx& ctx)
