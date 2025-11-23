@@ -20,16 +20,16 @@ Engine::Graphics::Model::ModelData Engine::Graphics::Model::AssimpImporter::Impo
 	}
 	else
 	{
-		std::cout << "[AssimpImporter.cpp(Import)]: MODEL LOAD STARTING... " << std::endl;
+		std::cerr << "[AssimpImporter.cpp(Import)]: MODEL LOAD STARTING... " << std::endl;
 	}
 
 	processNode(scene->mRootNode, scene, data);
 
-	std::cout << "[AssimpImporter.cpp(Import)]: Load Completed: [[\"" << path << "\"]]" << std::endl;
+	std::cerr << "[AssimpImporter.cpp(Import)]: Load Completed: [[\"" << path << "\"]]" << std::endl;
 
 
-	std::cout << "[AssimpImporter.cpp(Import)]: Model center: " << data.GetCenter().x << ", " << data.GetCenter().y << ", " << data.GetCenter().z << std::endl;
-	std::cout << "[AssimpImporter.cpp(Import)]: Model size: " << data.GetSize().x << ", " << data.GetSize().y << ", " << data.GetSize().z << std::endl;
+	std::cerr << "[AssimpImporter.cpp(Import)]: Model center: " << data.GetCenter().x << ", " << data.GetCenter().y << ", " << data.GetCenter().z << std::endl;
+	std::cerr << "[AssimpImporter.cpp(Import)]: Model size: " << data.GetSize().x << ", " << data.GetSize().y << ", " << data.GetSize().z << std::endl;
 
 
 

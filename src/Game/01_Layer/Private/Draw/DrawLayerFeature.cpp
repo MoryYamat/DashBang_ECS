@@ -5,6 +5,7 @@
 #include "Engine/Graphics/Public/Types.hpp"
 #include "Engine/Graphics/Public/GraphicsApi.hpp"
 
+
 #include "Game/Camera/Public/CameraApi.hpp"
 
 
@@ -15,6 +16,7 @@ namespace Game::Layer
 	{
 		// camera
 		Game::Camera::Update(ctx);
+
 
 		// renderer
 		Engine::Graphics::UpdateRendererAll(ctx, shader, window.GetAspect(), renderCtx);

@@ -31,7 +31,7 @@ namespace Engine::Graphics
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
 
-		std::cout << "[Shader.cpp(shader)]: Shader initialization completed successfully." << std::endl;
+		//std::cerr << "[Shader.cpp(shader)]: Shader initialization completed successfully." << std::endl;
 	}
 
 	Shader::~Shader()
@@ -109,7 +109,7 @@ namespace Engine::Graphics
 
 		if (!checkCompileShader(shader))
 		{
-			std::cout << "[Shader.cpp]: Compilation Failed." << std::endl;
+			std::cerr << "[Shader.cpp]: Compilation Failed." << std::endl;
 		}
 
 		return shader;
@@ -123,7 +123,7 @@ namespace Engine::Graphics
 		{
 			char infoLog[512];
 			glGetShaderInfoLog(shader, 512, nullptr, infoLog);
-			std::cout << "[Shader.cpp]: Compile Error: " << infoLog << std::endl;
+			std::cerr << "[Shader.cpp]: Compile Error: " << infoLog << std::endl;
 			return false;
 		}
 
@@ -138,7 +138,7 @@ namespace Engine::Graphics
 		{
 			char infoLog[512];
 			glGetProgramInfoLog(program, 512, nullptr, infoLog);
-			std::cout << "[Shader.cpp]: Link error: " << infoLog << std::endl;
+			std::cerr << "[Shader.cpp]: Link error: " << infoLog << std::endl;
 			return false;
 		}
 
@@ -168,7 +168,7 @@ Engine::Graphics::Render::Shader::Shader(const std::string& vertexPath, const st
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
-	std::cout << "[Shader.cpp(shader)]: Shader initialization completed successfully." << std::endl;
+	// std::cerr << "[Shader.cpp(shader)]: Shader initialization completed successfully." << std::endl;
 }
 
 Engine::Graphics::Render::Shader::~Shader()
@@ -246,7 +246,7 @@ GLuint Engine::Graphics::Render::Shader::compileShader(GLenum type, const std::s
 
 	if (!checkCompileShader(shader))
 	{
-		std::cout << "[Shader.cpp]: Compilation Failed." << std::endl;
+		std::cerr << "[Shader.cpp]: Compilation Failed." << std::endl;
 	}
 
 	return shader;
@@ -260,7 +260,7 @@ bool Engine::Graphics::Render::Shader::checkCompileShader(GLuint shader)
 	{
 		char infoLog[512];
 		glGetShaderInfoLog(shader, 512, nullptr, infoLog);
-		std::cout << "[Shader.cpp]: Compile Error: " << infoLog << std::endl;
+		std::cerr << "[Shader.cpp]: Compile Error: " << infoLog << std::endl;
 		return false;
 	}
 
@@ -275,7 +275,7 @@ bool Engine::Graphics::Render::Shader::checkLinkStatus(GLuint program)
 	{
 		char infoLog[512];
 		glGetProgramInfoLog(program, 512, nullptr, infoLog);
-		std::cout << "[Shader.cpp]: Link error: " << infoLog << std::endl;
+		std::cerr << "[Shader.cpp]: Link error: " << infoLog << std::endl;
 		return false;
 	}
 

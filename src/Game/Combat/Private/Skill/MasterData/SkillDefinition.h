@@ -9,7 +9,7 @@
 
 #include "Game/Combat/Private/Skill/Component/SkillExecutionContextComponent.hpp"
 
-#include "Game/Collision/Private/Data/CollisionLayer.h"
+#include "Game/Combat/Private/Skill/Component/CollisionLayer.h"
 
 #include <string>
 
@@ -190,8 +190,8 @@ namespace Game::Combat::Skill::Data
 {
 	struct SkillCollisionMaskDef
 	{
-		Game::Collision::Data::Layer selfLayer = Game::Collision::Data::Layer::Skill; // スキル自身のレイヤー
-		uint32_t collidesWithMask = static_cast<uint32_t>(Game::Collision::Data::Layer::Enemy | Game::Collision::Data::Layer::Neutral); // 衝突するレイヤーマスク（デフォルトは敵のみ）
+		Game::Collision::Layer selfLayer = Game::Collision::Layer::Skill; // スキル自身のレイヤー
+		uint32_t collidesWithMask = static_cast<uint32_t>(Game::Collision::Layer::Enemy | Game::Collision::Layer::Neutral); // 衝突するレイヤーマスク（デフォルトは敵のみ）
 	};
 
 	// 当たった相手に効果を与える条件(関係性ベース)

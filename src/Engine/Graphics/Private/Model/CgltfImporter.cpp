@@ -18,13 +18,13 @@ namespace Engine::Graphics::Model
 		// meta情報をパース -> cgltf_dataツリーを組立てる(meshes/primitives/attributes/accessors/bufferViews/materials...)
 		if (cgltf_parse_file(&options, path.c_str(), &g) != cgltf_result_success || !g)
 		{
-			std::cout << "[CgltfImporter]: Parse information creation failure\n";
+			std::cerr << "[CgltfImporter]: Parse information creation failure\n";
 			return model;
 		}
 		// cgltf_dataが参照しているbufferを実際に読み込んでbuffer->dataに展開する
 		if (cgltf_load_buffers(&options, g, path.c_str()) != cgltf_result_success)
 		{
-			std::cout << "[CgltfImporter]: Failed to read data from file\n";
+			std::cerr << "[CgltfImporter]: Failed to read data from file\n";
 			cgltf_free(g);
 			return model;
 		}
@@ -341,9 +341,9 @@ namespace Engine::Graphics::Model
 			model.clips.push_back(std::move(clip));
 		}
 
-		std::cout << "Clips: " << model.clips.size() << std::endl;
+		std::cerr << "Clips: " << model.clips.size() << std::endl;
 		for (auto& c : model.clips) {
-			std::cout << "  " << c.name << " dur=" << c.duration << "s channels=" << c.channels.size() << "\n";
+			std::cerr << "  " << c.name << " dur=" << c.duration << "s channels=" << c.channels.size() << "\n";
 		}
 
 		// std::cout << "[dbg] bones=" << model.skeleton.bones.size() << "\n";
@@ -544,7 +544,7 @@ namespace Engine::Graphics::Model
 		const auto& nameToBone = base.skeleton.nameToBone;
 		if (nameToBone.empty())
 		{
-			std::cout << "[CgltfImporter] base skelton has no name map. load base first. \n";
+			std::cerr << "[CgltfImporter] base skelton has no name map. load base first. \n";
 			cgltf_free(g);
 			return;
 		}
@@ -568,7 +568,7 @@ namespace Engine::Graphics::Model
 				auto it = nameToBone.find(tn->name);
 				if (it == nameToBone.end())
 				{
-					std::cout << "[anim-map] missing bone: " << tn->name << "\n";
+					std::cerr << "[anim-map] missing bone: " << tn->name << "\n";
 					continue;
 				}
 				int bone = it->second;
@@ -614,7 +614,7 @@ namespace Engine::Graphics::Model
 				clip.channels.push_back(std::move(c));
 			}
 
-			std::cout << "[ImportAnimationsInto] add clip = " << clip.name
+			std::cerr << "[ImportAnimationsInto] add clip = " << clip.name
 				<< " ch=" << clip.channels.size()
 				<< " dur=" << clip.duration << "s\n";
 

@@ -23,7 +23,7 @@
 
 #include "Engine/Math/Private/Logic2D/LogicMathUtils.h"
 
-#include "Game/Collision/Private/Component/CollisionMaskComponent.h"
+#include "Game/Collision/Public/CollisionMaskComponent.hpp"
 
 #include "Engine/Debug/Private/DebugUtils.h"
 

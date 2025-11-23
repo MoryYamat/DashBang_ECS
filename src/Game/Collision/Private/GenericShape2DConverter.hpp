@@ -8,26 +8,21 @@
 
 #include "Engine/ECS/Public/Entity.hpp"
 #include "Engine/WorldSystem/Public/WorldFwd.hpp"
+#include "Engine/WorldSystem/Private/Core/WorldAccess.hpp"
+#include "Engine/WorldSystem/Private/Core/WorldCtx.hpp"
 
 #include "Game/Collision/Private/GenericShape2D.hpp"
 
 
 #include <glm/glm.hpp>
 
-namespace Game::Collision::Convert
+namespace Game::Collision
 {
-	// ローカルCollisionとワールド変換からワールド上の抽象判定形状を計算 (template実装のため廃止)
-	Game::Collision::GenericShape2D ConvertFromCollider(const Engine::Component::Collider& collider
-		, const Engine::Component::Logic2DTransformComponent& transform);
-
-	// ローカルCollisionとワールド変換からワールド上の抽象判定形状を計算 (tempalte実装のため廃止)
-	Game::Collision::GenericShape2D ConvertFromAttackShape(const Game::Combat::Skill::Component::Attack2DShape& attackShape
-		, const Engine::Component::Transform2DComponent& worldTransform);
-
 	// ローカルCollisionとワールド変換からワールド上の抽象判定形状を計算
 	Game::Collision::GenericShape2D BuildGenericShape2D(const Engine::Component::Collider& collider
 		, const Engine::Component::Logic2DTransformComponent& transform);
 
+	// Skill 仕様確定後作成
 	// ローカルCollisionとワールド変換からワールド上の抽象判定形状を計算 
 	Game::Collision::GenericShape2D BuildGenericShape2D(const Game::Combat::Skill::Component::Attack2DShape& attack2DArea
 		, const Engine::Component::Transform2DComponent& worldTransform);
@@ -50,15 +45,15 @@ namespace Game::Collision::Convert
 		Engine::WorldSystem::Core::WorldCtx& ctx
 	)
 	{
-		if (ecs.hasComponent<Engine::Component::Logic2DTransformComponent>(e)) {
+		if (ctx.rw.Has<Engine::Component::Logic2DTransformComponent>(e)) {
 			return MakeGenericShape2DFromTransform(shape, ctx.ww.Get<Engine::Component::Logic2DTransformComponent>(e));
 		}
-		else if (ecs.hasComponent<Engine::Component::Transform2DComponent>(e)) {
+		else if (ctx.rw.Has<Engine::Component::Transform2DComponent>(e)) {
 			return MakeGenericShape2DFromTransform(shape, ctx.ww.Get<Engine::Component::Transform2DComponent>(e));
 		}
 		else {
 			assert(false && "No valid transform component");
-			return Game::Collision::Data::GenericShape2D{};
+			return Game::Collision::GenericShape2D{};
 		}
 	}
 
@@ -74,8 +69,8 @@ namespace Game::Collision::Convert
 	glm::vec2 applyLocalToWorldPoint(const glm::vec2& localOffset, const Engine::Component::Transform2DComponent& transform);
 
 	// ローカル形状の方向ベクトルをとワールド変換情報から方向ベクトルのワールド変換
-	glm::vec2 transformLocalPointToWorld(const glm::vec2& localOffset, const Engine::Component::Logic2DTransformComponent& transform);
+	glm::vec2 transformLocalPointToWorld(const glm::vec2& localDir, const Engine::Component::Logic2DTransformComponent& transform);
 
 	// ローカル形状の方向ベクトルをとワールド変換情報から方向ベクトルのワールド変換
-	glm::vec2 transformLocalPointToWorld(const glm::vec2& localOffset, const Engine::Component::Transform2DComponent& transform);
+	glm::vec2 transformLocalPointToWorld(const glm::vec2& localDir, const Engine::Component::Transform2DComponent& transform);
 }

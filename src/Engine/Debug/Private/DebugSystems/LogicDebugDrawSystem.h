@@ -5,15 +5,15 @@
 // #include "Engine/Graphics/Private/Renderer/RenderContext.h"
 #include "Engine/Graphics/Public/GraphicsFwd.hpp"
 
-#include "Game/Collision/Private/Data/CollisionResultStorage.h"
 
+#include "Game/Collision/Public/Types.hpp"
 
 namespace Engine::Debug::Drawing::Logic2D
 {
 	// デバッグ用描画のインターフェース
 	void Draw(Engine::ECS::EntityMgr& ecs,
 		const Engine::Graphics::RenderContext& renderContext,
-		const Game::Collision::Data::CollisionResultStorage& collisionResult);
+		const Game::Collision::CollisionResultStorage& collisionResult);
 
 	// Playerアクターの位置・マウスポインタの位置を描画(デバッグ用)
 	void DebugDrawLogicPlayerPositions(Engine::ECS::EntityMgr& ecs, const Engine::Graphics::RenderContext& renderContext);
@@ -28,7 +28,7 @@ namespace Engine::Debug::Drawing::Logic2D
 	// TileMapとPlayerCircle2Dのコリジョンを描画
 	void DebugDrawPlayerAndTileMap(Engine::ECS::EntityMgr& ecs,
 		const Engine::Graphics::RenderContext& renderContext,
-		const Game::Collision::Data::CollisionResultStorage& collisionResult);
+		const Game::Collision::CollisionResultStorage& collisionResult);
 
 	// レンダーコンテキストをセット関数
 	void SetOpenGLMatrixState(const Engine::Graphics::RenderContext& renderContext);

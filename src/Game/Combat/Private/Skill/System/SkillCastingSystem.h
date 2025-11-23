@@ -10,7 +10,7 @@
 
 
 
-#include "Game/Collision/Private/Component/CollisionMaskComponent.h"
+#include "Game/Collision/Public/CollisionMaskComponent.hpp"
 
 #include "Game/Combat/Private/Skill/MasterData/SkillDatabase.h"
 
@@ -27,7 +27,7 @@ namespace Game::Combat::Skill::System
 	void SpawnSkillHitArea(Engine::ECS::EntityMgr& ecs, Game::Combat::Skill::Data::SkillDatabase& skillDB);
 
 	// 攻撃範囲形状のCollisionMaskを作成する
-	Game::Collision::Component::CollisionMaskComponent generateSkillCollisionMask(
+	Game::Collision::CollisionMaskComponent generateSkillCollisionMask(
 		Engine::ECS::EntityMgr& ecs,
 		Engine::ECS::Entity caster
 	);

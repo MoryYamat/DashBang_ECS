@@ -2,10 +2,13 @@
 
 #include "Engine/ECS/Public/Entity.hpp"
 
+#include "Engine/Log/Public/LogApi.hpp"
+
 #include <typeindex>
 #include <unordered_map>
 #include <memory>
 #include <utility>
+#include <iostream>
 #include <cassert>
 
 namespace Engine::WorldSystem::Core
@@ -47,7 +50,14 @@ namespace Engine::WorldSystem::Core
 		T& Get()
 		{
 			auto* p = TryGet<T>();
-			assert(p && "Resource missing");
+			if (!p)
+			{
+				// std::fprintf(stderr, "Fatal: Resource <%s>\n", typeid(T).name());// グレーゾーン
+				Log::Write(Engine::Log::Level::Fatal, 
+					"Resource", std::string("Resource missing: ") + typeid(T).name());
+
+				assert(false && "Resource missing");
+			}
 			return *p;
 		}
 
@@ -55,7 +65,14 @@ namespace Engine::WorldSystem::Core
 		const T& Get() const
 		{
 			auto* p = TryGet<T>();
-			assert(p && "Resource missing");
+			if (!p)
+			{
+				// std::fprintf(stderr, "Fatal: Resource <%s>\n", typeid(T).name());// グレーゾーン
+				Log::Write(Engine::Log::Level::Fatal, 
+					"Resource", std::string("Resource missing: ") + typeid(T).name());
+
+				assert(false && "Resource missing");
+			}
 			return *p;
 		}
 

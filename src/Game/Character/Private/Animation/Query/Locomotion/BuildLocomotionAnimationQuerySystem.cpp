@@ -2,7 +2,7 @@
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 
-#include "Game/Character/Private/Animation/Query/Locomotion/LocomotionAnimationQueryComponent.hpp"
+
 
 #include "Engine/ECS/Component/Graphics/AnimatorComponent.hpp"
 #include "Engine/ECS/Component/Logic2D/Velocity2DComponent.h"
@@ -28,35 +28,35 @@ namespace Game::Character::Animation::Query
 	void BuildLocomotionAnimationQuerySystem(Engine::ECS::EntityMgr& ecs)
 	{
 
-		for (auto e : ecs.view<
-			Mv::MovementStateComponent,
-			Logic2D::Logic2DTransformComponent,
-			Logic2D::Velocity2DComponent,
-			LocomotionAnimQueryComponent
-		>())
-		{
-			auto& query = Ops::Get<LocomotionAnimQueryComponent>(ecs, e);
-			const auto& state = Ops::Get<Mv::MovementStateComponent>(ecs, e);
-			
-			const auto& transform = Ops::Get<Logic2D::Logic2DTransformComponent>(ecs, e);
-			const auto& vel = Ops::Get<Logic2D::Velocity2DComponent>(ecs, e);
-			
+		//for (auto e : ecs.view<
+		//	Mv::MovementStateComponent,
+		//	Logic2D::Logic2DTransformComponent,
+		//	Logic2D::Velocity2DComponent,
+		//	LocomotionAnimQueryComponent
+		//>())
+		//{
+		//	auto& query = Ops::Get<LocomotionAnimQueryComponent>(ecs, e);
+		//	const auto& state = Ops::Get<Mv::MovementStateComponent>(ecs, e);
+		//	
+		//	const auto& transform = Ops::Get<Logic2D::Logic2DTransformComponent>(ecs, e);
+		//	const auto& vel = Ops::Get<Logic2D::Velocity2DComponent>(ecs, e);
+		//	
 
-			const glm::vec2 facing = transform.front;
-			const bool isMoving = (glm::length2(vel.velocity) > kEps);
-			const glm::vec2 moveDir = isMoving ? glm::normalize(vel.velocity) : facing;
+		//	const glm::vec2 facing = transform.front;
+		//	const bool isMoving = (glm::length2(vel.velocity) > kEps);
+		//	const glm::vec2 moveDir = isMoving ? glm::normalize(vel.velocity) : facing;
 
-			query.isMoving = isMoving;
-			query.facingDirWorld = facing;
-			query.moveDirWorld = moveDir;
-			// query.moveSpeed = glm::length(vel.velocity);
-			//query.normalizedSpeed = 
+		//	query.isMoving = isMoving;
+		//	query.facingDirWorld = facing;
+		//	query.moveDirWorld = moveDir;
+		//	// query.moveSpeed = glm::length(vel.velocity);
+		//	//query.normalizedSpeed = 
 
-			query.valid = true;
+		//	query.valid = true;
 
-			// std::cout << "[ ] " << query.valid << "\n";
+		//	// std::cout << "[ ] " << query.valid << "\n";
 
-		}
+		//}
 	
 	
 	}

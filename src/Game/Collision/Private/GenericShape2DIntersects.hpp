@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Game/Collision/Private/Data/GenericShape2D.h"
+#include "Game/Collision/Private/GenericShape2D.hpp"
 
 #include <variant>
 #include <cmath>
@@ -11,9 +11,8 @@
 
 
 
-namespace Game::Collision::Intersect
+namespace Game::Collision
 {
-	using namespace Game::Collision::Data;
 
 	// 外部インターフェース
 	bool Intersects(const GenericShape2D& a, const GenericShape2D& b);

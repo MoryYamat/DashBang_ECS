@@ -77,7 +77,7 @@ namespace Engine::Graphics
 
 		}
 
-		std::cout << "The modelData was successfully converted to GPUmodelData." << std::endl;
+		std::cerr << "The modelData was successfully converted to GPUmodelData." << std::endl;
 
 		return modelGPU;
 	}
@@ -153,7 +153,7 @@ Engine::Graphics::Model::ModelGPU Engine::Graphics::Render::GPUBufferUtils::crea
 
 	}
 
-	std::cout << "The modelData was successfully converted to GPUmodelData." << std::endl;
+	std::cerr << "The modelData was successfully converted to GPUmodelData." << std::endl;
 
 	return modelGPU;
 }

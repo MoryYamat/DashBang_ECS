@@ -26,6 +26,9 @@
 
 // ------------- character ------------- 
 
+// animation
+#include "Game/Character/Private/Animation/Public/LocomAnimComponent.hpp"
+
 // control
 #include "Game/Character/Private/Control/Public/IntentComponent.hpp"
 
@@ -142,6 +145,15 @@ namespace Game::Actor
 		ctx.ww.Add<Game::ECS::Tags::PlayerCharacterTag>(e);
 		NameComponent& name = ctx.ww.Add<NameComponent>(e);
 		name.name = "Player";
+
+		// anim decision
+		ctx.ww.Add<Game::Character::Animation::FinalAnimDecisionComponent>(e);
+		auto& animProf = ctx.ww.Add<Game::Character::Animation::AnimationProfileComponent>(e);
+		animProf.profileId = "PaladinDefault";
+
+		// mv
+		ctx.ww.Add<Game::Character::Animation::Movement::MovementAnimDecisionComponent>(e);
+		ctx.ww.Add<Game::Character::Animation::Movement::LocomotionAnimQueryComponent>(e);
 
 		std::cout << "[Test Actor]: Test Actor Created.\n";
 	}

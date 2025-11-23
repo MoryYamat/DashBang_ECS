@@ -39,7 +39,7 @@
 //#include "Core/ECS/Component/Collision/ColliderType.h"
 
 // collision comp
-#include "Game/Collision/Private/Component/CollisionMaskComponent.h"
+#include "Game/Collision/Public/CollisionMaskComponent.hpp"
 
 // Skill
 #include "Game/Combat/Private/Skill/Component/SkillInstanceComponent.h"
@@ -71,10 +71,10 @@
 // character 
 
 // animation
-#include "Game/Character/Private/Animation/Query/Locomotion/LocomotionAnimationQueryComponent.hpp"
-#include "Game/Character/Private/Animation/Resolve/Movement/MovementAnimDecisionComponent.hpp"
+
+
 #include "Game/Character/Private/Animation/Profile/AnimationProfileComponent.hpp"
-#include "Game/Character/Private/Animation/Arbiter/FinalAnimationDecisionComponent.hpp"
+
 
 #include "Game/Character/Private/Animation/Query/Skill/SkillAnimationQueryComponent.hpp"
 #include "Game/Character/Private/Animation/Resolve/Skill/SkillAnimDecisionComponent.hpp"

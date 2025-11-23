@@ -7,8 +7,11 @@
 
 #include "Engine/ECS/Public/Types.hpp"
 
+#include "Engine/Log/Public/LogApi.hpp"
+
 #include <functional>
-#include <iostream>
+#include <string>
+
 
 namespace Engine::ECS::Core
 {
@@ -21,9 +24,12 @@ namespace Engine::ECS::Core
 
 			if (phase == InitPhase::deffered)
 			{
-				std::cout << "[Init] Deferred Init for: " << typeid(Component).name() << std::endl;
+				// std::cerr << "[Init] Deferred Init for: " << typeid(Component).name() << std::endl;
+				// Engine::Log::Write(Engine::Log::Level::Info, "[Init] Deferred Init for: ", typeid(Component).name());
 				auto ents = Engine::WorldSystem::Query::ViewWhere(ctx.rw, Engine::WorldSystem::Query::All<Component>{});
-				std::cout << " - Found " << ents.size() << " entities." << std::endl;
+
+				// Engine::Log::Write(Engine::Log::Level::Info, "- Found ", std::string(ents.size()) + " entities.");
+				// std::cerr << " " << ents.size() << " " << std::endl;
 
 				for (auto e : ents)
 				{
@@ -40,11 +46,11 @@ namespace Engine::ECS::Core
 		{
 			if (!(ApplyDefferedInit<Components>(ctx, window),...))
 			{
-				std::cout << "[Deffered Initialization] failed to deffered init\n";
+				Engine::Log::Write(Engine::Log::Level::Fatal, "[Deffered Initialization] failed to deffered init", "");
 				return false;
 			}
 
-			std::cout << "[Deffered Initialization] deffered initialization completed successfully\n";
+			// std::cerr << "[Deffered Initialization] deffered initialization completed successfully\n";
 			return true;
 		}
 	}

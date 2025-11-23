@@ -23,7 +23,7 @@
 
 #include "Engine/ECS/Component/Logic2D/CollisionComponent.h"
 
-#include "Game/Collision/Private/Component/CollisionMaskComponent.h"
+#include "Game/Collision/Public/CollisionMaskComponent.hpp"
 #include "Game/ECS/Private/Component/TeamComponent.h"
 
 #include "Engine/Graphics/Private/Renderer/Shader.h"

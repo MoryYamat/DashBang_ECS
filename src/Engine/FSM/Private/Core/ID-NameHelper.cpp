@@ -120,7 +120,7 @@ namespace Engine::FSM::Debug
 		const auto toName = GetStateName(inst, d.to);
 		const auto slotName = (d.slot != UINT32_MAX) ? GetSlotName(inst, d.slot) : std::string_view("<none>");
 
-		std::cout << "[FSM Transition Info]: e:'" << e.id
+		std::cerr << "[FSM Transition Info]: e:'" << e.id
 			<< "' axis:'" << inst.ax->axisName.c_str()
 			<< "' fsm:'" << inst.fsm->name.c_str()
 			<< "' s:'" << std::string(fromName).c_str()

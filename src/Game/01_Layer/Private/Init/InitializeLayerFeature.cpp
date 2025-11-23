@@ -7,7 +7,6 @@
 
 #include "Game/00_Feature/Private/Collision/CollisionFeature.h"
 
-#include "Game/00_Feature/Private/Character/Animation/AnimationFeature.hpp"
 
 #include "Game/00_Feature/Private/Character/State/CharacterStateFeature.hpp"
 
@@ -24,6 +23,7 @@
 
 // world
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
+#include "Game/00_Feature/Private/Character/Animation/AnimationFeature.hpp"
 
 #include <iostream>
 
@@ -85,6 +85,10 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialization(Engine::WorldSys
 		std::cout << "[fsms initialization failed]\n";
 	}
 
+	// Collision
+	Game::Feature::CollisionFeature::InitCollisionBuffer(ctx);
+
+	// Anim
 	Game::Feature::Character::Animation::CharacterAnimationFeature::InitProfileDatabase(ctx);
 
 	Game::FSM::Debug::SmokeTest_Movement(ctx);

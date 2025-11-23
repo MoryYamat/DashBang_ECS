@@ -10,8 +10,11 @@
 
 namespace Game::Collision
 {
+	void CollisionDetectionSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
+
 	void InitAllCollisionSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
 
+	void UpdateCollisionSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
 
 	// TODO: 以下ローカルのstatic 関数化してAPI公開不要かどうか検討
 	bool shouldCollideWithCat(

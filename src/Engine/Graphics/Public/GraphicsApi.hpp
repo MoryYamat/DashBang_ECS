@@ -17,3 +17,8 @@ namespace Engine::Graphics
 
 	Engine::Graphics::Model::ModelGPU createMeshGPUBuffers(const Engine::Graphics::Model::ModelData& modelData);
 }
+
+namespace Engine::Graphics::Animation
+{
+	void AnimationSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
+}

@@ -19,10 +19,10 @@ namespace Engine::ECS::Meta::Init
 
 		if constexpr (phase == InitPhase::Deferred)
 		{
-			std::cout << "[Init] Deferred Init for: " << typeid(Component).name() << std::endl;
+			///std::cout << "[Init] Deferred Init for: " << typeid(Component).name() << std::endl;
 
 			auto entities = ecs.view<Component>();
-			std::cout << " - Found " << entities.size() << " entities." << std::endl;
+			//std::cout << " - Found " << entities.size() << " entities." << std::endl;
 
 			for (Entity e : ecs.view<Component>())
 			{

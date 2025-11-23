@@ -32,26 +32,6 @@ namespace Game::Character::FSM::Movement
 
 			inst.beginFrame(dt);
 
-			// 最初は requiredBits や candidateSlots を活かす実装でなくてもよい
-			// TODO: 上を活かす実装
-
-			//auto* moveIntentDir = ctx.rw.TryGet<Game::Character::Control::MovingIntentComponent>(entry.e);
-			//glm::vec2 testDir;
-			//static float testdt = 0.0f;
-			//if (testdt > 5.0f)
-			//{
-			//	testDir = glm::vec2(0.0f);
-			//}
-			//else if (testdt < 10.0f)
-			//{
-			//	testdt += dt;
-			//	testDir = glm::vec2(1.0f);
-			//}
-			//else
-			//{
-			//	testDir = glm::vec2(0.0f);
-			//}
-
 			auto* moveIntent = ctx.ww.TryGetWithWarnOnce<Game::Character::Control::MovingIntentComponent>(entry.e);
 			if (!moveIntent) continue;
 			reader.movementInputMag = moveIntent ? glm::length2(moveIntent->direction) : 0.0f;

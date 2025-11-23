@@ -5,14 +5,12 @@
 #include "Engine/ECS/Entity.h"
 #include "Engine/ECS/EntityManager.h"
 
-#include "Engine/ECS/Component/Logic2D/TileMapComponent.h"
+#include "Engine/Log/Public/LogApi.hpp"
 
-#include "Game/Collision/Private/Data/CollisionResultStorage.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-#include <iostream>
 
 
 namespace Engine::Debug::Logging

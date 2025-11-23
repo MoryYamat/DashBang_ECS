@@ -11,6 +11,7 @@
 #include "Engine/Component/Private/Logic2D/Logic2DComponent.hpp"
 #include "Engine/Component/Private/Graphics/ShaderComponent.hpp"
 
+#include "Game/Character/Private/Animation/Public/LocomAnimComponent.hpp"
 
 #include "Game/Init/Public/InitApi.hpp"
 
@@ -57,5 +58,7 @@ namespace Game::Actor
 
 		Model::ModelGPU modelGPU = Render::GPUBufferUtils::createMeshGPUBuffers(model);
 		ctx.ww.Add<MeshComponent>(e, MeshComponent{ std::move(model), std::move(modelGPU) });
+
+
 	}
 }

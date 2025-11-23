@@ -13,7 +13,7 @@
 #include "Game/ECS/Private/Component/LifetimeComponent.hpp"
 
 // collision
-#include "Game/Collision/Private/Component/CollisionMaskComponent.h"
+#include "Game/Collision/Public/CollisionMaskComponent.hpp"
 
 // Team ID
 #include "Game/ECS/Private/Component/TeamComponent.h"
@@ -40,7 +40,7 @@ namespace Game::Combat::Skill::FSM::Effect
 			using namespace Game::ECS::Component;
 			using namespace Engine::ECS::Component::Logic2D;
 
-			using namespace Game::Collision::Component;
+			using namespace Game::Collision;
 
 			namespace Ops = Engine::ECS::Ops;
 			if (!def.spawnHitArea.has_value()) return;
@@ -56,8 +56,8 @@ namespace Game::Combat::Skill::FSM::Effect
 			// TODO: 
 			// FIXME: def に定義されたCollisionMaskをコピーし，追加するように変更する
 			// CollisionMask
-			Ops::Add<Game::Collision::Component::CollisionMaskComponent>(ecs, eHitbox,
-				Game::Collision::Component::CollisionMaskComponent
+			Ops::Add<Game::Collision::CollisionMaskComponent>(ecs, eHitbox,
+				Game::Collision::CollisionMaskComponent
 				{
 					.category = Category::SkillHitbox,
 					.collideCategoryMask = bit(Category::CharacterBody),

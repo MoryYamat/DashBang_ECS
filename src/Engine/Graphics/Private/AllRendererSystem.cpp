@@ -2,7 +2,7 @@
 
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
-#include "Engine/Graphics/Private/Animation/AnimationSystem.hpp"
+
 #include "Engine/Graphics/Public/Types.hpp"
 
 #include <iostream>
@@ -15,8 +15,10 @@ namespace Engine::Graphics
 		RendererPipeline pipeline;
 		BuildRendererPipeline(ctx, pipeline);
 		
+		// animation 
+		Engine::Graphics::Animation::AnimationSystem(ctx);
 
-		Engine::Graphics::Animation::System::AnimationSystem(ctx);
+		// render
 		RenderSystem(ctx, shader, pipeline, aspect, context);
 	}
 }

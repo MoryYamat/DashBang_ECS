@@ -38,7 +38,7 @@
 // デバッグ用（論理系）の描画する機能まとめてを提供
 void Engine::Debug::Drawing::Logic2D::Draw(Engine::ECS::EntityMgr& ecs,
 	const Engine::Graphics::RenderContext& renderContext,
-	const Game::Collision::Data::CollisionResultStorage& collisionResult
+	const Game::Collision::CollisionResultStorage& collisionResult
 )
 {
 
@@ -181,18 +181,12 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerCollision(Engine::ECS::Enti
 	}
 }
 
+
+// 廃止：　削除予定
 void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerAndTileMap(Engine::ECS::EntityMgr& ecs,
 	const Engine::Graphics::RenderContext& renderContext,
-	const Game::Collision::Data::CollisionResultStorage& collisionResult)
+	const Game::Collision::CollisionResultStorage& collisionResult)
 {
-	glm::vec3 color = glm::vec3(1.0f, 0.0f, 0.0f);
-
-	Engine::ECS::Component::Logic2D::TileMapComponent tileMapComp;
-	for (Engine::ECS::Entity e : ecs.view<Engine::ECS::Component::Logic2D::TileMapComponent>())
-	{
-		tileMapComp = ecs.get<Engine::ECS::Component::Logic2D::TileMapComponent>(e);
-		break;
-	}
 
 	//for (Entity e : ecs.view<CollisionComponent>())
 	//{
@@ -201,19 +195,6 @@ void Engine::Debug::Drawing::Logic2D::DebugDrawPlayerAndTileMap(Engine::ECS::Ent
 	//	// ここでこれを呼び出すのがおかしいのでそれを修正する
 	//	//CollisionUtils::TestCircleTileMapCollisionHighlight(collisionComp, tileMapComp);
 	//}
-
-	const auto& hitTileIndices = collisionResult.GetTileCollisions();
-
-
-	for (const auto& idx : collisionResult.GetTileCollisions())
-	{
-		auto [tileMin, tileMax] = tileMapComp.GetTileAABB(idx.y, idx.x);
-
-		// DebugUtils::LogVector_string("tilemin", tileMin);
-		// DebugUtils::LogVector_string("tileMax", tileMax);
-
-		Engine::Debug::Drawing::DrawTileOutline(tileMin, tileMax, color);
-	}
 
 	// DebugUtils::DebugDraw::DrawTileOutline(collisionResult, tileMapComp, color);
 }

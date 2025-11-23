@@ -1,10 +1,15 @@
 ﻿#pragma once
 
+#include "Engine/WorldSystem/Public/WorldFwd.hpp"
+
 #include <string>
 #include <unordered_map>
 
-namespace Game::Character::Animation::Profile
+namespace Game::Character::Animation::Movement
 {
+
+	bool InitMoveAnimProfile(Engine::WorldSystem::Core::WorldCtx& ctx);
+
 	struct MovementAnimationProfile
 	{
 		std::string idle;
@@ -29,4 +34,5 @@ namespace Game::Character::Animation::Profile
 			return (it == movements.end()) ? nullptr : &it->second;
 		}
 	};
+
 }

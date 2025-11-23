@@ -2,7 +2,7 @@
 
 
 
-#include "Game/01_Layer/Private/Anim/LocomotionResolverLayerFeature.hpp"
+#include "Game/01_Layer/Private/Anim/AnimResolverLayerFeature.hpp"
 #include "Game/01_Layer/Private/Debug/debugLayerFeature.hpp"
 #include "Game/01_Layer/Private/Init/InitializeLayerFeature.h"
 #include "Game/01_Layer/Private/Input/InputLayerFeature.h"

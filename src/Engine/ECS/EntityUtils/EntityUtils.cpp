@@ -44,7 +44,7 @@ Engine::ECS::Entity Engine::ECS::EntityUtils::getEntityByName(EntityMgr& ecs, co
 		}
 	}
 
-	std::cout << "[EntityUtils.cpp]: There is no entity named: [[ "<< name << " ]] ." << std::endl;
+	std::cerr << "[EntityUtils.cpp]: There is no entity named: [[ "<< name << " ]] ." << std::endl;
 
 	return Engine::ECS::Entity::INVALID;
 }

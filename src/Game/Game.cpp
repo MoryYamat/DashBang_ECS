@@ -43,7 +43,7 @@
 // Graphic
 #include "Engine/Graphics/Private/Renderer/RenderSystem.h"
 #include "Engine/Graphics/Private/Model/AssimpImporter.h"
-#include "Engine/Graphics/Private/Animation/AnimationSystem.hpp"
+
 #include "Engine/Graphics/Public/GraphicsApi.hpp"
 
 // Time
@@ -92,7 +92,7 @@
 #include "Game/Init/Private/InitComponent/InputBindingInit.h"
 
 // collision systems
-#include "Game/Collision/Private/System/CollisionDetectionSystem.h"
+
 
 // skill
 #include "Game/Combat/Private/Skill/System/Trigger/PlayerSkillTriggerSystem.h"
@@ -443,6 +443,7 @@ void GameApp::GameApp::generateOutputs(Engine::WorldSystem::Core::WorldCtx& ctx)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Engine::Graphics::UpdateRendererAll(ctx, *shader_, window_->GetAspect(), renderCtx_);
+	Game::Layer::LocomotionAnimLayerFeature::Update(ctx);
 	Game::Layer::DrawLayerFeature::Update(ctx, *shader_, *window_, renderCtx_);
 
 
@@ -473,6 +474,9 @@ void GameApp::GameApp::loadData(Engine::WorldSystem::Core::WorldCtx& ctx)
 	GameApp::RunInitializationPhase(ctx);
 }
 
+
+// FSM関係以外の現状復帰を目指す
+// 後は、Collision だけ
 
 // Input までOK
 // 次は、移動による座標更新

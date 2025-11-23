@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Engine/ECS/Public/Entity.hpp"
+#include "Engine/Log/Public/LogAPi.hpp"
 
 #include <cstdint>
 #include <unordered_set>
@@ -47,7 +48,11 @@ namespace Engine::ECS::Core
 			assert(IsAlive(e));
 			auto& bucket = pools_[typeid(T)];
 			auto it = bucket.find(e.id);
-			assert(it == bucket.end() && "AddComponent<T>: already exists");
+			if (it != bucket.end())
+			{
+				Engine::Log::Write(Engine::Log::Level::Fatal, "Registry", typeid(T).name() + std::string("already exists"));
+				assert(false && "AddComponent<T>: already exists");
+			}
 			auto sp = std::make_shared<T>(std::forward<A>(a)...);
 			auto& ref = *sp;
 			bucket.emplace(e.id, std::move(sp));
@@ -78,7 +83,12 @@ namespace Engine::ECS::Core
 		[[nodiscard]] T& Get(Entity e)
 		{
 			auto* p = TryGet<T>(e);
-			assert(p && "Get<T>: component missing");
+			if (!p)
+			{
+				Log::Write(Engine::Log::Level::Fatal,
+					"Registry", std::string("Registry missing: ") + typeid(T).name());
+				assert(false && "Get<T>: component missing");
+			}
 			return *p;
 		}
 
@@ -86,7 +96,12 @@ namespace Engine::ECS::Core
 		[[nodiscard]] const T& Get(Entity e) const
 		{
 			auto* p = TryGet<T>(e);
-			assert(p && "Get<T>: component missing");
+			if (!p)
+			{
+				Log::Write(Engine::Log::Level::Fatal,
+					"Registry", std::string("Registry missing: ") + typeid(T).name());
+				assert(false && "Get<T>: component missing");
+			}
 			return *p;
 		}
 

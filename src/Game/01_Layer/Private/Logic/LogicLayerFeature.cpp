@@ -78,4 +78,5 @@ void Game::Layer::LogicLayerFeature::Update(Engine::WorldSystem::Core::WorldCtx&
 {
 	Game::Feature::Character::MovementFeature::UpdateLogicPosition(ctx);
 	Engine::Sync::Apply2DTransform(ctx);
+	Game::Feature::CollisionFeature::UpdateCollisionSystem(ctx);
 }

@@ -1,31 +1,34 @@
 ﻿#pragma once
 
-#include "Engine/ECS/EntityManager.h"
+// #include "Engine/ECS/EntityManager.h"
 
-#include "Engine/ECS/Ops/CoreOps.hpp"
+// #include "Engine/ECS/Ops/CoreOps.hpp"
 
-#include "Game/Character/Private/Animation/Profile/Movement/MovementAnimationProfile.hpp"
+// #include "Game/Character/Private/Animation/Private/Movement/AnimationProfile.hpp"
+
+#include "Engine/WorldSystem/Public/WorldFwd.hpp"
 
 namespace Game::Character::Animation::Profile::Init
 {
-	inline void InitAnimationProfileDatabase(Engine::ECS::EntityMgr& ecs)
-	{
-		namespace Ops = Engine::ECS::Ops;
-		namespace MvProfile = Game::Character::Animation::Profile;
+	//inline void InitAnimationProfileDatabase(Engine::ECS::EntityMgr& ecs)
+	//{
+	//	namespace Ops = Engine::ECS::Ops;
+	//	namespace MvProfile = Game::Character::Animation::Profile;
 
-		auto& mvdb = Ops::CreateResouce<MvProfile::MovementAnimationProfileDatabase>(ecs);
+	//	auto& mvdb = Ops::CreateResouce<MvProfile::MovementAnimationProfileDatabase>(ecs);
 
-		mvdb.movements["PaladinDefault"] = MvProfile::MovementAnimationProfile
-		{
-			.idle = "idle_default",
-			.runFwd = "run_fwd_default",
-			.runBack = "run_back_default",
-			.runRight = "run_right_default",
-			.runLeft = "run_left_default",
-			.runFwdLeft = "run_fwd_left_default",
-			.runFwdRight = "run_fwd_right_default",
-			.runBackLeft = "run_back_left_default",
-			.runBackRight = "run_back_right_default",
-		};
-	}
+	//	mvdb.movements["PaladinDefault"] = MvProfile::MovementAnimationProfile
+	//	{
+	//		.idle = "idle_default",
+	//		.runFwd = "run_fwd_default",
+	//		.runBack = "run_back_default",
+	//		.runRight = "run_right_default",
+	//		.runLeft = "run_left_default",
+	//		.runFwdLeft = "run_fwd_left_default",
+	//		.runFwdRight = "run_fwd_right_default",
+	//		.runBackLeft = "run_back_left_default",
+	//		.runBackRight = "run_back_right_default",
+	//	};
+	//}
 }
+
