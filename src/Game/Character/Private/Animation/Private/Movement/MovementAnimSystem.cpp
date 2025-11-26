@@ -229,7 +229,7 @@ namespace Game::Character::Animation::Movement
 				}
 			}
 
-
+			// TODO: データ駆動化
 			switch (dec.type)
 			{
 			case Type::Idle: dec.clipKey = mp->idle.empty() ? "idle_default" : mp->idle; break;

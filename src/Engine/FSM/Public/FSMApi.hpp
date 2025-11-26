@@ -11,7 +11,8 @@
 
 namespace Engine::FSM::Core
 {
-	using RegisterFn = void(*)(FSMRegistry& reg);  // DTO を reg.add(...) する
+	//using RegisterFn = void(*)(FSMRegistry& reg);  // DTO を reg.add(...) する
+	using RegisterFn = std::function<void(FSMRegistry& reg)>;  // DTO を reg.add(...) する
 	// フィールド名→インデックス解決用の関数型(ゲーム側が提供)
 	using FieldResolver = std::function<bool(std::string_view name, std::uint16_t& outIndex)>;
 

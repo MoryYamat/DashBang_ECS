@@ -9,28 +9,28 @@
 
 namespace Game::Character::FSM::Movement
 {
+	using namespace Engine::WorldSystem::Query;
+	using namespace Engine::Component;
+
 	// Entityのフィルタリング
 	void BuildMovementPipeline(Engine::WorldSystem::Core::WorldCtx& ctx, MovementPipeline& out)
 	{
 		out.clear();
-		ctx.ww.ForEachAlive([&](Engine::ECS::Core::Entity e)
-			{
-				// FSM内で必ず持つ必要があるComponentの設定
-				// 最小公倍数であるべき
-				auto* axis = ctx.ww.TryGet<MovementAxisComp>(e);
-				auto* state = ctx.ww.TryGet<MovementStateComp>(e);
-				auto* vel = ctx.ww.TryGet<Engine::Component::Velocity2DComponent>(e);
-				// auto* stats = ctx.ww.TryGet<Game::Character::Stats::CharacterStatsComponent>(e);
-				// auto* intent = ctx.ww.TryGet<Game::Character::Control::Movement::MovingIntentComponent>(e);
-				if (!axis || !state || !vel) return;
+		auto ents = ViewWhere(ctx.rw, All<MovementAxisComp, MovementStateComp, Velocity2DComponent>{});
 
+		for (const auto& e : ents)
+		{
+			auto* axis = ctx.ww.TryGet<MovementAxisComp>(e);
+			auto* state = ctx.ww.TryGet<MovementStateComp>(e);
+			auto* vel = ctx.ww.TryGet<Engine::Component::Velocity2DComponent>(e);
 
-				out.push_back(MovementPipelineEntry{
+			out.push_back(MovementPipelineEntry{
 					e,
 					axis,
 					state,
 					vel
-					});
-			});
+				});
+		}
 	}
+
 }

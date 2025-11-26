@@ -10,17 +10,23 @@
 #include "Game/Character/Private/FSM/Public/MovementTypes.hpp"
 #include "Game/Character/Private/FSM/Public/MovementAxisApi.hpp"
 
+#include "Game/Character/Private/FSM/Public/SkillAxisApi.hpp"
+
+
+#include "Engine/Log/Public/LogApi.hpp"
+
 #include <string_view>
 
 namespace Game::FSM
 {
-	//inline Engine::FSM::Core::RegisterFn MakeGameRegisterProvider()
-	//{
-	//	return [](FSMRegistry& reg)
-	//		{
-	//			Game::Character::FSM::Movement::RegisterMovementAxes(reg);
-	//		};
-	//}
+	inline Engine::FSM::Core::RegisterFn MakeGameRegisterProvider()
+	{
+		return [](Engine::FSM::Core::FSMRegistry& reg)
+			{
+				Game::Character::FSM::Movement::RegisterMovementAxes(reg);
+				Game::Character::FSM::Skill::RegisterSkillAxes(reg);
+			};
+	}
 
 	inline Engine::FSM::Core::FieldResolverProvider MakeGameResolverProvider()
 	{
@@ -28,13 +34,16 @@ namespace Game::FSM
 			{
 				if (axisName == "Movement") { out = Game::Character::FSM::Movement::MakeMovementFieldResolver(); return true; }
 				// 他 Axis はここに追加("Skill" など)
+				if (axisName == "Skill") { out = Game::Character::FSM::Skill::MakeSkillFieldResolver(); return true; }
 				return false;// 未登録Axis
 			};
+
 	}
 
 	inline bool InitGameTable(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
 		using namespace Game::Character::FSM::Movement;
+		using namespace Game::Character::FSM::Skill;
 
 		bool ok = true;
 
@@ -47,6 +56,17 @@ namespace Game::FSM
 			if (!InitMovementTable(ctx, cTbl, sTbl, pTbl, lTbl))
 			{
 				std::printf("[InitGameCondTable] Failed to init MovementTable\n");
+				ok = false;
+			}
+		}
+
+		{
+			auto& cTble = ctx.ww.CreateResource<SkillCondTable>();
+			auto& sTble = ctx.ww.CreateResource<SkillStateTable>();
+			auto& pTble = ctx.ww.CreateResource<SkillProfileTable>();
+			if (!InitSkillFSMTable(ctx, cTble, sTble, pTble))
+			{
+				Engine::Log::Write(Engine::Log::Level::Error, "InitSkillFSMTable", "Failed to init SkillFSMTable");
 				ok = false;
 			}
 		}

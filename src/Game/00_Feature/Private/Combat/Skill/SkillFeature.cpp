@@ -25,98 +25,75 @@
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
 
-// Initialize Database
-void Game::Feature::Combat::SkillFeature::InitializeSkillDatabase(Engine::ECS::EntityMgr& ecs)
-{
-	// Game::Combat::Skill::System::InitializeSkills(ecs);// 削除予定：FSM導入後廃止
-	Game::Combat::Skill::Database::SkillResourceInitialization(ecs);
-}
+#include "Game/Combat/Skill/Public/SkillApi.hpp"
 
-// Intent
-void Game::Feature::Combat::SkillFeature::UpateSkillIntent(Engine::ECS::EntityMgr& ecs)
-{
-	// std::cout << "here\n";
-	Game::Input::Intent::SkillIntentMappingSystem::UpdatePlayerSkillIntent(ecs);
-}
-
-// Trigger
-void Game::Feature::Combat::SkillFeature::TriggerSkillsFromIntent(Engine::ECS::EntityMgr& ecs)
-{
-	// 削除予定：廃止 SkillSystemの再構築に伴う
-	// player Skill trigger
-	// Game::Combat::SkillTrigger::PlayerSkillTriggerSystem::TriggerPlayerSkillsFromIntent(ecs);
-}
-
-// 廃止
-//void Game::Feature::Combat::SkillFeature::SkillGenerateSystem(Engine::ECS::EntityMgr& ecs)
+//// Initialize Database
+//void Game::Feature::Combat::SkillFeature::InitializeSkillDatabase(Engine::ECS::EntityMgr& ecs)
 //{
-//	Game::Combat::Skill::System::SpawnSkillHitArea(ecs);
+//	// Game::Combat::Skill::System::InitializeSkills(ecs);// 削除予定：FSM導入後廃止
+//	Game::Combat::Skill::Database::SkillResourceInitialization(ecs);
 //}
-
-
-void Game::Feature::Combat::SkillFeature::UpdateSkillTrajectorySystem(Engine::ECS::EntityMgr& ecs, float deltaTime)
-{
-	Game::Combat::Skill::System::SkillTrajectorySystem::Update(ecs, deltaTime);
-}
-
-
-// 削除予定：SkillExecutionをcharacterアクターへ付与する方式に変更したため
-void Game::Feature::Combat::SkillFeature::UpdateSkillExecutionLifetimeSystem(Engine::ECS::EntityMgr& ecs)
-{
-	//Game::Combat::Skill::System::UpdateSkillExecutionLifetimeSystem(ecs);
-}
-
-void Game::Feature::Combat::SkillFeature::UpdateSkillPhaseSystem(Engine::ECS::EntityMgr& ecs, float deltaTime)
-{
-	// 削除予定：FSM導入後廃止
-	// Game::Combat::Skill::System::UpdateSkillPhase(ecs, deltaTime);// スキルの段階を更新
-	// Game::Combat::Skill::System::UpdateAttack2DAreaLifetimeSystem(ecs, deltaTime);// 攻撃判定のライフタイムを更新
-
-	// lifetimeComponent導入後未使用：削除予定
-	// Game::Combat::Skill::System::AttackLifetimeSystem::Update(ecs, deltaTime);// 攻撃判定のライフタイムを更新
-}
-
-void Game::Feature::Combat::SkillFeature::UpdateHitoboxLifetimeSystem(Engine::ECS::EntityMgr& ecs, float deltaTime)
-{
-	Game::Combat::Skill::System::HitboxLifetimeControlSystem::Update(ecs, deltaTime);
-}
+//
+//// Intent
+//void Game::Feature::Combat::SkillFeature::UpateSkillIntent(Engine::ECS::EntityMgr& ecs)
+//{
+//	// std::cout << "here\n";
+//	Game::Input::Intent::SkillIntentMappingSystem::UpdatePlayerSkillIntent(ecs);
+//}
+//
+//// Trigger
+//void Game::Feature::Combat::SkillFeature::TriggerSkillsFromIntent(Engine::ECS::EntityMgr& ecs)
+//{
+//	// 削除予定：廃止 SkillSystemの再構築に伴う
+//	// player Skill trigger
+//	// Game::Combat::SkillTrigger::PlayerSkillTriggerSystem::TriggerPlayerSkillsFromIntent(ecs);
+//}
+//
+//// 廃止
+////void Game::Feature::Combat::SkillFeature::SkillGenerateSystem(Engine::ECS::EntityMgr& ecs)
+////{
+////	Game::Combat::Skill::System::SpawnSkillHitArea(ecs);
+////}
+//
+//
+//void Game::Feature::Combat::SkillFeature::UpdateSkillTrajectorySystem(Engine::ECS::EntityMgr& ecs, float deltaTime)
+//{
+//	Game::Combat::Skill::System::SkillTrajectorySystem::Update(ecs, deltaTime);
+//}
+//
+//
+//// 削除予定：SkillExecutionをcharacterアクターへ付与する方式に変更したため
+//void Game::Feature::Combat::SkillFeature::UpdateSkillExecutionLifetimeSystem(Engine::ECS::EntityMgr& ecs)
+//{
+//	//Game::Combat::Skill::System::UpdateSkillExecutionLifetimeSystem(ecs);
+//}
+//
+//void Game::Feature::Combat::SkillFeature::UpdateSkillPhaseSystem(Engine::ECS::EntityMgr& ecs, float deltaTime)
+//{
+//	// 削除予定：FSM導入後廃止
+//	// Game::Combat::Skill::System::UpdateSkillPhase(ecs, deltaTime);// スキルの段階を更新
+//	// Game::Combat::Skill::System::UpdateAttack2DAreaLifetimeSystem(ecs, deltaTime);// 攻撃判定のライフタイムを更新
+//
+//	// lifetimeComponent導入後未使用：削除予定
+//	// Game::Combat::Skill::System::AttackLifetimeSystem::Update(ecs, deltaTime);// 攻撃判定のライフタイムを更新
+//}
+//
+//void Game::Feature::Combat::SkillFeature::UpdateHitoboxLifetimeSystem(Engine::ECS::EntityMgr& ecs, float deltaTime)
+//{
+//	Game::Combat::Skill::System::HitboxLifetimeControlSystem::Update(ecs, deltaTime);
+//}
 
 //
 //
 namespace Game::Feature::Combat
 {
-	void SkillFeature::InitializeSkillDatabase(Engine::WorldSystem::Core::WorldCtx& ctx)
+	void SkillFeature::InitSkillSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
-
+		Game::Combat::Skill::InitAllSkillSystem(ctx);
 	}
 
-	void SkillFeature::UpateSkillIntent(Engine::WorldSystem::Core::WorldCtx& ctx)
+	void SkillFeature::UpdateSkillSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
-	
-	}
-
-	void SkillFeature::TriggerSkillsFromIntent(Engine::WorldSystem::Core::WorldCtx& ctx)
-	{
-	
-	}
-
-	void SkillFeature::UpdateSkillTrajectorySystem(Engine::WorldSystem::Core::WorldCtx& ctx)
-	{
-	
-	}
-
-	void SkillFeature::UpdateSkillPhaseSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
-	{
-	
-	}
-
-	void SkillFeature::UpdateSkillExecutionLifetimeSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
-	{
-	
-	}
-
-	void SkillFeature::UpdateHitoboxLifetimeSystem(Engine::WorldSystem::Core::WorldCtx& ctx) 
-	{
-		
+		Game::Combat::Skill::UpdateAllSkillRuntimeSystem(ctx);
 	}
 }

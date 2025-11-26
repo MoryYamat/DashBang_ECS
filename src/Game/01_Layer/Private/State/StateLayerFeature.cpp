@@ -12,6 +12,7 @@
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
 #include "Game/Character/Private/FSM/Public/MovementAxisApi.hpp"
+#include "Game/Character/Private/FSM/Public/SkillAxisApi.hpp"
 
 void Game::Layer::StateLayerFeature::Update(Engine::ECS::EntityMgr& ecs, float deltaTime)
 {
@@ -52,4 +53,5 @@ void Game::Layer::StateLayerFeature::Update(Engine::ECS::EntityMgr& ecs, float d
 void Game::Layer::StateLayerFeature::Update(Engine::WorldSystem::Core::WorldCtx& ctx)
 {
 	Game::Character::FSM::Movement::UpdateMovementAll(ctx);
+	Game::Character::FSM::Skill::UpdateAllSkillFSM(ctx);
 }

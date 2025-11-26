@@ -76,7 +76,13 @@ void Game::Layer::LogicLayerFeature::Update(Engine::ECS::EntityMgr& ecs, float d
 
 void Game::Layer::LogicLayerFeature::Update(Engine::WorldSystem::Core::WorldCtx& ctx)
 {
+	// position
 	Game::Feature::Character::MovementFeature::UpdateLogicPosition(ctx);
 	Engine::Sync::Apply2DTransform(ctx);
+
+	// collision
 	Game::Feature::CollisionFeature::UpdateCollisionSystem(ctx);
+
+	// skill
+	Game::Feature::Combat::SkillFeature::UpdateSkillSystem(ctx);
 }

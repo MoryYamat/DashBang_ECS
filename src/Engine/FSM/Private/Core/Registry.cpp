@@ -55,6 +55,7 @@ namespace Engine::FSM::Core
 			return false;
 		char* end = nullptr;
 		const char* str = s.c_str();
+		// float に変換
 		out = std::strtof(str, &end);// TODO: ロケール考慮する必要あり
 
 		// パースができていて、かつ全体を消費しているか？

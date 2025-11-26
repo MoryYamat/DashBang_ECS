@@ -1,0 +1,33 @@
+﻿#pragma once
+
+#include <cstdint>
+
+namespace Game::Combat::Skill
+{
+	template<typename T>
+	struct StrongID
+	{
+		std::uint16_t v = UINT16_MAX;
+
+		constexpr StrongID() = default;
+		constexpr explicit StrongID(std::uint16_t value) : v(value) {};
+
+		constexpr bool valid() const
+		{
+			return v != UINT16_MAX;
+		}
+
+		friend constexpr bool operator == (StrongID, StrongID) = default;
+	};
+	struct SkillTag {}; using  SkillID = StrongID<SkillTag>;
+	// struct EffectSlotTag {}; using EffectSlotID = StrongID<EffectSlotTag>;
+
+	
+	inline constexpr SkillID kInvalidSkillID{};
+	// inline constexpr EffectSlotID kInvalidEffectSlotID{};
+	
+	struct SkillRuntimeComp;
+
+	class SkillCatalogBuilder;
+	struct SkillLogicCommandBuffer;
+}

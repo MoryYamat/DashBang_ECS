@@ -23,3 +23,8 @@ namespace Game::Character::FSM::Movement
 	// Engine::FSM::Core::FieldResolver MakeMovementFieldResolver();
 
 }
+
+namespace Game::Character::FSM::Skill
+{
+	Engine::FSM::Core::FieldResolver MakeSkillFieldResolver();
+}

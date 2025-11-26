@@ -9,3 +9,8 @@ namespace Game::Character::FSM::Movement
 	struct MovementFSMSystem;
 
 }
+
+namespace Game::Character::FSM::Skill
+{
+	
+}

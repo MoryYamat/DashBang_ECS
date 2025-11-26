@@ -43,6 +43,9 @@
 // tag
 #include "Game/ECS/Public/CharacterAttribTags.h"
 
+// ------------- Combat ------------- 
+#include "Game/Combat/Skill/Public/SkillTypes.hpp"
+
 // ------------- init --------------
 #include "Game/Init/Private/InitModel/InitLogicTransformFromModel.h"
 #include "Game/Init/Public/InitApi.hpp"
@@ -154,6 +157,9 @@ namespace Game::Actor
 		// mv
 		ctx.ww.Add<Game::Character::Animation::Movement::MovementAnimDecisionComponent>(e);
 		ctx.ww.Add<Game::Character::Animation::Movement::LocomotionAnimQueryComponent>(e);
+
+		// ------------- combat ------------- 
+		ctx.ww.Add<Game::Combat::Skill::SkillRuntimeComp>(e);
 
 		std::cout << "[Test Actor]: Test Actor Created.\n";
 	}

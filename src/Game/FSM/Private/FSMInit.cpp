@@ -6,6 +6,8 @@
 #include "Game/Character/Private/FSM/Public/FSMApi.hpp"
 #include "Game/Character/Private/FSM/Public/MovementAxisApi.hpp"
 
+#include "Game/Character/Private/FSM/Public/SkillAxisApi.hpp"
+
 namespace Game::FSM
 {
 	// using namespace Engine::FSM::Core;
@@ -14,12 +16,14 @@ namespace Game::FSM
 
 	bool InitAllFSMs_Game(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
-		auto registerFn = [](FSMRegistry& reg)
-			{
-				Game::Character::FSM::Movement::RegisterMovementAxes(reg);
-			};
+		//auto registerFn = [](FSMRegistry& reg)
+		//	{
+		//		Game::Character::FSM::Movement::RegisterMovementAxes(reg);
+		//		Game::Character::FSM::Skill::RegisterSkillAxes(reg);
+		//	};
 
-		// auto registerFn = MakeGameRegisterProvider();
+
+		auto registerFn = MakeGameRegisterProvider();
 
 		auto resolverProvider = MakeGameResolverProvider();
 
