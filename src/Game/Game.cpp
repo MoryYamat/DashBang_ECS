@@ -82,10 +82,9 @@
 #include "Game/Camera/Public/CameraApi.hpp"
 
 // Game/Input
-#include "Game/Input/Private/InputRouterSystem.h" 
 
 // Game/Input/Intent
-#include "Game/Input/Private/Intent/PlayerMovementIntentMapper.h"
+
 
 // Game Init
 #include "Game/Init/Private/InitTileMap/InitTileMap.h"

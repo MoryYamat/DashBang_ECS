@@ -4,7 +4,7 @@
 
 // #include "Engine/ECS/Ops/CoreOps.hpp"
 
-// #include "Game/Character/Private/Animation/Private/Movement/AnimationProfile.hpp"
+// #include "Game/Character/Animation/Private/Movement/AnimationProfile.hpp"
 
 #include "Engine/WorldSystem/Public/WorldFwd.hpp"
 

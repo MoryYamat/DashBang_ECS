@@ -1,6 +1,6 @@
 ﻿#include "LifeStateSystem.hpp"
 
-#include "Game/Character/Private/Stats/Public/StatsComponent.hpp"
+#include "Game/Character/Stats/Public/StatsComponent.hpp"
 #include "Game/Character/Private/State/Rule/Life/LifeStateTransitionDatabase.hpp"
 #include "Game/Character/Private/State/Rule/Life/LifeStateTransitionEvaluator.hpp"
 

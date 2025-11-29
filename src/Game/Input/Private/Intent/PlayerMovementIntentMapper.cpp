@@ -1,4 +1,4 @@
-﻿#include "PlayerMovementIntentMapper.h"
+﻿#include "Game/Input/Public/InputApi.hpp"
 
 #include "Game/Utils/Private/SpatialTransformUtils.h"
 
@@ -17,7 +17,7 @@
 #include "Engine/Component/Private/Logic2D/Logic2DComponent.hpp"
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 #include "Game/Input/Public/InputActionComponent.hpp"
-#include "Game/Character/Private/Control/Public/IntentComponent.hpp"
+#include "Game/Character/Control/Public/IntentComponent.hpp"
 #include "Game/ECS/Public/CharacterAttribTags.h"
 //
 #include <glm/glm.hpp>

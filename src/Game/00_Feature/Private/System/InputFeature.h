@@ -11,18 +11,6 @@
 // 廃止：削除予定
 namespace Game::Feature::Setting
 {
-	class InputFeature
-	{
-	public:
-		static void InitInputMapping(Engine::ECS::EntityMgr& ecs);
-
-		static void InitSkillInputMapping(Engine::ECS::EntityMgr& ecs);
-
-
-		//
-		//
-
-	};
 }
 
 namespace Game::Feature::Input

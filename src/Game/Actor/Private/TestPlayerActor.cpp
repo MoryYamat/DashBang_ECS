@@ -27,19 +27,18 @@
 // ------------- character ------------- 
 
 // animation
-#include "Game/Character/Private/Animation/Public/LocomAnimComponent.hpp"
+#include "Game/Character/Animation/Public/LocomAnimComponent.hpp"
 
 // control
-#include "Game/Character/Private/Control/Public/IntentComponent.hpp"
 #include "Game/Character/Control/Public/IntentComponent.hpp"
 
 // FSM
 // movement
-#include "Game/Character/Private/FSM/Public/MovementAxisComponent.hpp"
-#include "Game/Character/Private/FSM/Public/MovementAxisApi.hpp"
+#include "Game/Character/FSM/Public/MovementAxisComponent.hpp"
+#include "Game/Character/FSM/Public/MovementAxisApi.hpp"
 
 // stats
-#include "Game/Character/Private/Stats/Public/StatsComponent.hpp"
+#include "Game/Character/Stats/Public/StatsComponent.hpp"
 
 // tag
 #include "Game/ECS/Public/CharacterAttribTags.h"

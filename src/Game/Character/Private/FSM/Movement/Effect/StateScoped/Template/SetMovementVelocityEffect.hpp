@@ -3,7 +3,7 @@
 #include "Game/Character/Private/FSM/Movement/Effect/StateScoped/Template/IEffectTemplate.hpp"
 
 #include "Engine/ECS/Component/Logic2D/Velocity2DComponent.h"
-#include "Game/Character/Private/Stats/Public/StatsComponent.hpp"
+#include "Game/Character/Stats/Public/StatsComponent.hpp"
 
 #include <glm/glm.hpp>
 

@@ -1,4 +1,4 @@
-﻿#include "Game/Combat/Skill/Public/Builder.hpp"
+﻿#include "Game/Combat/Skill/Private/SkillCatalogBuilder.hpp"
 #include "Game/Combat/Skill/Public/SkillTypes.hpp"
 
 #include "Engine/FSM/Public/FSMFwd.hpp"

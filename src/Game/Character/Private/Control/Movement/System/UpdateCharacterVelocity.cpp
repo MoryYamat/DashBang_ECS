@@ -4,7 +4,7 @@
 
 #include "Game/Character/Private/Control/Movement/Component/Intent/MovementIntentComponent.h"
 
-#include "Game/Character/Private/Stats/Public/StatsComponent.hpp"
+#include "Game/Character/Stats/Public/StatsComponent.hpp"
 
 #include "Engine/ECS/Ops/CoreOps.hpp"
 

@@ -11,7 +11,7 @@
 #include "Engine/Component/Private/Logic2D/Logic2DComponent.hpp"
 #include "Engine/Component/Private/Graphics/ShaderComponent.hpp"
 
-#include "Game/Character/Private/Animation/Public/LocomAnimComponent.hpp"
+#include "Game/Character/Animation/Public/LocomAnimComponent.hpp"
 
 #include "Game/Init/Public/InitApi.hpp"
 

@@ -3,10 +3,10 @@
 
 #include "Engine/FSM/Public/FSMApi.hpp"
 #include "Game/FSM/Private/InitFunctions.hpp"
-#include "Game/Character/Private/FSM/Public/FSMApi.hpp"
-#include "Game/Character/Private/FSM/Public/MovementAxisApi.hpp"
+#include "Game/Character/FSM/Public/FSMApi.hpp"
+#include "Game/Character/FSM/Public/MovementAxisApi.hpp"
 
-#include "Game/Character/Private/FSM/Public/SkillAxisApi.hpp"
+#include "Game/Character/FSM/Public/SkillAxisApi.hpp"
 
 namespace Game::FSM
 {

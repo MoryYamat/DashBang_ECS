@@ -5,10 +5,11 @@
 
 #include "Game/Character/Private/Control/Movement/System/UpdateCharacterVelocity.h"
 
-#include "Game/Input/Private/Intent/PlayerMovementIntentMapper.h"
+
+#include "Game/Input/Public/InputApi.hpp"
 
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
-#include "Game/Character/Private/Control/Public/ControlApi.hpp"
+#include "Game/Character/Control/Public/ControlApi.hpp"
 
 // Intent
 void Game::Feature::Character::MovementFeature::UpdateMovementIntent(Engine::ECS::EntityMgr& ecs)

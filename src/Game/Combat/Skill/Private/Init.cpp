@@ -5,7 +5,7 @@
 #include "Engine/FSM/Public/Core/Types.hpp"
 #include "Engine/Log/Public/LogApi.hpp"
 
-#include "Game/Combat/Skill/Public/Builder.hpp"
+#include "Game/Combat/Skill/Private/SkillCatalogBuilder.hpp"
 
 namespace Game::Combat::Skill
 {

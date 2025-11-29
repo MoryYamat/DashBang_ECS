@@ -3,14 +3,14 @@
 #include "Engine/FSM/Public/FSMApi.hpp"
 #include "Engine/FSM/Public/FSMFwd.hpp"
 
-#include "Game/Character/Private/FSM/Public/FSMApi.hpp"
+#include "Game/Character/FSM/Public/FSMApi.hpp"
 
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
-#include "Game/Character/Private/FSM/Public/MovementTypes.hpp"
-#include "Game/Character/Private/FSM/Public/MovementAxisApi.hpp"
+#include "Game/Character/FSM/Public/MovementTypes.hpp"
+#include "Game/Character/FSM/Public/MovementAxisApi.hpp"
 
-#include "Game/Character/Private/FSM/Public/SkillAxisApi.hpp"
+#include "Game/Character/FSM/Public/SkillAxisApi.hpp"
 
 
 #include "Engine/Log/Public/LogApi.hpp"

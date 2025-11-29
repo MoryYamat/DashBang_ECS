@@ -1,7 +1,7 @@
 ﻿#include "InputFeature.h"
 
-#include "Game/Input/Private/SetMapping/SetInputMap.h"
-#include "Game/Input/Private/SetMapping/SetSkillInputMap.h"
+
+
 
 #include "Engine/InputManager/Public/Types.hpp"
 #include "Engine/Graphics/Public/Types.hpp"
@@ -9,15 +9,6 @@
 
 #include "Game/Input/Public/InputApi.hpp"
 
-void Game::Feature::Setting::InputFeature::InitInputMapping(Engine::ECS::EntityMgr& ecs)
-{
-	Game::Input::Setting::InitInputMap(ecs);
-}
-
-void Game::Feature::Setting::InputFeature::InitSkillInputMapping(Engine::ECS::EntityMgr& ecs)
-{
-	Game::Input::Setting::InitSkillInputMap(ecs);
-}
 
 namespace Game::Feature::Input
 {

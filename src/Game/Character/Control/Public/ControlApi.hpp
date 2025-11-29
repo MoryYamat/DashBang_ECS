@@ -10,6 +10,12 @@
 
 namespace Game::Character::Control
 {
+	// Intent
+	void UpdateCharacterMovementIntent(Engine::WorldSystem::Core::WorldCtx& ctx);
+	void UpdateCharacterFacingIntent(Engine::WorldSystem::Core::WorldCtx& ctx);
 	void UpdatePlayerSkillIntent(Engine::WorldSystem::Core::WorldCtx& ctx);
 
+
+	// Logic
+	void UpdateActorPosition(Engine::WorldSystem::Core::WorldCtx& ctx);
 }
