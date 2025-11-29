@@ -1,7 +1,7 @@
 ﻿#include "InputRouterSystem.h"
 
 #include "Game/Input/Private/InputMapping.h"
-#include "Game/Input/Private/InputActionComponent.h"
+#include "Game/Input/Public/InputActionComponent.hpp"
 
 #include "Engine/ECS/Public/Entity.hpp"
 #include "Engine/InputManager/Public/Types.hpp"

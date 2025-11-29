@@ -1,7 +1,9 @@
 ﻿#include "SetInputMap.h"
 
-#include "Game/Input/Private/InputAction.h"
+
 #include "Game/Input/Private/InputMapping.h"
+
+#include "Game/Input/Public/InputActionComponent.hpp"
 
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
@@ -9,10 +11,9 @@
 
 namespace Game::Input
 {
-	void SetInputMapping(Engine::WorldSystem::Core::WorldCtx& ctx)
+	static void SetInputMapping(InputMapping& map)
 	{
-		auto& map = ctx.ww.CreateResource<InputMapping>();
-
+		
 		map.bindKey(GLFW_KEY_W, Game::Input::InputAction::MoveForward);
 		map.bindKey(GLFW_KEY_S, Game::Input::InputAction::MoveBackward);
 		map.bindKey(GLFW_KEY_D, Game::Input::InputAction::MoveRight);
@@ -24,8 +25,23 @@ namespace Game::Input
 
 		std::cout << "[Init Input]: Input map initialization successful\n";
 	}
+
+	// 未使用なら削除
+	static void SetSkillBinding(Engine::WorldSystem::Core::WorldCtx& ctx)
+	{
+
+	}
+
+	void InitAllInputSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
+	{
+		auto& map = ctx.ww.CreateResource<InputMapping>();
+
+		SetInputMapping(map);
+	}
 }
 
+
+// 以下削除予定
 void Game::Input::Setting::InitInputMap(Engine::ECS::EntityMgr& ecs)
 {
 	auto& map = ecs.createResource<InputMapping>();

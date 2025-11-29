@@ -7,6 +7,8 @@
 #include "SkillFwd.hpp"
 
 #include <vector>
+#include <string_view>
+#include <unordered_map>
 
 namespace Game::Combat::Skill
 {
@@ -34,6 +36,7 @@ namespace Game::Combat::Skill
 
 	struct CanonicalSkillData
 	{
+		std::string name;			// skill name
 		SkillID id;					// skillDefDTO.name の定義順に0から採番
 		std::vector<CanonicalSkillPhase> phases;
 		std::vector<CanonicalSkillEffect> effects;
@@ -49,6 +52,18 @@ namespace Game::Combat::Skill
 	struct SkillCatalog
 	{
 		std::vector<CanonicalSkillData> skills;
+
+		std::unordered_map<std::string, SkillID> nameToId;
+
+		SkillID FindByName(std::string_view name)const
+		{
+			auto it = nameToId.find(std::string(name));
+			if (it == nameToId.end())
+			{
+				return kInvalidSkillID;
+			}
+			return it->second;
+		}
 	};
 
 	// 実行状態
@@ -72,6 +87,7 @@ namespace Game::Combat::Skill
 			cancelRequested		= false;
 		}
 	};
+
 
 }
 

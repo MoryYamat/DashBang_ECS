@@ -14,4 +14,5 @@ namespace Game::Input
 	class InputMapping;
 	struct InputState;
 
+	struct SkillSlotComponent;
 }

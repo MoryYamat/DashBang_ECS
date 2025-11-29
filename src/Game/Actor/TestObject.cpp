@@ -10,7 +10,7 @@
 
 // input
 // #include "Core/ECS/Component/InputComponent.h"
-#include "Game/Input/Private/InputActionComponent.h"
+#include "Game/Input/Public/InputActionComponent.hpp"
 
 // test color
 #include "Engine/ECS/Component/Graphics/MaterialComponent.h"

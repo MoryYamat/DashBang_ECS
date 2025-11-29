@@ -18,7 +18,7 @@
 
 // input
 // #include "Core/ECS/Component/InputComponent.h"
-#include "Game/Input/Private/InputActionComponent.h"
+#include "Game/Input/Public/InputActionComponent.hpp"
 
 // Intent
 #include "Game/Character/Private/Control/Movement/Component/Intent/MovementIntentComponent.h"

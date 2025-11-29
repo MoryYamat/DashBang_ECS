@@ -23,7 +23,7 @@ namespace Game::Feature::Input
 {
 	void InputFeature::InitInputMapping(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
-		Game::Input::SetInputMapping(ctx);
+		Game::Input::InitAllInputSystem(ctx);
 	}
 
 	void InputFeature::InputRoutingSystem(Engine::WorldSystem::Core::WorldCtx& ctx, const Engine::Input::RawInputState& raw)

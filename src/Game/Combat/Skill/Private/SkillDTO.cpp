@@ -9,11 +9,11 @@ namespace Game::Combat::Skill
 		SkillDefDTO def;
 
 		def.fsm = "Basic";
-		def.name = "skill_test";
+		def.name = "test_skill";
 		def.profile = "Default";
 		def.phases = { 
 			SkillPhaseDTO{.name = "Casting", .duration = 1.0f}, 
-			SkillPhaseDTO{.name = "Acitve", .duration = 1.0f}, 
+			SkillPhaseDTO{.name = "Active", .duration = 1.0f}, 
 			SkillPhaseDTO{.name = "Recovery", .duration = 1.0f} };
 		def.effects = { SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.2f, .kind = "SpawnHitbox"} };
 
@@ -24,4 +24,13 @@ namespace Game::Combat::Skill
 	{
 		make_skillDTO(builder);
 	}
+}
+
+namespace Game::Combat::Skill
+{
+	static void make_Slot2SkillDTO(SkillSlotLoadoutDTO& out)
+	{
+		out.slotSkillnames = { "test_skill" };
+	}
+
 }

@@ -8,7 +8,7 @@
 
 #include <optional>
 
-#include "Game/Input/Private/InputAction.h"
+#include "Game/Input/Public/InputActionComponent.hpp"
 
 #include <iostream>
 

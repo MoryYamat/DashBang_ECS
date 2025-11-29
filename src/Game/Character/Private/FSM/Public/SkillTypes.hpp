@@ -13,7 +13,7 @@ namespace Game::Character::FSM::Skill
 {
 	struct SkillCondTable
 	{
-		Engine::FSM::Core::CondID ElapsedTime = Engine::FSM::Core::kInvalidCond;// 軸宇宙
+		Engine::FSM::Core::CondID TimeElapsed = Engine::FSM::Core::kInvalidCond;// 軸宇宙
 		Engine::FSM::Core::CondID Triggered = Engine::FSM::Core::kInvalidCond;
 		bool changedThisFrame = false;
 	};

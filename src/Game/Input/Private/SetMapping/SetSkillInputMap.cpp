@@ -6,6 +6,7 @@
 
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
+// 未使用なら削除
 void Game::Input::Setting::InitSkillInputMap(Engine::ECS::EntityMgr& ecs)
 {
 	auto& skillMap = ecs.createResource<Game::Character::Control::Skill::SkillInputMap>();

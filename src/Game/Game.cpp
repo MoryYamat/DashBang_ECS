@@ -487,9 +487,9 @@ void GameApp::GameApp::loadData(Engine::WorldSystem::Core::WorldCtx& ctx)
 // FSM: Skill / CC
 // FSM: Interference
 // 
-// 
 
 // Skill Input -> Intent -> FSM -> ...系
+// 初期化処理実装必要 (SkillLoadoutDTO/SkillCatalogの登録)
 // 
 
 

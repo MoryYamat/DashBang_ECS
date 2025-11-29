@@ -15,7 +15,7 @@
 #include "Engine/Component/Private/Graphics/AnimatorComponent.hpp"
 #include "Engine/Component/Private/Utils/NameComponent.hpp"
 
-#include "Game/Input/Private/InputActionComponent.h"
+#include "Game/Input/Public/InputActionComponent.hpp"
 
 
 // graphics
@@ -31,6 +31,7 @@
 
 // control
 #include "Game/Character/Private/Control/Public/IntentComponent.hpp"
+#include "Game/Character/Control/Public/IntentComponent.hpp"
 
 // FSM
 // movement
@@ -44,7 +45,10 @@
 #include "Game/ECS/Public/CharacterAttribTags.h"
 
 // ------------- Combat ------------- 
+#include "Game/Combat/Skill/Public/DTO.hpp"
 #include "Game/Combat/Skill/Public/SkillTypes.hpp"
+#include "Game/Combat/Skill/Public/SkillApi.hpp"
+#include "Game/Combat/Skill/Public/SlotComponent.hpp"
 
 // ------------- init --------------
 #include "Game/Init/Private/InitModel/InitLogicTransformFromModel.h"
@@ -65,6 +69,8 @@ namespace Game::Actor
 	namespace MFSM = Game::Character::FSM::Movement;
 
 	namespace Ctrl = Game::Character::Control;
+
+	using namespace Game::Combat::Skill;
 
 	TestPlayerActor::TestPlayerActor(Engine::WorldSystem::Core::WorldCtx& ctx, Engine::Graphics::Shader* shader)
 	{
@@ -123,12 +129,12 @@ namespace Game::Actor
 		ctx.ww.Add<ShaderComponent>(e, shaderComp);
 
 
-
 		// ------------------------- Character -----------------------------
 
 		// control
 		Ctrl::MovingIntentComponent& mvint = ctx.ww.Add<Ctrl::MovingIntentComponent>(e);
 		Ctrl::FacingIntentComponent& facing = ctx.ww.Add<Ctrl::FacingIntentComponent>(e);
+		Ctrl::SkillIntentComponent& skillIntent = ctx.ww.Add<Ctrl::SkillIntentComponent>(e);
 
 		// fsm
 		MFSM::MovementStateComp& MFSMstate = ctx.ww.Add<MFSM::MovementStateComp>(e);
@@ -143,7 +149,9 @@ namespace Game::Actor
 
 		// ---------input-----------
 		ctx.ww.Add<Game::Input::InputActionComponent>(e);
-
+		auto& input2slot = ctx.ww.Add<Game::Combat::Skill::SkillInputBindingComponent>(e);
+		input2slot.DefaultInit();
+		
 		// ---------tag ------------
 		ctx.ww.Add<Game::ECS::Tags::PlayerCharacterTag>(e);
 		NameComponent& name = ctx.ww.Add<NameComponent>(e);
@@ -160,10 +168,14 @@ namespace Game::Actor
 
 		// ------------- combat ------------- 
 		ctx.ww.Add<Game::Combat::Skill::SkillRuntimeComp>(e);
+		auto& slot2skill = ctx.ww.Add<Game::Combat::Skill::SkillSlotComponent>(e);// slot → skill 
+		SkillSlotLoadoutDTO loadout{};
+		loadout.slotSkillnames = { "test_skill" };
+		// 初期化処理実装必要 (SkillCatalogの登録)
+		Game::Combat::Skill::InitSkillSlot(ctx, loadout, slot2skill);
 
 		std::cout << "[Test Actor]: Test Actor Created.\n";
 	}
-
 
 	TestPlayerCursorActor::TestPlayerCursorActor(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{

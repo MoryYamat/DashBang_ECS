@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Engine/ECS/EntityManager.h"
-#include "Game/Input/Private/InputActionComponent.h"
+#include "Game/Input/Public/InputActionComponent.hpp"
 
 #include "Game/Combat/Private/Skill/System/Trigger/SkillInputMap.h"
 

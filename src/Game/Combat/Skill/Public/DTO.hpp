@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include <array>
 
 namespace Game::Combat::Skill
 {
@@ -34,4 +35,10 @@ namespace Game::Combat::Skill
 		std::string profile;		// (基本は"Default")skill fsm の どのプロファイルを使用するか (どのSkillFSMのfsm定義を使用するかという自由度もあるが今は1つしかFSM定義がないと仮定する)
 	};
 
+	// 人が定義・読む
+	struct SkillSlotLoadoutDTO
+	{
+		std::array<std::string, 4> slotSkillnames;// {"Fireball", "Dash", ...}
+
+	};
 }

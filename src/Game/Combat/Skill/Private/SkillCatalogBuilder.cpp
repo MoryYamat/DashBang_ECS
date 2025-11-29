@@ -38,6 +38,8 @@ namespace Game::Combat::Skill
 
 		result.catalog.skills.resize(defs_.size());
 
+		bool ok = true;
+
 		for (std::size_t i = 0; i < defs_.size(); ++i)
 		{
 			const auto& dto = defs_[i];
@@ -45,6 +47,27 @@ namespace Game::Combat::Skill
 			if (!buildSkill(dto, SkillID( static_cast<std::uint16_t>(i)) , fsmCat, dst, result.err))
 			{
 				// 続行 (全　skill のエラーを報告)
+
+				ok = false;
+			}
+		}
+
+		result.catalog.nameToId.clear();
+		result.catalog.nameToId.reserve(result.catalog.skills.size());
+		for (const auto& s : result.catalog.skills)
+		{
+			if (s.name.empty())
+			{
+				continue;
+			}
+
+			auto [it, inserted] = result.catalog.nameToId.emplace(s.name, s.id);
+			if (!inserted)
+			{
+				result.err.err(
+					"Duplicate skill name '" + s.name + "' in SkillCatalogBuilder::build()"
+				);
+				ok = false;
 			}
 		}
 
@@ -60,6 +83,7 @@ namespace Game::Combat::Skill
 		bool ok = true;
 
 		out.id = assignedID;
+		out.name = dto.name;
 		out.phases.clear();
 		out.effects.clear();
 

@@ -1,6 +1,7 @@
 ﻿#include "IntentLayerFeature.h"
 
 #include "Game/00_Feature/Private/Character/Movement/MovementFeature.h"
+#include "Game/00_Feature/Private/Character/Control/Skill/CharacterSkillFeature.hpp"
 
 #include "Game/00_Feature/Private/Combat/Skill/SkillFeature.h"
 
@@ -27,4 +28,6 @@ void Game::Layer::IntentLayerFeature::Update(Engine::WorldSystem::Core::WorldCtx
 {
 	Game::Feature::Character::MovementFeature::UpdateMovementIntent(ctx);
 	Game::Feature::Character::MovementFeature::UpdateLogicFacing(ctx);
+
+	Game::Feature::Character::CharacterSkillFeature::UpdateCharacterSkillIntent(ctx);
 }

@@ -4,6 +4,7 @@
 
 #include "Game/Combat/Skill/Public/SkillFwd.hpp"
 
+#include <glm/glm.hpp>
 #include <vector>
 #include <span>
 
@@ -11,6 +12,7 @@ namespace Game::Combat::Skill
 {
 	// private
 	void RegisterSkillDef(SkillCatalogBuilder& builder);
+
 
 	struct SkillRuntimePipelineEntry
 	{
@@ -48,8 +50,12 @@ namespace Game::Combat::Skill
 	void InitAllSkillSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
 	void UpdateAllSkillRuntimeSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
 
+	bool InitSkillSlot(
+		Engine::WorldSystem::Core::WorldCtx& ctx,
+		SkillSlotLoadoutDTO& dto,
+		SkillSlotComponent& outSlots
+	);
 
-
-
+	bool InitSkillSlot(Engine::WorldSystem::Core::WorldCtx& ctx);
 
 }

@@ -8,7 +8,8 @@
 
 namespace Game::Input
 {
-	void SetInputMapping(Engine::WorldSystem::Core::WorldCtx& ctx);
+	void InitAllInputSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
+	// void SetInputMapping(Engine::WorldSystem::Core::WorldCtx& ctx);
 
 	void InputRouterSystem(Engine::WorldSystem::Core::WorldCtx& ctx, const Engine::Input::RawInputState& raw);
 

@@ -4,8 +4,8 @@
 #pragma once
 
 #include <unordered_map>
-#include "Game/Input/Private/InputAction.h"
 
+#include "Game/Input/Public/InputActionComponent.hpp"
 #include "Game/Combat/Private/Skill/MasterData/SkillSlot.h"
 
 

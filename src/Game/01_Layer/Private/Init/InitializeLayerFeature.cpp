@@ -94,5 +94,5 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialization(Engine::WorldSys
 	// skill
 	Game::Feature::Combat::SkillFeature::InitSkillSystem(ctx);
 
-	Game::FSM::Debug::SmokeTest_Movement(ctx);
+	// Game::FSM::Debug::SmokeTest_Movement(ctx);
 }

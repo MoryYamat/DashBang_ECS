@@ -27,7 +27,10 @@ namespace Game::Combat::Skill
 	// inline constexpr EffectSlotID kInvalidEffectSlotID{};
 	
 	struct SkillRuntimeComp;
-
+	struct SkillCatalog;
 	class SkillCatalogBuilder;
 	struct SkillLogicCommandBuffer;
+
+	struct SkillSlotLoadoutDTO;
+	struct SkillSlotComponent;
 }

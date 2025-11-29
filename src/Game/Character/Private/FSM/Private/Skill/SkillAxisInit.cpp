@@ -58,10 +58,16 @@ namespace Game::Character::FSM::Skill
 				return true;
 			};
 
-		bool ok = false;
+		bool ok = true;
 
-		ok &= findBit("ElapsedTime", out.ElapsedTime.v);
+		ok &= findBit("TimeElapsed", out.TimeElapsed.v);
 		ok &= findBit("Triggered", out.Triggered.v);
+
+		if (!ok)
+		{
+			Engine::Log::Write(Engine::Log::Level::Trace, "InitSkillCondTable"
+				, "findBit = false → Cond string may not match DTO definition");
+		}
 
 		return ok;
 
@@ -97,13 +103,19 @@ namespace Game::Character::FSM::Skill
 				return true;
 			};
 
-		bool ok = false;
+		bool ok = true;
 
 		ok &= findBit("None", out.None.v);
 		ok &= findBit("Casting", out.Casting.v);
 		ok &= findBit("Active", out.Active.v);
 		ok &= findBit("Recovery", out.Recovery.v);
 		ok &= findBit("Completed", out.Completed.v);
+
+		if (!ok)
+		{
+			Engine::Log::Write(Engine::Log::Level::Trace, "InitSkillStateTable"
+				, "findBit = false → State string may not match DTO definition");
+		}
 
 		return ok;
 	}
@@ -139,9 +151,15 @@ namespace Game::Character::FSM::Skill
 				return true;
 			};
 
-		bool ok = false;
+		bool ok = true;
 
 		ok &= findBit("Default", out.Default.v);
+
+		if (!ok)
+		{
+			Engine::Log::Write(Engine::Log::Level::Trace, "InitSkillProfileTable"
+				, "findBit = false → Profile string may not match DTO definition");
+		}
 
 		return ok;
 	}
