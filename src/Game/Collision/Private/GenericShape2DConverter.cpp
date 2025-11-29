@@ -67,11 +67,11 @@ namespace Game::Collision
 
 	// Skill 仕様確定後作成
 	// ローカルCollisionとワールド変換からワールド上の抽象判定形状を計算 
-	Game::Collision::GenericShape2D BuildGenericShape2D(const Game::Combat::Skill::Component::Attack2DShape& attack2DArea
-		, const Engine::Component::Transform2DComponent& worldTransform)
-	{
-		return GenericShape2D{};
-	}
+	//Game::Collision::GenericShape2D BuildGenericShape2D(const Game::Combat::Skill::Component::Attack2DShape& attack2DArea
+	//	, const Engine::Component::Transform2DComponent& worldTransform)
+	//{
+	//	return GenericShape2D{};
+	//}
 
 	// ローカル形状のオフセットを適用して中心座標のワールド変換を取得する
 	glm::vec2 applyLocalToWorldPoint(const glm::vec2& localOffset, const Engine::Component::Logic2DTransformComponent& transform)

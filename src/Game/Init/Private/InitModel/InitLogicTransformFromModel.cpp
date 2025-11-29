@@ -1,6 +1,6 @@
 ﻿#include "InitLogicTransformFromModel.h"
 
-#include "Engine/Debug/Private/DebugUtils.h"
+
 
 #include "Game/Init/Public/InitApi.hpp"
 #include "Game/Init/Private/InitModel/Types.hpp"
@@ -123,8 +123,6 @@ namespace Game::Init::Logic2D
 
 		std::cout << "[InitLogicTransformSystem.cpp]: logical front vector x: " << logic.front.x << ", z: " << logic.front.y << std::endl;
 		std::cout << "[InitLogicTransformSystem.cpp]: logical rotationY: " << logic.rotation << std::endl;
-		Engine::Debug::Logging::GeneralLog("InitLogicTransformFromModel.cpp",
-			"Logical 2D coordinates were successfully initialized based on model drawing coordinates. ");
 
 		return logic;
 	}
@@ -148,7 +146,6 @@ namespace Game::Init::Logic2D
 		else
 		{
 			logicalXZSize = glm::vec2(1.0f);
-			Engine::Debug::Logging::GeneralLog("InitLogicTransformFromModel(scale)", "Probably an error occurred while getting/setting the scale.");
 		}
 
 		return logicalXZSize;
@@ -178,7 +175,6 @@ namespace Game::Init::Logic2D
 		}
 		else
 		{
-			Engine::Debug::Logging::GeneralLog("InitLogicTransformFromModel.cpp(Radius)", "Maybe radius initialization failed");
 			return 0.5f;
 
 		}

@@ -1,6 +1,6 @@
 ﻿#include "Engine/InputManager/Public/Types.hpp"
 
-#include "Engine/Debug/Private/DebugUtils.h"
+
 
 #include <iostream>
 
@@ -21,8 +21,6 @@ Engine::Input::InputManager::InputManager(GLFWwindow* window)
 	glfwGetCursorPos(window, &x, &y);
 	mLastMousePosition = glm::vec2(x, y);
 	// mFirstMouse = false;
-
-	Engine::Debug::Logging::GeneralLog("InputManager.cpp(Initialize)", "InputManager initialization completed successfully");
 }
 
 void Engine::Input::InputManager::Update()

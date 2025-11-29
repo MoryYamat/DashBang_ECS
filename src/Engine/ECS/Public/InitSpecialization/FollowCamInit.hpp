@@ -13,7 +13,7 @@
 #include "Engine/Component/Private/Logic2D/Logic2DComponent.hpp"
 
 #include "Engine/ECS/EntityUtils/EntityUtils.h"
-#include "Engine/Debug/Private/DebugUtils.h"
+
 
 namespace Engine::ECS::Core
 {
@@ -59,8 +59,6 @@ namespace Engine::ECS::Core
 				camComp.front = glm::normalize(targetTransform.position - camTransform.position + camComp.frontOffset);
 				camComp.right = glm::normalize(glm::cross(camComp.front, camComp.up));
 
-				Engine::Debug::Logging::LogVector("FollowCameraInit.h", camComp.front);
-				Engine::Debug::Logging::GeneralLog("FollowCameraInit.h", "FollowCamera");
 			}
 		};
 	}

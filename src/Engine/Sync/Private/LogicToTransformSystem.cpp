@@ -3,7 +3,7 @@
 #include "Engine/ECS/Component/Common/TransformComponent.h"
 #include "Engine/ECS/Component/Logic2D/Logic2DTransformComponent.h"
 
-#include "Engine/Debug/Private/DebugUtils.h"
+
 
 #include <iostream>
 // Logic -> Drawing

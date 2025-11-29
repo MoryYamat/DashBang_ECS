@@ -9,23 +9,17 @@
 
 #include "Game/ECS/Public/CharacterAttribTags.h"
 
-// 
-// HitEvent
-#include "Game/Combat/Private/HitEvent/Database/HitEventDatabase.hpp"
-#include "Game/Combat/Private/HitEvent/API/GenerateHitEvent.hpp"
 
 // Skill
-#include "Game/Combat/Private/Skill/Component/SkillExecutionContextComponent.hpp"
-#include "Game/Combat/Private/Skill/Component/SkillOwnerComponent.hpp"
-#include "Game/Combat/Private/Skill/Component/HitboxHitMemoComponent.hpp"
-#include "Game/Combat/Private/Skill/API/Public/tryGetHitboxHitMemoComponent.hpp"
+
+
+
+
 // teamTag
 #include "Game/ECS/Private/Component/TeamComponent.h"
 
-// HitEvent
-#include "Game/Combat/Private/HitEvent/Data/HitEvent.hpp"
 
-#include "Engine/Debug/Private/DebugUtils.h"
+
 
 //
 #include "GenericShape2DConverter.hpp"

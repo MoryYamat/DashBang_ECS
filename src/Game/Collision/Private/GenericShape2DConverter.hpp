@@ -4,7 +4,6 @@
 #include "Engine/Component/Private/Logic2D/CollisionComponent.hpp"
 #include "Engine/Component/Private/Logic2D/Transform2DComponent.hpp"
 #include "Engine/Component/Private/Logic2D/Logic2DComponent.hpp"
-#include "Game/Combat/Private/Skill/Component/Attack2DAreaComponent.h"
 
 #include "Engine/ECS/Public/Entity.hpp"
 #include "Engine/WorldSystem/Public/WorldFwd.hpp"
@@ -24,8 +23,8 @@ namespace Game::Collision
 
 	// Skill 仕様確定後作成
 	// ローカルCollisionとワールド変換からワールド上の抽象判定形状を計算 
-	Game::Collision::GenericShape2D BuildGenericShape2D(const Game::Combat::Skill::Component::Attack2DShape& attack2DArea
-		, const Engine::Component::Transform2DComponent& worldTransform);
+	//Game::Collision::GenericShape2D BuildGenericShape2D(const Game::Combat::Skill::Component::Attack2DShape& attack2DArea
+	//	, const Engine::Component::Transform2DComponent& worldTransform);
 
 	// (GenericShape2Dを作成)
 	template<typename ShapeT, typename TransformT>

@@ -2,7 +2,7 @@
 
 #include "Engine/Math/Private/Logic2D/LogicMathUtils.h"
 
-#include "Engine/Debug/Private/DebugUtils.h"
+
 
 #include <iostream>
 #include <string>
@@ -340,10 +340,6 @@ bool Engine::Physics::Logic2D::Collision::intersectBox2D(const Engine::ECS::Comp
 
 	bool calc = (aMin.x <= bMax.x && aMax.x >= bMin.x) &&
 		(aMin.y <= bMax.y && aMax.y >= bMin.y);
-
-	if (calc) DEBUG_LOG("Collision Detected at A(" +
-		std::to_string(a.center.x) + "," + std::to_string(a.center.y) +
-		") B(" + std::to_string(b.center.x) + "," + std::to_string(b.center.y) + ")");
 
 	return calc;
 }

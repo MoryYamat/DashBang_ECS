@@ -1,6 +1,6 @@
 ﻿#include "InitTileMap.h"
 
-#include "Engine/Debug/Private/DebugUtils.h"
+
 
 #include "Game/Init/Private/InitModel/InitLogicTransformFromModel.h"
 
@@ -48,7 +48,6 @@ Engine::ECS::Component::Logic2D::TileMapComponent Game::Init::Logic2D::InitTileM
 	// 余白分のオフセットを適用
 	tileMapComp.origin = baseOrigin - glm::vec2(marginTiles * tileSize);
 
-	Engine::Debug::Logging::LogVector("InitLogicTransformFromModel(origin)", tileMapComp.origin);
 
 	return tileMapComp;
 }
@@ -91,7 +90,6 @@ glm::vec2 Game::Init::Logic2D::GetModelWorldAABBSizeXZ(
 void Game::Init::Logic2D::InitTileMapTiles(Engine::ECS::Component::Logic2D::TileMapComponent& tileMapComp)
 {
 	tileMapComp.tiles.resize(tileMapComp.numRows, std::vector<Engine::ECS::Component::Logic2D::Tile>(tileMapComp.numCols));
-	Engine::Debug::Logging::GeneralLog("InitLogicTransformFromModel(InitTileMapTiles)", "InitTileMapTiles creation completed successfully");
 }
 
 

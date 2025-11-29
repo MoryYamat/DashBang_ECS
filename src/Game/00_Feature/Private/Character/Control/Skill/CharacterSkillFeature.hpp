@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include "Engine/ECS/EntityManager.h"
-
 #include "Engine/WorldSystem/Public/WorldFwd.hpp"
 
 
