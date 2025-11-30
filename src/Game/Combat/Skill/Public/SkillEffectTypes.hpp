@@ -5,6 +5,7 @@
 #include "Engine/ECS/Public/Entity.hpp"
 #include "Engine/FSM/Public/FSMFwd.hpp"
 
+#include <vector>
 #include <cstdint>
 
 namespace Game::Combat::Skill
@@ -15,7 +16,7 @@ namespace Game::Combat::Skill
 		PlayAnim,
 	};
 
-	struct LogicCommand
+	struct SkillLogicCommand
 	{
 		LogicCommandKind kind;
 		Engine::ECS::Core::Entity owner = Engine::ECS::Core::INVALID;
@@ -27,7 +28,7 @@ namespace Game::Combat::Skill
 	// フレームごとの一時リソース
 	struct SkillLogicCommandBuffer
 	{
-		std::vector<LogicCommand> cmds;
+		std::vector<SkillLogicCommand> cmds;
 		void clear() { cmds.clear(); }
 	};
 }

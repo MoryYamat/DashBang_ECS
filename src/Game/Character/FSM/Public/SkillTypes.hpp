@@ -2,7 +2,7 @@
 
 #include "Engine/ECS/Public/Entity.hpp"
 #include "Engine/FSM/Public/FSMFwd.hpp"
-
+#include "Engine/WorldSystem/Public/WorldFwd.hpp"
 
 #include "Game/Character/FSM/Public/SkillAxisComponent.hpp"
 
@@ -48,20 +48,20 @@ namespace Game::Character::FSM::Skill
 
 	struct SkillEnvSystem
 	{
-		Engine::WorldSystem::Core::WorldCtx& ctx;
-		static void Update(std::span<SkillPipelineEntry> ents, const float dt);
+		Engine::WorldSystem::Core::WorldCtx& ctx_;
+		void Update(const std::span<SkillPipelineEntry> ents, const float dt);
 	};
 
 	struct SkillFSMSystem
 	{
-		Engine::WorldSystem::Core::WorldCtx& ctx;
+		Engine::WorldSystem::Core::WorldCtx& ctx_;
 
-		static void Update(std::span<SkillPipelineEntry> ents, const float dt);
+		void Update(const std::span<SkillPipelineEntry> ents, const float dt);
 	};
 
 	struct SkillLogicSystem
 	{
-		Engine::WorldSystem::Core::WorldCtx& ctx;
-		static void Update(std::span<SkillPipelineEntry> ents, const float dt);
+		Engine::WorldSystem::Core::WorldCtx& ctx_;
+		void Update(const std::span<SkillPipelineEntry> ents, const float dt);
 	};
 }

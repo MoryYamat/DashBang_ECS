@@ -22,6 +22,6 @@ namespace Game::Character::FSM::Skill
 	void UpdateAllSkillFSM(Engine::WorldSystem::Core::WorldCtx& ctx);
 
 	// internal
-	void BuildSkillPipeline(Engine::WorldSystem::Core::WorldCtx& ctx, SkillPipeline& out);
+	// void BuildSkillPipeline(Engine::WorldSystem::Core::WorldCtx& ctx, SkillPipeline& out);
 
 }

@@ -12,5 +12,5 @@ namespace Game::Character::FSM::Movement
 
 namespace Game::Character::FSM::Skill
 {
-	
+	struct SkillStateComp;
 }

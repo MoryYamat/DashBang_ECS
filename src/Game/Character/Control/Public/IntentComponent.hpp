@@ -20,19 +20,10 @@ namespace Game::Character::Control
 		bool isActive = false;					// 意図としての移動の有無
 	};
 
-	// intent component
-	struct SkillRequest
-	{
-		Game::Combat::Skill::SkillID skill;
-		Engine::ECS::Core::Entity caster;
-		glm::vec2 targetPos;
-		Engine::ECS::Core::Entity targetEntity;
-		bool isQueued;
-	};
 
 	struct SkillIntentComponent
 	{
-		std::vector<SkillRequest> requests;
+		std::vector<Game::Combat::Skill::SkillRequest> requests;
 	};
 
 }

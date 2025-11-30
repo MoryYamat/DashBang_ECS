@@ -10,6 +10,8 @@ namespace Game::Character::FSM::Skill
 	{
 		// Triggered = 0,
 		// ElapsedTime, // TimeElapsedの制御はFSM外で行う
+		Triggered = 0,
+		TimeElapsed = 1,
 		Count
 	};
 
@@ -31,7 +33,7 @@ namespace Game::Character::FSM::Skill
 
 	// 
 	struct SkillFieldReader : Engine::FSM::Core::IFieldReader {
-		float ElapsedTime = 0.f;
+		// float ElapsedTime = 0.f;
 		float getF32(std::uint16_t fieldIndex) const override {
 			switch (static_cast<Field>(fieldIndex)) {
 			// case Field::ElapsedTime: return ElapsedTime;
@@ -43,6 +45,7 @@ namespace Game::Character::FSM::Skill
 	struct SkillTag {};
 	using SkillAxisComp = Engine::FSM::Core::AxisComponent<SkillTag, SkillFieldReader>;
 
+	// Tag化 可能
 	struct SkillStateComp
 	{
 		Engine::FSM::Core::StateID curState = Engine::FSM::Core::kInvalidState;		// 軸宇宙のID StateID.v

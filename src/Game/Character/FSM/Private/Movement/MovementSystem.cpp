@@ -3,14 +3,19 @@
 
 #include "Engine/FSM/Public/Core/Types.hpp"
 #include "Engine/FSM/Public/Core/ID-NameHelper.hpp"
+#include "Engine/FSM/Public/FSMApi.hpp"
 #include "Engine/FSM/Public/Core/StateEvents.hpp"
+
+#include "Game/Character/FSM/Public/MovementAxisComponent.hpp"
+#include "Engine/Component/Private/Logic2D/Velocity2DComponent.hpp"
+#include "Game/Character/Stats/Public/StatsComponent.hpp"
+#include "Game/Character/Control/Public/IntentComponent.hpp"
 
 #include "Engine/Time/Private/WorldClock.hpp"
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
 #include "Engine/FSM/Private/AllFSMSystem.hpp"
 
-#include "Game/Character/Control/Public/IntentComponent.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
@@ -19,7 +24,30 @@
 
 namespace Game::Character::FSM::Movement
 {
+	using namespace Engine::Component;
 	using namespace Engine::FSM::Core;
+	using namespace Engine::WorldSystem::Query;
+
+	// Entityのフィルタリング
+	static void BuildMovementPipeline(Engine::WorldSystem::Core::WorldCtx& ctx, MovementPipeline& out)
+	{
+		out.clear();
+		auto ents = ViewWhere(ctx.rw, All<MovementAxisComp, MovementStateComp, Velocity2DComponent>{});
+
+		for (const auto& e : ents)
+		{
+			auto* axis = ctx.ww.TryGet<MovementAxisComp>(e);
+			auto* state = ctx.ww.TryGet<MovementStateComp>(e);
+			auto* vel = ctx.ww.TryGet<Engine::Component::Velocity2DComponent>(e);
+
+			out.push_back(MovementPipelineEntry{
+					e,
+					axis,
+					state,
+					vel
+				});
+		}
+	}
 
 	void MovementEnvSystem::Update(std::span<MovementPipelineEntry> ents, const float dt)
 	{

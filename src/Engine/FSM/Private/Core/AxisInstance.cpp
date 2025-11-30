@@ -51,6 +51,11 @@ namespace Engine::FSM::Core
 		BitEnvSnapshot composed;
 		conds.compose(composed, static_cast<std::uint32_t>(ax->condOrder.size()));
 
+		if (fsm->alwaysTrueBit != UINT32_MAX)// TODO: condIdx = 0 に固定すれば、if文を抹消できる(予約)
+		{
+			composed.set(fsm->alwaysTrueBit, true);
+		}
+
 		// 候補スロットを優先度でチェック(BuildPlanForで既に安定ソート済み)
 		const auto S = fsm->numSlots;
 		for (auto s : candidateSlots)

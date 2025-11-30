@@ -3,6 +3,7 @@
 
 #include "Game/Input/Public/InputActionComponent.hpp"
 #include "Game/Combat/Skill/Public/SlotComponent.hpp"
+#include "Game/Combat/Skill/Public/SkillTypes.hpp"
 
 #include "Game/ECS/Public/CharacterAttribTags.h"
 
@@ -17,7 +18,8 @@ namespace Game::Character::Control
 
 	using namespace Game::Combat::Skill;
 
-	static void PlayerSkillInputSystem(
+
+	static void BuildPlayerSkillIntent(
 		Engine::ECS::Core::Entity e,
 		const InputActionComponent& input,
 		const SkillInputBindingComponent& bindings,
@@ -47,7 +49,7 @@ namespace Game::Character::Control
 			// 
 			req.isQueued = false;
 
-
+			// std::cout << "here" << req.skill.v << "\n";
 
 			intent.requests.push_back(req);
 		}
@@ -79,7 +81,7 @@ namespace Game::Character::Control
 			intent.requests.clear();
 
 
-			PlayerSkillInputSystem(e, input, bindings, slots, intent);
+			BuildPlayerSkillIntent(e, input, bindings, slots, intent);
 		}
 	}
 }

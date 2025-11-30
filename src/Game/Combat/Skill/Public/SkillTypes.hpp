@@ -1,13 +1,16 @@
 ﻿// 正規化 / 前計算
 
 #pragma once
-
+#include "Engine/ECS/Public/Entity.hpp"
 #include "Engine/FSM/Public/FSMFwd.hpp"
 #include "SkillFwd.hpp"
 
+#include <glm/glm.hpp>
 #include <vector>
 #include <string_view>
+#include <string>
 #include <unordered_map>
+#include <cstdint>
 
 namespace Game::Combat::Skill
 {
@@ -65,6 +68,16 @@ namespace Game::Combat::Skill
 		}
 	};
 
+	// intent component
+	struct SkillRequest
+	{
+		Game::Combat::Skill::SkillID skill;
+		Engine::ECS::Core::Entity caster;
+		glm::vec2 targetPos;
+		Engine::ECS::Core::Entity targetEntity;
+		bool isQueued;
+	};
+
 	// 実行状態
 	struct SkillRuntimeComp
 	{
@@ -75,15 +88,33 @@ namespace Game::Combat::Skill
 		Engine::FSM::Core::StateID state = Engine::FSM::Core::kInvalidState;		// casting/active/recovery etc.
 		float totalElapsed = 0.f;
 		float phaseElapsed = 0.f;
+		float prevPhaseElapsed = 0.f;
+
+		// 
+		bool acceptedTriggerThisFrame = false;
+		float curPhaseDuration = 0.f;
+		bool hasPhaseDuration = false;
 
 		// 外部入力
 		bool triggerRequested = false;
 		bool cancelRequested = false;
 
-		void resetInput()
+		std::vector<SkillRequest> pendingTriggers;
+
+
+
+		void ResetInput()
 		{
 			triggerRequested	= false;
 			cancelRequested		= false;
+			pendingTriggers.clear();
+		}
+
+		void ResetTimeElapsed()
+		{
+			totalElapsed = 0.f;
+			phaseElapsed = 0.f;
+			prevPhaseElapsed = 0.f;
 		}
 	};
 

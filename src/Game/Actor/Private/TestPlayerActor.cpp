@@ -36,6 +36,8 @@
 // movement
 #include "Game/Character/FSM/Public/MovementAxisComponent.hpp"
 #include "Game/Character/FSM/Public/MovementAxisApi.hpp"
+#include "Game/Character/FSM/Public/SkillAxisComponent.hpp"
+#include "Game/Character/FSM/Public/SkillAxisApi.hpp"
 
 // stats
 #include "Game/Character/Stats/Public/StatsComponent.hpp"
@@ -68,6 +70,8 @@ namespace Game::Actor
 	namespace MFSM = Game::Character::FSM::Movement;
 
 	namespace Ctrl = Game::Character::Control;
+
+	using namespace Game::Character::FSM;
 
 	using namespace Game::Combat::Skill;
 
@@ -141,6 +145,12 @@ namespace Game::Actor
 		if (!MFSM::InitMovementAxis(ctx, MFSMComp))
 		{
 			std::cout << "[TestActor]: Failed to initialize the movement axis component.\n";
+		}
+		auto& sState = ctx.ww.Add<Skill::SkillStateComp>(e);
+		auto& sFSM = ctx.ww.Add<Skill::SkillAxisComp>(e);
+		if (!Skill::InitSkillAxis(ctx, sFSM))
+		{
+			std::cout << "[TestActor]: Failed to initialize the Skill axis component.\n";
 		}
 
 		// stats

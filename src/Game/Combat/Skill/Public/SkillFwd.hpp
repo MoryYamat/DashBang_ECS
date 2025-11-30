@@ -33,4 +33,6 @@ namespace Game::Combat::Skill
 
 	struct SkillSlotLoadoutDTO;
 	struct SkillSlotComponent;
+
+	struct SkillRequest;
 }

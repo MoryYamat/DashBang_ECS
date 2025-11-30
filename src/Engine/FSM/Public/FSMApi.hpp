@@ -56,7 +56,10 @@ namespace Engine::FSM::Core
 		FieldResolver  resolveField,
 		BuildErrors& err
 	);
+}
 
+namespace Engine::FSM::Debug
+{
 
-
+	void PrintFSMInfo(Engine::ECS::Core::Entity e, const Engine::FSM::Core::AxisInstance& inst, Engine::FSM::Core::Decision& d);
 }
