@@ -10,6 +10,10 @@ namespace Engine::FSM::Core
 	struct StrongID
 	{
 		std::uint32_t v = UINT32_MAX;
+
+		constexpr StrongID() = default;
+		constexpr explicit StrongID(std::uint32_t id) : v(id) {};
+
 		constexpr bool valid() const
 		{
 			return v != UINT32_MAX;
@@ -40,6 +44,7 @@ namespace Engine::FSM::Core
 
 	class FSMRegistry;
 	struct CanonicalAxis;
+	struct FSMCatalog;
 	struct EnvAssemblerPlan;
 	struct Decision;
 

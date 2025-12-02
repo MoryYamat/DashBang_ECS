@@ -1,4 +1,6 @@
-﻿#pragma once
+﻿
+
+#pragma once
 #include "Game/Character/Control/Public/ControlFwd.hpp"
 #include "Game/Character/FSM/Public/FSMFwd.hpp"
 #include "Engine/ECS/Public/Entity.hpp"

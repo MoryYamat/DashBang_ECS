@@ -1,6 +1,6 @@
-﻿#include "Game/Combat/Skill/Public/SkillApi.hpp"
-#include "Game/Combat/Skill/Public/SkillTypes.hpp"
-#include "Game/Combat/Skill/Public/SkillEffectTypes.hpp"
+﻿#include "Game/Combat/Skill/Public/Core/SkillApi.hpp"
+#include "Game/Combat/Skill/Public/Core/SkillTypes.hpp"
+#include "Game/Combat/Skill/Public/Core/SkillEffectTypes.hpp"
 
 #include "Game/Character/Control/Public/IntentComponent.hpp"
 #include "Game/Character/FSM/Public/SkillAxisComponent.hpp"
@@ -245,9 +245,11 @@ namespace Game::Combat::Skill
 		SkillTriggerSystem trSys{ ctx };
 		SkillRuntimeSystem rtSys{ ctx };
 		SkillLogicCommandSystem LCSys{ ctx };
+		SkillCommandExecSystem execSys{ ctx };
 
 		trSys.Update(pipeline, clock.fixedDt);
 		rtSys.Update(pipeline, clock.fixedDt);
 		LCSys.Update(pipeline, clock.fixedDt);
+		execSys.Update(clock.fixedDt);
 	}
 }

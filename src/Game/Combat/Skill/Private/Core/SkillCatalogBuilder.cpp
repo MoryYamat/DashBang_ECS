@@ -1,9 +1,10 @@
-﻿#include "Game/Combat/Skill/Private/SkillCatalogBuilder.hpp"
-#include "Game/Combat/Skill/Public/SkillTypes.hpp"
+﻿#include "Game/Combat/Skill/Private/Core/SkillCatalogBuilder.hpp"
+#include "Game/Combat/Skill/Public/Core/SkillTypes.hpp"
 
 #include "Engine/FSM/Public/FSMFwd.hpp"
 #include "Engine/FSM/Public/Core/Types.hpp"
 #include "Engine/FSM/Public/Core/ID-NameHelper.hpp"
+
 
 #include <string>
 #include <string_view>
@@ -11,6 +12,7 @@
 #include <cstddef>
 #include <unordered_map>
 #include <algorithm>
+
 
 namespace Game::Combat::Skill
 {
@@ -52,6 +54,7 @@ namespace Game::Combat::Skill
 			}
 		}
 
+		// name to id mapping を作成
 		result.catalog.nameToId.clear();
 		result.catalog.nameToId.reserve(result.catalog.skills.size());
 		for (const auto& s : result.catalog.skills)

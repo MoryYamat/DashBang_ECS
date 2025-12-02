@@ -1,6 +1,6 @@
-﻿#include "Game/Combat/Skill/Public/DTO.hpp"
+﻿#include "Game/Combat/Skill/Public/Core/DTO.hpp"
 
-#include "Game/Combat/Skill/Private/SkillCatalogBuilder.hpp"
+#include "Game/Combat/Skill/Private/Core/SkillCatalogBuilder.hpp"
 
 namespace Game::Combat::Skill
 {
@@ -15,7 +15,10 @@ namespace Game::Combat::Skill
 			SkillPhaseDTO{.name = "Casting", .duration = 1.0f}, 
 			SkillPhaseDTO{.name = "Active", .duration = 1.0f}, 
 			SkillPhaseDTO{.name = "Recovery", .duration = 1.0f} };
-		def.effects = { SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.2f, .kind = "SpawnHitbox"} };
+		def.effects = { 
+			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.2f, .kind = "SpawnHitbox"},
+			SkillEffectDefDTO{.phase = "Casting", .timeOffset = 0.1f, .kind = "PlayAnim"},
+		};
 
 		builder.add(std::move(def));
 	}

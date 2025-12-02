@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "Game/Combat/Skill/Public/DTO.hpp"
-#include "Game/Combat/Skill/Public/SkillTypes.hpp"
+#include "Game/Combat/Skill/Public/Core/DTO.hpp"
+#include "Game/Combat/Skill/Public/Core/SkillTypes.hpp"
 
 #include "Engine/FSM/Public/Core/Types.hpp"
 

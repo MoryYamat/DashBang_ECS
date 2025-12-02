@@ -18,11 +18,11 @@ namespace Game::Character::FSM::Movement
 	// void makeFSM_Movement(Engine::FSM::Core::FSMRegistry& reg);
 	void RegisterMovementAxes(Engine::FSM::Core::FSMRegistry& reg);
 	
-	void BuildMovementPipeline(Engine::WorldSystem::Core::WorldCtx& ctx, MovementPipeline& out);
+	// void BuildMovementPipeline(Engine::WorldSystem::Core::WorldCtx& ctx, MovementPipeline& out);
 
 	void UpdateMovementAll(Engine::WorldSystem::Core::WorldCtx& ctx);
 
-	void ExecuteMovementOps(std::uint32_t mask, Engine::WorldSystem::Core::WorldCtx& ctx, const MovementPipelineEntry& ent, float dt);
+	// void ExecuteMovementOps(std::uint32_t mask, Engine::WorldSystem::Core::WorldCtx& ctx, const MovementPipelineEntry& ent, float dt);
 	void SetMovementVelComp(const MovementPipelineEntry& entry, Engine::WorldSystem::Core::WorldCtx& ctx);
 	void SetZeroVel(const MovementPipelineEntry& entry, Engine::WorldSystem::Core::WorldCtx& ctx);
 

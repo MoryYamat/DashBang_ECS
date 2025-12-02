@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "Engine/Component/Private/Logic2D/ColliderType.hpp"
+
 #include <glm/glm.hpp>
 
 #include <cmath>
@@ -8,15 +10,6 @@
 
 namespace Engine::Component
 {
-
-
-	enum class ColliderType
-	{
-		None,
-		Circle2D,
-		Box2D,
-		Obb2D,
-	};
 
 	struct Circle2D
 	{
@@ -66,14 +59,14 @@ namespace Engine::Component
 		// パフォーマンスと安全性を高める方法を考えるまではVariantで
 		CollideVariant shape;
 
-		ColliderType getType() const
+		ShapeKind getType() const
 		{
-			return std::visit([](auto&& arg) -> ColliderType {
+			return std::visit([](auto&& arg) -> ShapeKind {
 				using T = std::decay_t<decltype(arg)>;
-				if constexpr (std::is_same_v<T, Circle2D>) return ColliderType::Circle2D;
-				else if constexpr (std::is_same_v<T, Box2D>) return ColliderType::Box2D;
-				else if constexpr (std::is_same_v<T, Obb2D>) return ColliderType::Obb2D;
-				else return ColliderType::None;
+				if constexpr (std::is_same_v<T, Circle2D>) return ShapeKind::Circle2D;
+				else if constexpr (std::is_same_v<T, Box2D>) return ShapeKind::Box2D;
+				else if constexpr (std::is_same_v<T, Obb2D>) return ShapeKind::Obb2D;
+				else return ShapeKind::None;
 				}, shape);
 		}
 

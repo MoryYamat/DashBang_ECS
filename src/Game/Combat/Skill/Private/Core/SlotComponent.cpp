@@ -1,11 +1,11 @@
-﻿#include "Game/Combat/Skill/Public/SlotComponent.hpp"
+﻿#include "Game/Combat/Skill/Public/Core/SlotComponent.hpp"
 
 #include "Game/Input/Public/InputActionComponent.hpp"
 
 
-#include "Game/Combat/Skill/Public/SkillApi.hpp"
-#include "Game/Combat/Skill/Public/DTO.hpp"
-#include "Game/Combat/Skill/Public/SkillTypes.hpp"
+#include "Game/Combat/Skill/Public/Core/SkillApi.hpp"
+#include "Game/Combat/Skill/Public/Core/DTO.hpp"
+#include "Game/Combat/Skill/Public/Core/SkillTypes.hpp"
 
 #include "Engine/Log/Public/LogApi.hpp"
 

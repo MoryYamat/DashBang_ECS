@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <cstdint>
+#include <functional>
 
 namespace Game::Combat::Skill
 {
@@ -35,4 +36,21 @@ namespace Game::Combat::Skill
 	struct SkillSlotComponent;
 
 	struct SkillRequest;
+}
+
+namespace std {
+	template<typename T>
+	struct hash<Game::Combat::Skill::StrongID<T>>
+	{
+		size_t operator()(const Game::Combat::Skill::StrongID<T>& id) const noexcept
+		{
+			return std::hash<std::uint16_t>{}(id.v);
+		}
+	};
+}
+
+
+namespace Game::Combat::Skill::Binding
+{
+
 }

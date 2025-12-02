@@ -3,10 +3,12 @@
 #include "Game/Combat/Skill/Public/SkillFwd.hpp"
 
 #include "Engine/ECS/Public/Entity.hpp"
+#include "Engine/WorldSystem/Public/WorldFwd.hpp"
 #include "Engine/FSM/Public/FSMFwd.hpp"
 
 #include <vector>
 #include <cstdint>
+
 
 namespace Game::Combat::Skill
 {
@@ -30,5 +32,16 @@ namespace Game::Combat::Skill
 	{
 		std::vector<SkillLogicCommand> cmds;
 		void clear() { cmds.clear(); }
+	};
+
+	struct SkillCommandExecSystem
+	{
+		Engine::WorldSystem::Core::WorldCtx& ctx;
+
+		void Update(const float dt);
+
+	private:
+		void HandleSpawnHitBox(const SkillLogicCommand& cmd);
+		void HandlePlayerAnim(const SkillLogicCommand& cmd);
 	};
 }

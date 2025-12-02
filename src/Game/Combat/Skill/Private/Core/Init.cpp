@@ -1,11 +1,11 @@
-﻿#include "Game/Combat/Skill/Public/SkillApi.hpp"
-#include "Game/Combat/Skill/Public/SkillEffectTypes.hpp"
+﻿#include "Game/Combat/Skill/Public/Core/SkillApi.hpp"
+#include "Game/Combat/Skill/Public/Core/SkillEffectTypes.hpp"
 
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 #include "Engine/FSM/Public/Core/Types.hpp"
 #include "Engine/Log/Public/LogApi.hpp"
 
-#include "Game/Combat/Skill/Private/SkillCatalogBuilder.hpp"
+#include "Game/Combat/Skill/Private/Core/SkillCatalogBuilder.hpp"
 
 namespace Game::Combat::Skill
 {

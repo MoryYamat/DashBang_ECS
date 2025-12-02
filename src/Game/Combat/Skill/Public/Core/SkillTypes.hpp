@@ -3,7 +3,7 @@
 #pragma once
 #include "Engine/ECS/Public/Entity.hpp"
 #include "Engine/FSM/Public/FSMFwd.hpp"
-#include "SkillFwd.hpp"
+#include "Game/Combat/Skill/Public/SkillFwd.hpp"
 
 #include <glm/glm.hpp>
 #include <vector>
@@ -78,6 +78,7 @@ namespace Game::Combat::Skill
 		bool isQueued;
 	};
 
+	// 「Charancter」の Skill 実行にかかわる「状態」を保持 (Hitbox や Anim の具体的な状態は持たない)
 	// 実行状態
 	struct SkillRuntimeComp
 	{

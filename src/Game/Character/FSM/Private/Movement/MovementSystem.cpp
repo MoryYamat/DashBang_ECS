@@ -22,14 +22,15 @@
 
 #include <iostream>
 
-namespace Game::Character::FSM::Movement
+namespace
 {
 	using namespace Engine::Component;
 	using namespace Engine::FSM::Core;
 	using namespace Engine::WorldSystem::Query;
+	using namespace Game::Character::FSM::Movement;
 
 	// Entityのフィルタリング
-	static void BuildMovementPipeline(Engine::WorldSystem::Core::WorldCtx& ctx, MovementPipeline& out)
+	void BuildMovementPipeline(Engine::WorldSystem::Core::WorldCtx& ctx, MovementPipeline& out)
 	{
 		out.clear();
 		auto ents = ViewWhere(ctx.rw, All<MovementAxisComp, MovementStateComp, Velocity2DComponent>{});
@@ -48,6 +49,31 @@ namespace Game::Character::FSM::Movement
 				});
 		}
 	}
+
+	void ExecuteMovementOps(std::uint32_t mask, Engine::WorldSystem::Core::WorldCtx& ctx,
+		const MovementPipelineEntry& ent, float dt)
+	{
+		// 
+		if (mask & OpBit(MovementOpKind::ApplyVelocityFromIntent))
+		{
+			// intent -> velocity
+			SetMovementVelComp(ent, ctx);
+		}
+		if (mask & OpBit(MovementOpKind::ZeroVelocity))
+		{
+			// TODO: velocity -> 0
+			SetZeroVel(ent, ctx);
+		}
+
+		// 将来その他のOpKind::についての処理を追加
+	}
+}
+
+namespace Game::Character::FSM::Movement
+{
+	using namespace Engine::Component;
+	using namespace Engine::FSM::Core;
+	using namespace Engine::WorldSystem::Query;
 
 	void MovementEnvSystem::Update(std::span<MovementPipelineEntry> ents, const float dt)
 	{
@@ -98,23 +124,7 @@ namespace Game::Character::FSM::Movement
 	}
 
 
-	void ExecuteMovementOps(std::uint32_t mask, Engine::WorldSystem::Core::WorldCtx& ctx,
-		const MovementPipelineEntry& ent, float dt)
-	{
-		// 
-		if (mask & OpBit(MovementOpKind::ApplyVelocityFromIntent))
-		{
-			// intent -> velocity
-			SetMovementVelComp(ent, ctx);
-		}
-		if (mask & OpBit(MovementOpKind::ZeroVelocity))
-		{
-			// TODO: velocity -> 0
-			SetZeroVel(ent, ctx);
-		}
 
-		// 将来その他のOpKind::についての処理を追加
-	}
 
 	void MovementLogicSystem::Update(std::span<MovementPipelineEntry> ents, const float dt)
 	{
