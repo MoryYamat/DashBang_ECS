@@ -16,7 +16,7 @@ namespace Game::Feature::Combat
 	{
 	public:
 		static void InitSkillSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
-		static void UpdateSkillSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
+		static void UpdateSkillRuntimeSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
 
 		// Skill 関連システムのすべての初期化後に呼び出す
 		static void InitSkillBindingSystem(Engine::WorldSystem::Core::WorldCtx& ctx);

@@ -6,21 +6,21 @@ namespace Game::Combat::Skill
 {
 	static void make_skillDTO(SkillCatalogBuilder& builder)
 	{
-		SkillDefDTO def;
+		SkillDefDTO test_skill;
 
-		def.fsm = "Basic";
-		def.name = "test_skill";
-		def.profile = "Default";
-		def.phases = { 
+		test_skill.fsm = "Basic";
+		test_skill.name = "test_skill";
+		test_skill.profile = "Default";
+		test_skill.phases = {
 			SkillPhaseDTO{.name = "Casting", .duration = 1.0f}, 
 			SkillPhaseDTO{.name = "Active", .duration = 1.0f}, 
 			SkillPhaseDTO{.name = "Recovery", .duration = 1.0f} };
-		def.effects = { 
-			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.2f, .kind = "SpawnHitbox"},
+		test_skill.effects = {
+			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.2f, .lifetime = 1.0f, .kind = "SpawnHitbox"},
 			SkillEffectDefDTO{.phase = "Casting", .timeOffset = 0.1f, .kind = "PlayAnim"},
 		};
 
-		builder.add(std::move(def));
+		builder.add(std::move(test_skill));
 	}
 
 	void RegisterSkillDef(SkillCatalogBuilder& builder)

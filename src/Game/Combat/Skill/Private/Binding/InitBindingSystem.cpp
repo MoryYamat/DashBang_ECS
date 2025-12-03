@@ -24,7 +24,7 @@ namespace Game::Combat::Skill::Binding
 	using namespace Game::Combat::HitBox;
 
 	// Skill 関連コンポーネントがすべて初期化された後に初期化
-	void InitAllSkillBindingSysmte(Engine::WorldSystem::Core::WorldCtx& ctx)
+	void InitAllSkillBindingSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
 		// 登録済み前提
 		const auto& skill = ctx.ww.GetResource<SkillCatalog>();

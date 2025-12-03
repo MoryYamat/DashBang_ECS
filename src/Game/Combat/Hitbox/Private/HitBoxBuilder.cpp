@@ -129,7 +129,7 @@ namespace Game::Combat::HitBox
 			if (dto.vert <= 0.f || dto.horizon <= 0.f)
 			{
 				err.err("HitBox '" + dto.name +
-					"': Obb2D requires length > 0 and radius(half-width) > 0");
+					"': Obb2D requires vert > 0 and horizon > 0");
 				ok = false;
 			}
 			out.vert = dto.vert;

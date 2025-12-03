@@ -49,11 +49,19 @@ namespace Game::Combat::HitBox
 	// Buffers
 	struct HitBoxSpawnRequest
 	{
-		Engine::ECS::Core::Entity owner;
-		HitBoxID hitbox;
+		Engine::ECS::Core::Entity owner;		// 
+		HitBoxID hitbox;						// どの定義を使うか
+
+		// メタ情報
 		Game::Combat::Skill::SkillID skill;		// どのスキル由来か
 		Engine::FSM::Core::StateID state;		// どのフェーズで発生したか
-		float triggerTime;						// Skill 内 の timeoffset
+
+		glm::vec2 position = glm::vec2(0.0f);	// 発生位置
+		glm::vec2 direction = glm::vec2(0.0f);	// 方向
+
+		Engine::ECS::Core::Entity target;		// ロックオンターゲット(必要か検討)
+		float triggerTime = 0.f;				// Skill 内 の timeoffset(必要か検討)
+		float lifetime = 0.f;					// 寿命
 	};
 
 
@@ -87,7 +95,9 @@ namespace Game::Combat::HitBox
 	{
 		HitBoxID def;
 		Engine::ECS::Core::Entity owner;
-		float lifetime;
+
+		Game::Combat::Skill::SkillID skill;
+		Engine::FSM::Core::StateID state;
 	};
 
 	struct HitBoxSpawnSystem

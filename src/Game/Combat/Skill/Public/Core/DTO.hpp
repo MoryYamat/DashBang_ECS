@@ -19,7 +19,8 @@ namespace Game::Combat::Skill
 	struct SkillEffectDefDTO
 	{
 		std::string phase;			// どのフェーズで
-		float timeOffset;			// フェーズ開始から何秒後に
+		float timeOffset = 0.f;			// フェーズ開始から何秒後に
+		float lifetime = 0.f;				// 寿命
 		std::string kind;			// "SpawnHitbox", "PlayAnim",...
 		//std::string param;			// ヒットボックスID や アニメ名など
 	};

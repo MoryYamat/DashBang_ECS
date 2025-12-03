@@ -17,43 +17,12 @@ namespace Game::Combat::Skill
 	void RegisterSkillDef(SkillCatalogBuilder& builder);
 
 
-	struct SkillRuntimePipelineEntry
-	{
-		Engine::ECS::Core::Entity e = Engine::ECS::Core::INVALID;
 
-		const Game::Character::FSM::Skill::SkillStateComp* state;
-		SkillRuntimeComp* runtimeComp;
-		const Game::Character::Control::SkillIntentComponent* intent;
-	};
-	using SkillRuntimePipeline = std::vector<SkillRuntimePipelineEntry>;
-
-	// private: update all
-	void BuildSkillRuntimePipeline(Engine::WorldSystem::Core::WorldCtx& ctx, SkillRuntimePipeline& out);
 	
-	struct SkillTriggerSystem
-	{
-		Engine::WorldSystem::Core::WorldCtx& ctx_;
 
-		void Update(const std::span<SkillRuntimePipelineEntry> ents, const float dt);
-	};
-
-	struct SkillRuntimeSystem
-	{
-		Engine::WorldSystem::Core::WorldCtx& ctx_;
-
-		void Update(const std::span<SkillRuntimePipelineEntry> ents, const float dt);
-	};
-
-	struct SkillLogicCommandSystem
-	{
-		Engine::WorldSystem::Core::WorldCtx& ctx_;
-
-		void Update(const std::span<SkillRuntimePipelineEntry> ents, const float dt);
-	};
 
 	// public
 	void InitAllSkillSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
-	void UpdateAllSkillRuntimeSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
 
 	bool InitSkillSlot(
 		Engine::WorldSystem::Core::WorldCtx& ctx,

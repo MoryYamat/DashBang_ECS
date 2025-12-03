@@ -11,4 +11,6 @@ namespace Game::Combat::HitBox
 
 	// public
 	void InitAllHitBoxSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
+
+	void UpdateAllHitBoxSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
 }

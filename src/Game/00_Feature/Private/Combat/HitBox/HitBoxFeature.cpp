@@ -11,7 +11,7 @@ namespace Game::Feature::Combat
 
 	void HitBoxFeature::UpdateHitBoxSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
-		// Game::Combat::HitBox::
+		Game::Combat::HitBox::UpdateAllHitBoxSystem(ctx);
 	}
 
 }

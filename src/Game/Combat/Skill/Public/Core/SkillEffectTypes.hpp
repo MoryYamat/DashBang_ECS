@@ -12,36 +12,36 @@
 
 namespace Game::Combat::Skill
 {
-	enum class LogicCommandKind : std::uint8_t
-	{
-		SpawnHitBox,
-		PlayAnim,
-	};
+	//enum class LogicCommandKind : std::uint8_t
+	//{
+	//	SpawnHitBox,
+	//	PlayAnim,
+	//};
 
-	struct SkillLogicCommand
-	{
-		LogicCommandKind kind;
-		Engine::ECS::Core::Entity owner = Engine::ECS::Core::INVALID;
-		SkillID skill;
-		Engine::FSM::Core::StateID state;
-		float effectTime;					// 発火したタイミング?
-	};
+	//struct SkillLogicCommand
+	//{
+	//	LogicCommandKind kind;
+	//	Engine::ECS::Core::Entity owner = Engine::ECS::Core::INVALID;
+	//	SkillID skill;
+	//	Engine::FSM::Core::StateID state;
+	//	float effectTime;					// 発火したタイミング?
+	//};
 
-	// フレームごとの一時リソース
-	struct SkillLogicCommandBuffer
-	{
-		std::vector<SkillLogicCommand> cmds;
-		void clear() { cmds.clear(); }
-	};
+	//// フレームごとの一時リソース
+	//struct SkillLogicCommandBuffer
+	//{
+	//	std::vector<SkillLogicCommand> cmds;
+	//	void clear() { cmds.clear(); }
+	//};
 
-	struct SkillCommandExecSystem
-	{
-		Engine::WorldSystem::Core::WorldCtx& ctx;
+	//struct SkillCommandExecSystem
+	//{
+	//	Engine::WorldSystem::Core::WorldCtx& ctx;
 
-		void Update(const float dt);
+	//	void Update(const float dt);
 
-	private:
-		void HandleSpawnHitBox(const SkillLogicCommand& cmd);
-		void HandlePlayerAnim(const SkillLogicCommand& cmd);
-	};
+	//private:
+	//	void HandleSpawnHitBox(const SkillLogicCommand& cmd);
+	//	void HandlePlayerAnim(const SkillLogicCommand& cmd);
+	//};
 }

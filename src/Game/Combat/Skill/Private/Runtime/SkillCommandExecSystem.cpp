@@ -1,16 +1,17 @@
-﻿#include "Game/Combat/Skill/Public/Core/SkillEffectTypes.hpp"
-
+﻿#include "Game/Combat/Skill/Public/Runtime/SkillRuntimeAPI.hpp"
 
 #include "Game/Combat/HitBox/Public/HitBoxTypes.hpp"
 #include "Game/Combat/HitBox/Public/HitBoxFwd.hpp"
 
-#include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
+#include "Game/Combat/Skill/Public/Binding/Types.hpp"
 
+
+#include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 #include "Engine/Log/Public/LogApi.hpp"
 
 #include <iostream>
 
-namespace Game::Combat::Skill
+namespace Game::Combat::Skill::Runtime
 {
 	void SkillCommandExecSystem::Update(const float dt)
 	{
@@ -27,7 +28,7 @@ namespace Game::Combat::Skill
 				HandleSpawnHitBox(cmd);
 				break;
 			case LogicCommandKind::PlayAnim:
-				HandlePlayerAnim(cmd);
+				HandlePlayerAnim(cmd);// 未作成
 				break;
 			}
 		}
@@ -38,28 +39,30 @@ namespace Game::Combat::Skill
 	// サブシステム用リクエストに変換
 	void SkillCommandExecSystem::HandleSpawnHitBox(const SkillLogicCommand& cmd)
 	{
-		// auto& hitboxReqBuf = ctx.ww.GetResource<HitBoxSpawnRequestBuffer>();
-		// auto& hitboxMap = ctx.ww.GetResource<SkillHitBoxMapping>();
+		auto& buffer = ctx.ww.GetResource<HitBoxSpawnRequestBuffer>();
+		auto& binding = ctx.ww.GetResource<Binding::SkillBindingData>();
 
-		// HitBoxID hb = hitboxMap.Resolve(cmd.skill);
-		//if (!hb.valid())
-		//{
-		//	Engine::Log::Write(Engine::Log::Level::Error, "SkillCommandExecSystem", "HitboxMap failed to resolve HitBoxID");
+		HitBoxID hb = binding.resolveHitBox(cmd.skill, cmd.state);
+		if (!hb.valid())
+		{
+			Engine::Log::Write(Engine::Log::Level::Error, "SkillCommandExecSystem", 
+				"HitboxMap failed to resolve HitBoxID");
+			return;
+		}
 
-		//	return;
-		//}
 
-
-		// HitBoxSpawnRequest r{};
-		// r.owner = cmd.owner;
-		// r.skill = cmd.skill;
-		// r.state = cmd.state;
-		// r.triggerTime = cmd.effectTime;
+		HitBoxSpawnRequest r{};
+		r.hitbox = hb;
+		r.owner = cmd.owner;
+		r.skill = cmd.skill;
+		r.state = cmd.state;
+		r.triggerTime = cmd.effectTime;
+		r.lifetime = cmd.lifetime;
 		// 将来：キャラごとの設定やスキル種別で HitboxID を解決して入れる
 
 		std::cout << "here1\n";
 
-		// hitboxReqBuf.reqs.push_back(r);
+		buffer.reqs.push_back(r);
 	}
 
 

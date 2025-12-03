@@ -201,6 +201,7 @@ namespace Game::Combat::Skill
 			cef.state.v = itState->second;
 			cef.timeOffset = eff.timeOffset;
 			cef.kind = kind;
+			cef.lifetime = eff.lifetime;
 
 			out.effects.push_back(cef);
 		}

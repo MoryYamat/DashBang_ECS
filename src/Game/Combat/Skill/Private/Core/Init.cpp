@@ -1,5 +1,5 @@
 ﻿#include "Game/Combat/Skill/Public/Core/SkillApi.hpp"
-#include "Game/Combat/Skill/Public/Core/SkillEffectTypes.hpp"
+#include "Game/Combat/Skill/Public/Runtime/SkillRuntimeAPI.hpp"
 
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 #include "Engine/FSM/Public/Core/Types.hpp"
@@ -30,7 +30,8 @@ namespace Game::Combat::Skill
 	// (呼出し順注意): FSMEngine 初期化後に呼び出す必要あり
 	void InitAllSkillSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
-		auto& builder = ctx.ww.CreateResource<SkillCatalogBuilder>();
+		// auto& builder = ctx.ww.CreateResource<SkillCatalogBuilder>();
+		SkillCatalogBuilder builder{};
 		RegisterSkillDef(builder);
 
 		const auto* fsmCat = ctx.rw.TryGetResource<Engine::FSM::Core::FSMCatalog>();
@@ -43,8 +44,6 @@ namespace Game::Combat::Skill
 		auto& catalog = ctx.ww.CreateResource<SkillCatalog>();
 		catalog = InitSkillCatalog(builder, *fsmCat);
 
-		// コマンドバッファ作成/初期化
-		auto& cmds = ctx.ww.CreateResource<SkillLogicCommandBuffer>();
-		cmds.clear();
+		Runtime::InitAllSkillRuntimeSystem(ctx);
 	}
 }

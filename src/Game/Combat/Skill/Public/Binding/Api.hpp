@@ -13,5 +13,5 @@ namespace Game::Combat::Skill::Binding
 
 
 	// pubilc
-	void InitAllSkillBindingSysmte(Engine::WorldSystem::Core::WorldCtx& ctx);
+	void InitAllSkillBindingSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
 }

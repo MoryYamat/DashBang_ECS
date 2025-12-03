@@ -16,6 +16,8 @@
 
 #include "Game/00_Feature/Private/System/WorldClockFeature.hpp"
 
+#include "Game/00_Feature/Public/HitBoxFeature.hpp"
+
 // world
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 #include "Engine/Sync/Public/SyncApi.hpp"
@@ -23,6 +25,9 @@
 
 void Game::Layer::LogicLayerFeature::Update(Engine::WorldSystem::Core::WorldCtx& ctx)
 {
+	// lifetime
+	Game::Feature::ECS::GameGeneralSytem::UpdateLifetimeSystem(ctx);
+
 	// position
 	Game::Feature::Character::MovementFeature::UpdateLogicPosition(ctx);
 	Engine::Sync::Apply2DTransform(ctx);
@@ -31,5 +36,8 @@ void Game::Layer::LogicLayerFeature::Update(Engine::WorldSystem::Core::WorldCtx&
 	Game::Feature::CollisionFeature::UpdateCollisionSystem(ctx);
 
 	// skill
-	Game::Feature::Combat::SkillFeature::UpdateSkillSystem(ctx);
+	Game::Feature::Combat::SkillFeature::UpdateSkillRuntimeSystem(ctx);
+
+	// hitbox
+	Game::Feature::Combat::HitBoxFeature::UpdateHitBoxSystem(ctx);
 }

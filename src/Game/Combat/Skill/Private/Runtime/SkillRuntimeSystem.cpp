@@ -1,15 +1,13 @@
-﻿#include "Game/Combat/Skill/Public/Core/SkillApi.hpp"
+﻿#include "Game/Combat/Skill/Public/Runtime/SkillRuntimeAPI.hpp"
 #include "Game/Combat/Skill/Public/Core/SkillTypes.hpp"
-#include "Game/Combat/Skill/Public/Core/SkillEffectTypes.hpp"
 
 #include "Game/Character/Control/Public/IntentComponent.hpp"
 #include "Game/Character/FSM/Public/SkillAxisComponent.hpp"
 
 #include "Engine/Time/Private/WorldClock.hpp"
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
-
-
 #include "Engine/Log/Public/LogApi.hpp"
+
 
 #include <span>
 #include <vector>
@@ -18,6 +16,7 @@ namespace
 {
 	using namespace Engine::WorldSystem::Query;
 	using namespace Game::Combat::Skill;
+	using namespace Game::Combat::Skill::Runtime;
 
 	bool CanTrigger(SkillRuntimeComp& runtime, const SkillRequest& req)
 	{
@@ -48,9 +47,10 @@ namespace
 }
 
 
-namespace Game::Combat::Skill
+namespace Game::Combat::Skill::Runtime
 {
 	using namespace Engine::WorldSystem::Query;
+	using namespace Game::Combat::Skill::Binding;
 
 	// 処理対象entity の一括抽出
 	void BuildSkillRuntimePipeline(Engine::WorldSystem::Core::WorldCtx& ctx, SkillRuntimePipeline& out)
@@ -100,7 +100,6 @@ namespace Game::Combat::Skill
 	void SkillRuntimeSystem::Update(const std::span<SkillRuntimePipelineEntry> ents, const float dt)
 	{
 		auto& catalog = ctx_.rw.GetResource<SkillCatalog>();
-
 
 		for (const auto& e : ents)
 		{
@@ -213,6 +212,8 @@ namespace Game::Combat::Skill
 					cmd.skill = skill->id;
 					cmd.state = eff.state;
 					cmd.effectTime = eff.timeOffset;
+					cmd.lifetime = eff.lifetime;
+					
 
 					switch (eff.kind)
 					{

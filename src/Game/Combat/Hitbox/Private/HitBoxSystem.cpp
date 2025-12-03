@@ -2,8 +2,12 @@
 
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 #include "Engine/Component/Private/Logic2D/Logic2DComponent.hpp"
+#include "Engine/Component/Private/Common/LifetimeComponent.hpp"
+#include "Engine/Time/Private/WorldClock.hpp"
+
 
 #include "Engine/Log/Public/LogApi.hpp"
+
 
 namespace Game::Combat::HitBox
 {
@@ -12,6 +16,9 @@ namespace Game::Combat::HitBox
 	{
 		auto& catalog = ctx.ww.GetResource<HitBoxCatalog>();
 		auto& reqBuf = ctx.ww.GetResource<HitBoxSpawnRequestBuffer>();
+
+		if (reqBuf.reqs.empty())
+			return;
 
 		for (const auto& req : reqBuf.reqs)
 		{
@@ -41,14 +48,26 @@ namespace Game::Combat::HitBox
 			lg.scale = ownerPos->scale;
 			ctx.ww.Add<Logic2DTransformComponent>(e, lg);
 
+			LifetimeComponent lifetime{};
+			lifetime.remainingLifetime = req.lifetime;
+			ctx.ww.Add<LifetimeComponent>(e, lifetime);
+
 			// HitBoxComponent
 			HitBoxComponent hb{};
 			hb.def = req.hitbox;
 			hb.owner = req.owner;
-
+			hb.skill = req.skill;
 			ctx.ww.Add<HitBoxComponent>(e, hb);
 		}
 
 		reqBuf.clear();
+	}
+
+	void UpdateAllHitBoxSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
+	{
+		const auto& clock = ctx.rw.GetResource<Engine::Time::WorldClockData>();
+
+		HitBoxSpawnSystem hbSpawn{ ctx };
+		hbSpawn.Update(clock.fixedDt);
 	}
 }

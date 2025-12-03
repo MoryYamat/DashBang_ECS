@@ -5,6 +5,7 @@
 
 #include "Game/Combat/Skill/Public/Core/SkillApi.hpp"
 #include "Game/Combat/Skill/Public/Binding/API.hpp"
+#include "Game/Combat/Skill/Public/Runtime/SkillRuntimeAPI.hpp"
 
 //
 //
@@ -15,13 +16,13 @@ namespace Game::Feature::Combat
 		Game::Combat::Skill::InitAllSkillSystem(ctx);
 	}
 
-	void SkillFeature::UpdateSkillSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
+	void SkillFeature::UpdateSkillRuntimeSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
-		Game::Combat::Skill::UpdateAllSkillRuntimeSystem(ctx);
+		Game::Combat::Skill::Runtime::UpdateAllSkillRuntimeSystem(ctx);
 	}
 
 	void SkillFeature::InitSkillBindingSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
-		Game::Combat::Skill::Binding::InitAllSkillBindingSysmte(ctx);
+		Game::Combat::Skill::Binding::InitAllSkillBindingSystem(ctx);
 	}
 }
