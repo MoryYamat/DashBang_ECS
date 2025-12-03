@@ -5,6 +5,8 @@
 
 namespace Game::Combat::Skill::Binding
 {
+	// TODO: 効果チャネル化/効果配列化 etc.
+	// キー
 	struct SkillStateKeyDTO
 	{
 		std::string skill;		// SkillDefDTO.name

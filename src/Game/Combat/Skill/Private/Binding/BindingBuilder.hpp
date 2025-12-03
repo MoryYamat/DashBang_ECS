@@ -3,6 +3,7 @@
 #include "Engine/FSM/Public/FSMFwd.hpp"
 
 #include "Game/Combat/HitBox/Public/HitboxFwd.hpp"
+#include "Game/Combat/Skill/Public/SkillFwd.hpp"
 
 #include "Game/Combat/Skill/Public/Binding/DTO.hpp"
 #include "Game/Combat/Skill/Public/Binding/Types.hpp"
@@ -33,8 +34,7 @@ namespace Game::Combat::Skill::Binding
 		SkillBindingBuilder(
 			const SkillCatalog& skillCat,
 			const HitBox::HitBoxCatalog& hitBoxCat,
-			const Engine::FSM::Core::FSMCatalog& fsmCat,
-			Engine::FSM::Core::AxisID skillAxis
+			const Engine::FSM::Core::FSMCatalog& fsmCat
 		);
 
 		void Add(const SkillHitBoxBindingDTO& dto);
@@ -48,21 +48,14 @@ namespace Game::Combat::Skill::Binding
 		const SkillCatalog& skills_;
 		const HitBox::HitBoxCatalog& hitboxes_;
 		const Engine::FSM::Core::FSMCatalog& fsm_;
-		Engine::FSM::Core::AxisID skillAxis_;
 
 		std::vector<SkillHitBoxBindingDTO> hbdefs_;
 
 		bool buildOne(
+			const Engine::FSM::Core::CanonicalAxis& axis,
 			const SkillHitBoxBindingDTO& hbdtos,
 			SkillBindingData& out,
 			SkillBindingBuildErrors& errs
 		) const;
-
-		std::optional<Engine::FSM::Core::StateID>
-			ResolveState(
-				std::string_view stateName,
-				SkillBindingBuildErrors& errs,
-				const SkillHitBoxBindingDTO& dto) const;
-
 	};
 }

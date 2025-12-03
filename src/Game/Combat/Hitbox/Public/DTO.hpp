@@ -11,8 +11,10 @@ namespace Game::Combat::HitBox
 		std::string name;		// hitbox name(!= skill name), 
 		std::string shape;		// "Circle", "Sector",...
 		float radius;			// circle用
-		float angle;			// Sector 用 (degree or rad)
-		float length;			// Rect/Sector用
+		float angle;			// Sector 用 (degree)
+		float length;			// Square/Sector用
+		float vert;				// Rect 正面方向
+		float horizon;			// Rect 水平方向
 		float offsetX;			// owner からのオフセット
 		float offsetY;
 	};

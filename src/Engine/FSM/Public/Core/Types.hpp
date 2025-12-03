@@ -122,6 +122,7 @@ namespace Engine::FSM::Core
 	struct FSMCatalog
 	{    
 		std::vector<CanonicalAxis> axes;
+		// std::unordered_map<std::string, AxisID> axisByName;		// TODO: ビルド時に埋める
 	};
 
 

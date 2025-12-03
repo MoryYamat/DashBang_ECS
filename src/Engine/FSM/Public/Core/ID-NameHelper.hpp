@@ -14,6 +14,8 @@ namespace Engine::FSM::Core::AxisLookup
 
 	static constexpr std::uint32_t kInvalid = UINT32_MAX;
 
+	AxisID FindAxisIdxByName(const FSMCatalog& cat, std::string_view name) noexcept;
+
 	std::uint32_t FindStateIdx(const CanonicalAxis& ax, std::string_view name) noexcept;
 	
 	std::uint32_t FindCondIdx(const CanonicalAxis& ax, std::string_view name) noexcept;

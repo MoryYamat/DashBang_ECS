@@ -17,6 +17,17 @@
 // (state/cond/slot/prof/fsm)の(定義)文字列からを正規化済みIDを取得するヘルパー関数
 namespace Engine::FSM::Core::AxisLookup
 {
+	AxisID FindAxisIdxByName(const FSMCatalog& cat, std::string_view name) noexcept
+	{
+		for (const auto& axis : cat.axes)
+		{
+			if (axis.axisName == name)
+			{
+				return axis.axis;
+			}
+		}
+		return kInvalidAxis;
+	}
 
 	std::uint32_t FindStateIdx(const CanonicalAxis& ax, std::string_view name) noexcept
 	{

@@ -17,7 +17,9 @@ namespace Game::Combat::Skill::Binding
 
 	struct SkillBindingData
 	{
-		std::vector<SkillHitBoxBindingEntry> entries;
+		// std::vector<std::uint16_t> offs;
+
+		std::vector<SkillHitBoxBindingEntry> hbs;// 必要ならO(1). unordered_map or csr
 		// 将来はほかの効果も追加していく
 
 		// 将来的にはunordered_map / CSR 
@@ -26,7 +28,7 @@ namespace Game::Combat::Skill::Binding
 			Engine::FSM::Core::StateID state
 		) const
 		{
-			for (const auto& e : entries)
+			for (const auto& e : hbs)
 			{
 				if (e.skill == skill && e.state == state)
 				{

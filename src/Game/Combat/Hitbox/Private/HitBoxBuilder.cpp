@@ -5,7 +5,7 @@
 #include "Engine/Component/Private/Logic2D/ColliderType.hpp"
 
 #include "Engine/Log/Public/LogApi.hpp"
-
+#include "Engine/Math/Private/MathUtils.h"
 
 #include <string_view>
 #include <cstddef>
@@ -111,7 +111,7 @@ namespace Game::Combat::HitBox
 				ok = false;
 			}
 			out.radius = dto.radius;
-			out.angle = 0.f;
+			out.angle = Engine::Math::DegreesToRadians(0.f);
 			out.length = 0.f;
 			break;
 		case ShapeKind::Box2D:
@@ -123,18 +123,18 @@ namespace Game::Combat::HitBox
 			}
 			out.length = dto.length;
 			out.radius = dto.radius;
-			out.angle = 0.f;
+			out.angle = Engine::Math::DegreesToRadians(0.f);
 			break;
 		case ShapeKind::Obb2D:
-			if (dto.length <= 0.f || dto.radius <= 0.f)
+			if (dto.vert <= 0.f || dto.horizon <= 0.f)
 			{
 				err.err("HitBox '" + dto.name +
 					"': Obb2D requires length > 0 and radius(half-width) > 0");
 				ok = false;
 			}
-			out.length = dto.length;
-			out.radius = dto.radius;
-			out.angle = dto.angle;
+			out.vert = dto.vert;
+			out.horilzon = dto.horizon;
+			out.angle = Engine::Math::DegreesToRadians(dto.angle);
 			break;
 		default:
 			break;

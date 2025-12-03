@@ -15,7 +15,7 @@
 #include "Game/00_Feature/Private/System/WorldClockFeature.hpp"
 
 #include "Game/00_Feature/Private/Combat/HitEvent/HitEventFeature.hpp"
-
+#include "Game/00_Feature/Public/HitBoxFeature.hpp"
 
 // world
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
@@ -45,8 +45,15 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialization(Engine::WorldSys
 	// Anim
 	Game::Feature::Character::Animation::CharacterAnimationFeature::InitProfileDatabase(ctx);
 
-	// skill
+	// ---------- Combat -----------
+	// Skill
 	Game::Feature::Combat::SkillFeature::InitSkillSystem(ctx);
+	// HitBox
+	Game::Feature::Combat::HitBoxFeature::InitHitBoxSystem(ctx);
+
+	// 最後に呼び出し
+	Game::Feature::Combat::SkillFeature::InitSkillBindingSystem(ctx);
+	// -----------------------------
 
 	// Game::FSM::Debug::SmokeTest_Movement(ctx);
 }

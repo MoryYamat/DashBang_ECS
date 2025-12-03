@@ -27,4 +27,5 @@ namespace Game::Combat::HitBox
 
 
 	struct HitBoxCatalog;
+	class HitBoxBuilder;
 }

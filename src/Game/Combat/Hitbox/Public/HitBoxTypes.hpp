@@ -21,8 +21,10 @@ namespace Game::Combat::HitBox
 		HitBoxID id;								// 定義順に0～採番
 		Engine::Component::ShapeKind shape = Engine::Component::ShapeKind::None;			// 将来 enmu に正規化
 		float radius = 0.f;			// circle用
-		float angle = 0.f;			// Sector 用 (degree or rad)
-		float length = 0.f;			// Rect/Sector用
+		float angle = 0.f;			// Sector 用 (rad //(DTO→Degree/ Canonical→Rad))
+		float length = 0.f;			// Squeare/Sector用
+		float vert = 0.f;			// Rect 正面方向 
+		float horilzon = 0.f;		// Rect 水平方向
 		glm::vec2 offset = glm::vec2(0.f);		// owner基準
 	};
 
@@ -32,7 +34,15 @@ namespace Game::Combat::HitBox
 
 
 		std::unordered_map<std::string, HitBoxID> nameToId;
-		HitBoxID FindByName(std::string_view s) const;
+		HitBoxID FindByName(std::string_view s) const
+		{
+			auto it = nameToId.find(std::string(s));
+			if (it == nameToId.end())
+			{
+				return kInvalidHitBoxID;
+			}
+			return it->second;
+		}
 	};
 
 

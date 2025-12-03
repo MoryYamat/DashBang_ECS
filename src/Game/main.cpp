@@ -58,3 +58,7 @@ int main()
 // AxisKernel
 // StateHooks
 // TransitionBus
+
+
+// TODO:
+// 初期化順の自動化(依存グラフ + トポロジカルソート)

@@ -52,5 +52,5 @@ namespace std {
 
 namespace Game::Combat::Skill::Binding
 {
-
+	class SkillBindingBuilder;
 }

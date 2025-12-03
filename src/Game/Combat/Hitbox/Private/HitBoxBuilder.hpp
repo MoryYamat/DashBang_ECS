@@ -36,6 +36,8 @@ namespace Game::Combat::HitBox
 
 	public:
 
+		HitBoxBuilder() = default;
+
 		void add(HitBoxDTO dto)
 		{
 			defs_.push_back(std::move(dto));
