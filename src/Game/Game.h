@@ -20,13 +20,12 @@
 // window
 #include "Engine/Window/Public/WindowFwd.hpp"
 
-
-// 
-#include "Game/Common/Private/AppContext.h"
-
 // World
 // #include "Engine/WorldSystem/Private/Core/World.hpp"
 #include "Engine/WorldSystem/Public/WorldFwd.hpp"
+
+// Debug
+#include "Engine/Debug/Public/DebugFWD.hpp"
 
 #include <memory>
 
@@ -52,10 +51,8 @@ namespace GameApp
 		std::unique_ptr<Engine::WorldSystem::Core::World> world_;
 		std::unique_ptr<Engine::Window::Window> window_;
 		std::unique_ptr<Engine::Input::InputManager> input_;
-		// std::unique_ptr<Engine::Graphics::Render::Shader> mShader;	// 削除予定
 		std::unique_ptr<Engine::Graphics::Shader> shader_;
-		// Engine::ECS::EntityMgr mECS;
-		// Engine::Graphics::Render::RenderContext mRenderCtx;			// 削除予定
+		std::unique_ptr<Engine::Debug::DebugLineRenderer> debugLineRenderer_;
 		Engine::Graphics::RenderContext renderCtx_;
 
 		// 参照の束 (所有しない)
@@ -86,11 +83,9 @@ namespace GameApp
 
 		// float mDeltaTime = 0.0f;
 
-		void updateGameLogics(float deltaTime);
 		// void updateGameLogics();
 		void updateGameLogics(Engine::WorldSystem::Core::WorldCtx& ctx);
 
-		void generateOutputs();
 		void generateOutputs(Engine::WorldSystem::Core::WorldCtx& ctx);
 
 		void Update(Engine::WorldSystem::Core::WorldCtx& ctx, float realDt);
@@ -100,10 +95,8 @@ namespace GameApp
 	
 		void unloadData();
 
-		void spawnAllActors();
 		void spawnAllActors(Engine::WorldSystem::Core::WorldCtx& ctx);
 
-		void RunInitializationPhase();
 		void RunInitializationPhase(Engine::WorldSystem::Core::WorldCtx& ctx);
 
 		void updateContext();
@@ -113,7 +106,7 @@ namespace GameApp
 		// ：頻繁に変更されず，不変／静的に扱える => SkillInputMap, InputMapping
 		// ：複数のSystemが依存しているが，Componentではない => CollisionResultStorage(状態ではなくバッファ)
 		// ：状態を持つ必要がなく，ECSの生存管理に関係しない
-		void InitializeGlobalResouces();
+
 	};
 }
 

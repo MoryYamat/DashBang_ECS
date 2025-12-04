@@ -2,7 +2,7 @@
 #include "Game/Combat/HitBox/Public/HitBoxTypes.hpp"
 
 
-#include "Engine/Component/Private/Logic2D/ColliderType.hpp"
+#include "Engine/Physics/Public/Geometry2DTypes.hpp"
 
 #include "Engine/Log/Public/LogApi.hpp"
 #include "Engine/Math/Private/MathUtils.h"
@@ -12,7 +12,7 @@
 
 namespace
 {
-	using namespace Engine::Component;
+	using namespace Engine::Physics;
 	bool ParseShapeKind(std::string_view s, ShapeKind& out)
 	{
 		if (s == "Circle2D")
@@ -96,12 +96,16 @@ namespace Game::Combat::HitBox
 			return false;
 		}
 		out.shape = shape;
-		out.offset = glm::vec2(dto.offsetX, dto.offsetY);
+		out.offset = dto.offset;
 
 		// 形状ごとに妥当性チェック + 値コピー
 		switch (shape)
 		{
 		case ShapeKind::None:
+			out.radius = 0.f;
+			out.angle = 0.f;
+			out.length = 0.f;
+			out.halfExtents = { 0.f, 0.f };
 			break;
 		case ShapeKind::Circle2D:
 			if (dto.radius <= 0.f)
@@ -113,28 +117,31 @@ namespace Game::Combat::HitBox
 			out.radius = dto.radius;
 			out.angle = Engine::Math::DegreesToRadians(0.f);
 			out.length = 0.f;
+			out.halfExtents = { 0.f, 0.f };
 			break;
 		case ShapeKind::Box2D:
-			if (dto.length <= 0.f || dto.radius <= 0.f)
+			if (dto.halfExtents.x <= 0.f || dto.halfExtents.y <= 0.f)
 			{
 				err.err("HitBox '" + dto.name +
-					"': Box2D requires length > 0 and radius(half-width) > 0");
+					"': Box2D requires halfExtents.x > 0 and halfExtents.y > 0");
 				ok = false;
 			}
-			out.length = dto.length;
-			out.radius = dto.radius;
+			out.radius = 0.f;
 			out.angle = Engine::Math::DegreesToRadians(0.f);
+			out.length = 0.f;
+			out.halfExtents = dto.halfExtents;
 			break;
 		case ShapeKind::Obb2D:
-			if (dto.vert <= 0.f || dto.horizon <= 0.f)
+			if (dto.halfExtents.x <= 0.f || dto.halfExtents.y <= 0.f)
 			{
 				err.err("HitBox '" + dto.name +
-					"': Obb2D requires vert > 0 and horizon > 0");
+					"': Obb2D requires halfExtents.x > 0 and halfExtents.y > 0");
 				ok = false;
 			}
-			out.vert = dto.vert;
-			out.horilzon = dto.horizon;
+			out.halfExtents = dto.halfExtents;
 			out.angle = Engine::Math::DegreesToRadians(dto.angle);
+			out.length = 0.f;
+			out.radius = 0.f;
 			break;
 		default:
 			break;

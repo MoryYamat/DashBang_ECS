@@ -51,6 +51,7 @@
 
 // Debug
 #include "Engine/Config/CanonicalDefaults.h"
+#include "Engine/Debug/Public/DebugDrawAPI.hpp"
 
 // ======================= Game =======================
 
@@ -90,9 +91,6 @@
 
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
-// Test
-//#include "Test/TriangleActor.h"
-//#include "Test/Test3DModel.h"
 
 // コンストラクタ
 GameApp::GameApp::GameApp()
@@ -131,30 +129,6 @@ void GameApp::GameApp::Shutdown()
 // 初期化
 bool GameApp::GameApp::Initialize()
 {
-	//if (!glfwInit())
-	//{
-	//	std::cerr << "[Game.cpp (Initialize)]: Failed to initialize GLFW" << std::endl;
-	//	return false;
-	//}
-
-	//mWindow = glfwCreateWindow(mWindow_Width, mWindow_Height,"GameWindow", nullptr, nullptr);
-	//if (!mWindow)
-	//{
-	//	std::cerr << "[Game.cpp (Initialize)]: Failed to initialize GLFW window" << std::endl;
-	//	return false;
-	//}
-
-	//glfwMakeContextCurrent(mWindow);
-
-	//glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-	//if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	//{
-	//	std::cerr << "[Game.cpp (Initialize)]: Failed to initialize GLAD" << std::endl;
-	//	return false;
-	//}
-
-	//glViewport(0, 0, mWindow_Width, mWindow_Height);
 	
 
 	window_ = std::make_unique<Engine::Window::Window>();
@@ -172,6 +146,11 @@ bool GameApp::GameApp::Initialize()
 		(
 			"shaders/basic.vertex.glsl", "shaders/basic.fragment.glsl"
 		);
+	
+	// デバッグライン用shader
+	debugLineRenderer_ = std::make_unique<Engine::Debug::DebugLineRenderer>(
+		"shaders/debug_line.vertex.glsl", "shaders/debug_line.fragment.glsl"
+	);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_FRAMEBUFFER_SRGB);// 
@@ -182,6 +161,7 @@ bool GameApp::GameApp::Initialize()
 
 	Engine::WorldSystem::Core::WorldCtx ctx{ *world_ };
 	Game::Layer::InitializeLayerFeature::DelayedInitialization(ctx);
+	Game::Layer::Debug::DebugLayerFeature::InitDebugSystem(ctx);
 
 	// loadData();
 	// ctxバージョン
@@ -217,104 +197,10 @@ void GameApp::GameApp::RunLoop()
 	// Update();
 }
 
-void GameApp::GameApp::updateGameLogics(float deltaTime)
 
-{	// Delta Time
-
-	//float currentFrame = static_cast<float>(glfwGetTime());
-	//// mDeltaTime = currentFrame - mLastFrame;
-	//float deltaTime = currentFrame - mLastFrame;
-	//mLastFrame = currentFrame;
-	// std::cout << "[Game.cpp(DeltaTime)]: deltaTime: " << deltaTime << "\n";
-
-	// debug用
-
-
-	// delete PendingDestroyComponent
-	//Engine::ECS::GrobalSystem::RunCleanup(mECS);
-
-
-
-	// Input
-	//mInput->Update();
- 
-	//const Engine::Input::RawInputState& input = mInput->GetRawInput();
-	//if (input.keyState.count(GLFW_KEY_ESCAPE) && input.keyState.at(GLFW_KEY_ESCAPE)) {
-	//	mIsRunning = false;
-	//}
-
-	// ECSのグローバルリソースからMappingを取得して，InputActionComponentを変更するように修正する
-	// 修正済みのため削除予定
-	// Game::Input::InputRouterSystem(mECS, mInputManager->GetRawInput(), mInputMapping);
-	// InputRouter
-	//Game::Input::InputRouterSystem(mECS, mInput->GetRawInput());
-	//Game::Input::Analog::RouteAnalogInput(mECS, mInput->GetRawInput(), mRenderCtx);
-
-	// 2D (Logic)-> 3D (Drawing)
-	//Engine::Sync::LogicToTransformSystem::Apply2DToTransform(mECS, deltaTime);
-
-	// ctx 終わった
-	// カメラ
-	// Game::Camera::Update(mECS, deltaTime);
-	// GameSystemInput::UpdateCamera(mEcs, mInputState, mDeltaTime);
-	
-
-	//GameApp::updateContext();
-
-	//Game::Collision::System::UpdateCollisionResultStorage(mECS, mCollisionResults);
-
-	//// Update from the top layer	
-	//Game::Layer::IntentLayerFeature::Update(mECS);
-
-	// Resolver Layer
-	//Game::Layer::ResolverLayerFeature::Update(mECS);
-
-	// state layer
-	//Game::Layer::StateLayerFeature::Update(mECS, deltaTime);
-
-	// Logic Layer
-	//Game::Layer::LogicLayerFeature::Update(mECS, deltaTime);
-
-	// Anim Layer
-	// locomotion
-	//Game::Layer::LocomotionResolverLayerFeature::Update(mECS);
-	// skill
-	//Game::Layer::SkillAnimationResolverLayerFeature::Update(mECS);
-	// cc
-	//Game::Layer::CCAnimationResolverLayerFeature::Update(mECS);
-
-	// ctx 終わった
-	// Anim Layer へ移動
-	// Engine::Graphics::Animation::System::AnimationSystem(mECS);
-}
-
-void GameApp::GameApp::generateOutputs()
-{
-	//glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-
-	// ctx おわった
-	// An algorithm is needed to set the shader for each object.
-	// RenderSystem::RenderSystem(mEcs, *mShader, WindowManager::GetAspect());
-	// draw Layer へ移動
-	// Engine::Graphics::Render::RenderSystem(mECS, *mShader, mWindow->GetAspect(), mRenderCtx);
-
-	// ctx まだ
-	// Draw Layerへ移動
-	// Engine::Debug::Drawing::Logic2D::Draw(mECS, mRenderCtx, mCollisionResults);
-	
-
-	//
-	//glfwSwapBuffers(window_->GetGLFWWindow());
-}
 
 void GameApp::GameApp::loadData()
 {
-	//GameApp::spawnAllActors();
-
-	//GameApp::RunInitializationPhase();
 
 	std::cout << "[Game.cpp]: Data loading completed successfully." << std::endl;
 }
@@ -325,43 +211,8 @@ void GameApp::GameApp::unloadData()
 }
 
 
-void GameApp::GameApp::spawnAllActors()
-{
-	//TriangleActor tri = TriangleActor(mEcs);
-
-	//Test3DModel test3d = Test3DModel(mEcs, mShader);
-
-	//Game::Actor::Player::PlayerCharacter player = Game::Actor::Player::PlayerCharacter(mECS, mShader.get());
-
-	//Game::Actor::Camera::FollowCameraActor followCam = Game::Actor::Camera::FollowCameraActor(mECS);
-
-	//Game::Actor::AnalogInput::MouseCursorActor mouseCursor = Game::Actor::AnalogInput::MouseCursorActor(mECS);
-
-	// TileMapActor tilemap = TileMapActor(mEcs);
-	// TestRockActor testRock = TestRockActor(mEcs, mShader);
 
 
-	//Game::Actor::Map::TestBaseTerrainActor testTerrainMap = Game::Actor::Map::TestBaseTerrainActor(mECS, mShader.get());
-
-	//Game::Actor::Map::TestRockActor testRock = Game::Actor::Map::TestRockActor(mECS, mShader.get());
-
-	//Game::Actor::TestObject testObj = Game::Actor::TestObject(mECS, mShader.get());
-
-	// CameraActor camActor = CameraActor(mEcs);
-
-}
-
-
-void GameApp::GameApp::RunInitializationPhase()
-{
-	// Engine::ECS::Meta::Init::ApplyAllDeferredInitializations<
-	// 	Engine::ECS::Component::Logic2D::TileMapComponent,
-	// 	Engine::ECS::Component::Camera::FollowCameraComponent
-	// // コンテキスト情報を渡す．
-	// >(mECS, *mWindow);
-
-	// Game::Init::Input::InputBindingInitializationSystem(mECS);
-}
 
 
 
@@ -424,6 +275,11 @@ void GameApp::GameApp::generateOutputs(Engine::WorldSystem::Core::WorldCtx& ctx)
 	// Engine::Graphics::UpdateRendererAll(ctx, *shader_, window_->GetAspect(), renderCtx_);
 	Game::Layer::LocomotionAnimLayerFeature::Update(ctx);
 	Game::Layer::DrawLayerFeature::Update(ctx, *shader_, *window_, renderCtx_);
+
+	if (debugLineRenderer_)
+	{
+		Game::Layer::Debug::DebugLayerFeature::UpdateDebugRender(ctx, renderCtx_, *debugLineRenderer_);
+	}
 
 
 	glfwSwapBuffers(window_->GetGLFWWindow());

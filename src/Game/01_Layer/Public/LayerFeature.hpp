@@ -4,6 +4,7 @@
 #include "Engine/WorldSystem/Public/WorldFwd.hpp"
 #include "Engine/Window/Public/WindowFwd.hpp"
 #include "Engine/Graphics/Public/GraphicsFwd.hpp"
+#include "Engine/Debug/Public/DebugFWD.hpp"
 
 namespace Game::Layer
 {
@@ -68,7 +69,13 @@ namespace Game::Layer::Debug
 	class DebugLayerFeature
 	{
 	public:
-		// static void Update(Engine::ECS::EntityMgr& ecs);
+		static void InitDebugSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
+
+
 		static void Update(Engine::WorldSystem::Core::WorldCtx& ctx);
+
+		static void UpdateDebugRender(Engine::WorldSystem::Core::WorldCtx& ctx,
+			Engine::Graphics::RenderContext& renderCtx_,
+			Engine::Debug::DebugLineRenderer& debugLineRenderer_);
 	};
 }

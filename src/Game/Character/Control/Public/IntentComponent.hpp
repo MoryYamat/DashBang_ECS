@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "Engine/ECS/Public/Entity.hpp"
-#include "Game/Combat/Skill/Public/SkillFwd.hpp"
+#include "Game/Combat/Skill/Core/Public/SkillFwd.hpp"
 
 #include <vector>
 #include <glm/glm.hpp>

@@ -5,7 +5,7 @@
 #include "Engine/Component/Private/Common/LifetimeComponent.hpp"
 #include "Engine/Time/Private/WorldClock.hpp"
 
-
+#include "Engine/Math/Private/MathUtils.h"
 #include "Engine/Log/Public/LogApi.hpp"
 
 
@@ -26,9 +26,7 @@ namespace Game::Combat::HitBox
 
 			const auto idx = req.hitbox.v;
 			if (idx >= catalog.hitBoxes.size()) continue;
-			const auto& hd = catalog.hitBoxes[idx];
-
-			auto e = ctx.ww.Create();
+			const auto& def = catalog.hitBoxes[idx];
 
 			// Transform / Position
 			// owner の 位置 + hd.offset から 初期位置決定
@@ -40,11 +38,25 @@ namespace Game::Combat::HitBox
 				continue;
 			}
 
+			// === center: owner + ローカル offset(right/front) ===
+			glm::vec2 worldOffset =
+				def.offset.x * ownerPos->right +
+				def.offset.y * ownerPos->front;
+			glm::vec2 center = ownerPos->positionXZ + worldOffset;
+
+			auto e = ctx.ww.Create();
+
 			Logic2DTransformComponent lg{};
-			lg.positionXZ = ownerPos->positionXZ + hd.offset;
-			lg.front = ownerPos->front;
-			lg.right = ownerPos->right;
-			lg.rotation = ownerPos->rotation;
+			lg.positionXZ = center;
+
+			// 向き: オーナーのfront/rightにdef.angleを足したもの
+			glm::vec2 baseFront = glm::normalize(ownerPos->front);
+			glm::vec2 baseRight = glm::normalize(ownerPos->right);
+
+			lg.front = Engine::Math::RotateVec2(baseFront, def.angle);
+			lg.right = Engine::Math::RotateVec2(baseRight, def.angle);
+
+			lg.rotation = ownerPos->rotation + def.angle;
 			lg.scale = ownerPos->scale;
 			ctx.ww.Add<Logic2DTransformComponent>(e, lg);
 

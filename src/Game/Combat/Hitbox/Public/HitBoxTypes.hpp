@@ -3,9 +3,9 @@
 #include "Engine/ECS/Public/Entity.hpp"
 #include "Engine/FSM/Public/FSMFwd.hpp"
 #include "Engine/WorldSystem/Public/WorldFwd.hpp"
-#include "Engine/Component/Private/Logic2D/ColliderType.hpp"
+#include "Engine/Physics/Public/Geometry2DTypes.hpp"
 
-#include "Game/Combat/Skill/Public/SkillFwd.hpp"
+#include "Game/Combat/Skill/Core/Public/SkillFwd.hpp"
 #include "Game/Combat/HitBox/Public/HitBoxFwd.hpp"
 #include "Game/Combat/HitBox/Public/DTO.hpp"
 
@@ -19,12 +19,11 @@ namespace Game::Combat::HitBox
 	struct CanonicalHitBoxData
 	{
 		HitBoxID id;								// 定義順に0～採番
-		Engine::Component::ShapeKind shape = Engine::Component::ShapeKind::None;			// 将来 enmu に正規化
+		Engine::Physics::ShapeKind shape = Engine::Physics::ShapeKind::None;			// 将来 enmu に正規化
 		float radius = 0.f;			// circle用
 		float angle = 0.f;			// Sector 用 (rad //(DTO→Degree/ Canonical→Rad))
-		float length = 0.f;			// Squeare/Sector用
-		float vert = 0.f;			// Rect 正面方向 
-		float horilzon = 0.f;		// Rect 水平方向
+		float length = 0.f;			// Sector用
+		glm::vec2 halfExtents = { 0.f, 0.f };	// Squeare/Obb
 		glm::vec2 offset = glm::vec2(0.f);		// owner基準
 	};
 

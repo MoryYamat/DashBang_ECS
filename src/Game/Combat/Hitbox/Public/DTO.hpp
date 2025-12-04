@@ -3,6 +3,7 @@
 #pragma once
 
 #include <string>
+#include <glm/glm.hpp>
 
 namespace Game::Combat::HitBox
 {
@@ -12,11 +13,9 @@ namespace Game::Combat::HitBox
 		std::string shape;		// "Circle", "Sector",...
 		float radius;			// circle用
 		float angle;			// Sector 用 (degree)
-		float length;			// Square/Sector用
-		float vert;				// Rect 正面方向
-		float horizon;			// Rect 水平方向
-		float offsetX;			// owner からのオフセット
-		float offsetY;
+		float length;			// Sector用
+		glm::vec2 halfExtents;  // Square/Obb
+		glm::vec2 offset;
 	};
 }
 

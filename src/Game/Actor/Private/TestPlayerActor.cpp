@@ -46,10 +46,10 @@
 #include "Game/ECS/Public/CharacterAttribTags.h"
 
 // ------------- Combat ------------- 
-#include "Game/Combat/Skill/Public/Core/DTO.hpp"
-#include "Game/Combat/Skill/Public/Core/SkillTypes.hpp"
-#include "Game/Combat/Skill/Public/Core/SkillApi.hpp"
-#include "Game/Combat/Skill/Public/Core/SlotComponent.hpp"
+#include "Game/Combat/Skill/Core/Public/DTO.hpp"
+#include "Game/Combat/Skill/Core/Public/SkillTypes.hpp"
+#include "Game/Combat/Skill/Core/Public/SkillApi.hpp"
+#include "Game/Combat/Skill/Core/Public/SlotComponent.hpp"
 
 // ------------- init --------------
 #include "Game/Init/Private/InitModel/InitLogicTransformFromModel.h"
@@ -66,6 +66,7 @@ namespace Game::Actor
 {
 	using namespace Engine::WorldSystem::Core;
 	using namespace Engine::Component;
+	using namespace Engine::Physics;
 
 	namespace MFSM = Game::Character::FSM::Movement;
 
