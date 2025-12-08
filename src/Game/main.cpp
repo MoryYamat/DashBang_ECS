@@ -53,6 +53,11 @@ int main()
 //   System /
 //    CCAntiChainSystem.cpp
 
+// --------------- フォルダ命名規則 -----------------
+// Public/ (外部API)
+// Internal/ (モジュール内で共有API)
+// Private/ (ドメイン実装 )
+
 
 
 // AxisKernel
@@ -61,4 +66,9 @@ int main()
 
 
 // TODO:
+// Internalフォルダ導入に伴う、Public→Internalフォルダへの公開ヘッダの整理
 // 初期化順の自動化(依存グラフ + トポロジカルソート)
+// --- FSM ---
+// SkillEffectDTO{.phase = ...}と個別phaseに定義するようになっている→構文を拡張し、phaseの区間を指定したり、各phaseでの効果量を柔軟に指定できるように仕様を拡張することも考える
+// 
+// 

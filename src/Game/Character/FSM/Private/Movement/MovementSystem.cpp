@@ -33,7 +33,11 @@ namespace
 	void BuildMovementPipeline(Engine::WorldSystem::Core::WorldCtx& ctx, MovementPipeline& out)
 	{
 		out.clear();
-		auto ents = ViewWhere(ctx.rw, All<MovementAxisComp, MovementStateComp, Velocity2DComponent>{});
+		auto ents = ViewWhere(ctx.rw, All<
+			MovementAxisComp, 
+			MovementStateComp, 
+			MovementModifierComponent,
+			Velocity2DComponent>{});
 
 		for (const auto& e : ents)
 		{
@@ -66,6 +70,27 @@ namespace
 		}
 
 		// 将来その他のOpKind::についての処理を追加
+	}
+
+	void UpdateMovementModifiers(Engine::WorldSystem::Core::WorldCtx& ctx, float dt)
+	{
+
+		auto ents = ViewWhere(ctx.rw, All<MovementModifierComponent>{});
+
+		for (const auto& e : ents)
+		{
+			auto& comp = ctx.ww.Get<MovementModifierComponent>(e);
+
+			for (auto& m : comp.entries)
+			{
+				m.remaining -= dt;
+			}
+
+			std::erase_if(comp.entries, [](const MovementModifierEntry& m)
+				{
+					return m.remaining <= 0.0f;
+				});
+		}
 	}
 }
 
@@ -168,6 +193,8 @@ namespace Game::Character::FSM::Movement
 		// ワールドリソースからとる予定
 		const auto& dt = ctx.rw.GetResource<Engine::Time::WorldClockData>();
 
+
+		UpdateMovementModifiers(ctx, dt.fixedDt);
 
 		MovementEnvSystem envSys{ ctx };
 		MovementFSMSystem fsmSys{ ctx };

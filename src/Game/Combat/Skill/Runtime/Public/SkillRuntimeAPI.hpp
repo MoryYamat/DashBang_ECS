@@ -24,7 +24,7 @@ namespace Game::Combat::Skill::Runtime
 	using SkillRuntimePipeline = std::vector<SkillRuntimePipelineEntry>;
 
 	// private: update all
-	void BuildSkillRuntimePipeline(Engine::WorldSystem::Core::WorldCtx& ctx, SkillRuntimePipeline& out);
+	// void BuildSkillRuntimePipeline(Engine::WorldSystem::Core::WorldCtx& ctx, SkillRuntimePipeline& out);
 
 	struct SkillTriggerSystem
 	{
@@ -51,6 +51,7 @@ namespace Game::Combat::Skill::Runtime
 	{
 		SpawnHitBox,
 		PlayAnim,
+		ModifyMoveSpeed,
 	};
 
 	struct SkillLogicCommand
@@ -61,6 +62,7 @@ namespace Game::Combat::Skill::Runtime
 		Engine::FSM::Core::StateID state;
 		float effectTime = 0.f;					// 発火したタイミング?
 		float lifetime = 0.f;
+		float value = 0.f;
 	};
 
 	// フレームごとの一時リソース
@@ -79,6 +81,7 @@ namespace Game::Combat::Skill::Runtime
 	private:
 		void HandleSpawnHitBox(const SkillLogicCommand& cmd);
 		void HandlePlayerAnim(const SkillLogicCommand& cmd);
+		void HandleModifyMoveSpeed(const SkillLogicCommand& cmd);
 	};
 
 	// public

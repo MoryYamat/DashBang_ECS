@@ -1,5 +1,7 @@
 ﻿#include "Game/Combat/Skill/Runtime/Public/SkillRuntimeAPI.hpp"
 
+#include "Game/Character/FSM/Public/MovementAxisComponent.hpp"
+
 #include "Game/Combat/HitBox/Public/HitBoxTypes.hpp"
 #include "Game/Combat/HitBox/Public/HitBoxFwd.hpp"
 
@@ -26,6 +28,9 @@ namespace Game::Combat::Skill::Runtime
 			{
 			case LogicCommandKind::SpawnHitBox:
 				HandleSpawnHitBox(cmd);
+				break;
+			case LogicCommandKind::ModifyMoveSpeed:
+				HandleModifyMoveSpeed(cmd);
 				break;
 			case LogicCommandKind::PlayAnim:
 				HandlePlayerAnim(cmd);// 未作成
@@ -65,6 +70,23 @@ namespace Game::Combat::Skill::Runtime
 		buffer.reqs.push_back(r);
 	}
 
+	void SkillCommandExecSystem::HandleModifyMoveSpeed(const SkillLogicCommand& cmd)
+	{
+		using namespace Game::Character::FSM::Movement;
+
+		auto* mods = ctx.ww.TryGet<MovementModifierComponent>(cmd.owner);
+		if (!mods)
+		{
+			return;
+		}
+
+		MovementModifierEntry e{};
+		e.mul = cmd.value;
+		e.add = 0.f;
+		e.remaining = cmd.lifetime;
+
+		mods->entries.push_back(e);
+	}
 
 	// サブシステム用リクエストに変換
 	void SkillCommandExecSystem::HandlePlayerAnim(const SkillLogicCommand& cmd)

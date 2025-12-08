@@ -143,6 +143,7 @@ namespace Game::Actor
 		// fsm
 		MFSM::MovementStateComp& MFSMstate = ctx.ww.Add<MFSM::MovementStateComp>(e);
 		MFSM::MovementAxisComp& MFSMComp = ctx.ww.Add<MFSM::MovementAxisComp>(e);
+		auto& moveMods = ctx.ww.Add<MFSM::MovementModifierComponent>(e);
 		if (!MFSM::InitMovementAxis(ctx, MFSMComp))
 		{
 			std::cout << "[TestActor]: Failed to initialize the movement axis component.\n";

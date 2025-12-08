@@ -80,7 +80,7 @@ namespace Engine::FSM::Core
 		std::uint32_t numProfiles = 0;
 
 		// i番目の(state,slot)のedges開始位置 (ofs[i+1]-ofs[i]:出次数)
-		std::vector<uint32_t> ofs;			// ofs[i] idx = (from,slot) の組を表す: size = numStates * numSlots + 1 
+		std::vector<std::uint32_t> ofs;			// ofs[i] idx = (from,slot) の組を表す: size = numStates * numSlots + 1 
 		std::vector<TransitionEdge> edges;	// ソート後の (to, prio)の組
 
 		std::vector<CondID> condOf;			// size = numProfiles * numSlots

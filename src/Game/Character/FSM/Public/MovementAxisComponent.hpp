@@ -73,6 +73,18 @@ namespace Game::Character::FSM::Movement
 			changedThisFrame = false;
 		}
 	};
+
+	struct MovementModifierEntry
+	{
+		float mul = 1.0f;		// 速度倍率 (0.5 → 半減、2.0 → 2倍)
+		float add = 0.0f;		// 必要なら加算分
+		float remaining = 0.0f;	// 残り時間
+	};
+
+	struct MovementModifierComponent
+	{
+		std::vector<MovementModifierEntry> entries;
+	};
 }
 
 namespace Engine::FSM::Core

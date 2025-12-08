@@ -25,6 +25,7 @@ namespace Game::Combat::Skill
 	{
 		SpawnHitBox,
 		PlayAnim,
+		ModifyMoveSpeed,
 		// SoundやCameraShakeなど
 	};
 
@@ -35,6 +36,7 @@ namespace Game::Combat::Skill
 		float lifetime = 0.f;
 		EffectKind kind = EffectKind::SpawnHitBox;
 		//EffectSlotID slot;			// 今は同じ種類のEffectは一つだけだと仮定する // 同じ種類のEffectを複数使い分けるためのID 例) 0=main, 1=sub, ...
+		float value = 0.f;
 	};
 
 	struct CanonicalSkillData

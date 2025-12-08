@@ -750,8 +750,8 @@ namespace Engine::FSM::Core
 			const std::uint32_t to = itTo->second;
 			const std::uint32_t s = itSlot->second.v;
 
-			const std::uint32_t cell = from * S + s;
-			buckets[cell].push_back(TransitionEdge{ to, tr.prio });// [cell_i[(to_j,prio_k)](遷移元(idx)(遷移先,優先度))
+			const std::uint32_t cell = from * S + s;				// ※※※※ (from,slot)の平坦化 ※※※※
+			buckets[cell].push_back(TransitionEdge{ to, tr.prio });	// [cell_i[(to_j,prio_k)](遷移元(idx)(遷移先,優先度))
 		}
 
 		// セル内のソート

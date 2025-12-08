@@ -25,14 +25,30 @@ namespace Game::Character::FSM::Movement
 			dir = intent->direction;
 		}
 
-		float speed = 1.0f;
+		float baseSpeed = 1.0f;
 		if (const auto* stats = ctx.ww.TryGetWithWarnOnce<Game::Character::Stats::CharacterStatsComponent>(entry.e))
 		{
-			speed = stats->moveSpeed;
+			baseSpeed = stats->moveSpeed;
 		}
 
+		// --- MovementModifierComponent ---
+		float mul = 1.0f;
+		float add = 0.0f;
+		
+		if (const auto* mods = ctx.ww.TryGet<Game::Character::FSM::Movement::MovementModifierComponent>(entry.e))
+		{
+			for (const auto& m : mods->entries)
+			{
+				mul *= m.mul;
+				add += m.add;
+			}
+		}
+		
+		float finalSpeed = (baseSpeed + add) * mul;
+
 		// std::cout << "[speed] " << speed << "\n";
-		vel.velocity = dir * speed;
+		// vel.velocity = dir * speed;
+		vel.velocity = dir * finalSpeed;
 	}
 
 	// 速度を0に設定

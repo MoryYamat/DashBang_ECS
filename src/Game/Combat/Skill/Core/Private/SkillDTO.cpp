@@ -17,6 +17,7 @@ namespace Game::Combat::Skill
 			SkillPhaseDTO{.name = "Recovery", .duration = 1.0f} };
 		test_skill.effects = {
 			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.2f, .lifetime = 1.0f, .kind = "SpawnHitbox"},
+			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.2f, .lifetime = 1.0f, .kind = "ModifyMoveSpeed", .value = 0.5},
 			SkillEffectDefDTO{.phase = "Casting", .timeOffset = 0.1f, .kind = "PlayAnim"},
 		};
 

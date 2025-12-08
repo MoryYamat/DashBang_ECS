@@ -30,6 +30,11 @@ namespace Game::Combat::Skill
 			out = EffectKind::PlayAnim;
 			return true;
 		}
+		if (s == "ModifyMoveSpeed")
+		{
+			out = EffectKind::ModifyMoveSpeed;
+			return true;
+		}
 
 		return false;
 	}
@@ -202,6 +207,7 @@ namespace Game::Combat::Skill
 			cef.timeOffset = eff.timeOffset;
 			cef.kind = kind;
 			cef.lifetime = eff.lifetime;
+			cef.value = eff.value;
 
 			out.effects.push_back(cef);
 		}

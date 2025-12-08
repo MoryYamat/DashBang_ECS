@@ -23,6 +23,7 @@ namespace Game::Combat::Skill
 		float lifetime = 0.f;				// 寿命
 		std::string kind;			// "SpawnHitbox", "PlayAnim",...
 		//std::string param;			// ヒットボックスID や アニメ名など
+		float value = 0.f;				// Movement 用: 例) 0.5f → 50% など
 	};
 
 	struct SkillDefDTO

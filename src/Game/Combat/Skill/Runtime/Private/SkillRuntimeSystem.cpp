@@ -18,6 +18,27 @@ namespace
 	using namespace Game::Combat::Skill;
 	using namespace Game::Combat::Skill::Runtime;
 
+	// 処理対象entity の一括抽出
+	void BuildSkillRuntimePipeline(Engine::WorldSystem::Core::WorldCtx& ctx, SkillRuntimePipeline& out)
+	{
+		out.clear();
+		auto ents = ViewWhere(ctx.rw, All<SkillRuntimeComp>{});
+
+		for (const auto& e : ents)
+		{
+			auto* state = ctx.rw.TryGet<Game::Character::FSM::Skill::SkillStateComp>(e);
+			auto* runtime = ctx.ww.TryGet<SkillRuntimeComp>(e);
+			auto* intent = ctx.rw.TryGet<Game::Character::Control::SkillIntentComponent>(e);
+
+			out.push_back(SkillRuntimePipelineEntry{
+				 .e = e,
+				 .state = state,
+				 .runtimeComp = runtime,
+				 .intent = intent
+				});
+		}
+	}
+
 	bool CanTrigger(SkillRuntimeComp& runtime, const SkillRequest& req)
 	{
 		// TODO: FSM状態/クールダウン/ほかの制約などから判定
@@ -51,28 +72,6 @@ namespace Game::Combat::Skill::Runtime
 {
 	using namespace Engine::WorldSystem::Query;
 	using namespace Game::Combat::Skill::Binding;
-
-	// 処理対象entity の一括抽出
-	void BuildSkillRuntimePipeline(Engine::WorldSystem::Core::WorldCtx& ctx, SkillRuntimePipeline& out)
-	{
-		out.clear();
-		auto ents = ViewWhere(ctx.rw, All<SkillRuntimeComp>{});
-
-		for (const auto& e : ents)
-		{
-			auto* state = ctx.rw.TryGet<Game::Character::FSM::Skill::SkillStateComp>(e);
-			auto* runtime = ctx.ww.TryGet<SkillRuntimeComp>(e);
-			auto* intent = ctx.rw.TryGet<Game::Character::Control::SkillIntentComponent>(e);
-
-			out.push_back(SkillRuntimePipelineEntry{
-				 .e = e,
-				 .state = state,
-				 .runtimeComp = runtime,
-				 .intent = intent
-				});
-		}
-	}
-
 
 
 	// 現在のSkillRuntimeCompを更新する(トリガー/ 経過時間(ElapsedTime)/ など
@@ -213,12 +212,16 @@ namespace Game::Combat::Skill::Runtime
 					cmd.state = eff.state;
 					cmd.effectTime = eff.timeOffset;
 					cmd.lifetime = eff.lifetime;
+					cmd.value = eff.value;
 					
 
 					switch (eff.kind)
 					{
 					case EffectKind::SpawnHitBox:
 						cmd.kind = LogicCommandKind::SpawnHitBox;
+						break;
+					case EffectKind::ModifyMoveSpeed:
+						cmd.kind = LogicCommandKind::ModifyMoveSpeed;
 						break;
 					case EffectKind::PlayAnim:
 						cmd.kind = LogicCommandKind::PlayAnim;
