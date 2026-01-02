@@ -1,4 +1,4 @@
-﻿#include "Game/Combat/HitBox/Public/HitBoxTypes.hpp"
+﻿#include "Game/Combat/HitBox/Internal/HitBoxTypes.hpp"
 
 #include "Engine/Component/Private/Logic2D/Logic2DComponent.hpp"
 #include "Engine/Physics/Public/Geometry2DTypes.hpp"

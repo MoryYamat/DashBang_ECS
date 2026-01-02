@@ -61,7 +61,7 @@ namespace Game::ECS
 
 		for (auto e : toDestroy)
 		{
-			std::cout << "here\n";
+			// std::cout << "here\n";
 			ctx_.ww.Destroy(e);
 		}
 	}

@@ -30,3 +30,13 @@ namespace Game::Character::Animation::Movement
 		static void Update(Engine::WorldSystem::Core::WorldCtx& ctx);
 	};
 }
+
+namespace Game::Character::Animation::Skill
+{
+	struct SkillAnimRequestLifetimeSystem
+	{
+		::Engine::WorldSystem::Core::WorldCtx& ctx;
+
+		void Update(const float dt);
+	};
+}

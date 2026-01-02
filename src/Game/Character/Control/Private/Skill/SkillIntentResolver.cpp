@@ -2,8 +2,10 @@
 #include "Game/Character/Control/Public/IntentComponent.hpp"
 
 #include "Game/Input/Public/InputActionComponent.hpp"
-#include "Game/Combat/Skill/Core/Public/SlotComponent.hpp"
-#include "Game/Combat/Skill/Core/Public/SkillTypes.hpp"
+#include "Game/Combat/Skill/Public/SlotComponent.hpp"
+
+#include "Game/Combat/Skill/Public/CoreAPI.hpp"
+#include "Game/Combat/Skill/Internal/Core/CoreTypes.hpp"
 
 #include "Game/ECS/Public/CharacterAttribTags.h"
 

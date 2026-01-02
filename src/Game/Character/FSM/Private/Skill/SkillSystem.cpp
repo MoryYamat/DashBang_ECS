@@ -8,7 +8,8 @@
 #include "Engine/Time/Private/WorldClock.hpp"
 
 
-#include "Game/Combat/Skill/Core/Public/SkillTypes.hpp"
+#include "Game/Combat/Skill/Internal/Core/CoreTypes.hpp"
+#include "Game/Combat/SKill/Public/CoreAPI.hpp"
 
 #include <iostream>
 

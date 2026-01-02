@@ -40,4 +40,6 @@ void Game::Layer::LogicLayerFeature::Update(Engine::WorldSystem::Core::WorldCtx&
 
 	// hitbox
 	Game::Feature::Combat::HitBoxFeature::UpdateHitBoxSystem(ctx);
+	// animation
+	::Game::Feature::Combat::AnimFeature::UpdateAnimSystem(ctx);
 }

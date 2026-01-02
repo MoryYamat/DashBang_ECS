@@ -4,6 +4,13 @@
 
 namespace Game::Feature::Combat
 {
+	class AnimFeature
+	{
+	public:
+		static void InitAnimSystem(::Engine::WorldSystem::Core::WorldCtx& ctx);
+		static void UpdateAnimSystem(::Engine::WorldSystem::Core::WorldCtx& ctx);
+	};
+
 	class HitBoxFeature
 	{
 	public:

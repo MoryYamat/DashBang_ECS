@@ -5,7 +5,7 @@
 
 namespace Game::Combat::HitBox
 {
-	// private
+	// internal
 	void RegisterHitBoxDTO(HitBoxBuilder& builder);
 
 

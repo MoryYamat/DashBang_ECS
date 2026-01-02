@@ -15,7 +15,7 @@
 #include "Game/00_Feature/Private/System/WorldClockFeature.hpp"
 
 #include "Game/00_Feature/Private/Combat/HitEvent/HitEventFeature.hpp"
-#include "Game/00_Feature/Public/HitBoxFeature.hpp"
+#include "Game/00_Feature/Public/HitBoxFeature.hpp"		// ファイル名変更必要あり
 
 // world
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
@@ -50,6 +50,8 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialization(Engine::WorldSys
 	Game::Feature::Combat::SkillFeature::InitSkillSystem(ctx);
 	// HitBox
 	Game::Feature::Combat::HitBoxFeature::InitHitBoxSystem(ctx);
+	// Anim
+	Game::Feature::Combat::AnimFeature::InitAnimSystem(ctx);
 
 	// 最後に呼び出し
 	Game::Feature::Combat::SkillFeature::InitSkillBindingSystem(ctx);

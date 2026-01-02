@@ -1,8 +1,8 @@
 ﻿#pragma once
 
 #include "Game/Combat/HitBox/Public/HitBoxFwd.hpp"
-#include "Game/Combat/HitBox/Public/HitBoxTypes.hpp"
-#include "Game/Combat/HitBox/Public/DTO.hpp"
+#include "Game/Combat/HitBox/Internal/HitBoxTypes.hpp"
+#include "Game/Combat/HitBox/Internal/DTO.hpp"
 
 #include <string>
 #include <vector>

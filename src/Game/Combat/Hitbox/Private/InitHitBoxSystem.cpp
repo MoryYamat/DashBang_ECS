@@ -1,5 +1,5 @@
 ﻿#include "Game/Combat/HitBox/Public/HitBoxApi.hpp"
-#include "Game/Combat/HitBox/Public/HitBoxTypes.hpp"
+#include "Game/Combat/HitBox/Internal/HitBoxTypes.hpp"
 
 #include "Game/Combat/HitBox/Private/HitBoxBuilder.hpp"
 

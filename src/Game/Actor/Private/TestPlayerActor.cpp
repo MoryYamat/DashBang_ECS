@@ -28,6 +28,7 @@
 
 // animation
 #include "Game/Character/Animation/Public/LocomAnimComponent.hpp"
+#include "Game/Character/Animation/Public/SkillAnimComponent.hpp"
 
 // control
 #include "Game/Character/Control/Public/IntentComponent.hpp"
@@ -46,10 +47,10 @@
 #include "Game/ECS/Public/CharacterAttribTags.h"
 
 // ------------- Combat ------------- 
-#include "Game/Combat/Skill/Core/Public/DTO.hpp"
-#include "Game/Combat/Skill/Core/Public/SkillTypes.hpp"
-#include "Game/Combat/Skill/Core/Public/SkillApi.hpp"
-#include "Game/Combat/Skill/Core/Public/SlotComponent.hpp"
+#include "Game/Combat/Skill/Internal/Core/CoreDTO.hpp"
+#include "Game/Combat/Skill/Internal/Core/CoreTypes.hpp"
+#include "Game/Combat/Skill/Public/CoreApi.hpp"
+#include "Game/Combat/Skill/Public/SlotComponent.hpp"
 
 // ------------- init --------------
 #include "Game/Init/Private/InitModel/InitLogicTransformFromModel.h"
@@ -168,7 +169,7 @@ namespace Game::Actor
 		NameComponent& name = ctx.ww.Add<NameComponent>(e);
 		name.name = "Player";
 
-		// anim decision
+		// ------------ anim decision --------------
 		ctx.ww.Add<Game::Character::Animation::FinalAnimDecisionComponent>(e);
 		auto& animProf = ctx.ww.Add<Game::Character::Animation::AnimationProfileComponent>(e);
 		animProf.profileId = "PaladinDefault";
@@ -176,6 +177,10 @@ namespace Game::Actor
 		// mv
 		ctx.ww.Add<Game::Character::Animation::Movement::MovementAnimDecisionComponent>(e);
 		ctx.ww.Add<Game::Character::Animation::Movement::LocomotionAnimQueryComponent>(e);
+
+		// skill
+		ctx.ww.Add<::Game::Character::Animation::Skill::SkillAnimDecisionComponent>(e);
+		ctx.ww.Add<::Game::Character::Animation::Skill::SkillAnimRequestComponent>(e);
 
 		// ------------- combat ------------- 
 		ctx.ww.Add<Game::Combat::Skill::SkillRuntimeComp>(e);

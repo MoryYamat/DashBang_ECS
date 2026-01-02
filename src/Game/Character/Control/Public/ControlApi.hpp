@@ -2,7 +2,7 @@
 
 #include "Engine/WorldSystem/Public/WorldFwd.hpp"
 
-#include "Game/Combat/Skill/Core/Public/SkillFwd.hpp"
+#include "Game/Combat/Skill/Public/CoreFwd.hpp"
 
 #include <array>
 #include <cstddef>

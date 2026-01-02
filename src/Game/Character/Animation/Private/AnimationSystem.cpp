@@ -1,13 +1,23 @@
 ﻿#include "Game/Character/Animation/Private/InternalApi.hpp"
 #include "Game/Character/Animation/Public/AnimationApi.hpp"
 
+#include "Engine/Time/Private/WorldClock.hpp"
+
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 #include "Engine/Component/Private/Graphics/AnimatorComponent.hpp"
 #include "Engine/Component/Private/Graphics/MeshComponent.hpp"
 
 #include "Game/Character/Animation/Public/LocomAnimComponent.hpp"
+#include "Game/Character/Animation/Public/SkillAnimComponent.hpp"
 
+#include <string>
 #include <iostream>
+
+
+namespace
+{
+
+}
 
 namespace Game::Character::Animation
 {
@@ -50,28 +60,44 @@ namespace Game::Character::Animation
 	void AnimationArbiterSystem::Update(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
 		auto ents = ViewWhere(ctx.rw, AND(All<FinalAnimDecisionComponent>{},
-			Any<Movement::MovementAnimDecisionComponent>{}));
+			Any<Movement::MovementAnimDecisionComponent, Skill::SkillAnimRequestComponent>{}));
 
 		for (const auto& e : ents)
 		{
 			auto& out = ctx.ww.Get<FinalAnimDecisionComponent>(e);
 
+			out.valid = false;
+			out.clipKey.clear();
+			out.loop = true;
+			out.playRate = 1.0f;
+
+			int bestPrio = -99999;
+
+			auto consider = [&](bool v, int prio, const std::string& key, bool loop, float rate)
+				{
+					if (!v)return;
+					if (!out.valid || prio > bestPrio)
+					{
+						out.valid = true;
+						out.clipKey = key;
+						out.loop = loop;
+						out.playRate = rate;
+						bestPrio = prio;
+					}
+				};
+
 			// TODO: この構造は問題があるので変更が必要
 			if (ctx.rw.Has<Movement::MovementAnimDecisionComponent>(e))
 			{
 				auto& mv = ctx.ww.Get<Movement::MovementAnimDecisionComponent>(e);
-				if (mv.valid)
-				{
-					out.valid = true;
-					out.clipKey = mv.clipKey;
-					out.loop = mv.loop;
-					out.playRate = mv.playRate;
-					// std::cout << "here" << out.clipKey.c_str() << "\n";
-				}
-				else
-				{
-					out.valid = false;
-				}
+				consider(mv.valid, 10, mv.clipKey, mv.loop, mv.playRate);
+			}
+			if (ctx.rw.Has<Skill::SkillAnimRequestComponent>(e))
+			{
+				// TODO: AnimID→clipIndex 解決を O(1)で行うように ここでは、IDのみを持つように変更する
+				// 
+				auto& sk = ctx.ww.Get<Skill::SkillAnimRequestComponent>(e);
+				consider(sk.active, sk.priority, sk.clipKey, sk.loop, sk.playRate);
 			}
 
 		}
@@ -134,9 +160,17 @@ namespace Game::Character::Animation
 		Movement::MovementAnimationResolver::Update(ctx);
 	}
 
+	void UpdateAllSkillAnimResolverSystem(::Engine::WorldSystem::Core::WorldCtx& ctx)
+	{
+		const auto& clock = ctx.rw.GetResource<::Engine::Time::WorldClockData>();
+		Skill::SkillAnimRequestLifetimeSystem sls{ ctx };
+		sls.Update(clock.fixedDt);
+	}
+
 	void UpdateAllCharacterAnimSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
 		UpdateAllLocomResolverSystem(ctx);
+		UpdateAllSkillAnimResolverSystem(ctx);
 		AnimationArbiterSystem::Update(ctx);
 		ApplyFinalAnimationDecisionSystem::Update(ctx);
 	}

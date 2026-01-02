@@ -3,9 +3,9 @@
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
 
-#include "Game/Combat/Skill/Core/Public/SkillApi.hpp"
-#include "Game/Combat/Skill/Binding/Public/API.hpp"
-#include "Game/Combat/Skill/Runtime/Public/SkillRuntimeAPI.hpp"
+#include "Game/Combat/Skill/Public/CoreApi.hpp"
+#include "Game/Combat/Skill/Public/BindingAPI.hpp"
+#include "Game/Combat/Skill/Public/RuntimeAPI.hpp"
 
 //
 //
