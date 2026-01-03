@@ -37,6 +37,9 @@ namespace Game::Combat::Skill::Binding
 		PlaySection section;
 		bool loop = false;
 		float speed = 1.0f;
+		float startTime = 0.0f;
+		float endTime = 0.0f;
+		bool loopWithinRange = false;
 		// loop, speed, etc,...
 	};
 

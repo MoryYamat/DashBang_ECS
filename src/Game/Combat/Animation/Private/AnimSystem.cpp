@@ -50,8 +50,9 @@ namespace Game::Combat::Animation
 			reqComp->clipKey = def.clip;
 			reqComp->loop = req.loop;
 			reqComp->playRate = req.speed;
-			reqComp->startFrame = req.start_frame;
-			reqComp->endFrame = req.end_frame;
+			reqComp->startTime = req.start_frame;
+			reqComp->endTime = req.end_frame;
+			reqComp->loopWithinRange = req.loop;
 			reqComp->ttl = 1.0f;				// 仮 後でclip durationに
 			reqComp->priority = 100;
 

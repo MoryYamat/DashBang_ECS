@@ -43,13 +43,20 @@ namespace Game::Character::Animation
 			}
 			if (!same)
 			{
-				if (!SetClipByName(mesh.modelData, anim, dec.clipKey, dec.loop))
+				if (!SetClipByNameRange(mesh.modelData, anim, dec.clipKey, dec.loop, dec.starTime, dec.endTime, dec.loopWithinRange))
 				{
 					// フォールバック
 					SetClipByName(mesh.modelData, anim, "idle_default", true);
 
 					Engine::Log::Write(Engine::Log::Level::Error, 
 						"[ApplyFinalAnimDecisionSystem]", "No matching clip keys were found.");
+				}
+				else
+				{
+					anim.startTime = dec.starTime;
+					anim.endTime = dec.endTime;
+					anim.loopWithinRange = dec.loopWithinRange;
+
 				}
 			}
 
@@ -73,7 +80,8 @@ namespace Game::Character::Animation
 
 			int bestPrio = -99999;
 
-			auto consider = [&](bool v, int prio, const std::string& key, bool loop, float rate)
+			auto consider = [&](bool v, int prio, const std::string& key, bool loop, float rate
+				,float startT, float endT, float loopRange)
 				{
 					if (!v)return;
 					if (!out.valid || prio > bestPrio)
@@ -82,6 +90,9 @@ namespace Game::Character::Animation
 						out.clipKey = key;
 						out.loop = loop;
 						out.playRate = rate;
+						out.starTime = startT;
+						out.endTime = endT;
+						out.loopWithinRange = loopRange;
 						bestPrio = prio;
 					}
 				};
@@ -90,14 +101,14 @@ namespace Game::Character::Animation
 			if (ctx.rw.Has<Movement::MovementAnimDecisionComponent>(e))
 			{
 				auto& mv = ctx.ww.Get<Movement::MovementAnimDecisionComponent>(e);
-				consider(mv.valid, 10, mv.clipKey, mv.loop, mv.playRate);
+				consider(mv.valid, 10, mv.clipKey, mv.loop, mv.playRate, 0.0f, -1.0f, true);
 			}
 			if (ctx.rw.Has<Skill::SkillAnimRequestComponent>(e))
 			{
 				// TODO: AnimID→clipIndex 解決を O(1)で行うように ここでは、IDのみを持つように変更する
 				// 
 				auto& sk = ctx.ww.Get<Skill::SkillAnimRequestComponent>(e);
-				consider(sk.active, sk.priority, sk.clipKey, sk.loop, sk.playRate);
+				consider(sk.active, sk.priority, sk.clipKey, sk.loop, sk.playRate, sk.startTime, sk.endTime, sk.loopWithinRange);
 			}
 
 		}

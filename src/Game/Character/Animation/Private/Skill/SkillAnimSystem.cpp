@@ -18,7 +18,7 @@ namespace Game::Character::Animation::Skill
 
 			if (!req.active) continue;
 			req.ttl -= dt;
-			std::cout <<"dt: " << dt << ", ttl: " << req.ttl << "\n";
+			//std::cout <<"dt: " << dt << ", ttl: " << req.ttl << "\n";
 			if (req.ttl <= 0) req.active = false;
 		}
 	}

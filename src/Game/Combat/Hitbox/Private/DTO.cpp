@@ -13,8 +13,8 @@ namespace {
 		default_obb2d.name = "default_obb2D";
 		default_obb2d.shape = "Obb2D";
 		default_obb2d.angle = 0.f;
-		default_obb2d.offset = { 0.f, 3.0f };		// (横, 縦)
-		default_obb2d.halfExtents = { 3.0f, 6.0f };
+		default_obb2d.offset = { 0.f, 1.0f };		// (横, 縦)
+		default_obb2d.halfExtents = { 1.0f, 1.0f };
 
 		builder.add(default_obb2d);
 

@@ -25,13 +25,12 @@ namespace Game::Character::Animation::Skill
 		float playRate = 1.0f;
 
 		// section
-		float startFrame = 0.f;
-		float endFrame = -1.0f;
+		float startTime = 0.f;		// seconds
+		float endTime = -1.0f;		// seconds
+		bool loopWithinRange = false;
 
 		// イベントを保持する
 		float ttl = 0.0f;
 		int priority = 100;
-
-		float timeToLive = 0.0f;
 	};
 }

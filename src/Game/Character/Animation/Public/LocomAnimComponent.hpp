@@ -17,6 +17,10 @@ namespace Game::Character::Animation
 		bool loop = true;
 		float playRate = 1.0f;
 
+		float starTime = 0.f;
+		float endTime = -1.f;		// < 0 は 「クリップ末尾」
+		bool loopWithinRange = false;
+
 		// 将来は重みや優先度などを増やす
 
 	};

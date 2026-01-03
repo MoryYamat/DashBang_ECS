@@ -55,17 +55,67 @@ namespace Engine::Graphics::Animation
 			const auto& clip = model.clips[(size_t)anim.clipIndex];
 			const auto& clock = ctx.rw.GetResource<WorldClockData>();
 
-			anim.time += clock.frameDt * anim.speed;
+			const float dt = clock.frameDt;
+			const float dur = clip.duration;
 
-			if (anim.loop && clip.duration > 0.f)
+
+			if (dur <= 0.0f)
 			{
-				anim.time = std::fmod(anim.time, clip.duration);
-				if (anim.time < 0.f) anim.time += clip.duration;
+				SampleClip(model, clip, 0.0f, anim.localTRS, false);
+				BuildPalette(model, anim.localTRS, anim.palette);
+				continue;
+			}
+
+			// サブ区間の確定(clampして安全化)
+			float start = std::clamp(anim.startTime, 0.0f, dur);
+			float end = (anim.endTime < 0.0f) ? dur : std::clamp(anim.endTime, start, dur);
+
+			// timeを進める ( start / end に依存しない純粋な積分)
+			anim.time += dt * anim.speed;
+
+			if (anim.loopWithinRange)
+			{
+				const float len = end - start;
+
+				if (len <= 0.0f)
+				{
+					anim.time = start;
+				}
+				else
+				{
+					// 範囲ループ: [start, end)
+					while (anim.time >= end) anim.time -= len;
+					while (anim.time < start) anim.time += len;
+				}
 			}
 			else
 			{
-				anim.time = std::clamp(anim.time, 0.0f, clip.duration);
+				// 既存挙動：クリップ全体ループ or 停止だが、サブ範囲を尊重
+				if (anim.loop)
+				{
+					// クリップ全体ループ(従来通り)
+					anim.time = std::fmod(anim.time, dur);
+					if (anim.time < 0.f) anim.time += dur;
+
+					// ただし「サブ区間が指定されているなら」その範囲内に寄せる
+					anim.time = std::clamp(anim.time, start, end);
+				}
+				else
+				{
+					// ループしないなら、サブ区間のendで止める
+					anim.time = std::clamp(anim.time, start, end);
+				}
 			}
+
+			// if (anim.loop && clip.duration > 0.f) 
+			// { 
+			// 	anim.time = std::fmod(anim.time, clip.duration); 
+			// 	if (anim.time < 0.f) anim.time += clip.duration; 
+			// }
+			// else 
+			// { 
+			// 	anim.time = std::clamp(anim.time, 0.0f, clip.duration); 
+			// }
 
 			SampleClip(model, clip, anim.time, anim.localTRS, false);
 			BuildPalette(model, anim.localTRS, anim.palette);

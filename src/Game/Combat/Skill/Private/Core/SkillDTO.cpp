@@ -12,13 +12,13 @@ namespace Game::Combat::Skill
 		test_skill.name = "test_skill";
 		test_skill.profile = "Default";
 		test_skill.phases = {
-			SkillPhaseDTO{.name = "Casting", .duration = 0.5f}, 
-			SkillPhaseDTO{.name = "Active", .duration = 1.0f}, 
+			SkillPhaseDTO{.name = "Casting", .duration = 0.1f}, 
+			SkillPhaseDTO{.name = "Active", .duration = 0.4f}, 
 			SkillPhaseDTO{.name = "Recovery", .duration = 1.0f} };
 		test_skill.effects = {
-			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.1f, .lifetime = 1.0f, .kind = "SpawnHitbox"},
-			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.1f, .lifetime = 1.0f, .kind = "ModifyMoveSpeed", .value = 0.5},
-			SkillEffectDefDTO{.phase = "Casting", .timeOffset = 0.1f, .kind = "PlayAnim"},
+			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.1f, .lifetime = 0.4f, .kind = "SpawnHitbox"},
+			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.1f, .lifetime = 0.4f, .kind = "ModifyMoveSpeed", .value = 0.0},
+			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.1f, .kind = "PlayAnim"},
 		};
 
 		builder.add(std::move(test_skill));
