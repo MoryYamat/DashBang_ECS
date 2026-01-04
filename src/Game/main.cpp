@@ -3,6 +3,7 @@
 // memo
 
 #include <iostream>
+
 #include "Game/Game.h"
 
 
@@ -10,6 +11,29 @@
 int main()
 {
 	//std::cout << "sizeof(Entity): " << sizeof(Entity) << std::endl;
+
+    //std::cout << "Audio test start\n";
+
+    //ma_engine engine{};
+    //ma_result result = ma_engine_init(nullptr, &engine);
+    //if (result != MA_SUCCESS)
+    //{
+    //    std::cerr << "ma_engine_init failed\n";
+    //    return -1;
+    //}
+
+    //// パスは実行ファイル基準
+    //const char* soundPath = "Assets/Sounds/test.wav";
+
+    //ma_engine_play_sound(&engine, soundPath, nullptr);
+
+    //// 音が鳴り終わるまで待つ
+    //std::this_thread::sleep_for(std::chrono::seconds(2));
+
+    //ma_engine_uninit(&engine);
+
+    //std::cout << "Audio test end\n";
+
 
 	GameApp::GameApp game;
 

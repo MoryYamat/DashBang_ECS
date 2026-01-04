@@ -29,6 +29,11 @@ set_target_properties(assimp PROPERTIES
 
 set(ASSIMP_DLL "${CMAKE_SOURCE_DIR}/External/Assimp/bin/Release/assimp-vc143-mt.dll")
 
+# miniaudio
+add_library(miniaudio INTERFACE)
+target_include_directories(miniaudio INTERFACE 
+    ${CMAKE_SOURCE_DIR}/External/miniaudio
+)
 
 # GLAD（ソースからビルド）
 add_library(glad STATIC
@@ -100,7 +105,7 @@ target_include_directories(DashBang_ECS PRIVATE
     ${CMAKE_SOURCE_DIR}/External/GLAD/include
     ${CMAKE_SOURCE_DIR}/External/GLM
     ${CMAKE_SOURCE_DIR}/External/stb
-    ${CMAKE_SOURCE_DIR}/External/Assimp/include   
+    ${CMAKE_SOURCE_DIR}/External/Assimp/include  
 )
 
 file(COPY "${CMAKE_SOURCE_DIR}/shaders" DESTINATION "${CMAKE_BINARY_DIR}")
@@ -117,6 +122,7 @@ target_link_libraries(DashBang_ECS
     opengl32
     cgltf
     stb_image
+    miniaudio
 )
 
 

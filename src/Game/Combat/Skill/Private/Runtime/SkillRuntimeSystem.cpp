@@ -206,7 +206,7 @@ namespace Game::Combat::Skill::Runtime
 					continue;
 
 				// [prevT, curT] で timeOffset を跨いだら発火
-				if (prevT < eff.timeOffset && eff.timeOffset <= curT)
+				if (prevT <= eff.timeOffset && eff.timeOffset < curT)		// 検証必要
 				{
 					SkillLogicCommand cmd{};
 					cmd.owner = e.e;

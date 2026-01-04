@@ -59,6 +59,7 @@ namespace Engine::Graphics::Animation
 			const float dur = clip.duration;
 
 
+			// 早期リターン
 			if (dur <= 0.0f)
 			{
 				SampleClip(model, clip, 0.0f, anim.localTRS, false);
@@ -68,15 +69,17 @@ namespace Engine::Graphics::Animation
 
 			// サブ区間の確定(clampして安全化)
 			float start = std::clamp(anim.startTime, 0.0f, dur);
-			float end = (anim.endTime < 0.0f) ? dur : std::clamp(anim.endTime, start, dur);
+			float end = (anim.endTime < 0.0f) ? dur : std::clamp(anim.endTime, start, dur);//	
 
 			// timeを進める ( start / end に依存しない純粋な積分)
 			anim.time += dt * anim.speed;
 
+			// 区間内ループ
 			if (anim.loopWithinRange)
 			{
 				const float len = end - start;
 
+				// start == end のときは、startに固定(動けないので)
 				if (len <= 0.0f)
 				{
 					anim.time = start;
@@ -84,12 +87,13 @@ namespace Engine::Graphics::Animation
 				else
 				{
 					// 範囲ループ: [start, end)
-					while (anim.time >= end) anim.time -= len;
-					while (anim.time < start) anim.time += len;
+					while (anim.time >= end) anim.time -= len;		// 戻す
+					while (anim.time < start) anim.time += len;		// 
 				}
 			}
 			else
-			{
+			{	// loopWithinRange == falseのとき
+
 				// 既存挙動：クリップ全体ループ or 停止だが、サブ範囲を尊重
 				if (anim.loop)
 				{
