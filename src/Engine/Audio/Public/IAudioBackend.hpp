@@ -1,13 +1,13 @@
 #pragma once
 
-#include <sring_view>
+#include <string_view>
 
 namespace Engine::Audio
 {
-	class IAudiobackend
+	class IAudioBackend
 	{
 	public:
-		virtual ~IAudiobackend() = default;
+		virtual ~IAudioBackend() = default;
 
 		// 音声デバイス / エンジン 初期化
 		virtual bool initialize() = 0;

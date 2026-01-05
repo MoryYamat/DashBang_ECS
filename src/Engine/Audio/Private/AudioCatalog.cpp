@@ -2,6 +2,8 @@
 #include "Engine/Audio/Public/AudioAPI.hpp"
 #include "Engine/Audio/Public/AudioFwd.hpp"
 
+#include "Engine/Audio/Internal/AudioLog.hpp"
+
 #include <cstddef>
 #include <cstdint>
 #include <utility>
@@ -13,52 +15,16 @@
 
 namespace Engine::Audio
 {
+
+
+
+
+	// ========================= AUDIO CATALOG ======================
 	struct AudioCatalog::Impl
 	{
 		AudioAssetDB db;
 		SoundNameTable names;
 	};
-
-	SoundID AudioAssetDB::register_sound(SoundDef def)
-	{
-		const std::uint32_t index = static_cast<std::uint32_t>(sounds_.size());
-		sounds_.push_back(std::move(def));
-		return SoundID{ index };
-	}
-
-	const SoundDef* AudioAssetDB::try_get(SoundID id)const noexcept
-	{
-		if (!id.is_valid())
-		{
-			return nullptr;
-		}
-
-		const auto index = static_cast<std::size_t>(id.value());
-		if (index >= sounds_.size())
-		{
-			return nullptr;
-		}
-
-		return &sounds_[index];
-	}
-
-	bool SoundNameTable::register_name(std::string name, SoundID id)
-	{
-		if (!id.is_valid()) return false;
-
-		auto [it, inserted] = name_to_id_.emplace(std::move(name), id);
-		return inserted;
-	}
-
-	SoundID SoundNameTable::find(std::string_view name) const
-	{
-		auto it = name_to_id_.find(name);
-		if (it == name_to_id_.end())
-		{
-			return SoundID::Invalid();
-		}
-		return it->second;
-	}
 
 	AudioCatalog::AudioCatalog()
 		:impl_(std::make_unique<Impl>())
@@ -92,8 +58,14 @@ namespace Engine::Audio
 	SoundID AudioCatalog::register_sound(std::string name, SoundDef def)
 	{
 		// Šù‚É‘¶Ý‚·‚é–¼‘O‚È‚çŽ¸”s(Ä“o˜^‹ÖŽ~)
-		if (impl_->names.find(name).is_valid())
+		if (impl_->names.find(std::string_view{ name }).is_valid())
 		{
+			// error log
+			const SoundID existing = impl_->names.find(std::string_view{ name });
+			std::string msg = "Duplicate sound name: '" + name + "' existing_id=" + std::to_string(existing.value());
+			Log::warn(Log::kCatalog, msg.c_str());
+
+
 			return SoundID::Invalid();
 		}
 
@@ -101,6 +73,8 @@ namespace Engine::Audio
 		const bool ok = impl_->names.register_name(std::move(name), id);
 		if (!ok)
 		{
+			Log::error(Log::kCatalog, "register_name failed (unexpected)");
+
 			return SoundID::Invalid();
 		}
 

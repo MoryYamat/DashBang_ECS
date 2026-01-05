@@ -9,6 +9,9 @@
 // ======================= Engine =======================
 #include "Engine/ECS/EntityManager.h"
 
+// Audio
+#include "Engine/Audio/Public/AudioFwd.hpp"
+
 // Graphics
 #include "Engine/Graphics/Private/Renderer/Shader.h"
 #include "Engine/Graphics/Private/Renderer/RenderContext.h"
@@ -42,18 +45,17 @@ namespace GameApp
 		void Shutdown();
 		void RunLoop();
 
-	// できるだけ前方宣言を使用できる構造にする必要がある(構造破綻を防止するため)
-	// できるだけ前方宣言を使用できる構造にする必要がある(構造破綻を防止するため)
-	// できるだけ前方宣言を使用できる構造にする必要がある(構造破綻を防止するため)
-	// できるだけ前方宣言を使用できる構造にする必要がある(構造破綻を防止するため)
+
 	private:
 
-		std::unique_ptr<Engine::WorldSystem::Core::World> world_;
-		std::unique_ptr<Engine::Window::Window> window_;
-		std::unique_ptr<Engine::Input::InputManager> input_;
-		std::unique_ptr<Engine::Graphics::Shader> shader_;
-		std::unique_ptr<Engine::Debug::DebugLineRenderer> debugLineRenderer_;
-		Engine::Graphics::RenderContext renderCtx_;
+		std::unique_ptr<::Engine::WorldSystem::Core::World> world_;
+		std::unique_ptr<::Engine::Window::Window> window_;
+		std::unique_ptr<::Engine::Input::InputManager> input_;
+		std::unique_ptr<::Engine::Graphics::Shader> shader_;
+		std::unique_ptr<::Engine::Debug::DebugLineRenderer> debugLineRenderer_;
+		::Engine::Graphics::RenderContext renderCtx_;
+
+		std::unique_ptr<::Engine::Audio::AudioSystem> audioSys_;
 
 		// 参照の束 (所有しない)
 		// Game::Common::AppContext mCtx;
@@ -84,20 +86,20 @@ namespace GameApp
 		// float mDeltaTime = 0.0f;
 
 		// void updateGameLogics();
-		void updateGameLogics(Engine::WorldSystem::Core::WorldCtx& ctx);
+		void updateGameLogics(::Engine::WorldSystem::Core::WorldCtx& ctx);
 
-		void generateOutputs(Engine::WorldSystem::Core::WorldCtx& ctx);
+		void generateOutputs(::Engine::WorldSystem::Core::WorldCtx& ctx);
 
-		void Update(Engine::WorldSystem::Core::WorldCtx& ctx, float realDt);
+		void Update(::Engine::WorldSystem::Core::WorldCtx& ctx, float realDt);
 
 		void loadData();
-		void loadData(Engine::WorldSystem::Core::WorldCtx& ctx);
+		void loadData(::Engine::WorldSystem::Core::WorldCtx& ctx);
 	
 		void unloadData();
 
-		void spawnAllActors(Engine::WorldSystem::Core::WorldCtx& ctx);
+		void spawnAllActors(::Engine::WorldSystem::Core::WorldCtx& ctx);
 
-		void RunInitializationPhase(Engine::WorldSystem::Core::WorldCtx& ctx);
+		void RunInitializationPhase(::Engine::WorldSystem::Core::WorldCtx& ctx);
 
 		void updateContext();
 

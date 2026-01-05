@@ -29,6 +29,8 @@
 #include "Engine/ECS/Meta/InitComponent/TileMapInit.h"
 // #include "Engine/ECS/Meta/InitComponent/FollowCameraInit.h"
 
+// Audio
+#include "Engine/Audio/Public/AudioAPI.hpp"
 
 // Window
 #include "Engine/Window/Public/Window.h"
@@ -52,6 +54,9 @@
 // Debug
 #include "Engine/Config/CanonicalDefaults.h"
 #include "Engine/Debug/Public/DebugDrawAPI.hpp"
+
+// Log
+#include "Engine/Log/Public/LogApi.hpp"
 
 // ======================= Game =======================
 
@@ -92,13 +97,17 @@
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
 
+#include <thread>
+#include <chrono>
+
 // コンストラクタ
 GameApp::GameApp::GameApp()
 	: isRunning_(true)
 	, windowWidth_(1280)
 	, windowHeight_(720)
 {
-	world_ = std::make_unique<Engine::WorldSystem::Core::World>();
+	world_ = std::make_unique<::Engine::WorldSystem::Core::World>();
+	audioSys_ = std::make_unique<::Engine::Audio::AudioSystem>();
 }
 
 GameApp::GameApp::~GameApp() = default;
@@ -159,9 +168,19 @@ bool GameApp::GameApp::Initialize()
 	// 遅らせ初期化
 	// Game::Layer::InitializeLayerFeature::DelayedInitialzation(mECS);
 
-	Engine::WorldSystem::Core::WorldCtx ctx{ *world_ };
-	Game::Layer::InitializeLayerFeature::DelayedInitialization(ctx);
-	Game::Layer::Debug::DebugLayerFeature::InitDebugSystem(ctx);
+	// ========================== World CTX ===========================
+	::Engine::WorldSystem::Core::WorldCtx ctx{ *world_ };
+	::Game::Layer::InitializeLayerFeature::DelayedInitialization(ctx);
+	::Game::Layer::Debug::DebugLayerFeature::InitDebugSystem(ctx);
+
+
+	// AUDIO
+	::Engine::Audio::RegisterAudioResources(ctx);
+	bool audio = audioSys_->initialize();
+	if (!audio)
+	{
+		::Engine::Log::Write(::Engine::Log::Level::Fatal, "AudioSystemInit", "AudioSystem initialization failed.");
+	}
 
 	// loadData();
 	// ctxバージョン
@@ -282,6 +301,7 @@ void GameApp::GameApp::generateOutputs(Engine::WorldSystem::Core::WorldCtx& ctx)
 	}
 
 
+
 	glfwSwapBuffers(window_->GetGLFWWindow());
 }
 
@@ -307,6 +327,29 @@ void GameApp::GameApp::loadData(Engine::WorldSystem::Core::WorldCtx& ctx)
 	GameApp::spawnAllActors(ctx);
 
 	GameApp::RunInitializationPhase(ctx);
+
+
+	// ============ AudioSystem test
+	// Engine::Audio::AudioCatalogResource audioRes;
+	// 
+	// // 登録（ロード時）
+	// Engine::Audio::SoundDef def;
+	// def.path = "Assets/Sounds/test.wav";
+	// def.bus = Engine::Audio::AudioBus::SFX;
+	// def.defaultVolume = 1.0f;
+	// 
+	// Engine::Audio::SoundID testId = audioRes.catalog.register_sound("Test", def);
+	// 
+	// // System
+	// Engine::Audio::AudioSystem audioSys;
+	// audioSys.bind_catalog(&audioRes.catalog);
+	// audioSys.initialize();
+	// 
+	// // 再生
+	// audioSys.play_one_shot(testId);
+	// ============ AudioSystem test
+
+	// std::this_thread::sleep_for(std::chrono::milliseconds(500));
 }
 
 

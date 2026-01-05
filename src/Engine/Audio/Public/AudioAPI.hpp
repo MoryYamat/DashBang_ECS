@@ -1,8 +1,12 @@
 #pragma once
 #include "Engine/Audio/Public/AudioFwd.hpp"
 
+#include "Engine/WorldSystem/Public/WorldFwd.hpp"
+
 #include <string>
 #include <string_view>
+#include <array>
+#include <vector>
 #include <memory>
 
 namespace Engine::Audio
@@ -30,7 +34,7 @@ namespace Engine::Audio
 		AudioCatalog& operator=(const AudioCatalog&) = delete;
 
 
-		SoundID register_sound(std::string name, const SoundDef def);
+		SoundID register_sound(std::string name, SoundDef def);
 		const SoundDef* try_get(SoundID id) const noexcept;
 		SoundID find(std::string_view name) const noexcept;
 
@@ -38,4 +42,120 @@ namespace Engine::Audio
 		struct Impl;
 		std::unique_ptr<Impl> impl_;
 	};
+
+	struct AudioIds
+	{
+		::Engine::Audio::SoundID sfx_test;
+	};
+
+	struct AudioCatalogResource
+	{
+		AudioCatalog catalog;
+		AudioIds ids;
+	};
+
+	struct AudioCmd
+	{
+		enum class Kind : std::uint8_t
+		{
+			SetBusVolume,
+			PlayOneShot,
+		};
+
+		Kind kind = Kind::PlayOneShot;
+		SoundID sound = SoundID::Invalid();
+		float volume_scale = 1.0f;			// イベント1回限りの倍率
+
+		AudioBus bus = AudioBus::Master;
+		float bus_volume = 1.0f;		// 例: Master / SFX / BGM
+	};
+
+	struct AudioCmdBuffer
+	{
+		std::vector<AudioCmd> cmds;
+
+		void clear() noexcept { cmds.clear(); }
+
+		void play_one_shot(SoundID id, float volume_scale = 1.0f)
+		{
+			AudioCmd c;
+			c.kind = AudioCmd::Kind::PlayOneShot;
+			c.sound = id;
+			c.volume_scale = volume_scale;
+			cmds.push_back(c);
+		}
+
+		void set_bus_volume(AudioBus bus, float volume)
+		{
+			AudioCmd c;
+			c.kind = AudioCmd::Kind::SetBusVolume;
+			c.bus = bus;
+			c.bus_volume = volume;
+			cmds.push_back(c);
+		}
+	};
+
+	struct AudioCmdBufferResource
+	{
+		AudioCmdBuffer cmd;
+	};
+
+	struct AudioContext
+	{
+		AudioCatalogResource res;
+		AudioCmdBufferResource cmd;
+	};
+
+	class AudioSystem
+	{
+	public:
+		AudioSystem();
+		~AudioSystem();
+
+		AudioSystem(const AudioSystem&) = delete;
+		AudioSystem& operator=(const AudioSystem&) = delete;
+
+		// コピー禁止
+		AudioSystem(AudioSystem&&) noexcept;
+		AudioSystem& operator=(AudioSystem&&) noexcept;
+
+		// WorldSystem lifecycle
+		bool initialize();
+		void shutdown() noexcept;
+		// void update(float dt);
+		void update(AudioContext& audioCtx, float dt);
+
+
+		float get_bus_volume(AudioBus bus) const noexcept;
+
+		// World側から Catalog を差し込む (resource を握らせる)
+		void bind_catalog(const void* catalog_ptr) noexcept;
+
+	private:
+		float compute_final_volume(const SoundDef& def, float volume_scale) const noexcept;
+		static std::size_t bus_index(AudioBus bus) noexcept;
+
+		// バス音量
+		void set_bus_volume(AudioBus bus, float volume);
+
+		// Master/SFX/BGM
+		std::array<float, 3> bus_volume_{};
+
+		struct Impl;
+		std::unique_ptr<Impl> impl_;
+
+	};
+
+	void InitAllAudioSystem();
+	void RegisterAudioResources(::Engine::WorldSystem::Core::WorldCtx& ctx);
 }
+
+// 使用方法の案
+
+// GameApp{ private unique_ptr<AudioSystem> audiosys_;
+// 
+// 
+// 
+// 
+// 
+// 
