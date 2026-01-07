@@ -128,9 +128,11 @@ void GameApp::GameApp::Shutdown()
 
 	shader_.reset();
 
+	audioSys_.reset();
 
 	if(window_)window_->Shutdown();
 	window_.reset();
+
 
 	std::cout << "\n[Game.cpp (Shutdown)]: The application shut down successfully." << std::endl;
 }
@@ -170,17 +172,20 @@ bool GameApp::GameApp::Initialize()
 
 	// ========================== World CTX ===========================
 	::Engine::WorldSystem::Core::WorldCtx ctx{ *world_ };
-	::Game::Layer::InitializeLayerFeature::DelayedInitialization(ctx);
-	::Game::Layer::Debug::DebugLayerFeature::InitDebugSystem(ctx);
 
 
 	// AUDIO
-	::Engine::Audio::RegisterAudioResources(ctx);
+	::Engine::Audio::InitAllAudioResourceSystem(ctx);
 	bool audio = audioSys_->initialize();
 	if (!audio)
 	{
 		::Engine::Log::Write(::Engine::Log::Level::Fatal, "AudioSystemInit", "AudioSystem initialization failed.");
 	}
+	// audioSys_->bind_catalog(catalog_ptr); // 必要ならInitAllAudioResourceSystemをpointerを返すように変更する
+
+	// =========================== Delayed Init =========================
+	::Game::Layer::InitializeLayerFeature::DelayedInitialization(ctx);
+	::Game::Layer::Debug::DebugLayerFeature::InitDebugSystem(ctx);
 
 	// loadData();
 	// ctxバージョン

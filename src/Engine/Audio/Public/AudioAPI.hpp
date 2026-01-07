@@ -1,3 +1,8 @@
+// TODO: ゲーム側にあるべきコードを分ける (AudioIDs / AudioBus / など ) 
+// コールバック化による初期化処理などの対応が必要
+// 将来的に、Assetの登録・管理・運用できる一環したツールを作成することで対応する
+// 
+
 #pragma once
 #include "Engine/Audio/Public/AudioFwd.hpp"
 
@@ -43,15 +48,9 @@ namespace Engine::Audio
 		std::unique_ptr<Impl> impl_;
 	};
 
-	struct AudioIds
-	{
-		::Engine::Audio::SoundID sfx_test;
-	};
-
 	struct AudioCatalogResource
 	{
 		AudioCatalog catalog;
-		AudioIds ids;
 	};
 
 	struct AudioCmd
@@ -100,12 +99,6 @@ namespace Engine::Audio
 		AudioCmdBuffer cmd;
 	};
 
-	struct AudioContext
-	{
-		AudioCatalogResource res;
-		AudioCmdBufferResource cmd;
-	};
-
 	class AudioSystem
 	{
 	public:
@@ -123,7 +116,7 @@ namespace Engine::Audio
 		bool initialize();
 		void shutdown() noexcept;
 		// void update(float dt);
-		void update(AudioContext& audioCtx, float dt);
+		void update(AudioCatalogResource& resource, AudioCmdBufferResource& cmds,  float dt);
 
 
 		float get_bus_volume(AudioBus bus) const noexcept;
@@ -146,8 +139,7 @@ namespace Engine::Audio
 
 	};
 
-	void InitAllAudioSystem();
-	void RegisterAudioResources(::Engine::WorldSystem::Core::WorldCtx& ctx);
+	void InitAllAudioResourceSystem(::Engine::WorldSystem::Core::WorldCtx& ctx);
 }
 
 // 使用方法の案

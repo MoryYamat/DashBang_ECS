@@ -105,23 +105,17 @@ namespace Engine::Audio
 		impl_->initialized = false;
 	}
 
-	//void AudioSystem::update(float /*dt*/)
-	//{
-	//	// later
-	//}
-
-	void AudioSystem::update(AudioContext& audioCtx, float dt)
+	void AudioSystem::update(AudioCatalogResource& resource, AudioCmdBufferResource& cmds, float dt)
 	{
-		auto& cmds = audioCtx.cmd.cmd.cmds;
-		auto& catalog = audioCtx.res.catalog;
+		auto& catalog = resource.catalog;
 
-		for (const auto& cmd : audioCtx.cmd.cmd.cmds)
+		for (const auto& c : cmds.cmd.cmds)
 		{
-			switch (cmd.kind)
+			switch (c.kind)
 			{
 			case ::Engine::Audio::AudioCmd::Kind::PlayOneShot:
 			{
-				const Engine::Audio::SoundDef* def = catalog.try_get(cmd.sound);
+				const Engine::Audio::SoundDef* def = catalog.try_get(c.sound);
 				if (!def) break;
 
 				impl_->backend.play_one_shot(def->path);
@@ -129,7 +123,7 @@ namespace Engine::Audio
 			}
 			case ::Engine::Audio::AudioCmd::Kind::SetBusVolume:
 			{
-				set_bus_volume(cmd.bus, cmd.bus_volume);
+				set_bus_volume(c.bus, c.bus_volume);
 				break;
 			}
 			default:
@@ -137,23 +131,8 @@ namespace Engine::Audio
 			}
 		}
 
-		cmds.clear();
+		cmds.cmd.clear();
 	}
-
-	//void AudioSystem::play_one_shot(SoundID id, float volume_scale)
-	//{
-	//	if (!impl_ || !impl_->initialized) return;
-	//	if (!impl_->catalog)return;
-
-
-	//	const SoundDef* def = impl_->catalog->try_get(id);
-	//	if (!def)return;
-
-
-	//	const float final_volume = compute_final_volume(*def, volume_scale);
-
-	//	impl_->backend.play_one_shot(def->path, final_volume);
-	//}
 
 	void AudioSystem::set_bus_volume(AudioBus bus, float volume)
 	{

@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-
+#include "Game/Audio/Generated/SoundKeys.hpp"
 #include <string>
 
 namespace Game::Combat::Skill::Binding
@@ -43,11 +43,17 @@ namespace Game::Combat::Skill::Binding
 		// loop, speed, etc,...
 	};
 
+
+
 	// sound 用 DTO
 	struct SkillSoundBindingDTO
 	{
 		SkillStateKeyDTO key;
-		std::string cue;
+		Game::Audio::SoundKey sound;		// SoundKey
+		std::string debug_name;				// デバッグ用
+		float volume_scale = 1.0f;
+		
+		
 		// volume, 3D/2D, etc...
 	};
 }

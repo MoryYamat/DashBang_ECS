@@ -13,8 +13,6 @@
 #include "Engine/Audio/Public/AudioFwd.hpp"
 
 // Graphics
-#include "Engine/Graphics/Private/Renderer/Shader.h"
-#include "Engine/Graphics/Private/Renderer/RenderContext.h"
 #include "Engine/Graphics/Public/Types.hpp"
 
 // Input
@@ -57,33 +55,12 @@ namespace GameApp
 
 		std::unique_ptr<::Engine::Audio::AudioSystem> audioSys_;
 
-		// 参照の束 (所有しない)
-		// Game::Common::AppContext mCtx;
-
 		float lastFrame_ = 0.0f;
 
 		// loop flag => 上手に使う方法
 		bool isRunning_;
 
 		int windowWidth_, windowHeight_;
-
-		// 
-		//// ecs
-		//Engine::ECS::EntityMgr mECS;
-
-		//// shader
-		//Engine::Graphics::Render::Shader* mShader;// new するので完全な定義が必要
-		//Engine::Graphics::Render::RenderContext mRenderContext;
-
-		//Engine::Window::Window mWindow;
-
-		//Engine::Input::InputManager* mInputManager;
-
-		// Game::Collision::Data::CollisionResultStorage mCollisionResults;
-
-
-
-		// float mDeltaTime = 0.0f;
 
 		// void updateGameLogics();
 		void updateGameLogics(::Engine::WorldSystem::Core::WorldCtx& ctx);
