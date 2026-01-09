@@ -296,6 +296,9 @@ void GameApp::GameApp::generateOutputs(Engine::WorldSystem::Core::WorldCtx& ctx)
 	glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// Audio
+	Game::Layer::AudioLayerFeature::Update(ctx, *audioSys_);
+
 	// Engine::Graphics::UpdateRendererAll(ctx, *shader_, window_->GetAspect(), renderCtx_);
 	Game::Layer::LocomotionAnimLayerFeature::Update(ctx);
 	Game::Layer::DrawLayerFeature::Update(ctx, *shader_, *window_, renderCtx_);

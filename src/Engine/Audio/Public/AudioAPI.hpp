@@ -97,6 +97,11 @@ namespace Engine::Audio
 	struct AudioCmdBufferResource
 	{
 		AudioCmdBuffer cmd;
+
+		bool empty() const noexcept
+		{
+			return cmd.cmds.empty();
+		}
 	};
 
 	class AudioSystem
@@ -116,7 +121,7 @@ namespace Engine::Audio
 		bool initialize();
 		void shutdown() noexcept;
 		// void update(float dt);
-		void update(AudioCatalogResource& resource, AudioCmdBufferResource& cmds,  float dt);
+		void update(const AudioCatalogResource& resource, AudioCmdBufferResource& cmds,  float dt);
 
 
 		float get_bus_volume(AudioBus bus) const noexcept;

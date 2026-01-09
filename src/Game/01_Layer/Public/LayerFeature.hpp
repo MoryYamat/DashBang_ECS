@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "Engine/Audio/Public/AudioFwd.hpp"
 #include "Engine/InputManager/Public/InputFwd.hpp"
 #include "Engine/WorldSystem/Public/WorldFwd.hpp"
 #include "Engine/Window/Public/WindowFwd.hpp"
@@ -61,6 +62,12 @@ namespace Game::Layer
 	{
 		static void Update(Engine::WorldSystem::Core::WorldCtx& ctx, Engine::Graphics::Shader& shader
 			, Engine::Window::Window& window, Engine::Graphics::RenderContext& renderCtx);
+	};
+
+	struct AudioLayerFeature
+	{
+		static void Update(::Engine::WorldSystem::Core::WorldCtx& ctx, ::Engine::Audio::AudioSystem& audioSys);
+
 	};
 }
 

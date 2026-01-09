@@ -1,4 +1,8 @@
-﻿#include "Game/Combat/Skill/Public/RuntimeAPI.hpp"
+﻿// AnimatorComponent へ Request を発行
+// SpawnHitbox/ へ CMD を発行
+// Engine/Audio/ へ CMD を 発行
+
+#include "Game/Combat/Skill/Public/RuntimeAPI.hpp"
 
 #include "Game/Character/FSM/Public/MovementAxisComponent.hpp"
 
@@ -9,6 +13,10 @@
 // anim
 #include "Game/Combat/Animation/Internal/AnimTypes.hpp"
 #include "Game/Combat/Animation/Public/AnimationFwd.hpp"
+
+// sound
+#include "Engine/Audio/Public/AudioAPI.hpp"
+#include "Game/Audio/Public/GameAudioAPI.hpp"
 
 #include "Game/Combat/Skill/Internal/Binding/BindingTypes.hpp"
 
@@ -41,6 +49,11 @@ namespace Game::Combat::Skill::Runtime
 			case LogicCommandKind::PlayAnim:
 				HandlePlayerAnim(cmd);// 未作成
 				break;
+			case LogicCommandKind::PlaySFX:
+			{
+				HandleSkillSFX(cmd);
+				break;
+			}
 			}
 		}
 	}
@@ -131,4 +144,36 @@ namespace Game::Combat::Skill::Runtime
 
 		// std::cout << "here2222\n";
 	}
+
+	void SkillCommandExecSystem::HandleSkillSFX(const SkillLogicCommand& cmd)
+	{
+		using namespace ::Engine::Audio;
+
+		auto& buf = ctx.ww.GetResource<AudioCmdBufferResource>().cmd;
+		const auto& ids = ctx.rw.GetResource<::Game::Audio::AudioIds>();
+		auto& binding = ctx.ww.GetResource<Binding::SkillBindingData>();
+
+		::Game::Audio::SoundKey key = binding.resolveSound(cmd.skill, cmd.state);
+		if (key == ::Game::Audio::SoundKey::COUNT)
+		{
+			//TODO: エラー種別を判定する方法を考えるべき → skill / state どちらに 不一致があるのか
+			Engine::Log::Write(Engine::Log::Level::Error, "SkillCommandExecSystem",
+				"SoundMap failed to resolve SoundKey");
+			return;
+		}
+
+		::Engine::Audio::SoundID id = ids.get(key);
+		if (!id.is_valid())
+		{
+			Engine::Log::Write(Engine::Log::Level::Error, "SkillCommandExecSystem",
+				"Invalid SoundID.");
+			return;
+		}
+
+		// std::cerr << "SFX requested:'" <<  "'" << "\n";		// for debug
+
+		buf.play_one_shot(id);
+
+	}
+
 }

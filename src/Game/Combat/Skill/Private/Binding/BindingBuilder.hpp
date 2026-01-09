@@ -40,9 +40,13 @@ namespace Game::Combat::Skill::Binding
 
 		void Add(const SkillHitBoxBindingDTO& dto);
 		void Add_Anim(const SkillAnimationBindingDTO& dto);
+		void Add_Sound(const SkillSoundBindingDTO& dto);
 
 		void AddRange(const std::vector<SkillHitBoxBindingDTO>& dtos);
 		void AddRange_anim(const std::vector<SkillAnimationBindingDTO>& dtos);
+		void AddRange_sound(const std::vector<SkillSoundBindingDTO>& dtos);
+
+		
 
 		// まとめてビルド
 		SkillBindingBuildResult Build() const;
@@ -55,6 +59,7 @@ namespace Game::Combat::Skill::Binding
 
 		std::vector<SkillHitBoxBindingDTO> hbdefs_;
 		std::vector<SkillAnimationBindingDTO> animdefs_;
+		std::vector<SkillSoundBindingDTO> sounddefs_;
 
 		bool buildHibBox(
 			const Engine::FSM::Core::CanonicalAxis& axis,
@@ -67,6 +72,14 @@ namespace Game::Combat::Skill::Binding
 		(
 			const Engine::FSM::Core::CanonicalAxis& axis,
 			const SkillAnimationBindingDTO& animdtos,
+			SkillBindingData& out,
+			SkillBindingBuildErrors& errs
+		)const;
+
+		bool buildSound
+		(
+			const ::Engine::FSM::Core::CanonicalAxis& axis,
+			const SkillSoundBindingDTO& sounddtos,
 			SkillBindingData& out,
 			SkillBindingBuildErrors& errs
 		)const;

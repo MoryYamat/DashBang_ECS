@@ -42,14 +42,15 @@ namespace Game::Combat::Skill::Runtime
 		SpawnHitBox,
 		PlayAnim,
 		ModifyMoveSpeed,
+		PlaySFX,
 	};
 
 	struct SkillLogicCommand
 	{
 		LogicCommandKind kind;
 		Engine::ECS::Core::Entity owner = Engine::ECS::Core::INVALID;
-		SkillID skill;
-		Engine::FSM::Core::StateID state;
+		SkillID skill;						// key.skill
+		Engine::FSM::Core::StateID state;	// key.state
 		float effectTime = 0.f;					// 発火したタイミング?
 		float lifetime = 0.f;
 		float value = 0.f;
@@ -72,5 +73,6 @@ namespace Game::Combat::Skill::Runtime
 		void HandleSpawnHitBox(const SkillLogicCommand& cmd);
 		void HandlePlayerAnim(const SkillLogicCommand& cmd);
 		void HandleModifyMoveSpeed(const SkillLogicCommand& cmd);
+		void HandleSkillSFX(const SkillLogicCommand& cmd);
 	};
 }

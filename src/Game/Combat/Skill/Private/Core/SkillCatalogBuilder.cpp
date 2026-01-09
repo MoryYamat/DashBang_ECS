@@ -35,6 +35,11 @@ namespace Game::Combat::Skill
 			out = EffectKind::ModifyMoveSpeed;
 			return true;
 		}
+		if (s == "PlaySFX")
+		{
+			out = EffectKind::PlaySFX;
+			return true;
+		}
 
 		return false;
 	}

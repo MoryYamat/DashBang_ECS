@@ -19,6 +19,7 @@ namespace Game::Combat::Skill
 			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.1f, .lifetime = 0.3f, .kind = "SpawnHitbox"},
 			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.0f, .lifetime = 0.3f, .kind = "ModifyMoveSpeed", .value = 0.0},
 			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.0f, .kind = "PlayAnim"},
+			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.0f, .kind = "PlaySFX"},
 		};
 
 		builder.add(std::move(test_skill));

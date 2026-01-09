@@ -14,6 +14,8 @@
 #include "Game/Combat/Animation/Internal/AnimTypes.hpp"
 #include "Game/Combat/Animation/Public/AnimationFwd.hpp"
 
+#include "Game/Audio/Generated/SoundKeys.hpp"
+
 #include "Engine/Log/Public/LogApi.hpp"
 
 #include <string_view>
@@ -62,6 +64,16 @@ namespace Game::Combat::Skill::Binding
 		animdefs_.insert(animdefs_.end(), animdtos.begin(), animdtos.end());
 	}
 
+	void SkillBindingBuilder::Add_Sound(const SkillSoundBindingDTO& dto)
+	{
+		sounddefs_.push_back(dto);
+	}
+
+	void SkillBindingBuilder::AddRange_sound(const std::vector<SkillSoundBindingDTO>& dtos)
+	{
+		sounddefs_.insert(sounddefs_.end(), dtos.begin(), dtos.end());
+	}
+
 	SkillBindingBuildResult SkillBindingBuilder::Build() const
 	{
 		SkillBindingBuildResult result;
@@ -89,6 +101,11 @@ namespace Game::Combat::Skill::Binding
 		for (const auto& dto : animdefs_)
 		{
 			buildAnim(axis, dto, result.data, result.errs);
+		}
+
+		for (const auto& dto : sounddefs_)
+		{
+			buildSound(axis, dto, result.data, result.errs);
 		}
 
 		return result;
@@ -242,13 +259,90 @@ namespace Game::Combat::Skill::Binding
 		animEntry.state = stateId;
 		animEntry.anim = animID;
 		
-		std::cout << " skill:" << skillId.v << "\n";
-		std::cout << " state:" << stateId.v << "\n";
-		std::cout << " anim:" << animID.v << "\n";
+		std::cout << "(skill:'" << skillId.v << "' state:'"<< stateId.v << "')-> anim:'" << animID.v << "\n";
 
 		// 追加
 		out.abs.push_back(animEntry);
 
+
+		return true;
+	}
+
+	bool SkillBindingBuilder::buildSound
+	(
+		const ::Engine::FSM::Core::CanonicalAxis& axis,
+		const SkillSoundBindingDTO& sounddtos,
+		SkillBindingData& out,
+		SkillBindingBuildErrors& errs
+	)const
+	{
+		// Skill名 → SkillID
+		SkillID skillId = skills_.FindByName(sounddtos.key.skill);
+		{
+			if (!skillId.valid())
+			{
+				errs.err("[SkillBinding] Unknown skill name: '" + sounddtos.key.skill +
+					"' (state='" + sounddtos.key.state +
+					"' sound ='" + sounddtos.debug_name + "')");
+
+				return false;
+			}
+		}
+
+		// State名 → StateID (Skill軸のFSMから)
+		std::uint32_t id = Engine::FSM::Core::AxisLookup::FindStateIdx(axis, sounddtos.key.state);
+		StateID stateId(id);
+		{
+			if (!stateId.valid())
+			{
+				errs.err("[SkillBinding] Unknown state name: '" + sounddtos.key.state +
+					"' (skill='" + sounddtos.key.skill +
+					"' sound='" + sounddtos.debug_name+ "')");
+				return false;
+			}
+		}
+
+		// Animation名 → AnimID
+		::Game::Audio::SoundKey soundKey = sounddtos.sound;
+		{
+			if (soundKey == ::Game::Audio::SoundKey::COUNT)
+			{
+				errs.err("[SkillBinding] Unknown HitBox name: '" + sounddtos.key.state +
+					"' (state='" + sounddtos.key.skill +
+					"' sound='" + sounddtos.debug_name+ "')");
+				return false;
+			}
+		}
+
+
+		// TODO: キー拡張によるエラー検出処理変更 (現行仕様ではエラー)
+		// ★ (skill, state) の重複チェック
+		for (const auto& e : out.sbs)
+		{
+			if (e.skill == skillId && e.state == stateId)
+			{
+				errs.err(
+					"[SkillBinding] Duplicate binding for "
+					"(skill='" + sounddtos.key.skill +
+					"', state='" + sounddtos.key.state +
+					"') : existingSoundKey=" + sounddtos.debug_name
+				);
+				return false; // 2つ目以降は無視
+			}
+		}
+
+
+		// 正常に解決できたらエントリ追加
+		SkillSoundBindingEntry soundEntry;
+		soundEntry.skill = skillId;
+		soundEntry.state = stateId;
+		soundEntry.key = soundKey;
+
+		std::cout << "(skill: '" << skillId.v << "' state:'" << stateId.v << "')-> sound:'" << sounddtos.debug_name << "'\n";
+		
+
+		// 追加
+		out.sbs.push_back(soundEntry);
 
 		return true;
 	}

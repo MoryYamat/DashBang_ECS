@@ -31,6 +31,6 @@ namespace Game::Audio
 
 		void Build(::Engine::Audio::AudioCatalogResource& resource, AudioIds& ids);
 
-		bool Ok() { return errs.ok(); }
+		bool Ok() { return errs_.ok(); }
 	};
 }

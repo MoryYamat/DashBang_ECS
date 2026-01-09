@@ -220,14 +220,25 @@ namespace Game::Combat::Skill::Runtime
 					switch (eff.kind)
 					{
 					case EffectKind::SpawnHitBox:
+					{
 						cmd.kind = LogicCommandKind::SpawnHitBox;
 						break;
+					}
 					case EffectKind::ModifyMoveSpeed:
+					{
 						cmd.kind = LogicCommandKind::ModifyMoveSpeed;
 						break;
+					}
 					case EffectKind::PlayAnim:
+					{
 						cmd.kind = LogicCommandKind::PlayAnim;
 						break;
+					}
+					case EffectKind::PlaySFX:
+					{
+						cmd.kind = LogicCommandKind::PlaySFX;
+						break;
+					}
 					}
 
 					cmdBuf.cmds.push_back(cmd);

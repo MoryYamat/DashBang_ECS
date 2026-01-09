@@ -4,6 +4,8 @@
 
 #include "Game/Combat/Skill/Internal/Binding/BindingTypes.hpp"
 
+#include "Game/Audio/Generated/SoundKeys.hpp"
+
 namespace
 {
 	using namespace Game::Combat::Skill::Binding;
@@ -22,9 +24,16 @@ namespace
 		test_skill_anim.startTime = 0.0f;
 		test_skill_anim.endTime = -1.0f;
 		test_skill_anim.loopWithinRange = false;
+		SkillSoundBindingDTO test_skill_sound;
+		test_skill_sound.key.skill = "test_skill";
+		test_skill_sound.key.state = "Active";
+		test_skill_sound.sound = Game::Audio::SoundKey::sfx_test;
+		test_skill_sound.volume_scale = 1.0f;
+		test_skill_sound.debug_name = "sfx_test";
 
 		builder.Add(test_skill_hb);
 		builder.Add_Anim(test_skill_anim);
+		builder.Add_Sound(test_skill_sound);
 	}
 }
 

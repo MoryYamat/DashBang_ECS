@@ -105,9 +105,17 @@ namespace Engine::Audio
 		impl_->initialized = false;
 	}
 
-	void AudioSystem::update(AudioCatalogResource& resource, AudioCmdBufferResource& cmds, float dt)
+	void AudioSystem::update(const AudioCatalogResource& resource, AudioCmdBufferResource& cmds, float dt)
 	{
-		auto& catalog = resource.catalog;
+		const auto& catalog = resource.catalog;
+
+		if (cmds.empty())
+		{
+			cmds.cmd.clear();
+			return;
+		}
+			
+		std::cerr << "sfx request existed\n";
 
 		for (const auto& c : cmds.cmd.cmds)
 		{

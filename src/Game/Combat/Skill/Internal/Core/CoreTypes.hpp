@@ -26,6 +26,7 @@ namespace Game::Combat::Skill
 		SpawnHitBox,
 		PlayAnim,
 		ModifyMoveSpeed,
+		PlaySFX,
 		// SoundやCameraShakeなど
 	};
 
