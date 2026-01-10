@@ -115,7 +115,7 @@ namespace Engine::Audio
 			return;
 		}
 			
-		std::cerr << "sfx request existed\n";
+		// std::cerr << "sfx request existed\n"; // for debug
 
 		for (const auto& c : cmds.cmd.cmds)
 		{

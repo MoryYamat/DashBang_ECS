@@ -96,6 +96,7 @@
 
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
+#include "Engine/IO/Public/FileSystemAPI.hpp"
 
 #include <thread>
 #include <chrono>
@@ -186,6 +187,8 @@ bool GameApp::GameApp::Initialize()
 	// =========================== Delayed Init =========================
 	::Game::Layer::InitializeLayerFeature::DelayedInitialization(ctx);
 	::Game::Layer::Debug::DebugLayerFeature::InitDebugSystem(ctx);
+
+	::Engine::IO::InitFileSystem(ctx);
 
 	// loadData();
 	// ctxバージョン
