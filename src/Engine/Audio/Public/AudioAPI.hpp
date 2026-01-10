@@ -5,8 +5,8 @@
 
 #pragma once
 #include "Engine/Audio/Public/AudioFwd.hpp"
-
 #include "Engine/WorldSystem/Public/WorldFwd.hpp"
+#include "Engine/IO/Public/FileSystemFwd.hpp"
 
 #include <string>
 #include <string_view>
@@ -121,7 +121,7 @@ namespace Engine::Audio
 		bool initialize();
 		void shutdown() noexcept;
 		// void update(float dt);
-		void update(const AudioCatalogResource& resource, AudioCmdBufferResource& cmds,  float dt);
+		void update(const AudioCatalogResource& resource, AudioCmdBufferResource& cmds, const ::Engine::IO::MountTable& mounts, float dt);
 
 
 		float get_bus_volume(AudioBus bus) const noexcept;

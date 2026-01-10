@@ -7,6 +7,7 @@
 #include <string_view>
 #include <unordered_map>
 #include <optional>
+#include <iostream>
 
 namespace Engine::IO
 {
@@ -36,6 +37,15 @@ namespace Engine::IO
 			if (it == mounts_.end())
 				return std::nullopt;
 			return it->second;
+		}
+
+		void DebugDump(std::ostream& os) const
+		{
+			os << "[VFS] MoutTable:\n";
+			for (const auto& [scheme, root] : mounts_)
+			{
+				os << " " << scheme << ":// -> " << root << "\n";
+			}
 		}
 
 	private:

@@ -9,6 +9,7 @@
 #include <utility>
 #include <miniaudio.h>
 #include <memory>
+#include <filesystem>
 
 namespace Engine::Audio
 {
@@ -139,6 +140,23 @@ namespace Engine::Audio
 		// -----
 		// ma_engine_play_sound(&impl_->engine, pathZ.c_str(), nullptr);
 		// ma_sound_uninit(&sound);
+	}
+
+	void MiniAudioBackend::play_one_shot(const std::filesystem::path& path, float volume)
+	{
+		(void)volume; // 最小実装では無視。後でバス/ボイス管理で対応。
+		if (!impl_ || !impl_->initialized)
+		{
+			Log::error(Log::kBackend, "MiniAudio::play_one_shot (unexpected)");
+			return;
+		}
+
+		const std::string pathZ = path.string(); // null終端が必要
+		const ma_result r = ma_engine_play_sound(&impl_->engine, pathZ.c_str(), nullptr);
+		if (r != MA_SUCCESS)
+		{
+			std::cerr << "play_sound failed: " << pathZ << "r=" << r << "\n";
+		}
 	}
 }
 

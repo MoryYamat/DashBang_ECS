@@ -47,7 +47,7 @@ namespace Engine::IO
 		if (restP.is_absolute())
 			return std::nullopt;
 
-		fs::path abs = (*rootOpt) / fs::path(rest);
+		fs::path abs = (*rootOpt) / restP;
 		return fs::weakly_canonical(abs);
 
 	}

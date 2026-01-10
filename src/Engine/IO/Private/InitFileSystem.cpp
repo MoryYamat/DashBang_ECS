@@ -1,8 +1,11 @@
 #include "Engine/IO/Public/FileSystemAPI.hpp"
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 
+#include "Engine/IO/Private/VfsDiagnostics.hpp"
+
 #include "Engine/Platform/Pubilc/PlatformAPI.hpp"
 
+#include <iostream>
 
 namespace Engine::IO
 {
@@ -15,12 +18,15 @@ namespace Engine::IO
 
 		if (assetDir.empty())
 		{
-			// Log
-		}
+			std::cerr << "[VFS][ERROR] Assets directory not found from exeDir=" << exeDir << "\n";
+			return;
+ 		}
 
 		table.Mount("res", assetDir);
 
-
-		std::cerr << "path: " << assetDir << "\n";
+		VfsStartupCheck(
+			table,
+			"res://Sounds/test.wav"		// 代表ファイル
+		);
 	}
 }

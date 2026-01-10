@@ -5,6 +5,8 @@
 
 #include "Engine/Audio/Internal/AudioLog.hpp"
 
+#include "Engine/IO/Public/FileSystemAPI.hpp"
+
 #include <cstddef>
 #include <memory>
 #include <utility>
@@ -105,7 +107,7 @@ namespace Engine::Audio
 		impl_->initialized = false;
 	}
 
-	void AudioSystem::update(const AudioCatalogResource& resource, AudioCmdBufferResource& cmds, float dt)
+	void AudioSystem::update(const AudioCatalogResource& resource, AudioCmdBufferResource& cmds, const ::Engine::IO::MountTable& mounts, float dt)
 	{
 		const auto& catalog = resource.catalog;
 
@@ -117,6 +119,8 @@ namespace Engine::Audio
 			
 		// std::cerr << "sfx request existed\n"; // for debug
 
+		Engine::IO::VfsResolver resolver(mounts);
+
 		for (const auto& c : cmds.cmd.cmds)
 		{
 			switch (c.kind)
@@ -126,7 +130,14 @@ namespace Engine::Audio
 				const Engine::Audio::SoundDef* def = catalog.try_get(c.sound);
 				if (!def) break;
 
-				impl_->backend.play_one_shot(def->path);
+				const auto absOpt = resolver.TryResolve(def->path);
+				if (!absOpt) 
+				{
+					Log::warn(Log::kSystem, "Failed to get absolute path");
+					continue; 
+				}
+
+				impl_->backend.play_one_shot(absOpt.value());
 				break;
 			}
 			case ::Engine::Audio::AudioCmd::Kind::SetBusVolume:

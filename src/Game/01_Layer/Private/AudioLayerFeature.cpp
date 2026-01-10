@@ -3,6 +3,7 @@
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 #include "Engine/Audio/Public/AudioAPI.hpp"
 #include "Engine/Time/Private/WorldClock.hpp"
+#include "Engine/IO/Public/FileSystemAPI.hpp"
 
 namespace Game::Layer
 {
@@ -13,8 +14,10 @@ namespace Game::Layer
 		const auto& catalog = ctx.rw.GetResource<::Engine::Audio::AudioCatalogResource>();
 
 		const auto& dt = ctx.rw.GetResource<::Engine::Time::WorldClockData>();
+		const auto& mount = ctx.rw.GetResource<::Engine::IO::MountTable>();
 
-		audioSys.update(catalog, cmds, dt.frameDt);
+
+		audioSys.update(catalog, cmds, mount, dt.frameDt);
 	}
 
 }

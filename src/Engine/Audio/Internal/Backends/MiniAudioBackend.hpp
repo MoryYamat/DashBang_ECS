@@ -4,6 +4,7 @@
 
 #include <string_view>
 #include <memory>
+#include <filesystem>
 
 namespace Engine::Audio
 {
@@ -24,7 +25,7 @@ namespace Engine::Audio
 		void shutdown() noexcept override;
 
 		void play_one_shot(std::string_view path, float volume = 1.0f) override;
-
+		void play_one_shot(const std::filesystem::path& path, float volume = 1.0f)override;
 	private:
 
 		struct Impl;

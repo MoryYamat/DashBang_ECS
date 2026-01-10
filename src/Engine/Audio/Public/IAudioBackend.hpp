@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string_view>
-
+#include <filesystem>
 namespace Engine::Audio
 {
 	class IAudioBackend
@@ -17,6 +17,7 @@ namespace Engine::Audio
 
 		// ワンショット再生 (path は実行ファイル基準など、上位が解決済み想定)
 		virtual void play_one_shot(std::string_view path, float volume = 1.0f) = 0;
+		virtual void play_one_shot(const std::filesystem::path& path, float volume = 1.0f) = 0;
 
 	private:
 

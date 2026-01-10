@@ -17,7 +17,7 @@ namespace
 		AudioDTO sfx_text{ .key = SoundKey::sfx_test
 							, .name = "sfx_text"
 							, .def = SoundDef{
-								.path = "Assets/Sounds/test.wav"		
+								.path = "res://Sounds/test.wav"		
 								, .bus = AudioBus::SFX
 								, .defaultVolume = 1.0f
 								, .stream = false} 
