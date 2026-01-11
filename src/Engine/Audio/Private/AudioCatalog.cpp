@@ -3,7 +3,9 @@
 #include "Engine/Audio/Public/AudioFwd.hpp"
 
 #include "Engine/Audio/Internal/AudioLog.hpp"
+#include "Engine/IO/Public/FileSystemAPI.hpp"
 
+#include <optional>
 #include <cstddef>
 #include <cstdint>
 #include <utility>
@@ -16,14 +18,19 @@
 namespace Engine::Audio
 {
 
-
-
-
 	// ========================= AUDIO CATALOG ======================
 	struct AudioCatalog::Impl
 	{
 		AudioAssetDB db;
 		SoundNameTable names;
+
+		// 実行時キャッシュ (AudioCatalog専用)
+		struct ResolvedEntry
+		{
+			std::filesystem::path absPath;
+			bool resolved = false;
+		};
+		mutable std::vector<ResolvedEntry> resolvedCache;
 	};
 
 	AudioCatalog::AudioCatalog()
@@ -90,7 +97,38 @@ namespace Engine::Audio
 	{
 		return impl_->db.try_get(id);
 	}
+
+	std::optional<std::filesystem::path>
+		AudioCatalog::get_or_resolve_abs_path(SoundID id, const Engine::IO::IPathResolver& resolver) const
+	{
+		if (!id.is_valid())
+			return std::nullopt;
+
+		const std::size_t idx = static_cast<std::size_t>(id.value());
+		if (idx >= impl_->db.size())
+			return std::nullopt;
+
+		const SoundDef* def = try_get(id);
+		if (!def) 
+			return std::nullopt;
+
+		if (impl_->resolvedCache.size() != impl_->db.size())
+			impl_->resolvedCache.resize(impl_->db.size());
+
+		auto& slot = impl_->resolvedCache[idx];
+		if (slot.resolved)
+			return slot.absPath;
+
+		auto absOpt = resolver.TryResolve(def->path);
+		if (!absOpt) return std::nullopt;
+
+		slot.absPath = std::move(*absOpt);
+		slot.resolved = true;
+		return slot.absPath;
+	}
 }
+
+
 
 // 実行系では、idで解決する
 // 

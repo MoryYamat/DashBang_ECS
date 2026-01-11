@@ -8,6 +8,8 @@
 #include "Engine/WorldSystem/Public/WorldFwd.hpp"
 #include "Engine/IO/Public/FileSystemFwd.hpp"
 
+#include <optional>
+#include <filesystem>
 #include <string>
 #include <string_view>
 #include <array>
@@ -42,6 +44,10 @@ namespace Engine::Audio
 		SoundID register_sound(std::string name, SoundDef def);
 		const SoundDef* try_get(SoundID id) const noexcept;
 		SoundID find(std::string_view name) const noexcept;
+
+		std::optional<std::filesystem::path>
+			get_or_resolve_abs_path(SoundID id, const Engine::IO::IPathResolver& resolver) const;
+
 
 	private:
 		struct Impl;
@@ -121,7 +127,7 @@ namespace Engine::Audio
 		bool initialize();
 		void shutdown() noexcept;
 		// void update(float dt);
-		void update(const AudioCatalogResource& resource, AudioCmdBufferResource& cmds, const ::Engine::IO::MountTable& mounts, float dt);
+		void update(const AudioCatalogResource& resource, AudioCmdBufferResource& cmds, Engine::IO::IPathResolver& resolver, float dt);
 
 
 		float get_bus_volume(AudioBus bus) const noexcept;

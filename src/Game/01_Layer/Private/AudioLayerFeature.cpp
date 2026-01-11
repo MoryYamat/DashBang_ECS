@@ -15,9 +15,9 @@ namespace Game::Layer
 
 		const auto& dt = ctx.rw.GetResource<::Engine::Time::WorldClockData>();
 		const auto& mount = ctx.rw.GetResource<::Engine::IO::MountTable>();
+		Engine::IO::VfsResolver resolver(mount);
 
-
-		audioSys.update(catalog, cmds, mount, dt.frameDt);
+		audioSys.update(catalog, cmds, resolver, dt.frameDt);
 	}
 
 }

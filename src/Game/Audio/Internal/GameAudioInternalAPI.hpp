@@ -1,9 +1,8 @@
 #pragma once
-
+#include "Game/Audio/Public/GameAudioAPI.hpp"
 
 namespace Game::Audio
 {
-	struct AudioCatalogBuilder;
 	// Internal
 	void RegisterAudioDTO(AudioCatalogBuilder& builder);
 }

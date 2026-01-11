@@ -3,5 +3,7 @@
 
 namespace Engine::IO
 {
-	class MountTable;
+	class MountTable;	
+	class VfsResolver;
+	class IPathResolver;
 }

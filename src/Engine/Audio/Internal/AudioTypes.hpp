@@ -1,12 +1,14 @@
 ﻿#pragma once
 #include "Engine/Audio/Public/AudioFwd.hpp"
 
+#include "Engine/IO/Public/FileSystemFwd.hpp"
 
 #include <cstdint>
 #include <string>
 #include <string_view>
 #include <vector>
 #include <unordered_map>
+#include <filesystem>
 
 namespace Engine::Audio
 {
@@ -86,4 +88,20 @@ namespace Engine::Audio
 		std::unordered_map<std::string, SoundID, TransparentStringHash, TransparentStringEqual> name_to_id_;
 	};
 
+	struct SoundResolved
+	{
+		std::filesystem::path absPath;
+		bool resolved = false;
+	};
+
+	class SoundRuntimeResolved
+	{
+	public:
+
+		std::filesystem::path
+			get_or_resolve_abs_path(SoundID id, const Engine::IO::MountTable& mounts) const;
+
+	private:
+		std::vector<SoundResolved> resolvedCache;
+	};
 }

@@ -54,7 +54,15 @@ namespace Engine::IO
 		std::unordered_map<std::string, std::filesystem::path> mounts_;
 	};
 
-	class VfsResolver
+	class IPathResolver
+	{
+	public:
+		virtual ~IPathResolver() = default;
+		virtual std::optional<std::filesystem::path>
+			TryResolve(std::string_view vpath) const = 0;
+	};
+
+	class VfsResolver	final : public IPathResolver
 	{
 	public:
 		explicit VfsResolver(const MountTable& mounts) :mounts_(mounts){}
