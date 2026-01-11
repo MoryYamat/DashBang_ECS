@@ -107,6 +107,13 @@ namespace Engine::Audio
 		impl_->initialized = false;
 	}
 
+	void AudioSystem::set_max_voices(std::size_t n)
+	{
+		if (!impl_)
+			return;
+		impl_->backend.set_max_voices(n);
+	}
+
 	void AudioSystem::update(const AudioCatalogResource& resource, AudioCmdBufferResource& cmds, Engine::IO::IPathResolver& resolver, float dt)
 	{
 		const auto& catalog = resource.catalog;
@@ -114,6 +121,7 @@ namespace Engine::Audio
 		if (cmds.empty())
 		{
 			cmds.cmd.clear();
+			impl_->backend.pump();
 			return;
 		}
 			
@@ -137,7 +145,8 @@ namespace Engine::Audio
 				}
 
 				//impl_->backend.play_one_shot(std::string_view(def->path));
-				impl_->backend.play_one_shot(*absOpt);
+				float vol = compute_final_volume(*def, 1.0f);
+				impl_->backend.play_one_shot(*absOpt, vol);
 				break;
 			}
 			case ::Engine::Audio::AudioCmd::Kind::SetBusVolume:
@@ -151,6 +160,8 @@ namespace Engine::Audio
 		}
 
 		cmds.cmd.clear();
+
+		impl_->backend.pump();
 	}
 
 	void AudioSystem::set_bus_volume(AudioBus bus, float volume)

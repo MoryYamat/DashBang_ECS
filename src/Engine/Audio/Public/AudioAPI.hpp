@@ -129,6 +129,7 @@ namespace Engine::Audio
 		// void update(float dt);
 		void update(const AudioCatalogResource& resource, AudioCmdBufferResource& cmds, Engine::IO::IPathResolver& resolver, float dt);
 
+		void set_max_voices(std::size_t n);
 
 		float get_bus_volume(AudioBus bus) const noexcept;
 

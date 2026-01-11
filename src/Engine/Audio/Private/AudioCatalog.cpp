@@ -98,6 +98,7 @@ namespace Engine::Audio
 		return impl_->db.try_get(id);
 	}
 
+
 	std::optional<std::filesystem::path>
 		AudioCatalog::get_or_resolve_abs_path(SoundID id, const Engine::IO::IPathResolver& resolver) const
 	{

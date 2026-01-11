@@ -24,8 +24,11 @@ namespace Engine::Audio
 		bool initialize() override;
 		void shutdown() noexcept override;
 
+		void set_max_voices(std::size_t n);
+
 		void play_one_shot(std::string_view path, float volume = 1.0f) override;
 		void play_one_shot(const std::filesystem::path& path, float volume = 1.0f)override;
+		void pump();	// –ˆƒtƒŒ[ƒ€‰ñû
 	private:
 
 		struct Impl;

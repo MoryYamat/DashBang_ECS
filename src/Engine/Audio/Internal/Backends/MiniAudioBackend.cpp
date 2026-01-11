@@ -10,6 +10,7 @@
 #include <miniaudio.h>
 #include <memory>
 #include <filesystem>
+#include <vector>
 
 namespace Engine::Audio
 {
@@ -17,6 +18,19 @@ namespace Engine::Audio
 	{
 		ma_engine engine{};
 		bool initialized = false;
+
+		struct Voice
+		{
+			ma_sound sound{};
+			bool inited = false;
+
+			// path文字列が内部で参照される可能性をつぶすため、念のため保持
+			// 少なくともvoice の寿命中は確実に生きる
+			std::string path;
+		};
+
+		std::vector<std::unique_ptr<Voice>> activeVoices;
+		std::size_t maxVoices = 64;		// 最大同時発生音数 (仮)
 	};
 
 	MiniAudioBackend::MiniAudioBackend()
@@ -77,6 +91,12 @@ namespace Engine::Audio
 
 		ma_engine_uninit(&impl_->engine);
 		impl_->initialized = false;
+	}
+
+	void MiniAudioBackend::set_max_voices(std::size_t n)
+	{
+		if (!impl_)return;
+		impl_->maxVoices = std::max<std::size_t>(n, 1);
 	}
 
 	void MiniAudioBackend::play_one_shot(std::string_view path, float volume)
@@ -144,18 +164,104 @@ namespace Engine::Audio
 
 	void MiniAudioBackend::play_one_shot(const std::filesystem::path& path, float volume)
 	{
-		(void)volume; // 最小実装では無視。後でバス/ボイス管理で対応。
+		//(void)volume; // 最小実装では無視。後でバス/ボイス管理で対応。
+		//if (!impl_ || !impl_->initialized)
+		//{
+		//	Log::error(Log::kBackend, "MiniAudio::play_one_shot (unexpected)");
+		//	return;
+		//}
+
+		//const std::string pathZ = path.string(); // null終端が必要
+		//const ma_result r = ma_engine_play_sound(&impl_->engine, pathZ.c_str(), nullptr);
+		//if (r != MA_SUCCESS)
+		//{
+		//	std::cerr << "play_sound failed: " << pathZ << "r=" << r << "\n";
+		//}
+
+		// 
+
 		if (!impl_ || !impl_->initialized)
 		{
-			Log::error(Log::kBackend, "MiniAudio::play_one_shot (unexpected)");
+			Log::error(Log::kBackend, "MiniAudio::play_one_shot (engine not initialized)");
 			return;
 		}
 
-		const std::string pathZ = path.string(); // null終端が必要
-		const ma_result r = ma_engine_play_sound(&impl_->engine, pathZ.c_str(), nullptr);
-		if (r != MA_SUCCESS)
+		pump();
+
+		if (impl_->activeVoices.size() >= impl_->maxVoices)
 		{
-			std::cerr << "play_sound failed: " << pathZ << "r=" << r << "\n";
+			// 
+			Log::warn(Log::kBackend, "SFX dropped (maxVoices reached)");
+			return;
+		}
+
+		// 寿命中にアドレスが変わることを想定していない
+		auto v = std::make_unique<Impl::Voice>();
+		v->path = path.string();		// UTF-8周りは後で整備(Windowsならwstring版も検討)
+
+		//
+		constexpr ma_uint32 flags = MA_SOUND_FLAG_DECODE;
+			
+		
+		const ma_result rInit = ma_sound_init_from_file(
+			&impl_->engine,
+			v->path.c_str(),
+			flags,
+			nullptr,			// group (後でSFXパスに差し替え)
+			nullptr,			// doneFence (必要なら非同期完了待ちに使う)
+			&v->sound
+		);
+		if (rInit != MA_SUCCESS)
+		{
+			Log::warn(Log::kBackend, "ma_sound_init_from_file failed.");
+			return;
+		}
+		v->inited = true;
+
+		ma_sound_set_volume(&v->sound, volume);
+
+		const ma_result rStart = ma_sound_start(&v->sound);
+		if (rStart != MA_SUCCESS)
+		{
+			Log::warn(Log::kBackend, "ma_sound_start failed");
+			ma_sound_uninit(&v->sound);
+			return;
+		}
+
+		impl_->activeVoices.emplace_back(std::move(v));
+
+	}
+
+	// 明示的ガベージコレクション
+	void MiniAudioBackend::pump()
+	{
+		if (!impl_ || !impl_->initialized)
+		{
+			Log::warn(Log::kBackend, "MiniAudio::pump (engine not initialized)");
+			return;
+		}
+
+		auto& a = impl_->activeVoices;
+
+		// 終わった音を回収 (アドレスを動かさない)
+		// vector(unique_ptr) なので erase しても Voice本体は moveされない
+		for (std::size_t i = 0; i < a.size();)
+		{
+			Impl::Voice& v = *a[i];
+
+			// at_end: データソース終端判定．終わってたら止めて破棄
+			if (v.inited && ma_sound_at_end(&v.sound))
+			{
+				ma_sound_stop(&v.sound);
+				ma_sound_uninit(& v.sound);
+
+				// swap-pop(順序非依存だから)
+				a[i] = std::move(a.back());
+				a.pop_back();
+				continue;
+			}
+
+			++i;
 		}
 	}
 }
