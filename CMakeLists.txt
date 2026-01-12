@@ -3,6 +3,8 @@
 # プロジェクト名とC++標準の設定
 project(DashBang_ECS)
 
+option(ENGINE_ENABLE_PROFILING "Enable in-engine profiling" OFF)
+
 # set(CMAKE_CXX_STANDARD 17)
 # set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -137,4 +139,6 @@ target_compile_definitions(DashBang_ECS
     PRIVATE
         GLM_ENABLE_EXPERIMENTAL
         $<$<CONFIG:Debug>:DEBUG>
+	$<$<CONFIG:Debug>:ENGINE_ENABLE_PROFILING=1>
+	$<$<BOOL:${ENGINE_ENABLE_PROFILING}>:ENGINE_ENABLE_PROFILING=1>
 )

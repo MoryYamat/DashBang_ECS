@@ -3,6 +3,8 @@
 #include "Engine/FSM/Public/Core/Types.hpp"
 #include "Engine/FSM/Public/Core/Analysis.hpp"
 
+#include "Engine/Debug/Public/ProfilingAPI.hpp"
+
 #include <algorithm>
 #include <iostream>
 
@@ -33,6 +35,9 @@ namespace Engine::FSM::Core
 	Decision AxisInstance::tick(const IFieldReader& reader)
 	{
 		assert(ax && fsm && plan && eval);
+		// 計測
+		// ::Engine::Debug::Profiling::Profiler::SetPrintInterval(1);
+		// ::Engine::Debug::Profiling::ScopedTimer timer("FSM::AxisInstance::tick");
 
 		Decision d{};
 

@@ -142,7 +142,7 @@ namespace Game::Character::FSM::Movement
 
 				entry.state->Transition(entry.state->curState, s_gid, entry.state->curProf, p_gid);
 
-				Engine::FSM::Debug::PrintFSMInfo(entry.e, inst, d);
+				// Engine::FSM::Debug::PrintFSMInfo(entry.e, inst, d);
 			}
 
 		}

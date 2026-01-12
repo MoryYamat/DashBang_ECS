@@ -77,7 +77,7 @@ namespace Game::Layer::Debug
 	{
 	public:
 		static void InitDebugSystem(Engine::WorldSystem::Core::WorldCtx& ctx);
-
+		static void SpawnAllDummy(Engine::WorldSystem::Core::WorldCtx& ctx, int count);
 
 		static void Update(Engine::WorldSystem::Core::WorldCtx& ctx);
 

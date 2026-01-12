@@ -8,10 +8,11 @@
 // まだ未使用ですが、必要時に適宜整備します
 namespace Game::Layer::Debug
 {
-	//void DebugLayerFeature::Update(Engine::ECS::EntityMgr& ecs)
-	//{
+	void DebugLayerFeature::SpawnAllDummy(Engine::WorldSystem::Core::WorldCtx& ctx, int count)
+	{
+		Game::Feature::Debug::DebugFeature::SpawnDummyBatch(ctx, count);
+	}
 
-	//}
 	void DebugLayerFeature::InitDebugSystem(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
 		Game::Feature::Debug::DebugFeature::InitDebugDrawSystem(ctx);
@@ -19,7 +20,7 @@ namespace Game::Layer::Debug
 
 	void DebugLayerFeature::Update(Engine::WorldSystem::Core::WorldCtx& ctx)
 	{
-		
+		Game::Feature::Debug::DebugFeature::UpdateDummySystem(ctx);
 	}
 
 	void DebugLayerFeature::UpdateDebugRender(Engine::WorldSystem::Core::WorldCtx& ctx,

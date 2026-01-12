@@ -74,8 +74,8 @@ namespace Game::Combat::Skill::Binding
 			const Engine::FSM::Core::StateID state
 		) const
 		{
-			std::cout << "skill: " << skill.v << "\n";
-			std::cout << "state: " << state.v << "\n";
+			// std::cout << "skill: " << skill.v << "\n";
+			// std::cout << "state: " << state.v << "\n";
 
 			for (const auto& e : abs)
 			{

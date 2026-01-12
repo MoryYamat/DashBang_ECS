@@ -55,6 +55,8 @@
 #include "Engine/Config/CanonicalDefaults.h"
 #include "Engine/Debug/Public/DebugDrawAPI.hpp"
 
+#include "Engine/Debug/Public/ProfilingAPI.hpp"
+
 // Log
 #include "Engine/Log/Public/LogApi.hpp"
 
@@ -219,6 +221,9 @@ void GameApp::GameApp::RunLoop()
 
 		// ctxバージョン
 		Update(ctx, deltaTime);
+
+		// profiler
+		::Engine::Debug::Profiling::Profiler::EndFrame();
 	}
 
 	// Update();
@@ -270,6 +275,8 @@ void GameApp::GameApp::spawnAllActors(Engine::WorldSystem::Core::WorldCtx& ctx)
 	Game::Actor::TestFollowCamActor followCam = Game::Actor::TestFollowCamActor(ctx);
 	Game::Actor::TestPlayerCursorActor cursor = Game::Actor::TestPlayerCursorActor(ctx);
 	Game::Actor::TestTerrainMesh terrain = Game::Actor::TestTerrainMesh(ctx, shader_.get());
+
+	// ::Game::Layer::Debug::DebugLayerFeature::SpawnAllDummy(ctx, 1000);
 }
 
 
@@ -287,9 +294,9 @@ void GameApp::GameApp::updateGameLogics(Engine::WorldSystem::Core::WorldCtx& ctx
 
 	Game::Layer::IntentLayerFeature::Update(ctx);
 	Game::Layer::StateLayerFeature::Update(ctx);
-
-
 	Game::Layer::LogicLayerFeature::Update(ctx);
+
+	::Game::Layer::Debug::DebugLayerFeature::Update(ctx);
 }
 
 void GameApp::GameApp::generateOutputs(Engine::WorldSystem::Core::WorldCtx& ctx)

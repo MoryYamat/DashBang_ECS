@@ -3,7 +3,8 @@
 #include "Engine/WorldSystem/Public/WorldFwd.hpp"
 
 
-namespace Game::FSM::Debug
+namespace Game::Debug::FSM
 {
-	void SmokeTest_Movement(Engine::WorldSystem::Core::WorldCtx& ctx);
+
+	void TestFSMDummyDriverSystem(::Engine::WorldSystem::Core::WorldCtx& ctx);
 }
