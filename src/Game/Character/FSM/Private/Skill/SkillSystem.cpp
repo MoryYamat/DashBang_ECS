@@ -11,6 +11,8 @@
 #include "Game/Combat/Skill/Internal/Core/CoreTypes.hpp"
 #include "Game/Combat/SKill/Public/CoreAPI.hpp"
 
+#include "Engine/Debug/Public/ProfilingAPI.hpp"
+
 #include <iostream>
 
 namespace
@@ -84,6 +86,7 @@ namespace Game::Character::FSM::Skill
 
 			e.state->changedThisFrame = false;
 
+			// ::Engine::Debug::Profiling::ScopedTimer timer("Skill");
 			// FSM評価
 			auto d = inst.tick(reader);
 

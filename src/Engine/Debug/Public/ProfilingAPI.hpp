@@ -16,10 +16,11 @@ namespace Engine::Debug::Profiling
 		static void Add(const char* name, double us);
 
 		// log and reset
-		static void EndFrame();
+		static void EndFrame(double realDt);
 
 		// Output frame interval
-		static void SetPrintInterval(std::uint32_t frames) noexcept;
+		// static void SetPrintInterval(std::uint32_t frames) noexcept;
+		static void SetPrintIntervalSec(double sec) noexcept;
 
 	private:
 		Profiler() = delete;

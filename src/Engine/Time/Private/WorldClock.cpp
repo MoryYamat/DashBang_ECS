@@ -59,6 +59,32 @@ namespace Engine::Time
 	{
 		auto& wc = ctx.ww.GetResource<WorldClockData>();
 		wc.alpha = wc.accumulator / wc.fixedDt;// [0,1)
+
+		// 計測用
+		// --- 追加 ---
+		//static int   frameCount = 0;
+		//static int   sumSteps = 0;
+		//static float sumTime = 0.0f;
+
+		//frameCount++;
+		//sumSteps += wc.stepsThisFrame;
+		//sumTime += wc.frameDt;
+
+		//if (frameCount == 60)
+		//{
+		//	std::cerr
+		//		<< "[SUM 60 frames] "
+		//		<< "time=" << sumTime << "s "
+		//		<< "fixedSteps=" << sumSteps
+		//		<< " avgStepsPerFrame=" << (sumSteps / 60.0f)
+		//		<< "\n";
+
+		//	frameCount = 0;
+		//	sumSteps = 0;
+		//	sumTime = 0.0f;
+		//}
+
+
 		wc.frame++;
 	}
 }

@@ -223,7 +223,7 @@ void GameApp::GameApp::RunLoop()
 		Update(ctx, deltaTime);
 
 		// profiler
-		::Engine::Debug::Profiling::Profiler::EndFrame();
+		::Engine::Debug::Profiling::Profiler::EndFrame(deltaTime);
 	}
 
 	// Update();
@@ -293,10 +293,13 @@ void GameApp::GameApp::updateGameLogics(Engine::WorldSystem::Core::WorldCtx& ctx
 	Game::Layer::InputLayer::Update(ctx, input_->GetRawInput(), renderCtx_);
 
 	Game::Layer::IntentLayerFeature::Update(ctx);
+	
+	// Debug
+	//::Game::Layer::Debug::DebugLayerFeature::Update(ctx);
+	
 	Game::Layer::StateLayerFeature::Update(ctx);
 	Game::Layer::LogicLayerFeature::Update(ctx);
 
-	::Game::Layer::Debug::DebugLayerFeature::Update(ctx);
 }
 
 void GameApp::GameApp::generateOutputs(Engine::WorldSystem::Core::WorldCtx& ctx)

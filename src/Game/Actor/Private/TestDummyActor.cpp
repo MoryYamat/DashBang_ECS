@@ -9,6 +9,8 @@
 #include "Game/Character/FSM/Public/SkillAxisComponent.hpp"
 #include "Game/Character/FSM/Public/SkillAxisApi.hpp"
 
+#include "Engine/Component/Private/Logic2D/Velocity2DComponent.hpp"
+
 #include "Engine/Component/Private/Tags/DummyTagComp.hpp"
 
 namespace Game::Actor::Debug
@@ -21,6 +23,7 @@ namespace Game::Actor::Debug
 	{
 		const auto e = ctx.ww.Create();
 
+		ctx.ww.Add<::Engine::Component::Velocity2DComponent>(e);
 
 		// control
 		Ctrl::MovingIntentComponent& mvint = ctx.ww.Add<Ctrl::MovingIntentComponent>(e);

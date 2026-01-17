@@ -37,7 +37,7 @@ namespace Engine::FSM::Core
 		assert(ax && fsm && plan && eval);
 		// 計測
 		// ::Engine::Debug::Profiling::Profiler::SetPrintInterval(1);
-		// ::Engine::Debug::Profiling::ScopedTimer timer("FSM::AxisInstance::tick");
+		//::Engine::Debug::Profiling::ScopedTimer timer("FSM::AxisInstance::tick");
 
 		Decision d{};
 

@@ -16,6 +16,7 @@
 
 #include "Engine/FSM/Private/AllFSMSystem.hpp"
 
+#include "Engine/Debug/Public/ProfilingAPI.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
@@ -38,6 +39,7 @@ namespace
 			MovementStateComp, 
 			MovementModifierComponent,
 			Velocity2DComponent>{});
+
 
 		for (const auto& e : ents)
 		{
@@ -128,6 +130,7 @@ namespace Game::Character::FSM::Movement
 
 			entry.state->changedThisFrame = false;
 
+			// ::Engine::Debug::Profiling::ScopedTimer timer("Movement");
 			// FSM評価
 			Engine::FSM::Core::Decision d = inst.tick(reader);
 
