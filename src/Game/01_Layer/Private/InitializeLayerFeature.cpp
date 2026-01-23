@@ -1,6 +1,6 @@
 ﻿#include "Game/01_Layer/Public/LayerFeature.hpp"
 
-#include "Game/00_Feature/Public/AudioFeature.hpp"
+#include "Game/00_Feature/Public/EffectFeature.hpp"
 
 #include "Game/00_Feature/Private/Combat/Skill/SkillFeature.h"
 
@@ -48,6 +48,8 @@ void Game::Layer::InitializeLayerFeature::DelayedInitialization(Engine::WorldSys
 
 	// Audio
 	Game::Feature::Audio::AudioFeature::InitGameAudioSystem(ctx);
+	// VFX
+	Game::Feature::VFX::VFXFeature::InitGameVFXSystem(ctx);
 
 	// ---------- Combat -----------
 	// Skill

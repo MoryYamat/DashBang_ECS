@@ -4,6 +4,7 @@
 
 #include <cstddef>
 #include <iostream>
+#include <algorithm>
 
 namespace Engine::Graphics::Model
 {
@@ -53,6 +54,17 @@ namespace Engine::Graphics::Model
 				{
 					const cgltf_attribute& a = prim.attributes[ai];
 					
+					auto NameOr = [](const char* s, const char* fallback) { return (s && s[0]) ? s : fallback; };
+
+					std::cout
+						<< "[gltf] mesh[" << mi << "] name='" << NameOr(mesh.name, "<no-name>") << "'"
+						<< " prim[" << pi << "]"
+						<< " material=" << (prim.material ? int(prim.material - g->materials) : -1)
+						<< " indices=" << (prim.indices ? int(prim.indices->count) : 0)
+						<< " vtx=" << (acc_pos ? int(acc_pos->count) : 0)
+						<< "\n";
+
+
 					switch (a.type)
 					{
 					case cgltf_attribute_type_position: acc_pos = a.data; break;
@@ -69,6 +81,10 @@ namespace Engine::Graphics::Model
 				MD::MeshData out{};
 				const cgltf_size vcount = acc_pos->count;
 				out.vertices.resize(static_cast<size_t>(vcount));
+
+				out.source_name = (mesh.name ? mesh.name : "");
+				out.source_mesh_index = static_cast<int>(mi);
+				out.source_prim_index = static_cast<int>(pi);
 
 				float tmp[4] = { 0,0,0,0 };
 
@@ -132,6 +148,19 @@ namespace Engine::Graphics::Model
 						if (s > 1e-8f) { for (int k = 0; k < 4; ++k) w[k] /= s; }
 						else { w[0] = 1; w[1] = w[2] = w[3] = 0; }
 						v.weights = { w[0],w[1],w[2],w[3] };
+					}
+
+					// 3) weaponMask（両方揃ってから）
+					{
+						auto inTarget = [&](uint32_t j)->bool { return j == 58; }; // まず固定
+						float m = 0.0f;
+						for (int k = 0; k < 4; ++k)
+						{
+							const uint32_t j = v.joints[k];
+							const float    w = v.weights[k];
+							if (w > 0.0f && inTarget(j)) m += w;
+						}
+						v.weaponMask = std::clamp(m, 0.0f, 1.0f);
 					}
 
 					out.vertices[(size_t)i] = v;
@@ -206,8 +235,28 @@ namespace Engine::Graphics::Model
 						}
 
 					}
-
 				}
+
+				unsigned int maxIdx = 0;
+				for (auto idx : out.indices) maxIdx = std::max(maxIdx, idx);
+
+				std::cout << "[meshIdx] name='" << out.source_name
+					<< "' vtx=" << out.vertices.size()
+					<< " idx=" << out.indices.size()
+					<< " maxIdx=" << maxIdx
+					<< "\n";
+
+
+
+				glm::vec3 mn(FLT_MAX), mx(-FLT_MAX);
+				for (auto& v : out.vertices) { mn = glm::min(mn, v.position); mx = glm::max(mx, v.position); }
+
+				std::cout << "[meshAABB] name='" << out.source_name
+					<< "' vtx=" << out.vertices.size()
+					<< " idx=" << out.indices.size()
+					<< " min=(" << mn.x << "," << mn.y << "," << mn.z << ")"
+					<< " max=(" << mx.x << "," << mx.y << "," << mx.z << ")"
+					<< "\n";
 
 				model.meshes.emplace_back(std::move(out));
 			}
@@ -400,6 +449,24 @@ namespace Engine::Graphics::Model
 			}
 		}
 		model.skeletonRootBindGlobal = skelRoot;
+
+		// for (size_t i = 0; i < model.meshes.size(); ++i)
+		// {
+		// 	std::cout << "[model] i=" << i
+		// 		<< " name='" << model.meshes[i].source_name << "'"
+		// 		<< " mi=" << model.meshes[i].source_mesh_index
+		// 		<< " pi=" << model.meshes[i].source_prim_index
+		// 		<< "\n";
+		// }
+
+		// ロード直後に1回だけ
+		std::cout << "[bones] count=" << model.skeleton.bones.size() << "\n";
+		int n = 0;
+		for (const auto& [name, idx] : model.skeleton.nameToBone)
+		{
+			std::cout << "  [" << n++ << "] " << idx << " : " << name << "\n";
+		}
+
 
 		cgltf_free(g);
 		return model;

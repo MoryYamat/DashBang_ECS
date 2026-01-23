@@ -98,8 +98,8 @@ namespace Engine::Audio
 	{
 	public:
 
-		std::filesystem::path
-			get_or_resolve_abs_path(SoundID id, const Engine::IO::MountTable& mounts) const;
+		//std::filesystem::path
+		//	get_or_resolve_abs_path(SoundID id, const Engine::IO::MountTable& mounts) const;
 
 	private:
 		std::vector<SoundResolved> resolvedCache;

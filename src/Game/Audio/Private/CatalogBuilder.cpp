@@ -18,6 +18,7 @@ namespace Game::Audio
 			if (!id.is_valid())
 			{
 				errs_.error("Sound registration failed (invalid SoundID)");
+				continue;
 			}
 			ids.set(def.key, id);
 		}

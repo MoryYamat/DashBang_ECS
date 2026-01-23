@@ -1,4 +1,7 @@
-﻿#include <cstddef>
+﻿#pragma once
+
+#include <cstddef>
+#include <cstdint>
 #include <limits>
 #include <type_traits>
 #include <functional>
@@ -11,6 +14,7 @@ namespace Engine::Core
 	public:
 		using rep_type = Rep;
 
+		// return invalid value
 		static constexpr StrongID Invalid() noexcept
 		{
 			return StrongID{ invalid_value() };
@@ -19,12 +23,15 @@ namespace Engine::Core
 		constexpr StrongID() noexcept : value_(invalid_value()) {}
 		explicit constexpr StrongID(Rep v) noexcept : value_(v) {}
 
+		// return raw value
 		constexpr Rep value() const noexcept { return value_; }
+
+		// Check if the value is invalid
 		constexpr bool is_valid() const noexcept { return value_ != invalid_value(); }
 
-		friend constexpr bool operator==(StrongID a, StrongID b) noexcept { return a.value == b.value; }
+		friend constexpr bool operator==(StrongID a, StrongID b) noexcept { return a.value_ == b.value_; }
 		friend constexpr bool operator!=(StrongID a, StrongID b) noexcept { return !(a == b); }
-		friend constexpr bool operator<(StrongID a, StrongID b) noexcept { return a.value < b.value; }
+		friend constexpr bool operator<(StrongID a, StrongID b) noexcept { return a.value_ < b.value_; }
 
 	private:
 
@@ -35,16 +42,14 @@ namespace Engine::Core
 
 		Rep value_;
 	};
-}
 
-namespace std
-{
-	template<typename Tag, typename Rep>
-	struct std::hash<Engine::Core::StrongID<Tag, Rep>>
+	struct StrongIDHasher
 	{
-		size_t operator()(Engine::Core::StrongID<Tag, Rep> id) const noexcept
+		template<typename T, typename Rep>
+		std::size_t operator()(const StrongID<T, Rep>& id) const noexcept
 		{
 			return std::hash<Rep>{}(id.value());
 		}
 	};
 }
+

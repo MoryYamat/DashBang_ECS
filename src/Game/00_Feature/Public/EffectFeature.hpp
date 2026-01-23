@@ -8,8 +8,18 @@ namespace Game::Feature::Audio
 	{
 	public:
 		static void InitGameAudioSystem(::Engine::WorldSystem::Core::WorldCtx& ctx);
+	private:
 
+	};
+}
 
+namespace Game::Feature::VFX
+{
+	class VFXFeature
+	{
+	public:
+		static void InitGameVFXSystem(::Engine::WorldSystem::Core::WorldCtx& ctx);
+		static void Update(::Engine::WorldSystem::Core::WorldCtx& ctx);
 	private:
 
 	};

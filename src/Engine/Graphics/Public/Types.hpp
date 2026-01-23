@@ -9,7 +9,7 @@
 #include <vector>
 #include <string>
 #include <glm/glm.hpp>
-
+#include <filesystem>
 
 
 
@@ -18,7 +18,7 @@ namespace Engine::Graphics
 	class Shader
 	{
 	public:
-
+		Shader() noexcept : mProgramID(0) {}
 		Shader(const std::string& vertexPath, const std::string& fragmentPath);
 		~Shader();
 
@@ -33,6 +33,14 @@ namespace Engine::Graphics
 
 		void Use() const;
 
+		Shader(const Shader&) = delete;
+		Shader& operator=(const Shader&) = delete;
+
+		Shader(Shader&& other) noexcept;
+		Shader& operator=(Shader&& other) noexcept;
+		
+		void reset() noexcept;
+
 	private:
 		std::string loadFile(const std::string& path);
 
@@ -42,7 +50,7 @@ namespace Engine::Graphics
 
 		bool checkLinkStatus(GLuint program);
 
-		GLuint mProgramID;
+		GLuint mProgramID = 0;
 	};
 
 	struct RenderContext
@@ -71,4 +79,7 @@ namespace Engine::Graphics
 		// Engine::Component::MeshComponent* mesh;
 	};
 	using RendererPipeline = std::vector<RendererPipelineEntry>;
+
+
+
 }

@@ -5,6 +5,7 @@
 
 // std system
 #include <iostream>
+#include <memory>
 
 // ======================= Engine =======================
 
@@ -47,6 +48,9 @@
 #include "Engine/Graphics/Private/Model/AssimpImporter.h"
 
 #include "Engine/Graphics/Public/GraphicsApi.hpp"
+
+// VFX
+#include "Engine/VFX/Public/VFXAPI.hpp"
 
 // Time
 #include "Engine/Time/Private/WorldClock.hpp"
@@ -128,7 +132,7 @@ void GameApp::GameApp::Shutdown()
 
 	//mShader.reset();
 	input_.reset();
-
+	renderer_res_.reset();
 	shader_.reset();
 
 	audioSys_.reset();
@@ -166,12 +170,13 @@ bool GameApp::GameApp::Initialize()
 		"shaders/debug_line.vertex.glsl", "shaders/debug_line.fragment.glsl"
 	);
 
+	// renderer resources
+	renderer_res_ = std::make_unique<::Engine::Graphics::RendererResources>();
+	renderer_res_->Init("shaders/sprite.vert.glsl", "shaders/sprite.frag.glsl");
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_FRAMEBUFFER_SRGB);// 
 
-
-	// 遅らせ初期化
-	// Game::Layer::InitializeLayerFeature::DelayedInitialzation(mECS);
 
 	// ========================== World CTX ===========================
 	::Engine::WorldSystem::Core::WorldCtx ctx{ *world_ };
@@ -185,6 +190,9 @@ bool GameApp::GameApp::Initialize()
 		::Engine::Log::Write(::Engine::Log::Level::Fatal, "AudioSystemInit", "AudioSystem initialization failed.");
 	}
 	// audioSys_->bind_catalog(catalog_ptr); // 必要ならInitAllAudioResourceSystemをpointerを返すように変更する
+
+	// VFX
+	::Engine::VFX::InitAllVFXResourceSystem(ctx);
 
 	// =========================== Delayed Init =========================
 	::Game::Layer::InitializeLayerFeature::DelayedInitialization(ctx);
@@ -274,7 +282,7 @@ void GameApp::GameApp::spawnAllActors(Engine::WorldSystem::Core::WorldCtx& ctx)
 	//Game::Actor::TestFixedCamActor fixedCam = Game::Actor::TestFixedCamActor(ctx);
 	Game::Actor::TestFollowCamActor followCam = Game::Actor::TestFollowCamActor(ctx);
 	Game::Actor::TestPlayerCursorActor cursor = Game::Actor::TestPlayerCursorActor(ctx);
-	Game::Actor::TestTerrainMesh terrain = Game::Actor::TestTerrainMesh(ctx, shader_.get());
+	// Game::Actor::TestTerrainMesh terrain = Game::Actor::TestTerrainMesh(ctx, shader_.get());
 
 	// ::Game::Layer::Debug::DebugLayerFeature::SpawnAllDummy(ctx, 1000);
 }
@@ -314,7 +322,8 @@ void GameApp::GameApp::generateOutputs(Engine::WorldSystem::Core::WorldCtx& ctx)
 
 	// Engine::Graphics::UpdateRendererAll(ctx, *shader_, window_->GetAspect(), renderCtx_);
 	Game::Layer::LocomotionAnimLayerFeature::Update(ctx);
-	Game::Layer::DrawLayerFeature::Update(ctx, *shader_, *window_, renderCtx_);
+	//Game::Layer::DrawLayerFeature::Update(ctx, *shader_, *window_, renderCtx_);
+	Game::Layer::DrawLayerFeature::Update(ctx, *shader_, *renderer_res_, *window_, renderCtx_);
 
 	if (debugLineRenderer_)
 	{

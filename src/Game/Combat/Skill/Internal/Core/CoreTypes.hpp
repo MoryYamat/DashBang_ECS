@@ -27,6 +27,7 @@ namespace Game::Combat::Skill
 		PlayAnim,
 		ModifyMoveSpeed,
 		PlaySFX,
+		PlayVFX,
 		// SoundやCameraShakeなど
 	};
 

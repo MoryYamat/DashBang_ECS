@@ -7,6 +7,7 @@ layout(location = 3) in vec3 aTan;
 layout(location = 4) in vec3 aBitan;
 layout(location = 5) in uvec4 aJoints;// 整数
 layout(location = 6) in vec4 aWeights;
+layout(location = 7) in float aWeaponMask;
 
 uniform mat4 uModel;
 uniform mat4 uView;
@@ -18,6 +19,7 @@ uniform int uBoneCount;
 
 out vec2 vUV;
 out vec3 vNormal;
+out float vWeaponMask;
 
 void main()
 {
@@ -49,4 +51,5 @@ void main()
 	gl_Position = uProjection * uView * worldPos;
 	vNormal = worldNormal;
 	vUV = aUV;
+	vWeaponMask = aWeaponMask;
 }

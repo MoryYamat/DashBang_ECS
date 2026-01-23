@@ -14,6 +14,7 @@
 
 // Graphics
 #include "Engine/Graphics/Public/Types.hpp"
+#include "Engine/Graphics/Public/GraphicsFwd.hpp"
 
 // Input
 #include "Engine/InputManager/Public/InputFwd.hpp"
@@ -50,6 +51,7 @@ namespace GameApp
 		std::unique_ptr<::Engine::Window::Window> window_;
 		std::unique_ptr<::Engine::Input::InputManager> input_;
 		std::unique_ptr<::Engine::Graphics::Shader> shader_;
+		std::unique_ptr<::Engine::Graphics::RendererResources> renderer_res_;
 		std::unique_ptr<::Engine::Debug::DebugLineRenderer> debugLineRenderer_;
 		::Engine::Graphics::RenderContext renderCtx_;
 

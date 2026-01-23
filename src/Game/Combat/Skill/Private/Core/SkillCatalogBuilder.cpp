@@ -40,6 +40,11 @@ namespace Game::Combat::Skill
 			out = EffectKind::PlaySFX;
 			return true;
 		}
+		if (s == "PlayVFX")
+		{
+			out = EffectKind::PlayVFX;
+			return true;
+		}
 
 		return false;
 	}

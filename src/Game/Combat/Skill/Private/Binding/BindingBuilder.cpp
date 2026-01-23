@@ -15,6 +15,7 @@
 #include "Game/Combat/Animation/Public/AnimationFwd.hpp"
 
 #include "Game/Audio/Generated/SoundKeys.hpp"
+#include "Game/VFX/Generated/VFXKeys.hpp"
 
 #include "Engine/Log/Public/LogApi.hpp"
 
@@ -59,6 +60,7 @@ namespace Game::Combat::Skill::Binding
 		animdefs_.push_back(animdto);
 	}
 
+	
 	void SkillBindingBuilder::AddRange_anim(const std::vector<SkillAnimationBindingDTO>& animdtos)
 	{
 		animdefs_.insert(animdefs_.end(), animdtos.begin(), animdtos.end());
@@ -67,6 +69,11 @@ namespace Game::Combat::Skill::Binding
 	void SkillBindingBuilder::Add_Sound(const SkillSoundBindingDTO& dto)
 	{
 		sounddefs_.push_back(dto);
+	}
+
+	void SkillBindingBuilder::Add_vfx(const SkillVFXBindingDTO& dto)
+	{
+		vfxdefs_.push_back(dto);
 	}
 
 	void SkillBindingBuilder::AddRange_sound(const std::vector<SkillSoundBindingDTO>& dtos)
@@ -106,6 +113,11 @@ namespace Game::Combat::Skill::Binding
 		for (const auto& dto : sounddefs_)
 		{
 			buildSound(axis, dto, result.data, result.errs);
+		}
+
+		for (const auto& dto : vfxdefs_)
+		{
+			buildVFX(axis, dto, result.data, result.errs);
 		}
 
 		return result;
@@ -343,6 +355,89 @@ namespace Game::Combat::Skill::Binding
 
 		// 追加
 		out.sbs.push_back(soundEntry);
+
+		return true;
+	}
+
+	bool SkillBindingBuilder::buildVFX
+	(
+		const ::Engine::FSM::Core::CanonicalAxis& axis,
+		const SkillVFXBindingDTO& vfxdtos,
+		SkillBindingData& out,
+		SkillBindingBuildErrors& errs
+	)const
+	{
+		// Skill名 → SkillID
+		SkillID skillId = skills_.FindByName(vfxdtos.key.skill);
+		{
+			if (!skillId.valid())
+			{
+				errs.err("[SkillBinding] Unknown skill name: '" + vfxdtos.key.skill +
+					"' (state='" + vfxdtos.key.state +
+					"' sound ='" + vfxdtos.debug_name + "')");
+
+				return false;
+			}
+		}
+
+		// State名 → StateID (Skill軸のFSMから)
+		std::uint32_t id = Engine::FSM::Core::AxisLookup::FindStateIdx(axis, vfxdtos.key.state);
+		StateID stateId(id);
+		{
+			if (!stateId.valid())
+			{
+				errs.err("[SkillBinding] Unknown state name: '" + vfxdtos.key.state +
+					"' (skill='" + vfxdtos.key.skill +
+					"' sound='" + vfxdtos.debug_name + "')");
+				return false;
+			}
+		}
+
+		// Animation名 → AnimID
+		::Game::VFX::VFXKey vfxKey= vfxdtos.vfx;
+		{
+			if (vfxKey == ::Game::VFX::VFXKey::Count)
+			{
+				errs.err("[SkillBinding] Unknown HitBox name: '" + vfxdtos.key.state +
+					"' (state='" + vfxdtos.key.skill +
+					"' sound='" + vfxdtos.debug_name + "')");
+				return false;
+			}
+		}
+
+
+		// TODO: キー拡張によるエラー検出処理変更 (現行仕様ではエラー)
+		// ★ (skill, state) の重複チェック
+		for (const auto& e : out.vbs)
+		{
+			if (e.skill == skillId && e.state == stateId)
+			{
+				errs.err(
+					"[SkillBinding] Duplicate binding for "
+					"(skill='" + vfxdtos.key.skill +
+					"', state='" + vfxdtos.key.state +
+					"') : existingVFXKey=" + vfxdtos.debug_name
+				);
+				return false; // 2つ目以降は無視
+			}
+		}
+
+
+		// 正常に解決できたらエントリ追加
+		SkillVFXBindingEntry vfxEntry;
+		vfxEntry.skill = skillId;
+		vfxEntry.state = stateId;
+		vfxEntry.key = vfxKey;
+		vfxEntry.default_scale = vfxdtos.default_scale;
+		vfxEntry.count = vfxdtos.count;
+		vfxEntry.offset_local = vfxdtos.offset_local;
+		vfxEntry.ttl_override = vfxdtos.ttl_override;
+		vfxEntry.fade = vfxdtos.fade;
+
+		std::cout << "(skill: '" << skillId.v << "' state:'" << stateId.v << "')-> vfx:'" << vfxdtos.debug_name << "'\n";
+
+		// 追加
+		out.vbs.push_back(vfxEntry);
 
 		return true;
 	}

@@ -1,7 +1,10 @@
 ﻿#pragma once
 
 #include "Game/Audio/Generated/SoundKeys.hpp"
+#include "Game/VFX/Generated/VFXKeys.hpp"
+#include "Engine/Math/Public/MathAPI.hpp"
 #include <string>
+#include <cstdint>
 
 namespace Game::Combat::Skill::Binding
 {
@@ -43,8 +46,6 @@ namespace Game::Combat::Skill::Binding
 		// loop, speed, etc,...
 	};
 
-
-
 	// sound 用 DTO
 	struct SkillSoundBindingDTO
 	{
@@ -55,5 +56,19 @@ namespace Game::Combat::Skill::Binding
 		
 		
 		// volume, 3D/2D, etc...
+	};
+
+
+
+	struct SkillVFXBindingDTO
+	{
+		SkillStateKeyDTO key;
+		Game::VFX::VFXKey vfx;				// vfxKey
+		std::string debug_name;				// debug
+		float default_scale = 1.0f;
+		float ttl_override = -1.0f;			// 寿命 <0 -> VFXDef.duration
+		std::uint16_t count = 1;			// 生成数
+		::Engine::Math::Vec3f offset_local{ 0,0,0 };		// 相対変形(基準TRSに対して)
+		bool fade = false;
 	};
 }

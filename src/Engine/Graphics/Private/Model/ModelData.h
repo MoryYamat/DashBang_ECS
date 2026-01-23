@@ -75,6 +75,8 @@ namespace Engine::Graphics::Model
 
 		//int boneIDs[MAX_BONE_INFLUENCE] = { 0 };
 		//float weights[MAX_BONE_INFLUENCE] = { 0 };
+
+		float weaponMask = 0.0f;
 	};
 
 	// ================= skelton / animation ================= 
@@ -135,6 +137,10 @@ namespace Engine::Graphics::Model
 
 		MeshData(MeshData&&) noexcept = default;
 		MeshData& operator=(MeshData&&) noexcept = default;
+
+		std::string source_name;		// glTF mesh.name
+		int source_mesh_index = -1;		// mi
+		int source_prim_index = -1;		// pi
 
 	};
 

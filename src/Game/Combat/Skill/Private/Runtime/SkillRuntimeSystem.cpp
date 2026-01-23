@@ -7,6 +7,7 @@
 #include "Engine/Time/Private/WorldClock.hpp"
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 #include "Engine/Log/Public/LogApi.hpp"
+#include "Engine/Component/Private/Logic2D/Logic2DComponent.hpp"
 
 #include "Game/Combat/Skill/Public/CoreAPI.hpp"
 #include "Game/Combat/Skill/Internal/Runtime/RuntimeTypes.hpp"
@@ -31,12 +32,14 @@ namespace
 			auto* state = ctx.rw.TryGet<Game::Character::FSM::Skill::SkillStateComp>(e);
 			auto* runtime = ctx.ww.TryGet<SkillRuntimeComp>(e);
 			auto* intent = ctx.rw.TryGet<Game::Character::Control::SkillIntentComponent>(e);
+			auto* logic2d = ctx.rw.TryGet<Engine::Component::Logic2DTransformComponent>(e);
 
 			out.push_back(SkillRuntimePipelineEntry{
 				 .e = e,
 				 .state = state,
 				 .runtimeComp = runtime,
-				 .intent = intent
+				 .intent = intent,
+				 .logic2d = logic2d
 				});
 		}
 	}
@@ -211,6 +214,7 @@ namespace Game::Combat::Skill::Runtime
 					SkillLogicCommand cmd{};
 					cmd.owner = e.e;
 					cmd.skill = skill->id;
+					cmd.logic2d = e.logic2d;
 					cmd.state = eff.state;
 					cmd.effectTime = eff.timeOffset;
 					cmd.lifetime = eff.lifetime;
@@ -237,6 +241,11 @@ namespace Game::Combat::Skill::Runtime
 					case EffectKind::PlaySFX:
 					{
 						cmd.kind = LogicCommandKind::PlaySFX;
+						break;
+					}
+					case EffectKind::PlayVFX:
+					{
+						cmd.kind = LogicCommandKind::PlayVFX;
 						break;
 					}
 					}

@@ -41,13 +41,13 @@ namespace Engine::Audio
 
 	AudioCatalog::~AudioCatalog()
 	{
-		impl_.reset();
+		// impl_.reset();
 	}
 
 	AudioCatalog::AudioCatalog(AudioCatalog&& other) noexcept
 		: impl_(std::move(other.impl_))
 	{
-		other.impl_.reset();
+		// other.impl_.reset();
 	}
 
 	AudioCatalog& AudioCatalog::operator=(AudioCatalog&& other) noexcept

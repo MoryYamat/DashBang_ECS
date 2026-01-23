@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstddef>
 #include <type_traits>
+#include <cmath>
 
 namespace Engine::Math
 {
@@ -18,6 +19,7 @@ namespace Engine::Math
 
 		constexpr Vec() = default;
 		constexpr Vec(T x_, T y_): x(x_), y(y_){}
+		constexpr Vec(const Vec& v_) = default;
 
 		constexpr Vec& operator+=(const Vec& o) noexcept { x += o.x; y += o.y; return *this; }
 		constexpr Vec& operator-=(const Vec& o) noexcept { x -= o.x; y -= o.y; return *this; }
@@ -144,7 +146,17 @@ namespace Engine::Math
 		Vec3f scale = Vec3f::One();
 	};
 
-
+	static Quatf FromYaw(float yawRad)
+	{
+		float half = yawRad * 0.5f;
+		return
+		{
+			std::cos(half),
+			0.0f,
+			std::sin(half),
+			0.0f
+		};
+	}
 
 	// 
 	void NormalizeInPlace(Quatf& q)noexcept;

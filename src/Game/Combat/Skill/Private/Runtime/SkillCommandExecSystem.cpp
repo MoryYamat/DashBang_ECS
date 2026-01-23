@@ -15,8 +15,14 @@
 #include "Game/Combat/Animation/Public/AnimationFwd.hpp"
 
 // sound
+#include "Game/Audio/Generated/SoundKeys.hpp"
 #include "Engine/Audio/Public/AudioAPI.hpp"
 #include "Game/Audio/Public/GameAudioAPI.hpp"
+
+// vfx
+#include "Game/VFX/Generated/VFXKeys.hpp"
+#include "Engine/VFX/Public/VFXAPI.hpp"
+#include "Game/VFX/Public/GameVFXAPI.hpp"
 
 #include "Game/Combat/Skill/Internal/Binding/BindingTypes.hpp"
 
@@ -24,6 +30,14 @@
 
 #include "Engine/WorldSystem/Private/AllWorldSystem.hpp"
 #include "Engine/Log/Public/LogApi.hpp"
+
+#include "Engine/Component/Private/Logic2D/Logic2DComponent.hpp"
+
+// math
+#include "Engine/Math/Public/MathAPI.hpp"
+#include "Engine/Math/Private/GlmBridge.hpp"// need to be refactored
+
+#include "Game/Combat/Skill/Internal/SkillLog.hpp"
 
 #include <iostream>
 
@@ -52,6 +66,11 @@ namespace Game::Combat::Skill::Runtime
 			case LogicCommandKind::PlaySFX:
 			{
 				HandleSkillSFX(cmd);
+				break;
+			}
+			case LogicCommandKind::PlayVFX:
+			{
+				HandleSkillVFX(cmd);
 				break;
 			}
 			}
@@ -175,5 +194,59 @@ namespace Game::Combat::Skill::Runtime
 		buf.play_one_shot(id);
 
 	}
+
+	void SkillCommandExecSystem::HandleSkillVFX(const SkillLogicCommand& cmd)
+	{
+		using namespace ::Engine::VFX;
+		using namespace ::Engine::Math;
+
+		auto& buf = ctx.ww.GetResource<VFXCmdBufferResource>();
+		const auto& ids = ctx.ww.GetResource<::Game::VFX::VFXIds>();
+		auto& binding = ctx.ww.GetResource<Binding::SkillBindingData>();
+
+		const auto* e = binding.try_resolveVFX(cmd.skill, cmd.state);
+		if (!e)
+		{
+			return;
+		}
+
+
+		const auto  key = e->key;
+		if (key == Game::VFX::VFXKey::Count)
+		{
+			Log::warn(Log::kRuntimeSystem, "VFXMap failed to resolve VFXKey");
+			return;
+		}
+
+		
+		const auto id = ids.get(key);
+		if (!id.is_valid())
+		{
+			Log::warn(Log::kRuntimeSystem, "Invalid VFXID");
+			return;
+		}
+
+		// 基準TRS: まずはownerからとる(あとでhitbox基準に変える)
+		//const Engine::Math::TRS basis = 
+		
+		// TODO: 座標系の変換問題
+		// Sprite系の描画はいったん見送り
+		// need to be refactored
+		// auto pos = detail::glm_bridge::FromGlm(cmd.logic2d->positionXZ);
+		// auto right = detail::glm_bridge::FromGlm(cmd.logic2d->right);
+		// auto front = detail::glm_bridge::FromGlm(cmd.logic2d->front);
+		// auto yawRad = cmd.logic2d->rotation;
+		// 
+		// Vec2f worldoffset = { right * e->offset_local.x + front * e->offset_local.z };
+		// 
+		// ::Engine::VFX::VFXCmd vfxReq;
+		// vfxReq.id = id;
+		// vfxReq.trs.translation = { pos.x + worldoffset.x , e->offset_local.y, pos.y + worldoffset.y};
+		// vfxReq.trs.rotation = Engine::Math::FromYaw(yawRad);
+		// vfxReq.ttlOverride = e->ttl_override;
+
+		// buf.cmd.add(vfxReq);
+	}
+
 
 }

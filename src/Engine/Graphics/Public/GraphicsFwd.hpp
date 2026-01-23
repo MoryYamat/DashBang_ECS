@@ -1,9 +1,16 @@
 ﻿#pragma once
 
+#include "Engine/Core/Public/StrongID.hpp"
+
 namespace Engine::Graphics
 {
 	class Shader;
 	struct RenderContext;
+	struct RendererResources;
+	class ITextureProvider;
+
+	struct TextureHandleTag{};
+	using TextureHandle = ::Engine::Core::StrongID<TextureHandleTag, std::uint32_t>;
 }
 
 // 以下廃止予定

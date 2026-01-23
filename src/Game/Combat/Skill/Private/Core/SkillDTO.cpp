@@ -20,6 +20,7 @@ namespace Game::Combat::Skill
 			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.0f, .lifetime = 0.3f, .kind = "ModifyMoveSpeed", .value = 0.0},
 			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.0f, .kind = "PlayAnim"},
 			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.0f, .kind = "PlaySFX"},
+			SkillEffectDefDTO{.phase = "Active", .timeOffset = 0.2f, .kind = "PlayVFX"},// TODO: VFXのlifetime定義もここで行うようにする
 		};
 
 		builder.add(std::move(test_skill));

@@ -71,6 +71,8 @@ namespace Engine::Graphics
 			glEnableVertexAttribArray(6);
 			glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(V, weights));
 
+			glEnableVertexAttribArray(7);
+			glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(V, weaponMask));
 
 			glBindVertexArray(0);
 			modelGPU.meshesGPU.emplace_back(std::move(meshGPU));
@@ -146,6 +148,9 @@ Engine::Graphics::Model::ModelGPU Engine::Graphics::Render::GPUBufferUtils::crea
 
 		glEnableVertexAttribArray(6);
 		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, stride,(void*)offsetof(V, weights));
+
+		glEnableVertexAttribArray(7);
+		glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(V, weaponMask));
 
 
 		glBindVertexArray(0);
