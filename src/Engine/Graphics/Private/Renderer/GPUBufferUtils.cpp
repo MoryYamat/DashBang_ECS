@@ -25,7 +25,8 @@ namespace Engine::Graphics
 
 			// vbo
 			glBindBuffer(GL_ARRAY_BUFFER, meshGPU.vbo);
-			glBufferData(GL_ARRAY_BUFFER, meshData.vertices.size() * sizeof(Engine::Graphics::Model::VertexData), meshData.vertices.data(), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, meshData.vertices.size() * sizeof(Engine::Graphics::Model::VertexData), 
+				meshData.vertices.data(), GL_STATIC_DRAW);
 
 			// ebo
 			if (meshData.hasIndices && !meshData.indices.empty())

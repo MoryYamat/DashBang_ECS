@@ -76,6 +76,8 @@ namespace Engine::Graphics
 		glUseProgram(mProgramID);
 	}
 
+	// location setter
+
 	void Shader::setBool(const std::string& name, bool value) const
 	{
 		// The value -1 will be returned if if name does not correspond to an

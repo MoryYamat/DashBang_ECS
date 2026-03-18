@@ -529,7 +529,7 @@ namespace Engine::Graphics::Model
 		GLint prevUnpack = 4;
 		glGetIntegerv(GL_UNPACK_ALIGNMENT, &prevUnpack);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
+		
 		// sRGBの内部フォーマット（カラー用）
 		GLint internalFormat = GL_SRGB8_ALPHA8;// フォールバックが必要なら GL_RGBA8 に変更
 		// GPUへ画素転送
