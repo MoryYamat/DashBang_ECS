@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-// ƒRƒ“ƒpƒCƒ‹‚ÉŒˆ’è@(4294967295)
+// ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«æ™‚ã«æ±ºå®šã€€(4294967295)
 constexpr uint32_t INVALID_ENTITY_ID = static_cast<uint32_t>(-1);
 
 namespace Engine::ECS
@@ -12,7 +12,7 @@ namespace Engine::ECS
 	{
 		uint32_t id;
 
-		// ‰‰ZqƒI[ƒo[ƒ[ƒh
+		// æ¼”ç®—å­ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
 		bool operator == (const Entity& other) const
 		{
 			return id == other.id;
@@ -27,7 +27,7 @@ namespace Engine::ECS
 
 		static const Entity INVALID;
 
-		// –³Œø‚ÈEntityID‚Ì’è‹`
+		// ç„¡åŠ¹ãªEntityIDã®å®šç¾©
 		static constexpr uint32_t INVALID_ENTITY_ID = static_cast<uint32_t>(-1);
 
 	};

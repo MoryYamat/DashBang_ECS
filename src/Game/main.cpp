@@ -4,22 +4,24 @@
 
 #include <iostream>
 
-#include "Game/Game.h"
+// #include "Game/Game.h"
 
 
 // main
 int main()
 {
-	GameApp::GameApp game;
+	// GameApp::GameApp game;
 
-	std::cout << "[main.cpp]: Launching the game..." << std::endl;
+	// std::cout << "[main.cpp]: Launching the game..." << std::endl;
 
-	if (game.Initialize())
-	{
-		game.RunLoop();
-	}
+	// if (game.Initialize())
+	// {
+	// 	game.RunLoop();
+	// }
 
-	game.Shutdown();
+	// game.Shutdown();
+
+	std::cout<<"hello world\n";
 
 	return 0;
 
