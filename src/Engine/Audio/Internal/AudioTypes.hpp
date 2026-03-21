@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Engine/Audio/Public/AudioFwd.hpp"
 
 #include "Engine/IO/Public/FileSystemFwd.hpp"

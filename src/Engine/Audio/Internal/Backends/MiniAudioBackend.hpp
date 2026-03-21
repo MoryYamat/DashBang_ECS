@@ -28,7 +28,7 @@ namespace Engine::Audio
 
 		void play_one_shot(std::string_view path, float volume = 1.0f) override;
 		void play_one_shot(const std::filesystem::path& path, float volume = 1.0f)override;
-		void pump();	// –ˆƒtƒŒ[ƒ€‰ñû
+		void pump();	// æ¯ãƒ•ãƒ¬ãƒ¼ãƒ å›å
 	private:
 
 		struct Impl;

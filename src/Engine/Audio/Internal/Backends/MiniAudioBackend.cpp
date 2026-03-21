@@ -24,13 +24,13 @@ namespace Engine::Audio
 			ma_sound sound{};
 			bool inited = false;
 
-			// path�����񂪓����ŎQ�Ƃ����\�����Ԃ����߁A�O�̂��ߕێ�
-			// ���Ȃ��Ƃ�voice �̎������͊m���ɐ�����
+			// path文字列が内部で参照される可能性をつぶすため、念のため保持
+			// 少なくともvoice の寿命中は確実に生きる
 			std::string path;
 		};
 
 		std::vector<std::unique_ptr<Voice>> activeVoices;
-		std::size_t maxVoices = 64;		// �ő哯���������� (��)
+		std::size_t maxVoices = 64;		// 最大同時発生音数 (仮)
 	};
 
 	MiniAudioBackend::MiniAudioBackend()
@@ -101,14 +101,14 @@ namespace Engine::Audio
 
 	void MiniAudioBackend::play_one_shot(std::string_view path, float volume)
 	{
-		(void)volume; // �ŏ������ł͖����B��Ńo�X/�{�C�X�Ǘ��őΉ��B
+		(void)volume; // 最小実装では無視。後でバス/ボイス管理で対応。
 		if (!impl_ || !impl_->initialized)
 		{
 			Log::error(Log::kBackend, "MiniAudio::play_one_shot (unexpected)");
 			return;
 		}
 
-		std::string pathZ(path); // null�I�[���K�v
+		std::string pathZ(path); // null終端が必要
 		const ma_result r = ma_engine_play_sound(&impl_->engine, pathZ.c_str(), nullptr);
 		if (r != MA_SUCCESS)
 		{
@@ -120,15 +120,15 @@ namespace Engine::Audio
 		// 	return;
 		// }
 		// 
-		// // volume �̍Œ���̈��S�� (��ʂł����Ȃ�s�v)
+		// // volume の最低限の安全化 (上位でもやるなら不要)
 		// volume = std::clamp(volume, 0.0f, 10.0f);
 		// 
-		// // ma_engine_play_sound �͉��ʎw�肪�ł��Ȃ��̂ŁA
-		// // ��x ma_sound ������ĉ��ʂ�ݒ肵�Ă���Đ�����
+		// // ma_engine_play_sound は音量指定ができないので、
+		// // 一度 ma_sound を作って音量を設定してから再生する
 		// ma_sound sound{};
 		// const ma_uint32 flags = 0;
 		// 
-		// // path �� null �I�[���K�v�Ȃ̂ň�x std::string �ɂ���
+		// // path は null 終端が必要なので一度 std::string にする
 		// std::string pathZ(path);
 		// 
 		// if (ma_sound_init_from_file(&impl_->engine, pathZ.c_str(), flags, nullptr, nullptr, &sound) != MA_SUCCESS)
@@ -140,23 +140,23 @@ namespace Engine::Audio
 		// ma_sound_start(&sound);
 
 
-		// �����V���b�g�Ȃ̂� fire-and-forget �ɂ��������A
-		// ������ uninit ����Ɖ����~�܂�B
-		// �� �ŏ������ł́u�����j���Ǘ��v���܂�����Ă��Ȃ��̂ŁA
-		//    ma_sound �� detatch ���ăG���W���ɊǗ���������������B
+		// ワンショットなので fire-and-forget にしたいが、
+		// ここで uninit すると音が止まる。
+		// → 最小実装では「自動破棄管理」をまだ作っていないので、
+		//    ma_sound を detatch してエンジンに管理させるやり方を取る。
 		//
-		// miniaudio �� ma_engine �͓����ŃT�E���h��ǐՂ��Ȃ����߁A
-		// �{�i�I�ɂ́u�Đ����T�E���h�̃��X�g�v�� backend �������A
-		// �Đ��I�������o���� uninit ����K�v������B
+		// miniaudio の ma_engine は内部でサウンドを追跡しないため、
+		// 本格的には「再生中サウンドのリスト」を backend が持ち、
+		// 再生終了を検出して uninit する必要がある。
 		//
-		// �܂��� �g����m�F�h �Ƃ��āA�ȈՂɁu�G���W���ő����Đ��v�������ꍇ��
-		// ma_engine_play_sound ���g���Ă��܂��̂��ŒZ�i���ʎw��s�j�B
+		// まずは “動作確認” として、簡易に「エンジンで即時再生」したい場合は
+		// ma_engine_play_sound を使ってしまうのが最短（音量指定不可）。
 		//
-		// �����ł́u���ʎw�肵�����v��D�悵�āA�b���Ƃ���
-		// ���΂炭����������Ǘ�����Œǉ�����O��ɂ���B
+		// ここでは「音量指定したい」を優先して、暫定策として
+		// しばらく生存させる管理を後で追加する前提にする。
 
-		// �b��F���̂܂܂��ƃ��[�N���܂��i��ŕK���Ǘ��𑫂��K�v����j
-		// �Ȃ̂ŁA�܂��͉��ʎw��s�v�Ȃ� ma_engine_play_sound ���g���Ă��������B
+		// 暫定：このままだとリークします（後で必ず管理を足す必要あり）
+		// なので、まずは音量指定不要なら ma_engine_play_sound を使ってください。
 		// -----
 		// ma_engine_play_sound(&impl_->engine, pathZ.c_str(), nullptr);
 		// ma_sound_uninit(&sound);
@@ -164,14 +164,14 @@ namespace Engine::Audio
 
 	void MiniAudioBackend::play_one_shot(const std::filesystem::path& path, float volume)
 	{
-		//(void)volume; // �ŏ������ł͖����B��Ńo�X/�{�C�X�Ǘ��őΉ��B
+		//(void)volume; // 最小実装では無視。後でバス/ボイス管理で対応。
 		//if (!impl_ || !impl_->initialized)
 		//{
 		//	Log::error(Log::kBackend, "MiniAudio::play_one_shot (unexpected)");
 		//	return;
 		//}
 
-		//const std::string pathZ = path.string(); // null�I�[���K�v
+		//const std::string pathZ = path.string(); // null終端が必要
 		//const ma_result r = ma_engine_play_sound(&impl_->engine, pathZ.c_str(), nullptr);
 		//if (r != MA_SUCCESS)
 		//{
@@ -195,9 +195,9 @@ namespace Engine::Audio
 			return;
 		}
 
-		// �������ɃA�h���X���ς�邱�Ƃ�z�肵�Ă��Ȃ�
+		// 寿命中にアドレスが変わることを想定していない
 		auto v = std::make_unique<Impl::Voice>();
-		v->path = path.string();		// UTF-8����͌�Ő���(Windows�Ȃ�wstring�ł�����)
+		v->path = path.string();		// UTF-8周りは後で整備(Windowsならwstring版も検討)
 
 		//
 		constexpr ma_uint32 flags = MA_SOUND_FLAG_DECODE;
@@ -207,8 +207,8 @@ namespace Engine::Audio
 			&impl_->engine,
 			v->path.c_str(),
 			flags,
-			nullptr,			// group (���SFX�p�X�ɍ����ւ�)
-			nullptr,			// doneFence (�K�v�Ȃ�񓯊������҂��Ɏg��)
+			nullptr,			// group (後でSFXパスに差し替え)
+			nullptr,			// doneFence (必要なら非同期完了待ちに使う)
 			&v->sound
 		);
 		if (rInit != MA_SUCCESS)
@@ -232,7 +232,7 @@ namespace Engine::Audio
 
 	}
 
-	// �����I�K�x�[�W�R���N�V����
+	// 明示的ガベージコレクション
 	void MiniAudioBackend::pump()
 	{
 		if (!impl_ || !impl_->initialized)
@@ -243,19 +243,19 @@ namespace Engine::Audio
 
 		auto& a = impl_->activeVoices;
 
-		// �I������������ (�A�h���X�𓮂����Ȃ�)
-		// vector(unique_ptr) �Ȃ̂� erase ���Ă� Voice�{�̂� move����Ȃ�
+		// 終わった音を回収 (アドレスを動かさない)
+		// vector(unique_ptr) なので erase しても Voice本体は moveされない
 		for (std::size_t i = 0; i < a.size();)
 		{
 			Impl::Voice& v = *a[i];
 
-			// at_end: �f�[�^�\�[�X�I�[����D�I����Ă���~�߂Ĕj��
+			// at_end: データソース終端判定．終わってたら止めて破棄
 			if (v.inited && ma_sound_at_end(&v.sound))
 			{
 				ma_sound_stop(&v.sound);
 				ma_sound_uninit(& v.sound);
 
-				// swap-pop(������ˑ�������)
+				// swap-pop(順序非依存だから)
 				a[i] = std::move(a.back());
 				a.pop_back();
 				continue;
@@ -267,8 +267,8 @@ namespace Engine::Audio
 }
 
 // memo
-// MiniAudio���d�l�㓯��Đ��T�E���h�ɂ��ă��������ňʒu���ړ����邱�Ƃ�z�肵�Ă��Ȃ����ƂƁA
-// �����Đ����\�[�X�̎������t���[���X�^�b�N����q�[�v�Ɉڂ����߂ɁA
-// std::vector<std::unique_ptr<Voices>>�𓱓����A
-// �q�[�v�Ƀ��\�[�X���쐬����悤�ɂ��āA
-// pump()�ŃK�x�[�W�R���N�V�����𖈃t���[���s���悤�Ɏ�������
+// MiniAudioが仕様上同一再生サウンドについてメモリ内で位置を移動することを想定していないことと、
+// 音声再生リソースの寿命をフレームスタックからヒープに移すために、
+// std::vector<std::unique_ptr<Voices>>を導入し、
+// ヒープにリソースを作成するようにして、
+// pump()でガベージコレクションを毎フレーム行うように実装した

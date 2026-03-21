@@ -29,6 +29,7 @@ add_executable(DashBang_ECS
 )
 
 target_compile_features(DashBang_ECS PRIVATE  cxx_std_20)
+target_compile_features(dashbang PRIVATE  cxx_std_20)
 
 set_target_properties(DashBang_ECS PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"

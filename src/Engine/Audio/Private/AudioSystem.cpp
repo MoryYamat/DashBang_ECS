@@ -7,11 +7,7 @@
 
 #include "Engine/IO/Public/FileSystemAPI.hpp"
 
-#include <cstddef>
-#include <memory>
-#include <utility>
-#include <algorithm>
-#include <iostream>
+
 
 
 namespace Engine::Audio
@@ -20,7 +16,7 @@ namespace Engine::Audio
 	{
 		MiniAudioBackend backend;
 
-		// World Resource ‚ğw‚· (Š—L‚¹‚¸)
+		// World Resource ã‚’æŒ‡ã™ (æ‰€æœ‰ã›ãš)
 		const AudioCatalog* catalog = nullptr;
 
 		bool initialized = false;
@@ -28,7 +24,7 @@ namespace Engine::Audio
 
 	std::size_t AudioSystem::bus_index(AudioBus bus) noexcept
 	{
-		//  ¡‚Í Master/SFX/BGM‚Ì3‚Â‚ÉŒÀ’è
+		//  ä»Šã¯ Master/SFX/BGMã®3ã¤ã«é™å®š
 		return static_cast<std::size_t>(bus);
 	}
 

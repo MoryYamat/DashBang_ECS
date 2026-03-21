@@ -5,14 +5,6 @@
 #include "Engine/Audio/Internal/AudioLog.hpp"
 #include "Engine/IO/Public/FileSystemAPI.hpp"
 
-#include <optional>
-#include <cstddef>
-#include <cstdint>
-#include <utility>
-#include <string>
-#include <string_view>
-#include <unordered_map>
-#include <memory>
 
 
 namespace Engine::Audio
@@ -24,7 +16,7 @@ namespace Engine::Audio
 		AudioAssetDB db;
 		SoundNameTable names;
 
-		// ÀsƒLƒƒƒbƒVƒ… (AudioCatalogê—p)
+		// å®Ÿè¡Œæ™‚ã‚­ãƒ£ãƒƒã‚·ãƒ¥ (AudioCatalogå°‚ç”¨)
 		struct ResolvedEntry
 		{
 			std::filesystem::path absPath;
@@ -64,7 +56,7 @@ namespace Engine::Audio
 
 	SoundID AudioCatalog::register_sound(std::string name, SoundDef def)
 	{
-		// Šù‚É‘¶İ‚·‚é–¼‘O‚È‚ç¸”s(Ä“o˜^‹Ö~)
+		// æ—¢ã«å­˜åœ¨ã™ã‚‹åå‰ãªã‚‰å¤±æ•—(å†ç™»éŒ²ç¦æ­¢)
 		if (impl_->names.find(std::string_view{ name }).is_valid())
 		{
 			// error log
@@ -131,7 +123,7 @@ namespace Engine::Audio
 
 
 
-// ÀsŒn‚Å‚ÍAid‚Å‰ğŒˆ‚·‚é
+// å®Ÿè¡Œç³»ã§ã¯ã€idã§è§£æ±ºã™ã‚‹
 // 
 // struct CombatSounds
 // {
