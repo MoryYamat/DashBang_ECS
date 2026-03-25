@@ -13,5 +13,11 @@ endif()
 
 
 
-add_subdirectory("src/Engine")
-add_subdirectory("src/Game")
+add_subdirectory("src/Engine/ddknd")
+add_subdirectory("src/Game/Game")
+
+
+set_target_properties(DashBang_ECS PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin/Debug"
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Release"
+)

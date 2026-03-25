@@ -3,7 +3,6 @@
 // memo
 
 #include <iostream>
-
 // #include "Game/Game.h"
 
 
@@ -66,9 +65,15 @@ int main()
 
 
 // TODO:
-// Internalフォルダ導入に伴う、Public→Internalフォルダへの公開ヘッダの整理
-// 初期化順の自動化(依存グラフ + トポロジカルソート)
-// --- FSM ---
-// SkillEffectDTO{.phase = ...}と個別phaseに定義するようになっている→構文を拡張し、phaseの区間を指定したり、各phaseでの効果量を柔軟に指定できるように仕様を拡張することも考える
+// - fix folder 
+// - implement asset manager 
+// - apply asset management to existing codes
 // 
-// 
+
+
+
+
+// Folder
+// /include: 
+// /src:
+// 		/ internal

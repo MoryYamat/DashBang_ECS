@@ -21,6 +21,9 @@ out/
 ipch/
 *.log
 
+.vscode/
+
+
 # ========================
 # OS�E�G�f�B�^����
 # ========================
@@ -48,3 +51,10 @@ Assets/**/*.fbx
 Assets/**/*.png
 Assets/**/*.jpg
 Assets/**/*.wav
+
+
+settings.json
+compile_commands.json
+
+
+.clang-format

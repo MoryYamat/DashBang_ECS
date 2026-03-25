@@ -4,15 +4,15 @@ add_library(ddknd STATIC)
 
 
 file(GLOB_RECURSE ddknd_SRC CONFIGURE_DEPENDS
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
 )
 
 target_sources(ddknd PRIVATE ${ddknd_SRC})
 
 target_include_directories(ddknd 
     PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
@@ -27,7 +27,7 @@ find_package(spdlog CONFIG REQUIRED)
  
 # link
 target_link_libraries(ddknd 
-    PUBLIC
+    PRIVATE
         glfw
         glm::glm
         fmt::fmt
@@ -39,7 +39,7 @@ target_link_libraries(ddknd
 target_compile_features(ddknd PUBLIC cxx_std_20)
 
 # asset copy
-set(assets_src_dir "${CMAKE_CURRENT_SOURCE_DIR}/../../assets")
+set(assets_src_dir "${CMAKE_CURRENT_SOURCE_DIR}/../../../assets")
 set(assets_dst_dir "${CMAKE_BINARY_DIR}/bin/assets")
 
 add_custom_target(copy_assets ALL

@@ -1,0 +1,135 @@
+#include "input/input.h"
+#include "window/window.h"
+
+#include <array>
+
+#include <GLFW/glfw3.h>
+#include <spdlog/spdlog.h>
+
+namespace ddknd::input
+{
+    namespace
+    {
+        int toGLFWKey(Key k)
+        {
+            switch (k)
+            {
+            case Key::A:
+                return GLFW_KEY_A;
+            case Key::B:
+                return GLFW_KEY_B;
+            case Key::C:
+                return GLFW_KEY_C;
+            case Key::D:
+                return GLFW_KEY_D;
+            case Key::E:
+                return GLFW_KEY_E;
+            case Key::F:
+                return GLFW_KEY_F;
+            case Key::G:
+                return GLFW_KEY_G;
+            case Key::H:
+                return GLFW_KEY_H;
+            case Key::I:
+                return GLFW_KEY_I;
+            case Key::J:
+                return GLFW_KEY_J;
+            case Key::K:
+                return GLFW_KEY_K;
+            case Key::L:
+                return GLFW_KEY_L;
+            case Key::M:
+                return GLFW_KEY_M;
+            case Key::N:
+                return GLFW_KEY_N;
+            case Key::O:
+                return GLFW_KEY_O;
+            case Key::P:
+                return GLFW_KEY_P;
+            case Key::Q:
+                return GLFW_KEY_Q;
+            case Key::R:
+                return GLFW_KEY_R;
+            case Key::S:
+                return GLFW_KEY_S;
+            case Key::T:
+                return GLFW_KEY_T;
+            case Key::U:
+                return GLFW_KEY_U;
+            case Key::V:
+                return GLFW_KEY_V;
+            case Key::W:
+                return GLFW_KEY_W;
+            case Key::X:
+                return GLFW_KEY_X;
+            case Key::Y:
+                return GLFW_KEY_Y;
+            case Key::Z:
+                return GLFW_KEY_Z;
+            case Key::Space:
+                return GLFW_KEY_SPACE;
+            case Key::Escape:
+                return GLFW_KEY_ESCAPE;
+            default:
+                return GLFW_KEY_LAST;
+            }
+        }
+    } // namespace
+
+    class GlfwInputBackend final : public IInputBackend
+    {
+      public:
+        explicit GlfwInputBackend(GLFWwindow* window) : window_(window)
+        {
+            glfwSetWindowUserPointer(window_, this);
+            glfwSetKeyCallback(window_, &GlfwInputBackend::key_callback);
+        }
+
+        void Update() override
+        {
+            // unused
+        }
+
+        bool isKeyPressed(Key k) const override
+        {
+            if (static_cast<int>(k) < 0 || static_cast<int>(k) > GLFW_KEY_LAST)
+                return false;
+            return keys_[static_cast<std::size_t>(toGLFWKey(k))] == GLFW_PRESS;
+        }
+
+      private:
+        GLFWwindow* window_;
+
+        std::array<int, GLFW_KEY_LAST + 1> keys_{};
+
+        static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+        {
+            (void)scancode;
+            (void)mods;
+
+            auto* self = static_cast<GlfwInputBackend*>(glfwGetWindowUserPointer(window));
+            if (!self)
+            {
+                spdlog::error("unexpected error");
+                return;
+            }
+            if (key < 0)
+            {
+                spdlog::error("invalid key input");
+                return;
+            }
+            self->keys_[key] = action;
+        }
+    };
+
+} // namespace ddknd::input
+
+namespace ddknd::window
+{
+    std::unique_ptr<ddknd::input::IInputBackend> CreateGlfwInputBackend(const ddknd::window::Window& w)
+    {
+        std::unique_ptr<ddknd::input::IInputBackend> backend =
+            std::make_unique<ddknd::input::GlfwInputBackend>(static_cast<GLFWwindow*>(w.nativeHandle()));
+        return std::move(backend);
+    }
+} // namespace ddknd::window
