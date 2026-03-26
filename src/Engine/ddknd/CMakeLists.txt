@@ -42,7 +42,7 @@ target_compile_features(ddknd PUBLIC cxx_std_20)
 # gtest
 include(GoogleTest)
 set(ddknd_test_sources 
-    test/ddknd_test.cpp
+    tests/ddknd_test.cpp
 )
 add_executable(ddknd_test ${ddknd_test_sources})
 target_link_libraries(ddknd_test 
@@ -66,3 +66,6 @@ add_custom_target(copy_assets ALL
 )
 
 add_dependencies(ddknd copy_assets)
+
+
+add_subdirectory("benchmark")
