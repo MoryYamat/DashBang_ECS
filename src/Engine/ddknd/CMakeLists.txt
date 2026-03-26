@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 add_library(ddknd STATIC)
 
 
+
 file(GLOB_RECURSE ddknd_SRC CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
@@ -37,6 +38,21 @@ target_link_libraries(ddknd
 
 
 target_compile_features(ddknd PUBLIC cxx_std_20)
+
+# gtest
+include(GoogleTest)
+set(ddknd_test_sources 
+    test/ddknd_test.cpp
+)
+add_executable(ddknd_test ${ddknd_test_sources})
+target_link_libraries(ddknd_test 
+    PRIVATE 
+        ddknd 
+        GTest::gtest_main
+)
+gtest_discover_tests(ddknd_test)
+
+
 
 # asset copy
 set(assets_src_dir "${CMAKE_CURRENT_SOURCE_DIR}/../../../assets")

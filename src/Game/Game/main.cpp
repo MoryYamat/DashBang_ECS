@@ -29,21 +29,20 @@ int main()
 
 // ========= TODO: ========= 
 // HIGH
-// - fix folder 
 // - implement asset manager 
 // - apply asset management to existing codes
 // - create debug / test codes
 // - 
 
 // MIDDLE
-// -
+// - fix folder 
 
 // LOW
-// - 
+// - fix cmake and dependencies
 
 
 
 // Folder
 // /include: 
 // /src:
-// 		/ internal
+//   / internal
