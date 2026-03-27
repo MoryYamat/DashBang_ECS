@@ -22,7 +22,21 @@ int main()
 	// game.Shutdown();
 
 	std::cout<<"hello world\n";
-	app::test::test();
+
+	app::App app(720,480);
+
+	if(!app.Init())
+	{
+		std::cerr << "app init failed \n"; 
+	}
+	else
+	{
+		app.Loop();
+	}
+
+
+
+
 	return 0;
 
 }

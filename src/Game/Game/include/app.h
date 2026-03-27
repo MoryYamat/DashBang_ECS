@@ -1,10 +1,35 @@
 #pragma once
 
-#include "asset/asset.h"
-#include <iostream>
+#include "window/window_fwd.h"
+#include "input/input_fwd.h"
 
-namespace app::test
+#include <memory>
+
+
+namespace app
 {
-    void test();
+    class App
+    {
+        public:
+            App(int w, int h);
+            ~App();
 
-} // namespace app::test
+            App(const App&) = delete;
+            App& operator=(App&) = delete;
+
+            App(App&&) = delete;
+            App& operator=(App&&) = delete;
+
+            bool Init();
+            void Loop();
+            void Shutdown();
+
+
+        private:
+            int h_ = 0, w_ = 0;
+            std::unique_ptr<ddknd::window::Window> window_;
+            std::unique_ptr<ddknd::window::GlfwContext> glfwCtx_;
+            std::unique_ptr<ddknd::input::IInputBackend> inputBackend_;
+            std::unique_ptr<ddknd::input::InputSystem> inputSys_;
+    };
+}// namespace app

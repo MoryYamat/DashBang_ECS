@@ -122,14 +122,10 @@ namespace ddknd::input
         }
     };
 
-} // namespace ddknd::input
-
-namespace ddknd::window
-{
     std::unique_ptr<ddknd::input::IInputBackend> CreateGlfwInputBackend(const ddknd::window::Window& w)
     {
         std::unique_ptr<ddknd::input::IInputBackend> backend =
             std::make_unique<ddknd::input::GlfwInputBackend>(static_cast<GLFWwindow*>(w.nativeHandle()));
         return std::move(backend);
     }
-} // namespace ddknd::window
+} // namespace ddknd::input

@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <bitset>
 #include <cstddef>
+#include <memory>
+
 namespace ddknd::window
 {
     class Window;
@@ -53,5 +55,6 @@ namespace ddknd::input
         constexpr std::size_t toIdx(Key k) const { return static_cast<std::size_t>(k);}
     };
 
-
+    // std::unique_ptr<ddknd::input::IInputBackend> 
+    // CreateGlfwInputBackend(const ddknd::window::Window& w);
 } // namespace ddknd::input

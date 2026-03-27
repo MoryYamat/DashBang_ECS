@@ -504,7 +504,7 @@ namespace Engine::FSM::Core
 				continue;
 			}
 			adj[p].push_back(i);
-			indeg[i]++;				// 次数カウント
+			indeg[i]++;				// 入次数カウント
 		}
 
 		// kahn

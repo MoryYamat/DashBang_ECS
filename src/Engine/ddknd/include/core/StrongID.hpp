@@ -30,7 +30,7 @@ namespace ddknd::core
 		constexpr Rep Value() const noexcept { return value_; }
 
 		// Check if the value is invalid
-		constexpr bool is_valid() const noexcept { return value_ != invalid_value(); }
+		constexpr bool Is_valid() const noexcept { return value_ != invalid_value(); }
 
 		friend constexpr bool operator==(StrongID a, StrongID b) noexcept { return a.value_ == b.value_; }
 		friend constexpr bool operator!=(StrongID a, StrongID b) noexcept { return !(a == b); }
@@ -85,6 +85,7 @@ namespace ddknd::core
 			strong_type id_;
 	};
 
+	// specialized std::hash function
 	template<typename ID>
 	struct StrongIDHasher
 	{

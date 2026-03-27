@@ -3,20 +3,19 @@
 #include <string>
 #include <memory>
 
+namespace ddknd::window
+{
+    class Window;
+}// namespace ddknd::window
+
 namespace ddknd::input
 {
     class IInputBackend;
-}
+    std::unique_ptr<ddknd::input::IInputBackend> CreateGlfwInputBackend(const ddknd::window::Window& w);
+}// namespace ddknd::input
 
 namespace ddknd::window
 {
-
-    class Window;
-
-    std::unique_ptr<ddknd::input::IInputBackend> 
-    CreateGlfwInputBackend(const ddknd::window::Window& w);
-
-
     class GlfwContext
     {
         public:
@@ -29,6 +28,7 @@ namespace ddknd::window
         private:
     };
 
+    // Window(const GlfwContext& glfw, int width, int height, std::string name)
     class Window
     {
         public:
@@ -39,9 +39,9 @@ namespace ddknd::window
             Window(const Window&) = delete;
             Window& operator=(const Window&) = delete;
             Window(Window&& o)noexcept;
-            Window&& operator=(Window&& o)noexcept;
+            Window& operator=(Window&& o)noexcept;
 
-            bool ShouldClose() const;
+        bool ShouldClose() const;
 
             void PollEvents();
             void SwapBuffers();
@@ -60,6 +60,6 @@ namespace ddknd::window
 
             void* nativeHandle() const;
             
-            friend std::unique_ptr<ddknd::input::IInputBackend> CreateGlfwInputBackend(const ddknd::window::Window& w);
+            friend std::unique_ptr<ddknd::input::IInputBackend> ddknd::input::CreateGlfwInputBackend(const ddknd::window::Window& w);
     };
 }// namespace ddknd::window
