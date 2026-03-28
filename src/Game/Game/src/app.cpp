@@ -28,11 +28,14 @@ namespace app
 
     void App::Loop()
     {
-        while(!window_->ShouldClose())
+        isRunning_ = true;
+        while(isRunning_ && !window_->ShouldClose())
         {
             inputSys_->Update();
             window_->PollEvents();
             window_->SwapBuffers();
+            if(inputSys_->isPressing(ddknd::input::Key::Escape))
+                isRunning_ =false;
         }
     }
 

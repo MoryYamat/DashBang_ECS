@@ -31,5 +31,6 @@ namespace app
             std::unique_ptr<ddknd::window::GlfwContext> glfwCtx_;
             std::unique_ptr<ddknd::input::IInputBackend> inputBackend_;
             std::unique_ptr<ddknd::input::InputSystem> inputSys_;
+            bool isRunning_ = false;
     };
 }// namespace app
