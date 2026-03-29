@@ -57,6 +57,9 @@ namespace app
 		const bool okMesh= assetMgr_->LoadNowMesh(meshHandle_.Id());
 		spdlog::info("LoadNowMesh: {}", okMesh);
 
+        
+        ::ddknd::io::PathResolverExp exp(mounts);
+        exp.Print();
 
         return true;
     }

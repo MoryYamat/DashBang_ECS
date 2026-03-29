@@ -56,7 +56,7 @@ gtest_discover_tests(ddknd_test)
 
 
 # asset copy
-set(assets_src_dir "${CMAKE_CURRENT_SOURCE_DIR}/../../../assets")
+# set(assets_src_dir "${CMAKE_CURRENT_SOURCE_DIR}/../../../assets")
 #set(assets_dst_dir "${CMAKE_BINARY_DIR}/bin/assets")
 
 # add_custom_target(copy_assets ALL
@@ -66,18 +66,16 @@ set(assets_src_dir "${CMAKE_CURRENT_SOURCE_DIR}/../../../assets")
 #     COMMENT "Copy assets -> ${assets_dst_dir}"
 # )
 
-add_custom_target(copy_assets ALL
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${assets_src_dir}"
-            "${CMAKE_BINARY_DIR}/bin/Debug/assets"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${assets_src_dir}"
-            "${CMAKE_BINARY_DIR}/bin/Release/assets"
-    COMMENT "Copy assets -> bin/<config>/assets"
-)
-
-
-add_dependencies(ddknd copy_assets)
+#add_custom_target(copy_assets ALL
+#    COMMAND ${CMAKE_COMMAND} -E copy_directory
+#            "${assets_src_dir}"
+#            "${CMAKE_BINARY_DIR}/bin/Debug/assets"
+#    COMMAND ${CMAKE_COMMAND} -E copy_directory
+#            "${assets_src_dir}"
+#            "${CMAKE_BINARY_DIR}/bin/Release/assets"
+#    COMMENT "Copy assets -> bin/<config>/assets"
+#)
+#add_dependencies(ddknd copy_assets)
 
 
 add_subdirectory("benchmark")

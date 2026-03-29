@@ -3,191 +3,337 @@
 
 #include "internal/asset/shader_descriptor_parser.h"
 
-#include <span>
-#include <string_view>
-#include <string>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
 #include <memory>
 #include <optional>
-#include <filesystem>
-#include <iostream>
-#include <fstream>
+#include <span>
+#include <string>
+#include <string_view>
+
+#include <windows.h>
 
 #include <spdlog/spdlog.h>
 
 // utils
 namespace
 {
-	std::optional<std::pair<std::string_view, std::string_view>>
-		SplitScheme(std::string_view vpath)
-	{
-		const auto pos = vpath.find("://");
-		if (pos == std::string_view::npos)
-			return std::nullopt;
+    std::optional<std::pair<std::string_view, std::string_view>> SplitScheme(std::string_view vpath)
+    {
+        const auto pos = vpath.find("://");
+        if (pos == std::string_view::npos)
+            return std::nullopt;
 
-		const auto scheme = vpath.substr(0, pos);
-		const auto rest = vpath.substr(pos + 3);		// skip "://"
-		if (scheme.empty() || rest.empty())
-			return std::nullopt;
+        const auto scheme = vpath.substr(0, pos);
+        const auto rest = vpath.substr(pos + 3); // skip "://"
+        if (scheme.empty() || rest.empty())
+            return std::nullopt;
 
-		return std::make_pair(scheme, rest);
-	}
+        return std::make_pair(scheme, rest);
+    }
 
-	// trim space / return / carrage return 
-	std::string_view trim(std::string_view s)
-	{
-		const auto is_space = [](char c)
-			{
-				return c == ' ' || c == '\t' || c == '\r';
-			};
+    // trim space / return / carrage return
+    std::string_view trim(std::string_view s)
+    {
+        const auto is_space = [](char c) { return c == ' ' || c == '\t' || c == '\r'; };
 
-		while (!s.empty() && is_space(s.front())) s.remove_prefix(1);
-		while (!s.empty() && is_space(s.back())) s.remove_suffix(1);
-		return s;
-	}
+        while (!s.empty() && is_space(s.front()))
+            s.remove_prefix(1);
+        while (!s.empty() && is_space(s.back()))
+            s.remove_suffix(1);
+        return s;
+    }
 
-	// find values
-	const std::vector<std::string>* find_values(const ddknd::asset::parser::KeyValueDoc& doc, std::string_view key)
-	{
-		auto it = doc.values.find(std::string(key));
-		if (it == doc.values.end()) return nullptr;
-		return &it->second;
-	}
+    // find values
+    const std::vector<std::string>* find_values(const ddknd::asset::parser::KeyValueDoc& doc, std::string_view key)
+    {
+        auto it = doc.values.find(std::string(key));
+        if (it == doc.values.end())
+            return nullptr;
+        return &it->second;
+    }
 
-}// namespace
+    std::optional<std::filesystem::path> getExeDir()
+    {
+        std::vector<wchar_t> buffer(MAX_PATH);
+        while (true)
+        {
+            DWORD length = GetModuleFileNameW(nullptr, buffer.data(), buffer.size());
+
+            if (length == 0)
+                return std::nullopt;
+
+            if (length < buffer.size())
+                return std::filesystem::path(buffer.data()).parent_path();
+
+            buffer.resize(buffer.size() * 2);
+        }
+    }
+
+    std::optional<std::filesystem::path> FindMountRootUpward(const std::filesystem::path& startDir,
+                                                             const std::filesystem::path& relativeRoot,
+                                                             int maxDepth = 6)
+    {
+        if (relativeRoot.empty() || relativeRoot.is_absolute())
+            return std::nullopt;
+
+        auto dir = std::filesystem::absolute(startDir);
+
+        for (int depth = 0; depth <= maxDepth; ++depth)
+        {
+            auto candidate = dir / relativeRoot;
+            std::error_code ec;
+            if (std::filesystem::exists(candidate) && std::filesystem::is_directory(candidate))
+            {
+                auto canon = std::filesystem::weakly_canonical(candidate, ec);
+                if (!ec)
+                    return canon;
+            }
+            auto parent = dir.parent_path();
+            if (parent == dir)
+                break;
+
+            dir = parent;
+        }
+
+        return std::nullopt;
+    }
+
+    bool IsSubPath(const std::filesystem::path& base, const std::filesystem::path& target)
+    {
+        auto b = base.lexically_normal();
+        auto t = target.lexically_normal();
+
+        auto bit = b.begin();
+        auto tit = t.begin();
+
+        for (; bit != b.end() && tit != t.end(); ++bit, ++tit)
+        {
+            if (*bit != *tit)
+                return false;
+        }
+
+        return bit == b.end();
+    }
+} // namespace
 
 // private type
 namespace
 {
-	struct VPath
-	{
-		std::filesystem::path scheme;
-		std::filesystem::path path;
-	};
+    class MountTable
+    {
+      public:
+        void Mount(std::string scheme, std::filesystem::path root)
+        {
+            mounts_[std::move(scheme)] = std::move(root);
+        }
 
-	class MountTable
-	{
-	public:
+        void Unmount(std::string scheme)
+        {
+            mounts_.erase(std::string(scheme));
+        }
 
-		void Mount(std::string scheme, std::filesystem::path root)
-		{
-			mounts_[std::move(scheme)] = std::move(root);
-		}
+        const std::filesystem::path* TryGetRoot(std::string_view scheme) const
+        {
+            auto it = mounts_.find(std::string(scheme));
+            if (it == mounts_.end())
+                return nullptr;
+            return &it->second;
+        }
 
-		void Unmount(std::string scheme)
-		{
-			mounts_.erase(std::string(scheme));
-		}
+        // for test
+        std::unordered_map<std::string, std::filesystem::path>& Get()
+        {
+            return mounts_;
+        }
 
-		std::optional<std::filesystem::path> TryGetRoot(std::string_view scheme) const
-		{
-			auto it = mounts_.find(std::string(scheme));
-			if (it == mounts_.end())
-				return std::nullopt;
-			return it->second;
-		}
+      private:
+        std::unordered_map<std::string, std::filesystem::path> mounts_; // scheme -> abs_path
+    };
 
+    class VfsResolver final : public ::ddknd::io::IPathResolver
+    {
+      public:
+        explicit VfsResolver(const MountTable mounts) : mounts_(std::move(mounts)) {}
 
-	private:
-		std::unordered_map<std::string, std::filesystem::path> mounts_;
-	};
+        // if vpath is abs path then return it
+        std::optional<std::filesystem::path> TryResolve(std::string_view vpath) const override
+        {
+            const auto parts = SplitScheme(vpath);
+            if (!parts)
+                return std::nullopt;
 
+            const auto [scheme, rest] = *parts;
 
+            const auto* root = mounts_.TryGetRoot(scheme);
+            if (!root)
+                return std::nullopt;
 
-	class VfsResolver final : public ::ddknd::io::IPathResolver
-	{
-	public:
-		explicit VfsResolver(const MountTable& mounts) : mounts_(mounts) {}
+            std::filesystem::path rel(rest);
+            if (rel.empty() || rel.is_absolute())
+                return std::nullopt;
 
-		// if vpath is abs path then return it
-		std::optional<std::filesystem::path> TryResolve(std::string_view vpath) const override
-		{
-			// OS abs path
-			std::filesystem::path p(vpath);
-			if (p.is_absolute())
-				return std::filesystem::weakly_canonical(p);
+            std::error_code ec;
+            const auto resolved = std::filesystem::weakly_canonical((*root) / rel, ec);
+            if (ec)
+                return std::nullopt;
 
-			// scheme:// -> resolve vpath with mount
-			const auto parts = SplitScheme(vpath);
-			if (!parts)
-				return std::nullopt;
+            if (!IsSubPath(*root, resolved))
+                return std::nullopt;
 
-			const auto [scheme, rest] = *parts;
-			const auto rootOpt = mounts_.TryGetRoot(scheme);
-			if (!rootOpt)
-				return std::nullopt;
+            return resolved;
+        }
 
-			std::filesystem::path restP(rest);
-			if (restP.is_absolute())
-				return std::nullopt;
+      private:
+        MountTable mounts_;
+    };
 
-			std::filesystem::path abs = (*rootOpt) / restP;		// unit 
-			return std::filesystem::weakly_canonical(abs);
-
-		}
-
-	private:
-		MountTable mounts_;
-
-	};
-
-
-
-}// namespace
-
+} // namespace
 
 namespace ddknd::io
 {
-    std::optional<std::string>
-    ReadAllText(const std::filesystem::path& path)
+    std::optional<std::string> ReadAllText(const std::filesystem::path& path)
     {
-		std::ifstream ifs(path, std::ios::binary);
-		if (!ifs)
-		{
-			spdlog::error("[ReadAllText]: failed to read file");
-			spdlog::error("exists = {}", std::filesystem::exists(path));
-			spdlog::error("path = {}", path.string());
-			return std::nullopt;
-		}
-			
-		// ファイルサイズ取得
-		ifs.seekg(0, std::ios::end);// move streaming buffer's reading pos to ios::end 
-		const std::streamsize size = ifs.tellg();// get current reading pos
-		if (size < 0)
-		{
-			spdlog::error("[ReadAllText]: unexpected error / invalid read pos ");
-			return std::nullopt;
-		}
-			
+        std::ifstream ifs(path, std::ios::binary);
+        if (!ifs)
+        {
+            spdlog::error("[ReadAllText]: failed to read file");
+            spdlog::error("exists = {}", std::filesystem::exists(path));
+            spdlog::error("path = {}", path.string());
+            return std::nullopt;
+        }
+
+        // ファイルサイズ取得
+        ifs.seekg(0, std::ios::end);              // move streaming buffer's reading pos to ios::end
+        const std::streamsize size = ifs.tellg(); // get current reading pos
+        if (size < 0)
+        {
+            spdlog::error("[ReadAllText]: unexpected error / invalid read pos ");
+            return std::nullopt;
+        }
+
         // TODO: try catch ?
 
-		std::string buffer;
-		buffer.resize(static_cast<std::size_t>(size));
+        std::string buffer;
+        buffer.resize(static_cast<std::size_t>(size));
 
-		ifs.seekg(0, std::ios::beg);
-		if (!ifs.read(buffer.data(), size))
-		{
-			spdlog::error("[ReadAllText]: failed to read all buffer data\n");
-			return std::nullopt;
-		}
-			
-		return buffer;
+        ifs.seekg(0, std::ios::beg);
+        if (!ifs.read(buffer.data(), size))
+        {
+            spdlog::error("[ReadAllText]: failed to read all buffer data\n");
+            return std::nullopt;
+        }
+
+        return buffer;
     }
 
+    std::unique_ptr<IPathResolver> CreateVfsResolver(std::span<const VfsMount> mounts)
+    {
+        MountTable table;
 
-	std::unique_ptr<IPathResolver>
-	CreateVfsResolver(std::span<const VfsMount> mounts)
-	{
-		MountTable table;
-		for (const auto& m : mounts)
-		{
-			if (m.scheme.empty())
-				continue;
-			table.Mount(std::string(m.scheme), m.root);
+        auto exeDir = getExeDir();
+        if (!exeDir)
+        {
+            spdlog::error("[CreateVfsResolver] failed to get exe dir");
+            return std::make_unique<VfsResolver>(std::move(table));
+        }
 
-			//std::cerr << m.scheme << m.root << "\n";
-		}
+        for (const auto& m : mounts)
+        {
+            if (m.scheme.empty())
+                continue;
 
+            std::filesystem::path rootPath(m.root);
+            std::optional<std::filesystem::path> resolvedRoot;
 
-		return std::make_unique<VfsResolver>(std::move(table));
-	}
-}// namespace ddknd::io
+            if (rootPath.is_absolute())
+            {
+                std::error_code ec;
+                if (std::filesystem::exists(rootPath))
+                    resolvedRoot = std::filesystem::weakly_canonical(rootPath, ec);
+                if (ec)
+                    return nullptr;
+            }
+            else
+            {
+                resolvedRoot = FindMountRootUpward(*exeDir, rootPath);
+            }
+
+            if (!resolvedRoot)
+            {
+                spdlog::warn("[CreateVfsResolver] mount root not found: scheme={}, root={}", m.scheme, m.root.string());
+                continue;
+            }
+
+            table.Mount(std::string(m.scheme), *resolvedRoot);
+            spdlog::info("[CreateVfsResolver] mounted scheme={} -> {}", m.scheme, resolvedRoot->string());
+        }
+
+        return std::make_unique<VfsResolver>(std::move(table));
+    }
+} // namespace ddknd::io
+
+// for testing
+namespace ddknd::io
+{
+    struct PathResolverExp::Impl
+    {
+        Impl(std::span<const VfsMount> mounts)
+        {
+            MountTable table;
+
+            auto exeDir = getExeDir();
+            if (!exeDir)
+            {
+                spdlog::error("[CreateVfsResolver] failed to get exe dir");
+            }
+
+            for (const auto& m : mounts)
+            {
+                if (m.scheme.empty())
+                    continue;
+
+                std::filesystem::path rootPath(m.root);
+                std::optional<std::filesystem::path> resolvedRoot;
+
+                if (rootPath.is_absolute())
+                {
+                    std::error_code ec;
+                    if (std::filesystem::exists(rootPath))
+                        resolvedRoot = std::filesystem::weakly_canonical(rootPath, ec);
+                }
+                else
+                {
+                    resolvedRoot = FindMountRootUpward(*exeDir, rootPath);
+                }
+
+                if (!resolvedRoot)
+                {
+                    spdlog::warn("[CreateVfsResolver] mount root not found: scheme={}, root={}", m.scheme,
+                                 m.root.string());
+                    continue;
+                }
+
+                table.Mount(std::string(m.scheme), *resolvedRoot);
+                spdlog::info("[CreateVfsResolver] mounted scheme={} -> {}", m.scheme, resolvedRoot->string());
+            }
+
+            mounts_ = std::move(table);
+        }
+        MountTable mounts_;
+    };
+
+    PathResolverExp::PathResolverExp(std::span<const VfsMount> mounts) : impl_(std::make_unique<Impl>(mounts)) {}
+
+    PathResolverExp::~PathResolverExp() {}
+
+    void PathResolverExp::Print()
+    {
+        for (const auto& path : impl_->mounts_.Get())
+        {
+            spdlog::info("scheme: {} / path: {}", path.first, path.second.string());
+        }
+    }
+
+} // namespace ddknd::io

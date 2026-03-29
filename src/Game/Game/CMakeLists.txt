@@ -17,11 +17,6 @@ target_include_directories(dashbang
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_compile_definitions(dashbang
-    PRIVATE
-        DASHBANG_ASSET_ROOT = "${CMAKE_BINARY_DIR}/bin/assets"
-)
-
 target_compile_features(dashbang PUBLIC cxx_std_20)
 
 target_link_libraries(dashbang 
@@ -41,5 +36,15 @@ target_link_libraries(DashBang_ECS
 )
 
 set_target_properties(DashBang_ECS PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+
+set(assets_src_dir "${CMAKE_CURRENT_SOURCE_DIR}/../../../assets")
+
+add_custom_command(TARGET DashBang_ECS POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${assets_src_dir}"
+            "$<TARGET_FILE_DIR:DashBang_ECS>/assets"
+    COMMENT "Copy assets -> $<TARGET_FILE_DIR:DashBang_ECS>/assets"
 )

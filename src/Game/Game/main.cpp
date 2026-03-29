@@ -43,7 +43,7 @@ int main()
 
 // ========= TODO: ========= 
 // HIGH
-// - add renderer
+// - fix IPathResolver 
 // - apply asset management to existing codes
 // - create debug / test codes
 // - 
