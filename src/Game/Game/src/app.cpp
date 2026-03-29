@@ -2,6 +2,12 @@
 
 #include "window/window.h"
 #include "input/input.h"
+#include "asset/asset.h"
+#include "graphics/renderer.h"
+
+#include <io/io.h>
+
+#include <spdlog/spdlog.h>
 
 namespace app
 {
@@ -20,8 +26,37 @@ namespace app
         glfwCtx_ = std::make_unique<ddknd::window::GlfwContext>();
         window_ = std::make_unique<ddknd::window::Window>(*glfwCtx_, w_, h_, "app");
 
+  		std::vector<::ddknd::io::VfsMount> mounts;
+		mounts.push_back(ddknd::io::VfsMount{ .scheme = "res", .root = "assets" });
+
+		vfs_ = ddknd::io::CreateVfsResolver(mounts);
+
         inputBackend_ = ddknd::input::CreateGlfwInputBackend(*window_);
         inputSys_ = std::make_unique<ddknd::input::InputSystem>(*inputBackend_);
+
+        // renderer backnend
+		rendererBackend_ = ddknd::graphics::CreateOpenGLBackend(ddknd::graphics::OpenGLBackendDesc{});
+
+        // asset manager
+		assetMgr_ = std::make_unique<ddknd::asset::AssetManager>(*vfs_, *rendererBackend_);
+
+
+		// shader
+		shaderHandle_ = assetMgr_->GetOrCreate<ddknd::asset::type::ShaderResource>(
+			"res://shaders/programs/test.shader"
+		);
+
+		auto okShader = assetMgr_->LoadNowShader(shaderHandle_.Id());
+		spdlog::info("LoadNowShader: {}", okShader);
+
+		// mesh
+		meshHandle_ = assetMgr_->GetOrCreate<ddknd::asset::type::MeshResource>(
+			"res://meshes/test_triangle.mesh"
+		);
+
+		const bool okMesh= assetMgr_->LoadNowMesh(meshHandle_.Id());
+		spdlog::info("LoadNowMesh: {}", okMesh);
+
 
         return true;
     }

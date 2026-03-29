@@ -1,5 +1,6 @@
 #include "graphics/renderer.h"
 
+#include <memory>
 #include <string_view>
 #include <vector>
 #include <span>
@@ -254,4 +255,11 @@ namespace ddknd::graphics
         };
         std::vector<GLMesh> meshes_;
     };
+
+    std::unique_ptr<IRendererBackend>
+	CreateOpenGLBackend(const OpenGLBackendDesc& desc)
+	{
+
+		return std::make_unique<OpenGLRendererBackend>();
+	}
 } // namespace ddknd::graphics

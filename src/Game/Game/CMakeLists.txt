@@ -17,6 +17,11 @@ target_include_directories(dashbang
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
+target_compile_definitions(dashbang
+    PRIVATE
+        DASHBANG_ASSET_ROOT = "${CMAKE_BINARY_DIR}/bin/assets"
+)
+
 target_compile_features(dashbang PUBLIC cxx_std_20)
 
 target_link_libraries(dashbang 

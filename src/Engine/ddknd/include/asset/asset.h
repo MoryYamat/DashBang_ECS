@@ -41,6 +41,10 @@
 */
 
 #include "core/StrongID.hpp"
+#include "graphics/renderer.h"
+
+#include "graphics/graphics_fwd.h"
+#include "io/io_fwd.h"
 
 #include <cstdint>
 #include <memory>
@@ -54,10 +58,10 @@ namespace ddknd::io
     class IPathResolver;
 } // namespace ddknd::io
 
-namespace ddknd::renderer
+namespace ddknd::graphics
 {
     class IRendererBackend;
-}
+} // namespace ddknd::graphics
 
 // content
 namespace ddknd::asset::type
@@ -76,10 +80,13 @@ namespace ddknd::asset::type
     // resources
     struct ShaderResource
     {
+        ::ddknd::graphics::types::GPUID<typename ::ddknd::graphics::types::ShaderProgramGPUTag> program;
     };
 
     struct MeshResource
     {
+        ::ddknd::graphics::types::GPUID<typename ::ddknd::graphics::types::MeshGPUTag> mesh;
+        std::uint32_t vertexCount;
     };
 
     // asset traits
@@ -101,34 +108,32 @@ namespace ddknd::asset::type
 
 namespace ddknd::asset
 {
+    enum class AssetState : std::uint8_t
+    {
+        Unload,
+        Loading,
+        Loaded,
+        Failed
+    };
+
+    struct AssetHeader
+    {
+        explicit AssetHeader(std::string_view vpath) : vpath(std::string(vpath)) {}
+        AssetState state = AssetState::Unload;
+        std::string vpath;
+    };
+
+    template <typename T>
+    struct AssetRecordT
+    {
+        explicit AssetRecordT(AssetHeader h) : h(h) {}
+        AssetHeader h;
+        std::unique_ptr<T> data;
+    };
 
     template <typename Tag, typename Resource>
     class AssetStorage
     {
-      private:
-        enum class AssetState : std::uint8_t
-        {
-            Unload,
-            Loading,
-            Loaded,
-            Failed
-        };
-
-        struct AssetHeader
-        {
-            explicit AssetHeader(std::string_view vpath) : vpath(std::string(vpath)) {}
-            AssetState state = AssetState::Unload;
-            std::string vpath;
-        };
-
-        template <typename T>
-        struct AssetRecordT
-        {
-            explicit AssetRecordT(AssetHeader h) : h(h){}
-            AssetHeader h;
-            std::unique_ptr<T> data;
-        };
-
       public:
         using ID = core::HandleID<Tag>;
 
@@ -194,10 +199,10 @@ namespace ddknd::asset
             if (idx >= records_.size())
                 return;
             records_[idx].data.reset();
-            records_[idx].data.h.state = AssetState::Failed;
+            records_[idx].h.state = AssetState::Failed;
         }
 
-        void SetLoaded(ID id, std::unique_ptr<Resource> r) const
+        void SetLoaded(ID id, std::unique_ptr<Resource> r)
         {
             const auto idx = static_cast<std::size_t>(id.Index());
             if (idx >= records_.size())
@@ -245,6 +250,8 @@ namespace ddknd::asset
         template <typename Resource>
         using ID = core::HandleID<Tag_Of<Resource>>;
 
+        AssetManager(const ::ddknd::io::IPathResolver& vfs, ddknd::graphics::IRendererBackend& gfxBackend);
+
         template <typename Resource>
         AssetHandle<Tag_Of<Resource>> GetOrCreate(std::string_view vpath)
         {
@@ -260,10 +267,13 @@ namespace ddknd::asset
             return storage.TryGetLoaded(id);
         }
 
-        // bool LoadNowShader(ID<type::ShaderResource> id);
-        // bool LoadNowMesh(ID<type::MeshResource> id);
+        bool LoadNowShader(ID<type::ShaderResource> id);
+        bool LoadNowMesh(ID<type::MeshResource> id);
 
       private:
+        const ::ddknd::io::IPathResolver& vfs_;
+        ::ddknd::graphics::IRendererBackend& gfxBackend_;
+
         AssetStorage<type::ShaderAssetTag, type::ShaderResource> shaders_;
         AssetStorage<type::MeshAssetTag, type::MeshResource> meshes_;
 

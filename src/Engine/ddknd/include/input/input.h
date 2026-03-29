@@ -3,12 +3,8 @@
 #include <cstdint>
 #include <bitset>
 #include <cstddef>
-#include <memory>
 
-namespace ddknd::window
-{
-    class Window;
-}
+
 
 namespace ddknd::input
 {

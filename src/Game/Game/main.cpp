@@ -43,7 +43,7 @@ int main()
 
 // ========= TODO: ========= 
 // HIGH
-// - implement asset manager 
+// - add renderer
 // - apply asset management to existing codes
 // - create debug / test codes
 // - 

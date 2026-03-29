@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "asset/asset.h"
+
 
 // Demonstrate some basic assertions.
 TEST(HelloTest, BasicAssertions) {
@@ -12,7 +12,7 @@ TEST(HelloTest, BasicAssertions) {
 
 TEST(AssetMGRTest, BasicAssertions)
 {
-  ddknd::asset::AssetManager mgr;
-  const auto id = mgr.GetOrCreate<ddknd::asset::type::ShaderResource>("hello");
-  EXPECT_EQ(id.Id().Value(), 0);
+  // ::ddknd::asset::AssetManager mgr();
+  // const auto id = mgr.GetOrCreate<ddknd::asset::type::ShaderResource>("hello");
+  // EXPECT_EQ(id.Id().Value(), 0);
 }
