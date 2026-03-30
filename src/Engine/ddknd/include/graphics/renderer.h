@@ -45,3 +45,59 @@ namespace ddknd::graphics
     std::unique_ptr<IRendererBackend> CreateOpenGLBackend(const OpenGLBackendDesc& desc);
 
 } // namespace ddknd::graphics
+
+
+// renderer system
+namespace ddknd::graphics
+{
+	// A command that tells the renderer to draw the mesh information for your app
+	struct DrawCommand
+	{
+		ddknd::graphics::types::GPUID<graphics::types::MeshGPUTag> mesh;
+		ddknd::graphics::types::GPUID<graphics::types::ShaderProgramGPUTag> shader;
+		std::uint32_t vcount;
+	};
+
+	// for testing triangle
+	struct TestDrawTriangleCommand
+	{
+		ddknd::graphics::types::GPUID<graphics::types::MeshGPUTag> mesh;
+		ddknd::graphics::types::GPUID<graphics::types::ShaderProgramGPUTag> shader;
+		std::uint32_t vcount;
+	};
+
+	struct FrameDesc
+	{
+		int h;
+		int w;
+	};
+
+	class RendererSystem
+	{
+	public:
+		explicit RendererSystem(IRendererBackend& backend) : backend_(backend) {}
+
+		// 
+		RendererSystem(const RendererSystem&) = delete;
+		RendererSystem& operator=(RendererSystem&) = delete;
+		RendererSystem(RendererSystem&&) = delete;
+		RendererSystem& operator=(RendererSystem&&) = delete;
+
+		void Set_Test();
+		void BeginFrame(FrameDesc& des);
+		void EndFrame();
+
+		void Submit(const DrawCommand& cmd)
+		{
+			cmds_.push_back(cmd);
+		}
+
+		// test triangle
+		void DrawTestTriangle(TestDrawTriangleCommand test);
+
+	private:
+		IRendererBackend& backend_;
+		std::vector<DrawCommand> cmds_;
+	};
+
+}// namespace ddknd::graphics

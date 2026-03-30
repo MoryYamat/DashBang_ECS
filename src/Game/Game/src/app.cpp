@@ -58,8 +58,8 @@ namespace app
 		spdlog::info("LoadNowMesh: {}", okMesh);
 
         
-        ::ddknd::io::PathResolverExp exp(mounts);
-        exp.Print();
+        // renderer
+        renderSys_ = std::make_unique<ddknd::graphics::RendererSystem>(*rendererBackend_);
 
         return true;
     }
@@ -69,6 +69,28 @@ namespace app
         isRunning_ = true;
         while(isRunning_ && !window_->ShouldClose())
         {
+            ddknd::graphics::FrameDesc frame{.h = h_, .w = w_};
+            renderSys_->BeginFrame(frame);
+            renderSys_->EndFrame();
+
+            auto* mesh_test = assetMgr_->TryGet<ddknd::asset::type::MeshResource>(meshHandle_.Id());
+            auto* shader_test = assetMgr_->TryGet<ddknd::asset::type::ShaderResource>(shaderHandle_.Id());
+
+            			// send command to renderer
+			if (mesh_test && shader_test)
+			{
+				renderSys_->DrawTestTriangle(ddknd::graphics::TestDrawTriangleCommand{
+					.mesh = mesh_test->mesh, 
+					.shader = shader_test->program, 
+					.vcount = mesh_test->vertexCount});
+			}
+            
+			if (!mesh_test)
+				spdlog::error("mesh is nullptr");
+
+			if (!shader_test)
+				spdlog::error("shader is nullptr");
+
             inputSys_->Update();
             window_->PollEvents();
             window_->SwapBuffers();

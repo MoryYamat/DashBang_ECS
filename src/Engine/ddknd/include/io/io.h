@@ -27,20 +27,4 @@ namespace ddknd::io
     std::unique_ptr<IPathResolver>
 	CreateVfsResolver(std::span<const VfsMount> mounts);
 
-
-    // MVP
-    class PathResolverExp
-    {
-        public:
-        explicit PathResolverExp(std::span<const VfsMount> mounts);
-        
-        ~PathResolverExp();
-
-        void Print();
-
-        private:
-        struct Impl;
-        std::unique_ptr<Impl> impl_;
-
-    };
 }// namespace ddknd::io

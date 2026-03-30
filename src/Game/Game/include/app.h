@@ -46,5 +46,7 @@ namespace app
             ddknd::asset::AssetHandle<ddknd::asset::type::ShaderAssetTag> shaderHandle_;
 		    ddknd::asset::AssetHandle<ddknd::asset::type::MeshAssetTag> meshHandle_;
 
+            std::unique_ptr<ddknd::graphics::RendererSystem> renderSys_;
+
     };
 }// namespace app
