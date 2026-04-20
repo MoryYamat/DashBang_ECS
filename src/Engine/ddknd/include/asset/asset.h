@@ -40,7 +40,7 @@
 
 */
 
-#include "core/StrongID.hpp"
+#include "core/StrongID.h"
 #include "graphics/renderer.h"
 
 #include "graphics/graphics_fwd.h"

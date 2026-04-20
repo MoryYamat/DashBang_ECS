@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Engine/Core/Public/StrongID.hpp"
+#include "Engine/Core/Public/StrongID.h"
 
 namespace Engine::Graphics
 {

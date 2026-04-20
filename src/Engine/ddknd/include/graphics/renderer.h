@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/StrongID.hpp"
+#include "core/StrongID.h"
 #include <cstdint>
 #include <memory>
 #include <string_view>

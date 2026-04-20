@@ -6,6 +6,7 @@
 #include "app.h"
 // #include "Game/Game.h"
 
+#include <Windows.h>
 
 // main
 int main()
@@ -20,6 +21,11 @@ int main()
 	// }
 
 	// game.Shutdown();
+
+	// pid get
+	auto pid = GetCurrentProcessId();
+	std::cout << "Current ProcessID: " << pid << std::endl;
+
 
 	std::cout<<"hello world\n";
 
@@ -43,7 +49,6 @@ int main()
 
 // ========= TODO: ========= 
 // HIGH
-// - fix IPathResolver 
 // - apply asset management to existing codes
 // - create debug / test codes
 // - 

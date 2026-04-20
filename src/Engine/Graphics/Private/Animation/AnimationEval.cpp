@@ -159,7 +159,7 @@ namespace Engine::Graphics::Animation
 		{
 			glm::mat4 local = compose(localTRS[i]);
 			int p = skel.bones[i].parent;
-			if (p >= 0) M[i] = M[(size_t)p] * local;
+			if (p >= 0) M[i] = M[static_cast<std::size_t>(p)] * local;
 			else M[i] = local;
 		}
 
