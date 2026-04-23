@@ -1,11 +1,9 @@
 #pragma once
 
 #include <memory>
-#include <typeindex>
-#include <unordered_map>
 
-#include "entity/entity.h"
-#include "storage/component_storage.h"
+#include "entity/entity_fwd.h"
+#include "registry/registry_fwd.h"
 
 namespace ddknd::world
 {
@@ -13,31 +11,26 @@ namespace ddknd::world
     class World
     {
         public:
-            // Entity CRUD
             using Entity = ::ddknd::entity::Entity;
-
+            using Registry = ::ddknd::registry::Registry;
+            World();
+            ~World();
+            
+            // Entity CRUD
+            Entity Create();
+            void Destroy(Entity e);
+            bool IsAlive(Entity e) const;
             // ==== ComponentCRUD ==== 
             // AddComponent
             // GetComponent
             // RemoveComponent
             // ==== Query/View ==== 
             // 条件に合うEntity/Component群を走査する
-            // template<typename T>
-            // storage::Storage<T>& GetStorage()
-            // {
-            //     const std::type_index key{typeid(T)};
+            Registry& GetRegistry();
+            const Registry& GetRegistry() const;
 
-            //     auto it = storages_.find(key);
-            //     if(it == storages_.end())
-            //     {
-            //         auto ptr = std::make_unique<storage::Storage<T>>();
-            //         auto* raw = ptr.get();
-            //         storages_.emplace(key, std::move(ptr));
-            //         return *raw;
-            //     }
-
-            //     return *static_cast<storage::Storage<T>*>(it->second.get());
-            // }
         private:
+            struct Impl;
+            std::unique_ptr<Impl> impl_;
     };
 }// namespace ddknd::world

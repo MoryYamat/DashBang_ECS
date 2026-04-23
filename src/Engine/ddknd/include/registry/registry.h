@@ -8,7 +8,6 @@
 #include <unordered_map>
 #include <memory>
 #include <typeindex>
-#include <string_view>
 
 #include "entity/entity.h"
 #include "storage/component_storage.h"
@@ -69,8 +68,6 @@ namespace ddknd::registry
             free_indices_.push_back(idx);
         }
 
-        // id_type GetEntity(std::uint32_t index);
-
         bool IsAlive(id_type e) const
         {
             const auto idx = e.Index();
@@ -87,7 +84,7 @@ namespace ddknd::registry
         }
 
         template<typename T>
-        bool HasComponent(id_type e)
+        bool HasComponent(id_type e) const
         {
             auto it = storages_.find(typeid(T));
             return it != storages_.end() && it->second->Has(e);
@@ -157,6 +154,8 @@ namespace ddknd::registry
             }
             return *static_cast<storage::Storage<T>*>(it->second.get());
         }
+
+        
     };
 } // namespace ddknd::registry
 

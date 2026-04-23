@@ -11,8 +11,8 @@
 
 // test
 #include "entity/entity.h"
+#include "world/world.h"
 #include "registry/registry.h"
-
 
 #include <spdlog/spdlog.h>
 
@@ -110,38 +110,38 @@ namespace app
     {
         ::ddknd::entity::Entity test{};
 
-        ::ddknd::registry::Registry reg{};
+        ::ddknd::world::World wd{};
 
-        auto ent0_0 = reg.Create();
-        auto ent0_1 = reg.Create();
-        auto ent0_2 = reg.Create();
-        auto ent0_3 = reg.Create();
-        auto ent0_4 = reg.Create();
-        auto ent0_5 = reg.Create();
-        auto ent0_6 = reg.Create();
-        auto ent0_7 = reg.Create();
-        auto ent0_8 = reg.Create();
-        auto ent0_9 = reg.Create();
-        auto ent0_10 = reg.Create();
-        auto ent0_11 = reg.Create();
-        auto ent0_12 = reg.Create();
-        auto ent0_13 = reg.Create();
-        auto ent0_14 = reg.Create();
+        auto ent0_0 = wd.Create();
+        auto ent0_1 = wd.Create();
+        auto ent0_2 = wd.Create();
+        auto ent0_3 = wd.Create();
+        auto ent0_4 = wd.Create();
+        auto ent0_5 = wd.Create();
+        auto ent0_6 = wd.Create();
+        auto ent0_7 = wd.Create();
+        auto ent0_8 = wd.Create();
+        auto ent0_9 = wd.Create();
+        auto ent0_10 = wd.Create();
+        auto ent0_11 = wd.Create();
+        auto ent0_12 = wd.Create();
+        auto ent0_13 = wd.Create();
+        auto ent0_14 = wd.Create();
 
-        reg.Destroy(ent0_0);
-        std::cerr << "3:" << reg.IsAlive(ent0_3) << "\n";
-        reg.Destroy(ent0_3);
-        std::cerr << "3:" << reg.IsAlive(ent0_3) << "\n";
-        reg.Destroy(ent0_14);
-        reg.Destroy(ent0_11);
+        wd.Destroy(ent0_0);
+        std::cerr << "3:" << wd.IsAlive(ent0_3) << "\n";
+        wd.Destroy(ent0_3);
+        std::cerr << "3:" << wd.IsAlive(ent0_3) << "\n";
+        wd.Destroy(ent0_14);
+        wd.Destroy(ent0_11);
 
-        auto ent1_1 = reg.Create();
-        auto ent1_3 = reg.Create();
-        auto ent1_14 = reg.Create();
-        auto ent1_11 = reg.Create();
+        auto ent1_1 = wd.Create();
+        auto ent1_3 = wd.Create();
+        auto ent1_14 = wd.Create();
+        auto ent1_11 = wd.Create();
 
-        std::cerr << "3:" << reg.IsAlive(ent0_3) << "\n";
-        std::cerr << "3:" << reg.IsAlive(ent1_3) << "\n";
+        std::cerr << "3:" << wd.IsAlive(ent0_3) << "\n";
+        std::cerr << "3:" << wd.IsAlive(ent1_3) << "\n";
 
         struct Position
         {
@@ -150,13 +150,13 @@ namespace app
             float z;
         };
 
-        Position pos = reg.AddComponent<Position>(ent1_1, 1.0f,1.0f,1.0f);
+        Position pos = wd.GetRegistry().AddComponent<Position>(ent1_1, 1.0f,1.0f,1.0f);
 
         std::cerr << "pos " << pos.x << " " << pos.y << " " << pos.z << "\n";
-        pos = reg.AddComponent<Position>(ent1_1, 2.0f, 2.0f, 2.0f);
+        pos = wd.GetRegistry().AddComponent<Position>(ent1_1, 2.0f, 2.0f, 2.0f);
         std::cerr << "pos " << pos.x << " " << pos.y << " " << pos.z << "\n";
-        auto get1_1 = reg.TryGetComponent<Position>(ent1_1);
-        auto get1_3 = reg.TryGetComponent<Position>(ent1_3);
+        auto get1_1 = wd.GetRegistry().TryGetComponent<Position>(ent1_1);
+        auto get1_3 = wd.GetRegistry().TryGetComponent<Position>(ent1_3);
         if(!get1_1)
         {
             std::cerr << "null\n";
@@ -175,14 +175,14 @@ namespace app
             std::cerr << "exists\n";
         }
 
-        if(!reg.HasComponent<Position>(ent1_1))
+        if(!wd.GetRegistry().HasComponent<Position>(ent1_1))
         {
             std::cerr << "not have component\n";
         }
         else
         {
-            reg.RemoveComponent<Position>(ent1_1);
-            if(!reg.HasComponent<Position>(ent1_1))
+            wd.GetRegistry().RemoveComponent<Position>(ent1_1);
+            if(!wd.GetRegistry().HasComponent<Position>(ent1_1))
                 std::cerr << "not have component\n";
         }
     }

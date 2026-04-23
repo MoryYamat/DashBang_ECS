@@ -117,7 +117,7 @@ namespace ddknd::storage
             {
                 return false;
             }
-            return ents_[denseIdx] == e;
+            return denseIdx < ents_.size() && ents_[denseIdx] == e;
         }
 
         private:
