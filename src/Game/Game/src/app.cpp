@@ -13,6 +13,9 @@
 #include "entity/entity.h"
 #include "world/world.h"
 #include "registry/registry.h"
+#include "query/query.h"
+#include "view/view.h"
+#include "component/test_component.h"
 
 #include <spdlog/spdlog.h>
 
@@ -143,20 +146,23 @@ namespace app
         std::cerr << "3:" << wd.IsAlive(ent0_3) << "\n";
         std::cerr << "3:" << wd.IsAlive(ent1_3) << "\n";
 
-        struct Position
-        {
-            float x;
-            float y;
-            float z;
-        };
+        // for test
+        using namespace ::ddknd::component;
 
-        Position pos = wd.GetRegistry().AddComponent<Position>(ent1_1, 1.0f,1.0f,1.0f);
+        Pos pos = wd.GetRegistry().AddComponent<Pos>(ent1_1, 1.0f,1.0f,1.0f);
+        wd.GetRegistry().AddComponent<Vel>(ent1_1, 1.0f,1.0f,1.0f);
+        Pos pos1_3 = wd.GetRegistry().AddComponent<Pos>(ent1_3, 1.0f,1.0f,1.0f);
+        wd.GetRegistry().AddComponent<Vel>(ent1_3, 1.0f,1.0f,1.0f);
+
+        Pos pos1_11 = wd.GetRegistry().AddComponent<Pos>(ent1_11, 1.0f,1.0f,1.0f);
+        wd.GetRegistry().AddComponent<Vel>(ent1_11, 1.0f,1.0f,1.0f);
+        wd.GetRegistry().AddComponent<Acc>(ent1_11, 1.0f,1.0f,1.0f);
 
         std::cerr << "pos " << pos.x << " " << pos.y << " " << pos.z << "\n";
-        pos = wd.GetRegistry().AddComponent<Position>(ent1_1, 2.0f, 2.0f, 2.0f);
+        pos = wd.GetRegistry().AddComponent<Pos>(ent1_1, 2.0f, 2.0f, 2.0f);
         std::cerr << "pos " << pos.x << " " << pos.y << " " << pos.z << "\n";
-        auto get1_1 = wd.GetRegistry().TryGetComponent<Position>(ent1_1);
-        auto get1_3 = wd.GetRegistry().TryGetComponent<Position>(ent1_3);
+        auto get1_1 = wd.GetRegistry().TryGetComponent<Pos>(ent1_1);
+        auto get1_3 = wd.GetRegistry().TryGetComponent<Pos>(ent1_3);
         if(!get1_1)
         {
             std::cerr << "null\n";
@@ -175,16 +181,54 @@ namespace app
             std::cerr << "exists\n";
         }
 
-        if(!wd.GetRegistry().HasComponent<Position>(ent1_1))
+        if(!wd.GetRegistry().HasComponent<Pos>(ent1_1))
         {
             std::cerr << "not have component\n";
         }
         else
         {
-            wd.GetRegistry().RemoveComponent<Position>(ent1_1);
-            if(!wd.GetRegistry().HasComponent<Position>(ent1_1))
+            wd.GetRegistry().RemoveComponent<Pos>(ent1_1);
+            if(!wd.GetRegistry().HasComponent<Pos>(ent1_1))
                 std::cerr << "not have component\n";
         }
-    }
+        std::cerr << "=================== test for normal registry behavior ===================\n\n";
+        
+        using namespace ::ddknd::query;
 
+        auto q_1 = query().select<Pos>().require<Vel>().exclude<Acc>();// copy ctor
+        auto q_2 = query().select<Vel>().require<Pos>().exclude<Acc>();// copy ctor
+
+        auto view_1 = wd.GetRegistry().view(q_1);//copy ctor
+        auto view_2 = wd.GetRegistry().view(q_2);//copy ctor
+
+        std::cerr << "view type=" << typeid(view_1).name() << "\n";
+        std::cerr << "view type=" << typeid(view_2).name() << "\n";
+
+        for(auto i = view_1.begin(); i != view_1.end(); ++i)
+        {
+            std::cerr << "i " << i.idx << "\n";
+        }
+
+        std::cerr << "ent1_3 before compute " << pos1_3.x << " " << pos1_3.y << " " << pos1_3.z << "\n";
+
+        for(auto [pos, vel] : view_1)
+        {
+            pos.x += vel.x;
+        }
+
+        auto pos1_3_ = wd.GetRegistry().GetComponent<Pos>(ent1_3);
+        std::cerr << "ent1_3 after compute " << pos1_3_.x << " " << pos1_3_.y << " " << pos1_3_.z << "\n";
+
+
+        auto view_3 = wd.GetRegistry().view(q_1).withEntity();
+
+        for(auto [e, pos, vel] : view_3)
+        { 
+            auto res = wd.GetRegistry().TryGetComponent<Pos>(e);
+            if(res)
+            {
+                std::cerr << "get it\n";
+            }
+        }
+    }
 } // namespace app

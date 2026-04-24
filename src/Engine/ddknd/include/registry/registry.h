@@ -11,6 +11,7 @@
 
 #include "entity/entity.h"
 #include "storage/component_storage.h"
+// #include "query/query_fwd.h"// fwd
 
 #include <spdlog/spdlog.h>
 
@@ -140,7 +141,7 @@ namespace ddknd::registry
             return;
         }
 
-        template<typename T, typename... Args>
+        template<typename T>
         storage::Storage<T>& AssureStorage()
         {
             const std::type_index key{typeid(T)};
@@ -155,7 +156,8 @@ namespace ddknd::registry
             return *static_cast<storage::Storage<T>*>(it->second.get());
         }
 
-        
+        template<typename Query>
+        auto view(Query q);
     };
 } // namespace ddknd::registry
 

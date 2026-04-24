@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <limits>
 #include <vector>
+#include <cstddef>
 
 #include "entity/entity.h"
 
@@ -120,6 +121,25 @@ namespace ddknd::storage
             return denseIdx < ents_.size() && ents_[denseIdx] == e;
         }
 
+        std::size_t Size() const
+        {
+            return components_.size();
+        }
+
+        Entity EntityAt(std::size_t i)
+        {
+            return ents_[i];
+        }
+
+        T& ComponentAt(std::size_t i)
+        {
+            return components_[i];
+        }
+
+        const T& ComponentAt(std::size_t i) const
+        {
+            return components_[i];
+        }
         private:
         void EnsureSparseSize(Entity entity)
         {
