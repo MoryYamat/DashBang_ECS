@@ -7,10 +7,27 @@
 
 #include "query/query.h"
 #include "registry/registry.h"
+#include "storage/storage_fwd.h"
 
 // helper
 namespace ddknd::view::detail
 {
+    template<typename List>
+    struct StoragePointerTuple;
+
+    template<typename... R>
+    struct StoragePointerTuple<query::TypeList<R...>>
+    {
+        using Registry = registry::Registry;
+        using type = std::tuple<storage::Storage<R>*...>;
+
+        template<typename Registry>
+        static type make(Registry* regs)
+        {
+            return type{&regs->template AssureStorage<R>()...};
+        }
+    };
+
     template <typename List>
     struct HasAll;
 
@@ -19,9 +36,16 @@ namespace ddknd::view::detail
     {
         using Registry = registry::Registry;
         using Entity = entity::Entity;
-        static bool check(Registry* regs, Entity e)
+        template<typename Tuple>
+        static bool check(const Tuple& storages, Entity e)
         {
-            return (regs->template HasComponent<Ts>(e) && ...);
+            return std::apply(
+                [&](auto*... st)
+                {
+                    return(st->Has(e) && ...);
+                },
+                storages
+            );
         }
     };
 
@@ -33,9 +57,16 @@ namespace ddknd::view::detail
     {
         using Registry = registry::Registry;
         using Entity = entity::Entity;
-        static bool check(Registry* regs, Entity e)
+        template<typename Tuple>
+        static bool check(const Tuple& storages, Entity e)
         {
-            return (!regs->template HasComponent<Ts>(e) && ...);
+            return std::apply(
+                [&](auto*... st)
+                {
+                    return(!st->Has(e) && ...);
+                },
+                storages
+            );
         }
     };
 
@@ -47,12 +78,24 @@ namespace ddknd::view::detail
     {
         using type = std::tuple<S&, R&...>;
 
-        template <typename Registry, typename Storage>
-        static type make(Registry* regs, Storage& selectedStorage, std::size_t idx)
+        // template <typename Registry, typename Storage>
+        // static type make(Registry* regs, Storage& selectedStorage, std::size_t idx)
+        // {
+        //     auto e = selectedStorage.EntityAt(idx);
+
+        //     return type{selectedStorage.ComponentAt(idx), regs->template GetComponent<R>(e)...};
+        // }
+
+        template<typename Storage, typename RequiredStorages>
+        static type make(Storage& selectedStorage, const RequiredStorages& requiredStorages, std::size_t idx)
         {
             auto e = selectedStorage.EntityAt(idx);
-
-            return type{selectedStorage.ComponentAt(idx), regs->template GetComponent<R>(e)...};
+            return std::apply(
+                [&](auto*... requiredStorage) -> type{
+                    return type{selectedStorage.ComponentAt(idx), *requiredStorage->Get(e)...};
+                },
+                requiredStorages
+            );
         }
     };
 
@@ -62,12 +105,16 @@ namespace ddknd::view::detail
         using Entity = entity::Entity;
         using type = std::tuple<Entity, S&, R&...>;
 
-        template <typename Registry, typename Storage>
-        static type make(Registry* regs, Storage& selectedStorage, std::size_t idx)
+        template<typename Storage, typename RequiredStorages>
+        static type make(Storage& selectedStorage, const RequiredStorages& requiredStorages, std::size_t idx)
         {
             auto e = selectedStorage.EntityAt(idx);
-
-            return type{e, selectedStorage.ComponentAt(idx), regs->template GetComponent<R>(e)...};
+            return std::apply(
+                [&](auto*... requiredStorage) -> type{
+                    return type{e, selectedStorage.ComponentAt(idx), *requiredStorage->Get(e)...};
+                },
+                requiredStorages
+            );
         }
     };
 
@@ -77,19 +124,6 @@ namespace ddknd::view::detail
 
 namespace ddknd::view
 {
-    struct ViewIterator
-    {
-        using Registry = ::ddknd::registry::Registry;
-        Registry* regs_;
-        std::size_t idx;
-        bool operator!=(const ViewIterator& o) const;
-        ViewIterator& operator++();
-        auto operator*() const;
-
-      private:
-        void advance_to_avoid();
-    };
-
     template <typename Query, bool IncludeEntity = false>
     class View
     {
@@ -113,8 +147,24 @@ namespace ddknd::view
         {
             using Registry = ::ddknd::registry::Registry;
             using Entity = ::ddknd::entity::Entity;
-            Registry* regs_;
+            using SelectedStorage = typename ::ddknd::storage::Storage<selected>;
+            using RequiredStorage = typename detail::StoragePointerTuple<requiredList>::type;
+            using ExcludedStorage = typename detail::StoragePointerTuple<excludedList>::type;
+            
+            Registry* regs_ = nullptr;
+            SelectedStorage* selected_ = nullptr;
+            RequiredStorage required_{};
+            ExcludedStorage excluded_{};
+
             std::size_t idx;
+
+            Iterator(Registry* regs, std::size_t idx)
+                : regs_(regs), 
+                selected_(&regs->template AssureStorage<selected>()), 
+                required_(detail::StoragePointerTuple<requiredList>::make(regs)),
+                excluded_(detail::StoragePointerTuple<excludedList>::make(regs)),
+                idx(idx) {}
+
             bool operator!=(const Iterator& o) const
             {
                 return idx != o.idx;
@@ -128,21 +178,24 @@ namespace ddknd::view
 
             auto operator*() const
             {
-                auto& st = regs_->AssureStorage<selected>();
+                // return detail::DerefTuple<
+                //     selected,
+                //     requiredList,
+                //     IncludeEntity
+                // >::make(regs_, *selected_, idx);
                 return detail::DerefTuple<
-                    selected,
-                    requiredList,
-                    IncludeEntity
-                >::make(regs_, st, idx);
+                        selected,
+                        requiredList,
+                        IncludeEntity
+                        >::make(*selected_, required_, idx);
             }
 
             void advance_to_valid()
             {
-                auto& st = regs_->AssureStorage<selected>();
 
-                while (idx < st.Size())
+                while (idx < selected_->Size())
                 {
-                    auto e = st.EntityAt(idx);
+                    auto e = selected_->EntityAt(idx);
 
                     if (satisfies(e))
                     {
@@ -156,7 +209,7 @@ namespace ddknd::view
           private:
             bool satisfies(Entity e) const
             {
-                return detail::HasAll<requiredList>::check(regs_, e) && detail::HasNone<excludedList>::check(regs_, e);
+                return detail::HasAll<requiredList>::check(required_, e) && detail::HasNone<excludedList>::check(excluded_, e);
             }
         };
 
@@ -182,7 +235,7 @@ namespace ddknd::view
 
         std::size_t selected_size() const
         {
-            return regs_->AssureStorage<selected>().Size();
+            return regs_->template AssureStorage<selected>().Size();
         }
     };
 
