@@ -95,6 +95,7 @@ namespace ddknd::view
     {
       public:
         using Registry = ::ddknd::registry::Registry;
+
         using selected = Query::selected;
         using requiredList = Query::requiredList;
         using excludedList = Query::excludedList;

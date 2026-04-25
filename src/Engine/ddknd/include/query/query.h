@@ -7,13 +7,18 @@ namespace ddknd::query
     //
 
     // ========================== NEW =============================
-    // ============================================================
     // The query primarily determines the plan for how and what to scan the storage for
     // Independence from the world
     // API:
+    // 
+    // Clear indication of the main subject:
     // query().select<Position>()
     //        .require<Velocity>()
     //        .exclude<Disabled>()
+    // @TODO:
+    // Minimum scan:
+    // query().require<C1>()
+    //        .exclude<C2>()
     template <typename... Ts>
     struct TypeList
     {

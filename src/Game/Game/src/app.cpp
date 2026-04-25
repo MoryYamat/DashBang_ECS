@@ -230,5 +230,9 @@ namespace app
                 std::cerr << "get it\n";
             }
         }
+
+        auto q_3 = query().require<Pos>().exclude<Acc>();
+
+        std::cerr << "min loop " << typeid(q_3).name() << "\n";
     }
 } // namespace app
