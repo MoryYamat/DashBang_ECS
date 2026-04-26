@@ -20,6 +20,9 @@ namespace ddknd::storage
         virtual void Remove(Entity e) = 0;
     };
 
+    //@TODO
+    // If you want to make it an SoA, change the internal representation of Storage<T>.
+
     // Component CRUD
     template<typename T>
     class Storage final : public IStorage

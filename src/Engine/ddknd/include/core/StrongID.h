@@ -9,14 +9,14 @@
 
 namespace ddknd::core
 {
-    template <typename T, typename Rep = std::uint32_t>
+    template <typename Tag, typename Rep = std::uint32_t>
     class StrongID
     {
       public:
         using rep_type = Rep;
 
-        static_assert(std::is_integral_v<Rep>, "StrongID<..., Rep>: Rep must be an integral type.");
-        static_assert(std::is_unsigned_v<Rep>, "StrongID<..., Rep>: Rep must be an unsigned integral type.");
+        static_assert(std::is_integral_v<rep_type>, "StrongID<..., Rep>: Rep must be an integral type.");
+        static_assert(std::is_unsigned_v<rep_type>, "StrongID<..., Rep>: Rep must be an unsigned integral type.");
 
         // return invalid value
         static constexpr StrongID Invalid() noexcept
@@ -25,10 +25,10 @@ namespace ddknd::core
         }
 
         constexpr StrongID() noexcept : value_(invalid_value()) {}
-        explicit constexpr StrongID(Rep v) noexcept : value_(v) {}
+        explicit constexpr StrongID(rep_type v) noexcept : value_(v) {}
 
         // return raw value
-        constexpr Rep Value() const noexcept
+        constexpr rep_type Value() const noexcept
         {
             return value_;
         }
@@ -53,12 +53,12 @@ namespace ddknd::core
         }
 
       private:
-        static constexpr Rep invalid_value()
+        static constexpr rep_type invalid_value()
         {
-            return std::numeric_limits<Rep>::max();
+            return std::numeric_limits<rep_type>::max();
         }
 
-        Rep value_;
+        rep_type value_;
     };
 
     // uint64_t: 32bit: gen / 32bit: id
@@ -107,7 +107,7 @@ namespace ddknd::core
       private:
         static constexpr rep_type pack(std::uint32_t gen, std::uint32_t index) noexcept
         {
-            return (rep_type(gen) << 32) | rep_type(index);
+            return (static_cast<rep_type>(gen) << 32) | static_cast<rep_type>(index);
         }
 
         explicit constexpr HandleID(strong_type s) noexcept : id_(s) {}
