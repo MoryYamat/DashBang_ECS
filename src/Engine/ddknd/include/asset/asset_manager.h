@@ -1,12 +1,13 @@
 #pragma once
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <string_view>
-#include <vector>
+#include <typeindex>
 #include <unordered_map>
+#include <vector>
 
 #include "core/StrongID.h"
-
 
 namespace ddknd::asset
 {
@@ -23,31 +24,94 @@ namespace ddknd::asset
 
     struct AssetMeta
     {
+        std::uint32_t generation = 0;
         AssetState state = AssetState::Unload;
         std::string vpath;
     };
 
-    template <typename Tag>
-    class AssetTable
+    struct IAssetTable
     {
-        public:
-        AssetID<Tag> GetOrCreate(std::string_view vpath);
-        const AssetMeta* TryGetMeta(AssetID<Tag> id) const;
-        AssetMeta* TryGetMeta(AssetID<Tag> id);
-        private:
-         std::vector<AssetMeta> metas_;
-         std::unordered_map<std::string, AssetID<Tag>> pathToId_;
+        virtual ~IAssetTable() = default;
+    };
+
+    template <typename Tag>
+    class AssetTable final : public IAssetTable
+    {
+      public:
+        using ID = AssetID<Tag>;
+
+        ID GetOrCreate(std::string_view vpath)
+        {
+            const std::string key{vpath};
+            auto it = pathToId_.find(key);
+            if (it == pathToId_.end())
+            {
+                const std::uint32_t idx = static_cast<std::uint32_t>(metas_.size());
+
+                AssetMeta meta{};
+                meta.vpath = static_cast<std::string>(vpath);
+                meta.generation = 0;
+
+                ID id{meta.generation, idx};
+
+                // @TODO allocator
+                metas_.push_back(std::move(meta));
+                pathToId_.emplace(meta.vpath, id);
+
+                return id;
+            }
+
+            return it->second;
+        }
+        const AssetMeta* TryGetMeta(ID id) const
+        {
+            if (!id.Is_valid())
+                return nullptr;
+
+            const auto idx = id.Index();
+            if (idx >= metas_.size())
+            {
+                return nullptr;
+            }
+
+            const auto& meta = metas_[idx];
+            if (meta.generation != id.Generation())
+                return nullptr;
+
+            return &metas_[idx];
+        }
+        AssetMeta* TryGetMeta(ID id)
+        {
+            if (!id.Is_valid())
+                return nullptr;
+
+            const auto idx = id.Index();
+            if (idx >= metas_.size())
+            {
+                return nullptr;
+            }
+
+            const auto& meta = metas_[idx];
+            if (meta.generation != id.Generation())
+                return nullptr;
+
+            return &metas_[idx];
+        }
+
+      private:
+        std::vector<AssetMeta> metas_;
+        std::unordered_map<std::string, ID> pathToId_;
     };
 
     class AssetManager
     {
       public:
-        template<typename Tag>
+        template <typename Tag>
         AssetID<Tag> GetOrCreate(std::string_view vpath)
         {
             return Table<Tag>().GetOrCreate(vpath);
         }
-        
+
         template <typename Tag>
         std::string_view PathOf(AssetID<Tag> id) const
         {
@@ -66,46 +130,100 @@ namespace ddknd::asset
             Table<Tag>().TryGetMeta(id)->state = state;
         }
 
+        template<typename Tag>
+        const AssetMeta* TryGetMeta(AssetID<Tag> id) const
+        {
+            const auto* table = TryGetTable<Tag>();
+            if(!table)
+                return nullptr;
+            return table->TryGetMeta(id);
+        }
+
+        template<typename Tag>
+        AssetMeta* TryGetMeta(AssetID<Tag> id)
+        {
+            const auto* table = TryGetTable<Tag>();
+            if(!table)
+                return nullptr;
+            return table->TryGetMeta(id);
+        }        
+
       private:
+        std::unordered_map<std::type_index, std::unique_ptr<IAssetTable>> tables_;
 
-        template<typename Tag>
-        AssetTable<Tag>& Table();
+        template <typename Tag>
+        AssetTable<Tag>* TryGetTable()
+        {
+            const std::type_index key{typeid(Tag)};
 
-        template<typename Tag>
-        const AssetTable<Tag>& Table()const;
+            auto it = tables_.find(key);
+            if (it == tables_.end())
+                return nullptr;
+
+            return static_cast<AssetTable<Tag>*>(it->second.get());
+        }
+
+        template <typename Tag>
+        const AssetTable<Tag>* TryGetTable() const
+        {
+            const std::type_index key{typeid(Tag)};
+
+            auto it = tables_.find(key);
+            if (it == tables_.end())
+                return nullptr;
+
+            return static_cast<AssetTable<Tag>*>(it->second.get());
+        }
+
+        template <typename Tag>
+        AssetTable<Tag>& Table()
+        {
+            if (auto* table = TryGetTable<Tag>())
+                return *table;
+
+            const std::type_index key{typeid(Tag)};
+
+            auto table = std::make_unique<AssetTable<Tag>>();
+            auto* ptr = table.get();
+            tables_.emplace(key, std::move(table));
+
+            return *ptr;
+        }
     };
-    
-    template<typename T, typename Tag>
+
+    template <typename T, typename Tag>
     class Storage
     {
-        public:
-            using ID = ::ddknd::core::HandleID<Tag>;
+      public:
+        using ID = ::ddknd::core::HandleID<Tag>;
 
-            T* TryGet(ID id)
+        T* TryGet(ID id)
+        {
+            const auto idx = id.Index();
+            if (idx >= data_.size())
+                return nullptr;
+            return &data_[idx];
+        }
+
+        const T* TryGet(ID id) const
+        {
+            const auto idx = id.Index();
+            if (idx >= data_.size())
+                return nullptr;
+            return &data_[idx];
+        }
+
+        void Set(ID id, T value)
+        {
+            const auto idx = id.Index();
+            if (idx >= data_.size())
             {
-                const auto idx = id.Index();
-                if(idx >= data_.size()) return nullptr;
-                return &data_[idx];
+                data_.resize(idx + 1);
             }
+            data_[idx] = std::move(value);
+        }
 
-            const T* TryGet(ID id) const
-            {
-                const auto idx = id.Index();
-                if(idx >= data_.size()) return nullptr;
-                return &data_[idx];
-            }
-
-            void Set(ID id, T value)
-            {
-                const auto idx = id.Index();
-                if(idx >= data_.size())
-                {
-                    data_.resize(idx + 1);
-                }
-                data_[idx] = std::move(value);
-            }
-
-        private:
-            std::vector<T> data_;
+      private:
+        std::vector<T> data_;
     };
 } // namespace ddknd::asset

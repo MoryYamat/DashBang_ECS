@@ -7,7 +7,7 @@
 #include "math/math.h"
 
 // importer/loader intermediate products
-namespace ddknd::graphics::types
+namespace ddknd::graphics::type
 {
     struct Vertex
     {

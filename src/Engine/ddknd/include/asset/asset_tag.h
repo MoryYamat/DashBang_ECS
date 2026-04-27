@@ -6,6 +6,4 @@ namespace ddknd::asset::tag
     struct Shader{};
     struct Mesh{};
     struct Model{};
-    struct Skeleton{};
-    struct AnimationClip{};
 } // namespace ddknd::asset::tag

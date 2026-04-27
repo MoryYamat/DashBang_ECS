@@ -17,6 +17,8 @@
 #include "ecs/view/view.h"
 #include "ecs/world/world.h"
 
+#include "asset/asset_manager.h"
+#include "asset/asset_tag.h"
 
 #include "math/math.h"
 
@@ -201,5 +203,18 @@ namespace app
         b(0,0) = 2;
         Mat4f c = a * b;
         std::cerr << c << "\n";
+
+        // ========== AssetManager ========== 
+        using AssetManager = ::ddknd::asset::AssetManager;
+        using ShaderTag = ::ddknd::asset::tag::Shader;
+        using MeshTag = ::ddknd::asset::tag::Mesh;
+
+        AssetManager asset_mgr;
+
+        auto res_1 = asset_mgr.GetOrCreate<ShaderTag>("res://assets/shaders/programs/test.shader");
+        auto res_2 = asset_mgr.GetOrCreate<MeshTag>("res://assets/meshes/test_triangle.mesh");
+
+        std::cerr << "id1: Idx=" << res_1.Index() << " Gen=" << res_1.Generation() << "\n";
+        std::cerr << "id2: Idx=" << res_2.Index() << " Gen=" << res_2.Generation() << "\n";
     }
 } // namespace app
