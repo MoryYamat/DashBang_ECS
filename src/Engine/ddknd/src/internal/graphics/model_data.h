@@ -6,6 +6,7 @@
 #include <string>
 #include "math/math.h"
 
+// importer/loader intermediate products
 namespace ddknd::graphics::types
 {
     struct Vertex
@@ -73,11 +74,10 @@ namespace ddknd::graphics::types
         bool hasIndices = false;
     };
 
-    
-    struct ModelData
+    // Discarded after loading
+    struct ModelImportData
     {
         std::vector<Mesh> meshes;
-
         Skeleton skeleton;
         std::vector<AnimationClip> clips;
     };

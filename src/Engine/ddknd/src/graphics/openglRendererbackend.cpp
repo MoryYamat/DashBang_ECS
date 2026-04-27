@@ -121,7 +121,7 @@ namespace ddknd::graphics
             }
         }
 
-        types::GPUID<types::ShaderProgramGPUTag> CreateShaderProgram(std::string_view vs_source,
+        types::GPUID<tag::ShaderProgramGPUTag> CreateShaderProgram(std::string_view vs_source,
                                                                              std::string_view fs_source) override
         {
             GLuint vs = compile_shader(GL_VERTEX_SHADER, vs_source);
@@ -145,10 +145,10 @@ namespace ddknd::graphics
             const auto id_val = static_cast<std::uint32_t>(programs_.size());
             programs_.push_back(prog);
 
-            return types::GPUID<types::ShaderProgramGPUTag>(id_val);
+            return types::GPUID<tag::ShaderProgramGPUTag>(id_val);
         }
 
-        void DestroyShaderProgram(types::GPUID<types::ShaderProgramGPUTag> id) override
+        void DestroyShaderProgram(types::GPUID<tag::ShaderProgramGPUTag> id) override
         {
             const auto idx = static_cast<std::size_t>(id.Value());
             if (idx >= programs_.size())
@@ -160,19 +160,19 @@ namespace ddknd::graphics
             }
         }
 
-        void UseShaderProgram(types::GPUID<types::ShaderProgramGPUTag> id) override
+        void UseShaderProgram(types::GPUID<tag::ShaderProgramGPUTag> id) override
         {
             const GLuint prog = get_program(id);
             glUseProgram(prog);
         }
 
-        types::GPUID<types::MeshGPUTag> CreateMesh_Pos3(std::span<const float> xyz) override
+        types::GPUID<tag::MeshGPUTag> CreateMesh_Pos3(std::span<const float> xyz) override
         {
             // xyz.size()
             if (xyz.empty() || (xyz.size() % 3) != 0)
             {
                 spdlog::error("OpenGLBackend::CreateMesh_Pos3: ");
-                return types::GPUID<types::MeshGPUTag>::Invalid();
+                return types::GPUID<tag::MeshGPUTag>::Invalid();
             }
 
             GLMesh m{};
@@ -193,10 +193,10 @@ namespace ddknd::graphics
 
             const std::uint32_t id = static_cast<std::uint32_t>(meshes_.size());
             meshes_.push_back(m);
-            return types::GPUID<types::MeshGPUTag>(id);
+            return types::GPUID<tag::MeshGPUTag>(id);
         }
 
-        void DestroyMesh(types::GPUID<types::MeshGPUTag> id) override
+        void DestroyMesh(types::GPUID<tag::MeshGPUTag> id) override
         {
             if (!id.Is_valid())
             {
@@ -219,7 +219,7 @@ namespace ddknd::graphics
             glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(count));
         }
 
-        void BindMesh(types::GPUID<types::MeshGPUTag> id) override
+        void BindMesh(types::GPUID<tag::MeshGPUTag> id) override
         {
             if (!id.Is_valid())
             {
@@ -241,7 +241,7 @@ namespace ddknd::graphics
       private:
         std::vector<GLuint> programs_;
 
-		GLuint get_program(types::GPUID<types::ShaderProgramGPUTag> id) const noexcept
+		GLuint get_program(types::GPUID<tag::ShaderProgramGPUTag> id) const noexcept
 		{
 			const auto idx = static_cast<std::size_t>(id.Value());
 			if (idx >= programs_.size())  return 0;

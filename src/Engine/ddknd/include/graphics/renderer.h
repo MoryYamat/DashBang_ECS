@@ -1,24 +1,12 @@
 #pragma once
 
-#include "core/StrongID.h"
+// #include "core/StrongID.h"
+#include "gfx_type.h"
 #include <cstdint>
 #include <memory>
 #include <string_view>
 #include <span>
 
-
-namespace ddknd::graphics::types
-{
-    struct ShaderProgramGPUTag
-    {
-    };
-    struct MeshGPUTag
-    {
-    };
-
-    template <typename GPUTag>
-    using GPUID = ddknd::core::StrongID<GPUTag, std::uint32_t>;
-} // namespace ddknd::graphics::types
 
 namespace ddknd::graphics
 {
@@ -26,16 +14,16 @@ namespace ddknd::graphics
     {
       public:
         virtual ~IRendererBackend() = default;
-        virtual types::GPUID<types::ShaderProgramGPUTag> CreateShaderProgram(std::string_view, std::string_view) = 0;
-        virtual void UseShaderProgram(types::GPUID<types::ShaderProgramGPUTag> id) = 0;
+        virtual types::GPUID<tag::ShaderProgramGPUTag> CreateShaderProgram(std::string_view, std::string_view) = 0;
+        virtual void UseShaderProgram(types::GPUID<tag::ShaderProgramGPUTag> id) = 0;
 
-        virtual void DestroyShaderProgram(types::GPUID<types::ShaderProgramGPUTag> id) = 0;
+        virtual void DestroyShaderProgram(types::GPUID<tag::ShaderProgramGPUTag> id) = 0;
 
-        virtual void BindMesh(types::GPUID<types::MeshGPUTag> id) = 0;
+        virtual void BindMesh(types::GPUID<tag::MeshGPUTag> id) = 0;
         virtual void DrawArraysTriangles(std::uint32_t count) = 0;
 
-        virtual types::GPUID<types::MeshGPUTag> CreateMesh_Pos3(std::span<const float> xyz) = 0;
-        virtual void DestroyMesh(types::GPUID<types::MeshGPUTag> id) = 0;
+        virtual types::GPUID<tag::MeshGPUTag> CreateMesh_Pos3(std::span<const float> xyz) = 0;
+        virtual void DestroyMesh(types::GPUID<tag::MeshGPUTag> id) = 0;
     };
 
     struct OpenGLBackendDesc
@@ -53,16 +41,16 @@ namespace ddknd::graphics
 	// A command that tells the renderer to draw the mesh information for your app
 	struct DrawCommand
 	{
-		ddknd::graphics::types::GPUID<graphics::types::MeshGPUTag> mesh;
-		ddknd::graphics::types::GPUID<graphics::types::ShaderProgramGPUTag> shader;
+		ddknd::graphics::types::GPUID<tag::MeshGPUTag> mesh;
+		ddknd::graphics::types::GPUID<tag::ShaderProgramGPUTag> shader;
 		std::uint32_t vcount;
 	};
 
 	// for testing triangle
 	struct TestDrawTriangleCommand
 	{
-		ddknd::graphics::types::GPUID<graphics::types::MeshGPUTag> mesh;
-		ddknd::graphics::types::GPUID<graphics::types::ShaderProgramGPUTag> shader;
+		ddknd::graphics::types::GPUID<tag::MeshGPUTag> mesh;
+		ddknd::graphics::types::GPUID<tag::ShaderProgramGPUTag> shader;
 		std::uint32_t vcount;
 	};
 

@@ -262,7 +262,9 @@ namespace ddknd::math
         static_assert(std::is_arithmetic_v<T> && !std::is_same_v<T, bool>);
         std::array<T, R * C> v{};
 
-        constexpr Mat(std::initializer_list<T> init)
+        constexpr Mat() = default;
+
+        explicit constexpr Mat(std::initializer_list<T> init)
         {
             assert(init.size() == R * C);
             std::copy(init.begin(), init.end(), v.begin());
