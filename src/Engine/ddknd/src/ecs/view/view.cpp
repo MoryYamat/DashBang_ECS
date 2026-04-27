@@ -1,4 +1,4 @@
-#include "view/view.h"
+#include "ecs/view/view.h"
 
 
 namespace ddknd::view

@@ -1,7 +1,7 @@
-#include "world/world.h"
+#include "ecs/world/world.h"
 
-#include "entity/entity.h"
-#include "registry/registry.h"
+#include "ecs/entity/entity.h"
+#include "ecs/registry/registry.h"
 
 namespace ddknd::world
 {

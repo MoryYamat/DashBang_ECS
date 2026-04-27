@@ -3,11 +3,11 @@
 #include <iostream>
 #include <tuple>
 
-#include "entity/entity.h"
+#include "ecs/entity/entity.h"
 
-#include "query/query.h"
-#include "registry/registry.h"
-#include "storage/storage_fwd.h"
+#include "ecs/query/query.h"
+#include "ecs/registry/registry.h"
+#include "ecs/storage/storage_fwd.h"
 
 // helper
 namespace ddknd::view::detail

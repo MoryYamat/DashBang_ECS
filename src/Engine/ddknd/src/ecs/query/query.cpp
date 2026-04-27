@@ -1,4 +1,4 @@
-#include "query/query.h"
+#include "ecs/query/query.h"
 
 namespace ddknd::query
 {

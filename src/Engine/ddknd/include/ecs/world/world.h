@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include "entity/entity_fwd.h"
-#include "registry/registry_fwd.h"
+#include "ecs/entity/entity_fwd.h"
+#include "ecs/registry/registry_fwd.h"
 
 namespace ddknd::world
 {

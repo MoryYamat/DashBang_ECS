@@ -9,8 +9,8 @@
 #include <memory>
 #include <typeindex>
 
-#include "entity/entity.h"
-#include "storage/component_storage.h"
+#include "ecs/entity/entity.h"
+#include "ecs/storage/component_storage.h"
 // #include "query/query_fwd.h"// fwd
 
 #include <spdlog/spdlog.h>

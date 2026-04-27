@@ -1,4 +1,4 @@
-#include "entity/entity.h"
+#include "ecs/entity/entity.h"
 
 namespace ddknd::entity
 {
