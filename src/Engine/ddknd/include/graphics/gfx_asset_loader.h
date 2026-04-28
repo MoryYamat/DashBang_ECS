@@ -1,10 +1,15 @@
 #pragma once
 
+
+#include "graphics/graphics_fwd.h"
+#include "io/io.h"
+#include "io/io_fwd.h"
 #include "asset/asset_fwd.h"
 #include "asset/asset_manager.h"
 #include "asset/asset_tag.h"
 #include "gfx_type.h"
-#include "internal/graphics/animation_data.h"
+#include "graphics/renderer.h"
+#include "graphics/model_data.h"
 
 namespace ddknd::animation
 {
@@ -20,9 +25,9 @@ namespace ddknd::animation
 
       private:
         template <typename T, typename Tag>
-        using Storage = ::ddknd::asset::Storage<T, Tag>;
+        using AssestStorage = ::ddknd::asset::AssestStorage<T, Tag>;
 
-        ddknd::asset::Storage<ModelAnimationResource, ModelTag> models_;
+        AssestStorage<ModelAnimationResource, ModelTag> models_;
     };
 
 } // namespace ddknd::animation
@@ -43,18 +48,31 @@ namespace ddknd::graphics
         using ShaderResource = asset::ShaderResource;
         using ModelResource = asset::ModelRenderResource;
 
-        const ShaderResource* TryGet(ShaderID id) const;
-        const ModelResource* TryGet(ModelID id) const;
+        const ShaderResource* TryGet(ShaderID id) const
+        {
+          return shaders_.TryGet(id);
+        }
+        const ModelResource* TryGet(ModelID id) const
+        {
+          return models_.TryGet(id);
+        }
 
-        void SetLoaded(ShaderID id, ShaderResource res);
-        void SetLoaded(ModelID id, ModelResource res);
+        void SetLoaded(ShaderID id, ShaderResource res)
+        {
+          shaders_.Set(id, std::move(res));
+        }
+        void SetLoaded(ModelID id, ModelResource res)
+        {
+          models_.Set(id, std::move(res));
+        }
 
       private:
         template <typename T, typename Tag>
-        using Storage = ::ddknd::asset::Storage<T, Tag>;
+        using AssestStorage = ::ddknd::asset::AssestStorage<T, Tag>;
 
-        Storage<ShaderResource, ShaderTag> shaders_;
-        Storage<ModelResource, ModelTag> models_;
+        AssestStorage<ShaderResource, ShaderTag> shaders_;
+        AssestStorage<ModelResource, ModelTag> models_;
+
     };
 
     class GraphicsAssetLoader
@@ -69,10 +87,18 @@ namespace ddknd::graphics
         using ShaderID = AssetID<ShaderTag>;
         using ModelID = AssetID<ModelTag>;
 
+        using IPathResolver =::ddknd::io::IPathResolver;
+        using IRendererBackend = ::ddknd::graphics::IRendererBackend;
+
       public:
         using AnimationAssetStore = ::ddknd::animation::AnimationAssetStore;
 
+        GraphicsAssetLoader(const IPathResolver& resolver, IRendererBackend& backend): resolver_(resolver), backend_(backend){}
+
         bool LoadShader(AssetManager& assets, GraphicsAssetStore& store, ShaderID id);
         bool LoadModel(AssetManager& assets, GraphicsAssetStore& gfxstore, AnimationAssetStore& animstore, ModelID id);
+
+        const IPathResolver& resolver_;
+        IRendererBackend& backend_;
     };
 } // namespace ddknd::graphics

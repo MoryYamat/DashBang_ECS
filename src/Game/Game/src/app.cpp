@@ -20,6 +20,8 @@
 #include "asset/asset_manager.h"
 #include "asset/asset_tag.h"
 
+#include "graphics/gfx_asset_loader.h"
+
 #include "math/math.h"
 
 #include <spdlog/spdlog.h>
@@ -58,12 +60,40 @@ namespace app
     void App::Loop()
     {
         isRunning_ = true;
+
+        // ========== AssetManager ========== 
+        using AssetManager = ::ddknd::asset::AssetManager;
+        using ShaderTag = ::ddknd::asset::tag::Shader;
+        using MeshTag = ::ddknd::asset::tag::Mesh;
+
+        AssetManager asset_mgr;
+
+        auto res_1 = asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/test.shader");
+        auto res_2 = asset_mgr.GetOrCreate<MeshTag>("res://meshes/test_triangle.mesh");
+
+        std::cerr << "id1: Idx=" << res_1.Index() << " Gen=" << res_1.Generation() << "\n";
+        std::cerr << "id2: Idx=" << res_2.Index() << " Gen=" << res_2.Generation() << "\n";
+
+        using GraphicsAssetStore = ::ddknd::graphics::GraphicsAssetStore;
+        GraphicsAssetStore gfx_asset_store;
+
+        using GraphicsAssetLoader = ::ddknd::graphics::GraphicsAssetLoader;
+        GraphicsAssetLoader gfx_loader(*vfs_, *rendererBackend_);
+
+        auto load_res_gfx = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, res_1);
+
+        const auto shader_res = gfx_asset_store.TryGet(res_1);
+
+        ddknd::graphics::DrawCommand cmd{.shader=shader_res->program};
+
         while (isRunning_ && !window_->ShouldClose())
         {
             ddknd::graphics::FrameDesc frame{.h = h_, .w = w_};
-            renderSys_->BeginFrame(frame);
-            renderSys_->EndFrame();
+            renderSys_->BeginFrame(frame);    
 
+            renderSys_->Submit(cmd);
+            
+            renderSys_->EndFrame();
             inputSys_->Update();
             window_->PollEvents();
             window_->SwapBuffers();
@@ -203,18 +233,5 @@ namespace app
         b(0,0) = 2;
         Mat4f c = a * b;
         std::cerr << c << "\n";
-
-        // ========== AssetManager ========== 
-        using AssetManager = ::ddknd::asset::AssetManager;
-        using ShaderTag = ::ddknd::asset::tag::Shader;
-        using MeshTag = ::ddknd::asset::tag::Mesh;
-
-        AssetManager asset_mgr;
-
-        auto res_1 = asset_mgr.GetOrCreate<ShaderTag>("res://assets/shaders/programs/test.shader");
-        auto res_2 = asset_mgr.GetOrCreate<MeshTag>("res://assets/meshes/test_triangle.mesh");
-
-        std::cerr << "id1: Idx=" << res_1.Index() << " Gen=" << res_1.Generation() << "\n";
-        std::cerr << "id2: Idx=" << res_2.Index() << " Gen=" << res_2.Generation() << "\n";
     }
 } // namespace app

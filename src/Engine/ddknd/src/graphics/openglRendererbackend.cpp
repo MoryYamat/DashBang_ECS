@@ -162,8 +162,16 @@ namespace ddknd::graphics
 
         void UseShaderProgram(types::GPUID<tag::ShaderProgramGPUTag> id) override
         {
+            // test
+            GLuint vao;
+            glGenVertexArrays(1, &vao);
+            glBindVertexArray(vao);
+
             const GLuint prog = get_program(id);
             glUseProgram(prog);
+            
+            // test
+            glDrawArrays(GL_TRIANGLES, 0, 3);
         }
 
         types::GPUID<tag::MeshGPUTag> CreateMesh_Pos3(std::span<const float> xyz) override

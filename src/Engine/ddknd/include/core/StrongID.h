@@ -67,6 +67,7 @@ namespace ddknd::core
     {
       public:
         using rep_type = std::uint64_t;
+        using tag_type = Tag;
         using strong_type = StrongID<Tag, rep_type>;
 
         constexpr HandleID() noexcept : id_(strong_type::Invalid()) {}

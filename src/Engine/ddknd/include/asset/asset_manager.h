@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <string_view>
+#include <optional>
 #include <typeindex>
 #include <unordered_map>
 #include <vector>
@@ -113,21 +114,33 @@ namespace ddknd::asset
         }
 
         template <typename Tag>
-        std::string_view PathOf(AssetID<Tag> id) const
+        std::optional<std::string_view> TryPathOf(AssetID<Tag> id) const
         {
-            return Table<Tag>().TryGetMeta(id)->vpath;
+            const auto* meta = TryGetMeta(id);
+            if(!meta)
+                return std::nullopt;
+
+            return std::string_view{meta->vpath};
         }
 
         template <typename Tag>
-        AssetState StateOf(AssetID<Tag> id) const
+        std::optional<AssetState> TryStateOf(AssetID<Tag> id) const
         {
-            return Table<Tag>().TryGetMeta(id)->state;
+            const auto* meta = TryGetMeta(id);
+            if(!meta)
+                return std::nullopt;
+
+            return meta->state;
         }
 
         template <typename Tag>
-        void SetState(AssetID<Tag> id, AssetState state)
+        bool SetState(AssetID<Tag> id, AssetState state)
         {
-            Table<Tag>().TryGetMeta(id)->state = state;
+            auto* meta = TryGetMeta(id);
+            if(!meta)
+                return false;
+            meta->state = state;
+            return true;
         }
 
         template<typename Tag>
@@ -142,7 +155,7 @@ namespace ddknd::asset
         template<typename Tag>
         AssetMeta* TryGetMeta(AssetID<Tag> id)
         {
-            const auto* table = TryGetTable<Tag>();
+            auto* table = TryGetTable<Tag>();
             if(!table)
                 return nullptr;
             return table->TryGetMeta(id);
@@ -192,7 +205,7 @@ namespace ddknd::asset
     };
 
     template <typename T, typename Tag>
-    class Storage
+    class AssestStorage
     {
       public:
         using ID = ::ddknd::core::HandleID<Tag>;
