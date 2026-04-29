@@ -1,260 +1,167 @@
 #pragma once
 
-#include <iostream>
 #include <array>
 #include <cassert>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <iostream>
+#include <span>
 #include <type_traits>
+
 
 namespace ddknd::math
 {
     template <typename T, std::size_t N>
-    struct Vec;
-
-    template <typename T>
-    struct Vec<T, 2>
+    struct Vec
     {
         static_assert(std::is_arithmetic_v<T> && !std::is_same_v<T, bool>);
-        T x{};
-        T y{};
+
+        std::array<T, N> v{};
 
         constexpr Vec() = default;
-        constexpr Vec(T x_, T y_) : x(x_), y(y_) {}
-        constexpr Vec(const Vec& v_) = default;
 
-        constexpr Vec& operator+=(const Vec& o) noexcept
+        template <typename... Args>
+            requires(sizeof...(Args) == N)
+        constexpr Vec(Args... args) : v{static_cast<T>(args)...}
         {
-            x += o.x;
-            y += o.y;
+        }
+
+        // accessors
+        constexpr T& operator[](std::size_t i) noexcept
+        {
+            return v[i];
+        }
+        constexpr const T& operator[](std::size_t i) const noexcept
+        {
+            return v[i];
+        }
+
+        constexpr Vec<T, N>& operator+=(const Vec<T, N>& b) noexcept
+        {
+            for (std::size_t i = 0; i < N; i++)
+            {
+                v[i] += b[i];
+            }
             return *this;
         }
-        constexpr Vec& operator-=(const Vec& o) noexcept
+
+        constexpr Vec<T, N>& operator-=(const Vec<T, N>& b) noexcept
         {
-            x -= o.x;
-            y -= o.y;
+            for (std::size_t i = 0; i < N; i++)
+            {
+                v[i] -= b[i];
+            }
             return *this;
         }
-        constexpr Vec& operator*=(const T s) noexcept
+
+        constexpr Vec<T, N>& operator*=(const T s) noexcept
         {
-            x *= s;
-            y *= s;
+            for (std::size_t i = 0; i < N; i++)
+            {
+                v[i] *= s;
+            }
             return *this;
         }
-        Vec& operator/=(const T s)
+
+        constexpr Vec<T, N>& operator/=(const T s)
         {
             assert(s != T(0));
-            x /= s;
-            y /= s;
+            for (std::size_t i = 0; i < N; i++)
+            {
+                v[i] /= s;
+            }
             return *this;
         }
 
-        friend constexpr Vec operator+(Vec a, const Vec& b) noexcept
+        friend constexpr Vec operator+(Vec a, const Vec b) noexcept
         {
             return a += b;
         }
-        friend constexpr Vec operator-(Vec a, const Vec& b) noexcept
+
+        friend constexpr Vec operator-(Vec a, const Vec b) noexcept
         {
             return a -= b;
         }
+
         friend constexpr Vec operator*(Vec a, const T s) noexcept
         {
             return a *= s;
         }
+
         friend constexpr Vec operator*(T s, Vec a) noexcept
         {
             return a *= s;
         }
-        friend Vec operator/(Vec a, const T s)
+
+        friend constexpr Vec operator/(Vec a, const T s)
         {
             return a /= s;
         }
 
-        // unary minus
-        friend constexpr Vec operator-(Vec v) noexcept
+        friend std::ostream& operator<<(std::ostream& os, const Vec& v)
         {
-            v.x = -v.x;
-            v.y = -v.y;
-            return v;
+            os << "[";
+
+            for (std::size_t i = 0; i < N; i++)
+            {
+                os << v[i];
+                if (i + 1 < N)
+                    os << ", ";
+            }
+
+            os << "]";
+            return os;
         }
 
-        static constexpr Vec Zero() noexcept
+        static constexpr Vec<T, N> Zero()
         {
-            return Vec{T(0), T(0)};
+            Vec<T, N> out{};
+            for (std::size_t i = 0; i < N; i++)
+            {
+                out[i] = 0;
+            }
+            return out;
         }
-        static constexpr Vec One() noexcept
+
+        static constexpr Vec<T, N> One()
         {
-            return Vec{T(1), T(1)};
+            Vec<T, N> out{};
+            for (std::size_t i = 0; i < N; i++)
+            {
+                out[i] = 1;
+            }
+            return out;
         }
     };
+
+    template <typename T, typename std::size_t N>
+    Vec<T, N> normalize(const Vec<T, N>& v)
+    {
+        static_assert(std::is_floating_point_v<T>, "normalize accepts only floating-point inputs");
+
+        const T len = std::sqrt(dot(v, v));
+        assert(len != T(0));
+
+        return v / len;
+    }
+
+    template <typename T, typename std::size_t N>
+    T dot(const Vec<T, N>& a, const Vec<T, N>& b)
+    {
+        T result{};
+
+        for (std::size_t i = 0; i < N; ++i)
+            result += a[i] * b[i];
+
+        return result;
+    }
 
     template <typename T>
-    struct Vec<T, 3>
+    constexpr Vec<T, 3> cross(const Vec<T, 3>& a, const Vec<T, 3>& b) noexcept
     {
-        static_assert(std::is_arithmetic_v<T> && !std::is_same_v<T, bool>);
-        T x{};
-        T y{};
-        T z{};
-
-        constexpr Vec() = default;
-        constexpr Vec(T x_, T y_, T z_) : x(x_), y(y_), z(z_) {}
-
-        constexpr Vec& operator+=(const Vec& o) noexcept
-        {
-            x += o.x;
-            y += o.y;
-            z += o.z;
-            return *this;
-        }
-        constexpr Vec& operator-=(const Vec& o) noexcept
-        {
-            x -= o.x;
-            y -= o.y;
-            z -= o.z;
-            return *this;
-        }
-        constexpr Vec& operator*=(const T s) noexcept
-        {
-            x *= s;
-            y *= s;
-            z *= s;
-            return *this;
-        }
-        Vec& operator/=(const T s)
-        {
-            assert(s != T(0));
-            x /= s;
-            y /= s;
-            z /= s;
-            return *this;
-        }
-
-        friend constexpr Vec operator+(Vec a, const Vec& b) noexcept
-        {
-            return a += b;
-        }
-        friend constexpr Vec operator-(Vec a, const Vec& b) noexcept
-        {
-            return a -= b;
-        }
-        friend constexpr Vec operator*(Vec a, const T s) noexcept
-        {
-            return a *= s;
-        }
-        friend constexpr Vec operator*(T s, Vec a) noexcept
-        {
-            return a *= s;
-        }
-        friend Vec operator/(Vec a, const T s)
-        {
-            return a /= s;
-        }
-
-        // unary minus
-        friend constexpr Vec operator-(Vec v) noexcept
-        {
-            v.x = -v.x;
-            v.y = -v.y;
-            v.z = -v.z;
-            return v;
-        }
-
-        static constexpr Vec Zero() noexcept
-        {
-            return Vec{T(0), T(0), T(0)};
-        }
-        static constexpr Vec One() noexcept
-        {
-            return Vec{T(1), T(1), T(1)};
-        }
-    };
-
-    template <typename T>
-    struct Vec<T, 4>
-    {
-        static_assert(std::is_arithmetic_v<T> && !std::is_same_v<T, bool>);
-        T x{};
-        T y{};
-        T z{};
-        T w{};
-
-        constexpr Vec() = default;
-        constexpr Vec(T x_, T y_, T z_, T w_) : x(x_), y(y_), z(z_), w(w_) {}
-
-        constexpr Vec& operator+=(const Vec& o) noexcept
-        {
-            x += o.x;
-            y += o.y;
-            z += o.z;
-            w += o.w;
-            return *this;
-        }
-        constexpr Vec& operator-=(const Vec& o) noexcept
-        {
-            x -= o.x;
-            y -= o.y;
-            z -= o.z;
-            w -= o.w;
-            return *this;
-        }
-        constexpr Vec& operator*=(const T s) noexcept
-        {
-            x *= s;
-            y *= s;
-            z *= s;
-            w *= s;
-            return *this;
-        }
-        Vec& operator/=(const T s)
-        {
-            assert(s != T(0));
-            x /= s;
-            y /= s;
-            z /= s;
-            w /= s;
-            return *this;
-        }
-
-        friend constexpr Vec operator+(Vec a, const Vec& b) noexcept
-        {
-            return a += b;
-        }
-        friend constexpr Vec operator-(Vec a, const Vec& b) noexcept
-        {
-            return a -= b;
-        }
-        friend constexpr Vec operator*(Vec a, const T s) noexcept
-        {
-            return a *= s;
-        }
-        friend constexpr Vec operator*(T s, Vec a) noexcept
-        {
-            return a *= s;
-        }
-        friend Vec operator/(Vec a, const T s)
-        {
-            return a /= s;
-        }
-
-        // unary minus
-        friend constexpr Vec operator-(Vec v) noexcept
-        {
-            v.x = -v.x;
-            v.y = -v.y;
-            v.z = -v.z;
-            v.w = -v.w;
-            return v;
-        }
-
-        static constexpr Vec Zero() noexcept
-        {
-            return Vec{T(0), T(0), T(0), T(0)};
-        }
-        static constexpr Vec One() noexcept
-        {
-            return Vec{T(1), T(1), T(1), T(1)};
-        }
-    };
+        return Vec<T, 3>{a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]};
+    }
 
     template <typename T, std::size_t R, std::size_t C>
     struct Mat
@@ -264,10 +171,21 @@ namespace ddknd::math
 
         constexpr Mat() = default;
 
+        template <typename... Args>
+            requires(sizeof...(Args) == R * C)
+        explicit constexpr Mat(Args... args) : v{static_cast<T>(args)...}
+        {
+        }
+
         explicit constexpr Mat(std::initializer_list<T> init)
         {
             assert(init.size() == R * C);
             std::copy(init.begin(), init.end(), v.begin());
+        }
+
+        explicit constexpr Mat(std::span<const T, R * C> arr)
+        {
+            std::copy(arr.begin(), arr.end(), v.begin());
         }
 
         constexpr T& operator()(std::size_t r, std::size_t c) noexcept
@@ -285,9 +203,9 @@ namespace ddknd::math
             static_assert(R == C, "Identity is only defined for square matrices");
 
             Mat m{};
-            for(std::size_t i = 0; i < R; i++)
+            for (std::size_t i = 0; i < R; i++)
             {
-                m(i,i) = T(1);
+                m(i, i) = T(1);
             }
             return m;
         }
@@ -299,32 +217,32 @@ namespace ddknd::math
 
         friend std::ostream& operator<<(std::ostream& os, const Mat& m)
         {
-            for(std::size_t r = 0; r < R; r++)
+            for (std::size_t r = 0; r < R; r++)
             {
                 os << "[";
-                for(std::size_t c = 0; c < C; c++)
+                for (std::size_t c = 0; c < C; c++)
                 {
-                    os << m(r,c) << " ";
+                    os << m(r, c) << " ";
                 }
                 os << "]";
-                if(r + 1 != R) os << '\n';
+                if (r + 1 != R)
+                    os << '\n';
             }
             return os;
         }
     };
 
-
-    template<typename T, std::size_t R, std::size_t C, std::size_t K>
-    constexpr Mat<T,R,K> operator*(const Mat<T,R,C>& a, const Mat<T, C, K>& b) noexcept
+    template <typename T, std::size_t R, std::size_t C, std::size_t K>
+    constexpr Mat<T, R, K> operator*(const Mat<T, R, C>& a, const Mat<T, C, K>& b) noexcept
     {
         Mat<T, R, K> res{};
-        for(std::size_t r = 0; r < R; r++)
+        for (std::size_t r = 0; r < R; r++)
         {
-            for(std::size_t k = 0; k < K; k++)
+            for (std::size_t k = 0; k < K; k++)
             {
-                for(std::size_t c = 0; c < C; c++)
+                for (std::size_t c = 0; c < C; c++)
                 {
-                    res(r,k) += a(r,c) * b(c,k);
+                    res(r, k) += a(r, c) * b(c, k);
                 }
             }
         }
@@ -346,8 +264,84 @@ namespace ddknd::math
         {
             return Quat{T(1), T(0), T(0), T(0)};
         }
+
+        // temporaly
+        void Normalize()
+        {        
+            float magnitude = std::sqrt(w * w + x * x + y * y + z * z);
+
+            // Prevent division by zero
+            if (magnitude > 0.00001f)
+            {
+                float invMag = 1.0f / magnitude;
+                w *= invMag;
+                x *= invMag;
+                y *= invMag;
+                z *= invMag;
+            }
+            else
+            {
+                // Default to identity quaternion if norm is zero
+                w = 1.0f;
+                x = 0.0f;
+                y = 0.0f;
+                z = 0.0f;
+            }
+        }
     };
-    // need to implement some other type and operations (e.g. matrix / rotation / convert to glm)
+
+        template <typename T>
+    constexpr Mat<T, 4, 4> translate(const Vec<T, 3>& t) noexcept
+    {
+        auto m = Mat<T, 4, 4>::Identity();
+
+        // column-vector convention: M * v
+        m(0, 3) = t[0];
+        m(1, 3) = t[1];
+        m(2, 3) = t[2];
+
+        return m;
+    }
+
+    template <typename T>
+    constexpr Mat<T, 4, 4> scale(const Vec<T, 3>& s) noexcept
+    {
+        auto m = Mat<T, 4, 4>::Identity();
+
+        m(0, 0) = s[0];
+        m(1, 1) = s[1];
+        m(2, 2) = s[2];
+
+        return m;
+    }
+
+    template <typename T>
+    Mat<T, 4, 4> mat4_cast(Quat<T> q) noexcept
+    {
+        q.Normalize();
+
+        const T w = q.w;
+        const T x = q.x;
+        const T y = q.y;
+        const T z = q.z;
+
+        Mat<T, 4, 4> m = Mat<T, 4, 4>::Identity();
+
+        m(0, 0) = T(1) - T(2) * (y * y + z * z);
+        m(0, 1) = T(2) * (x * y - z * w);
+        m(0, 2) = T(2) * (x * z + y * w);
+
+        m(1, 0) = T(2) * (x * y + z * w);
+        m(1, 1) = T(1) - T(2) * (x * x + z * z);
+        m(1, 2) = T(2) * (y * z - x * w);
+
+        m(2, 0) = T(2) * (x * z - y * w);
+        m(2, 1) = T(2) * (y * z + x * w);
+        m(2, 2) = T(1) - T(2) * (x * x + y * y);
+
+        return m;
+    }
+// need to implement some other type and operations (e.g. matrix / rotation / convert to glm)
 } // namespace ddknd::math
 
 // alias

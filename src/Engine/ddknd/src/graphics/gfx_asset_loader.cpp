@@ -3,8 +3,9 @@
 #include "asset/asset_manager.h"
 
 #include "internal/io/io.h"
-#include "graphics/renderer.h"
 #include "internal/asset/shader_descriptor_parser.h"
+
+#include "internal/graphics/model_importer/glb_importer.h"
 
 #include <string_view>
 #include <spdlog/spdlog.h>
@@ -98,6 +99,7 @@ namespace ddknd::graphics
         return true;
     }
 
+    //
     bool GraphicsAssetLoader::LoadModel(AssetManager& assets, GraphicsAssetStore& gfxstore, AnimationAssetStore& animstore, ModelID id)
     {
         auto vpath = assets.TryPathOf<ModelID::tag_type>(id);
@@ -111,8 +113,10 @@ namespace ddknd::graphics
             return false;
         }
 
+        const std::string abs = path->string();
+
         // importer
-        // auto imported = ImportModel(*path);
+        auto imported = ddknd::graphics::internal::ImportModel(abs);
 
         // build and set resources
         // gfxstore.SetLoaded(id, BuildRenderResource(imported));
@@ -120,5 +124,6 @@ namespace ddknd::graphics
 
         return true;
     }
+
 
 } // namespace ddknd::graphics

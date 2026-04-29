@@ -166,12 +166,14 @@ namespace ddknd::graphics
             GLuint vao;
             glGenVertexArrays(1, &vao);
             glBindVertexArray(vao);
+            // test
 
             const GLuint prog = get_program(id);
             glUseProgram(prog);
             
             // test
             glDrawArrays(GL_TRIANGLES, 0, 3);
+            // test
         }
 
         types::GPUID<tag::MeshGPUTag> CreateMesh_Pos3(std::span<const float> xyz) override
@@ -231,7 +233,7 @@ namespace ddknd::graphics
         {
             if (!id.Is_valid())
             {
-                spdlog::error("OpenGLBackend::BindMesh: ");
+                //spdlog::error("OpenGLBackend::BindMesh: ");
                 glBindVertexArray(0);
                 return;
             }
@@ -239,7 +241,7 @@ namespace ddknd::graphics
             if (idx >= meshes_.size())
             {
                 glBindVertexArray(0);
-                spdlog::error("OpenGLBackend::BindMesh: ");
+                //spdlog::error("OpenGLBackend::BindMesh: ");
                 return;
             }
 

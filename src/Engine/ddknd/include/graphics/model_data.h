@@ -2,13 +2,13 @@
 
 #include <vector>
 #include <unordered_map>
-#include <optional>
 #include <string>
 #include "math/math.h"
 
 // importer/loader intermediate products
 namespace ddknd::graphics::type
 {
+    // for loading
     struct Vertex
     {
         using Vec2f = ::ddknd::math::Vec2f;
@@ -16,14 +16,13 @@ namespace ddknd::graphics::type
         using Vec4f = ::ddknd::math::Vec4f;
         using uVec4 = ::ddknd::math::uVec4;
 
+        Vec3f pos;
+        Vec3f normal;
+        Vec2f texCoords;
+        Vec4f tangent;// (x,y,z,w): xyz + w(sign)
+
         uVec4 joints;
         Vec4f weights;
-
-        Vec3f pos;
-        Vec3f norm;
-        Vec2f texCoords;
-        Vec3f tangent;
-        Vec3f bitangent;
 
     };
 
@@ -34,13 +33,17 @@ namespace ddknd::graphics::type
         Mat4f invBind = Mat4f::Identity();
         TRS bindLocal;
 
-        std::optional<int> parent;
-        std::string name;
+        int parent = -1;
+
+        int nodeIndex = -1;     // glTF node[]
+        std::string name;       // for debug
     };
 
     struct Skeleton
     {
         std::vector<Bone> bones;
+
+        std::unordered_map<int, int> nodeToBone;
 
         std::unordered_map<std::string, int> nameToBone;
     };
@@ -66,18 +69,23 @@ namespace ddknd::graphics::type
         std::vector<Channel> channels;
     };
 
-    struct Mesh
+    struct MeshGeometry
     {
         std::vector<Vertex> vertices;
-        std::vector<std::uint32_t> indices;
-
-        bool hasIndices = false;
+        std::vector<std::uint64_t> indices;//
     };
 
     // Discarded after loading
     struct ModelImportData
     {
-        std::vector<Mesh> meshes;
+        using Mat4f = ::ddknd::math::Mat4f;
+
+        std::vector<MeshGeometry> meshes;
+
+        // 補助データ
+        Mat4f meshBindGlobal = Mat4f::Identity();
+        Mat4f skeletonRootBindGlobal = Mat4f::Identity();
+
         Skeleton skeleton;
         std::vector<AnimationClip> clips;
     };
