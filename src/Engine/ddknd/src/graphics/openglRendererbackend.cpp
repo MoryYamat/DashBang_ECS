@@ -106,17 +106,22 @@ namespace ddknd::graphics
                 }
             }
 
-            for (auto& mesh : meshes_)
+            for (auto& prim : prims_)
             {
-                if (mesh.vbo != 0)
+                if (prim.vbo != 0)
                 {
-                    glDeleteBuffers(1, &mesh.vbo);
-                    mesh.vbo = 0;
+                    glDeleteBuffers(1, &prim.vbo);
+                    prim.vbo = 0;
                 }
-                if (mesh.vao != 0)
+                if (prim.vao != 0)
                 {
-                    glDeleteVertexArrays(1, &mesh.vao);
-                    mesh.vao = 0;
+                    glDeleteVertexArrays(1, &prim.vao);
+                    prim.vao = 0;
+                }
+                if(prim.ebo != 0)
+                {
+                    glDeleteBuffers(1, &prim.ebo);
+                    prim.ebo = 0;
                 }
             }
         }
@@ -176,16 +181,16 @@ namespace ddknd::graphics
             // test
         }
 
-        types::GPUID<tag::MeshGPUTag> CreateMesh_Pos3(std::span<const float> xyz) override
+        types::GPUID<tag::PrimitiveTag> CreateMesh_Pos3(std::span<const float> xyz) override
         {
             // xyz.size()
             if (xyz.empty() || (xyz.size() % 3) != 0)
             {
                 spdlog::error("OpenGLBackend::CreateMesh_Pos3: ");
-                return types::GPUID<tag::MeshGPUTag>::Invalid();
+                return types::GPUID<tag::PrimitiveTag>::Invalid();
             }
 
-            GLMesh m{};
+            GLPrimitive m{};
 
             glGenVertexArrays(1, &m.vao);
             glBindVertexArray(m.vao);
@@ -201,12 +206,12 @@ namespace ddknd::graphics
             glBindVertexArray(0);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-            const std::uint32_t id = static_cast<std::uint32_t>(meshes_.size());
-            meshes_.push_back(m);
-            return types::GPUID<tag::MeshGPUTag>(id);
+            const std::uint32_t id = static_cast<std::uint32_t>(prims_.size());
+            prims_.push_back(m);
+            return types::GPUID<tag::PrimitiveTag>(id);
         }
 
-        void DestroyMesh(types::GPUID<tag::MeshGPUTag> id) override
+        void DestroyMesh(types::GPUID<tag::PrimitiveTag> id) override
         {
             if (!id.Is_valid())
             {
@@ -214,14 +219,14 @@ namespace ddknd::graphics
                 return;
             }
             const auto idx = static_cast<std::uint32_t>(id.Value());
-            if (idx >= meshes_.size())
+            if (idx >= prims_.size())
                 return;
-            auto& m = meshes_[idx];
+            auto& m = prims_[idx];
             if (m.vbo)
                 glDeleteBuffers(1, &m.vbo);
             if (m.vao)
                 glDeleteVertexArrays(1, &m.vao);
-            m = GLMesh{};
+            m = GLPrimitive{};
         }
 
         void DrawArraysTriangles(std::uint32_t count) override
@@ -229,7 +234,7 @@ namespace ddknd::graphics
             glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(count));
         }
 
-        void BindMesh(types::GPUID<tag::MeshGPUTag> id) override
+        void BindMesh(types::GPUID<tag::PrimitiveTag> id) override
         {
             if (!id.Is_valid())
             {
@@ -238,14 +243,14 @@ namespace ddknd::graphics
                 return;
             }
             const auto idx = static_cast<std::size_t>(id.Value());
-            if (idx >= meshes_.size())
+            if (idx >= prims_.size())
             {
                 glBindVertexArray(0);
                 //spdlog::error("OpenGLBackend::BindMesh: ");
                 return;
             }
 
-            glBindVertexArray(meshes_[idx].vao);
+            glBindVertexArray(prims_[idx].vao);
         }
 
       private:
@@ -258,12 +263,13 @@ namespace ddknd::graphics
 			return programs_[idx];
 		}
 
-        struct GLMesh
+        struct GLPrimitive
         {
             GLuint vao = 0;
             GLuint vbo = 0;
+            GLuint ebo = 0;
         };
-        std::vector<GLMesh> meshes_;
+        std::vector<GLPrimitive> prims_;
     };
 
     std::unique_ptr<IRendererBackend>

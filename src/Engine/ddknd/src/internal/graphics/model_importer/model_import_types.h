@@ -113,4 +113,7 @@ namespace ddknd::graphics::internal::type
     };
 }
 
-// @TODO: ロード時のglTF構造化データと実行時データ構造(とその構築処理)の分離
+
+
+
+
