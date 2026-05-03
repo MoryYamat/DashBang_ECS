@@ -9,7 +9,6 @@
 #include <span>
 #include <type_traits>
 
-
 namespace ddknd::math
 {
     template <typename T, std::size_t N>
@@ -230,6 +229,16 @@ namespace ddknd::math
             }
             return os;
         }
+
+        constexpr T* Data() noexcept
+        {
+            return v.data();
+        }
+
+        constexpr const T* Data() const noexcept
+        {
+            return v.data();
+        }
     };
 
     template <typename T, std::size_t R, std::size_t C, std::size_t K>
@@ -371,3 +380,9 @@ namespace ddknd::math
         Vec3f scale = Vec3f::One();
     };
 } // namespace ddknd::math
+
+// utils
+namespace ddknd::math
+{
+    float degToRad(float degree);
+}

@@ -2,6 +2,7 @@
 
 // TODO: need to remove
 #include <glad/glad.h>
+#include "math/math.h"
 
 namespace ddknd::graphics
 {
@@ -12,6 +13,7 @@ namespace ddknd::graphics
 
     void RendererSystem::BeginFrame(FrameDesc& desc)
     {
+        frame_ = desc;
         // view port
         glViewport(0, 0, desc.w, desc.h);
         //
@@ -24,6 +26,11 @@ namespace ddknd::graphics
         for (const auto& cmd : cmds_)
         {
             backend_.UseShaderProgram(cmd.shader);
+
+            backend_.SetUniform(cmd.shader, "uView", frame_.view);
+            backend_.SetUniform(cmd.shader, "uProj", frame_.proj);
+            backend_.SetUniform(cmd.shader, "uModel", math::Mat4f::Identity());
+            
             backend_.BindPrimitive(cmd.mesh);
             backend_.DrawIndexed(cmd.indexCount);
         }

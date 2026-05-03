@@ -8,6 +8,11 @@
 
 #include <memory>
 
+// fwd
+namespace ddknd::component
+{
+    struct CameraComponent;
+} 
 
 namespace app
 {
@@ -40,5 +45,6 @@ namespace app
 
             std::unique_ptr<ddknd::graphics::RendererSystem> renderSys_;
 
+            std::unique_ptr<::ddknd::component::CameraComponent> cam_;
     };
 }// namespace app

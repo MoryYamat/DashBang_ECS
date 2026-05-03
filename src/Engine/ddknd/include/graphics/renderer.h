@@ -2,6 +2,8 @@
 
 // #include "core/StrongID.h"
 #include "gfx_type.h"
+#include "math/math.h"
+
 #include <cstdint>
 #include <memory>
 #include <string_view>
@@ -30,6 +32,7 @@ namespace ddknd::graphics
 			using PrimitiveKey = ::ddknd::graphics::types::PrimitiveKey;
 			using PrimitiveTag = ::ddknd::graphics::tag::PrimitiveTag;
 			using ImportPrimitive = ::ddknd::graphics::internal::types::ImportPrimitive;
+			using Mat4f = ::ddknd::math::Mat4f;
 
       public:
         virtual ~IRendererBackend() = default;
@@ -44,6 +47,8 @@ namespace ddknd::graphics
         virtual void DestroyMesh(GPUID<PrimitiveTag> id) = 0;
 
 		virtual GPUID<PrimitiveTag> CreateOrGetPrimitive(const ImportPrimitive&, const PrimitiveKey&) = 0;
+
+		virtual void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Mat4f& m) = 0;
     };
 
     struct OpenGLBackendDesc
@@ -79,6 +84,8 @@ namespace ddknd::graphics
 	{
 		int h;
 		int w;
+		math::Mat4f view;
+		math::Mat4f proj;
 	};
 
 	class RendererSystem
@@ -107,6 +114,7 @@ namespace ddknd::graphics
 	private:
 		IRendererBackend& backend_;
 		std::vector<DrawCommand> cmds_;
+		FrameDesc frame_;
 	};
 
 }// namespace ddknd::graphics

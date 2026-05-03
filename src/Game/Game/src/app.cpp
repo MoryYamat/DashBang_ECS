@@ -1,5 +1,6 @@
 #include "app.h"
 
+#include <cmath>
 #include <iostream>
 
 #include <io/io.h>
@@ -7,7 +8,6 @@
 #include "graphics/renderer.h"
 #include "input/input.h"
 #include "window/window.h"
-
 
 // test
 #include "component/test_component.h"
@@ -25,6 +25,17 @@
 #include "math/math.h"
 
 #include <spdlog/spdlog.h>
+
+// temporaly
+namespace
+{
+    using Mat4f = ::ddknd::math::Mat4f;
+    using Vec3f = ::ddknd::math::Vec3f;
+    Mat4f LookAt(Vec3f eye, Vec3f target, Vec3f up);
+
+    Mat4f Perspective(float fovY, float aspect, float near, float far);
+
+} // namespace
 
 namespace app
 {
@@ -54,6 +65,8 @@ namespace app
         // renderer
         renderSys_ = std::make_unique<ddknd::graphics::RendererSystem>(*rendererBackend_);
 
+        cam_ = std::make_unique<::ddknd::component::CameraComponent>();
+
         return true;
     }
 
@@ -62,7 +75,7 @@ namespace app
         isRunning_ = true;
 
         // ============= for test ==============
-        // ========== AssetManager ========== 
+        // ========== AssetManager ==========
         using AssetManager = ::ddknd::asset::AssetManager;
         using ShaderTag = ::ddknd::asset::tag::Shader;
         using MeshTag = ::ddknd::asset::tag::Mesh;
@@ -82,16 +95,17 @@ namespace app
         GraphicsAssetStore gfx_asset_store;
         AnimationAssetStore gfx_anim_store;
 
-
         using GraphicsAssetLoader = ::ddknd::graphics::GraphicsAssetLoader;
         GraphicsAssetLoader gfx_loader(*vfs_, *rendererBackend_);
 
         auto load_res_gfx = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, res_1);
         auto load_mod_gfx = gfx_loader.LoadModel(asset_mgr, gfx_asset_store, gfx_anim_store, mod_1);
 
-
         const auto* shader_res = gfx_asset_store.TryGet(res_1);
         const auto* model_res = gfx_asset_store.TryGet(mod_1);
+
+        auto view = LookAt(Vec3f{0, 1, 5}, Vec3f{0, 1, 0}, Vec3f{0, 1, 0});
+        auto proj = Perspective(::ddknd::math::degToRad(60.0f), static_cast<float>(w_)/static_cast<float>(h_), 0.1f, 100.0f);
 
         using DrawCommand = ::ddknd::graphics::DrawCommand;
         // DrawCommand cmd{.shader=shader_res->program};
@@ -99,13 +113,14 @@ namespace app
 
         while (isRunning_ && !window_->ShouldClose())
         {
-            ddknd::graphics::FrameDesc frame{.h = h_, .w = w_};
-            renderSys_->BeginFrame(frame);    
+            ddknd::graphics::FrameDesc frame{.h = h_, .w = w_, .view = view, .proj = proj};
+            renderSys_->BeginFrame(frame);
 
-            for(const auto& res: model_res->primitives)
+            for (const auto& res : model_res->primitives)
             {
                 // std::cerr << "prim_id=" << res.prim.Value() << "\n";
-                renderSys_->Submit(DrawCommand{.mesh = res.prim, .shader= shader_res->program, .indexCount = res.indexCount});
+                renderSys_->Submit(
+                    DrawCommand{.mesh = res.prim, .shader = shader_res->program, .indexCount = res.indexCount});
             }
 
             renderSys_->EndFrame();
@@ -237,6 +252,51 @@ namespace app
         //         std::cerr << "get it\n";
         //     }
         // }
-
     }
 } // namespace app
+
+namespace
+{
+    Mat4f LookAt(Vec3f eye, Vec3f target, Vec3f up)
+    {
+        Vec3f f = normalize(target - eye);
+        Vec3f s = normalize(cross(f, up));
+        Vec3f u = cross(s, f);
+
+        Mat4f m{};
+
+        m(0, 0) = s[0];
+        m(0, 1) = s[1];
+        m(0, 2) = s[2];
+        m(0, 3) = -dot(s, eye);
+        m(1, 0) = u[0];
+        m(1, 1) = u[1];
+        m(1, 2) = u[2];
+        m(1, 3) = -dot(u, eye);
+        m(2, 0) = -f[0];
+        m(2, 1) = -f[1];
+        m(2, 2) = -f[2];
+        m(2, 3) = dot(f, eye);
+        m(3, 0) = 0;
+        m(3, 1) = 0;
+        m(3, 2) = 0;
+        m(3, 3) = 1;
+
+        return m;
+    }
+
+    Mat4f Perspective(float fovY, float aspect, float near, float far)
+    {
+        float f = 1.0f / std::tan(fovY * 0.5f);
+
+        Mat4f m{};
+
+        m(0, 0) = f / aspect;
+        m(1, 1) = f;
+        m(2, 2) = (far + near) / (near - far);
+        m(2, 3) = (2 * far * near) / (near - far);
+        m(3, 2) = -1.0f;
+
+        return m;
+    }
+} // namespace

@@ -257,15 +257,31 @@ namespace ddknd::graphics
 
         GPUID<PrimitiveTag> CreateOrGetPrimitive(const ImportPrimitive& import, const PrimitiveKey& key) override
         {
-            if(const auto it = primitiveCache_.find(key); it != primitiveCache_.end())
+            if (const auto it = primitiveCache_.find(key); it != primitiveCache_.end())
                 return it->second;
 
             const auto id = GPUID<PrimitiveTag>(static_cast<std::uint32_t>(prims_.size()));
 
             buildPrimitiveGPUResource(import);
-            primitiveCache_.emplace(key,id);
+            primitiveCache_.emplace(key, id);
 
             return id;
+        }
+
+        void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Mat4f& m) override
+        {
+            const auto& prog = programs_[static_cast<std::size_t>(shader.Value())];
+
+            glUseProgram(prog);
+
+            GLint loc = glGetUniformLocation(prog, name);
+            if (loc < 0)
+                return;
+
+            glUniformMatrix4fv(loc, 1,
+                               GL_TRUE, // ここは自前Matのメモリ並び次第
+                               m.Data()  // float* を返す関数
+            );
         }
 
       private:
@@ -304,10 +320,10 @@ namespace ddknd::graphics
         glBindVertexArray(gl.vao);
 
         const auto vertices_size = import.vertices.size() * sizeof(decltype(import.vertices)::value_type);
-        const auto indices_size = import.indices.size() * sizeof(decltype(import.indices)::value_type); 
+        const auto indices_size = import.indices.size() * sizeof(decltype(import.indices)::value_type);
         // setup vbo
         glBindBuffer(GL_ARRAY_BUFFER, gl.vbo);
-        glBufferData(GL_ARRAY_BUFFER, vertices_size , import.vertices.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertices_size, import.vertices.data(), GL_STATIC_DRAW);
 
         // setup ebo
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gl.ebo);
