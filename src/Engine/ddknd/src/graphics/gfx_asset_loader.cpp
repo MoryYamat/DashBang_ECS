@@ -460,5 +460,12 @@ namespace
 
 } // namespace
 
-// @TDOO:
+// TODO:
+// file asset ではなく sub-asset key を正式導入する。
+// 例:
+//   model: res://foo.glb#scene=0
+//   anim : res://foo.glb#anim=0
+//   prim : res://foo.glb#prim=12
 // 
+// AssetManager は key -> AssetID のみ担当し、
+// 各 loader/system が key 生成・解釈を担当する。

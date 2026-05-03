@@ -24,8 +24,8 @@ namespace ddknd::graphics
         for (const auto& cmd : cmds_)
         {
             backend_.UseShaderProgram(cmd.shader);
-            backend_.BindMesh(cmd.mesh);
-            backend_.DrawArraysTriangles(cmd.vcount);
+            backend_.BindPrimitive(cmd.mesh);
+            backend_.DrawIndexed(cmd.indexCount);
         }
     }
 
@@ -33,7 +33,5 @@ namespace ddknd::graphics
     void RendererSystem::DrawTestTriangle(TestDrawTriangleCommand test)
     {
         backend_.UseShaderProgram(test.shader);
-        backend_.BindMesh(test.mesh);
-        backend_.DrawArraysTriangles(test.vcount);
     }
 } // namespace ddknd::graphics

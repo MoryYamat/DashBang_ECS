@@ -90,9 +90,11 @@ namespace app
         auto load_mod_gfx = gfx_loader.LoadModel(asset_mgr, gfx_asset_store, gfx_anim_store, mod_1);
 
 
-        const auto shader_res = gfx_asset_store.TryGet(res_1);
+        const auto* shader_res = gfx_asset_store.TryGet(res_1);
+        const auto* model_res = gfx_asset_store.TryGet(mod_1);
 
-        ddknd::graphics::DrawCommand cmd{.shader=shader_res->program};
+        using DrawCommand = ::ddknd::graphics::DrawCommand;
+        // DrawCommand cmd{.shader=shader_res->program};
         // ============= for test ==============
 
         while (isRunning_ && !window_->ShouldClose())
@@ -100,7 +102,11 @@ namespace app
             ddknd::graphics::FrameDesc frame{.h = h_, .w = w_};
             renderSys_->BeginFrame(frame);    
 
-            renderSys_->Submit(cmd);
+            for(const auto& res: model_res->primitives)
+            {
+                // std::cerr << "prim_id=" << res.prim.Value() << "\n";
+                renderSys_->Submit(DrawCommand{.mesh = res.prim, .shader= shader_res->program, .indexCount = res.indexCount});
+            }
 
             renderSys_->EndFrame();
             inputSys_->Update();

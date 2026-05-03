@@ -244,28 +244,15 @@ namespace ddknd::graphics
             m = GLPrimitive{};
         }
 
-        void DrawArraysTriangles(std::uint32_t count) override
+        void BindPrimitive(GPUID<PrimitiveTag> id) override
         {
-            glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(count));
+            const auto& prim = prims_[static_cast<std::size_t>(id.Value())];
+            glBindVertexArray(prim.vao);
         }
 
-        void BindMesh(types::GPUID<tag::PrimitiveTag> id) override
+        void DrawIndexed(std::uint32_t indexCount) override
         {
-            if (!id.Is_valid())
-            {
-                // spdlog::error("OpenGLBackend::BindMesh: ");
-                glBindVertexArray(0);
-                return;
-            }
-            const auto idx = static_cast<std::size_t>(id.Value());
-            if (idx >= prims_.size())
-            {
-                glBindVertexArray(0);
-                // spdlog::error("OpenGLBackend::BindMesh: ");
-                return;
-            }
-
-            glBindVertexArray(prims_[idx].vao);
+            glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
         }
 
         GPUID<PrimitiveTag> CreateOrGetPrimitive(const ImportPrimitive& import, const PrimitiveKey& key) override

@@ -78,4 +78,4 @@ gtest_discover_tests(ddknd_test)
 #add_dependencies(ddknd copy_assets)
 
 
-add_subdirectory("benchmark")
+# add_subdirectory("benchmark")

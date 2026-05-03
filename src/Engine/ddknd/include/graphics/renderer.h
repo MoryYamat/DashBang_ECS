@@ -38,9 +38,8 @@ namespace ddknd::graphics
 
         virtual void DestroyShaderProgram(GPUID<tag::ShaderProgramGPUTag> id) = 0;
 
-        virtual void BindMesh(GPUID<PrimitiveTag> id) = 0;
-        virtual void DrawArraysTriangles(std::uint32_t count) = 0;
-
+		virtual void BindPrimitive(GPUID<PrimitiveTag> id) = 0;
+		virtual void DrawIndexed(std::uint32_t indexCount) = 0;
         virtual GPUID<PrimitiveTag> CreateMesh_Pos3(std::span<const float> xyz) = 0;
         virtual void DestroyMesh(GPUID<PrimitiveTag> id) = 0;
 
@@ -64,7 +63,8 @@ namespace ddknd::graphics
 	{
 		ddknd::graphics::types::GPUID<tag::PrimitiveTag> mesh;
 		ddknd::graphics::types::GPUID<tag::ShaderProgramGPUTag> shader;
-		std::uint32_t vcount;
+		// std::uint32_t vertexCount;
+		std::uint32_t indexCount = 0;
 	};
 
 	// for testing triangle
