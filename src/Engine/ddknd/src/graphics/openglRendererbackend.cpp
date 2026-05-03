@@ -1,9 +1,13 @@
+#include "graphics/gfx_type.h"
 #include "graphics/renderer.h"
 
+#include <cstddef>
 #include <memory>
+#include <span>
 #include <string_view>
 #include <vector>
-#include <span>
+
+#include "internal/graphics/model_importer/model_import_types.h"
 
 #include <glad/glad.h>
 #include <spdlog/spdlog.h>
@@ -93,6 +97,17 @@ namespace ddknd::graphics
 {
     class OpenGLRendererBackend final : public IRendererBackend
     {
+        template <typename Tag>
+        using GPUID = ::ddknd::graphics::types::GPUID<Tag>;
+
+        // internal
+        using ImportPrimitive = ::ddknd::graphics::internal::types::ImportPrimitive;
+        using Vertex = ::ddknd::graphics::internal::types::Vertex;
+
+        using PrimitiveTag = ::ddknd::graphics::tag::PrimitiveTag;
+        using PrimitiveKey = ::ddknd::graphics::types::PrimitiveKey;
+        using PrimitiveKeyHash = ::ddknd::graphics::types::PrimitiveKeyHash;
+
       public:
         ~OpenGLRendererBackend()
         {
@@ -118,7 +133,7 @@ namespace ddknd::graphics
                     glDeleteVertexArrays(1, &prim.vao);
                     prim.vao = 0;
                 }
-                if(prim.ebo != 0)
+                if (prim.ebo != 0)
                 {
                     glDeleteBuffers(1, &prim.ebo);
                     prim.ebo = 0;
@@ -127,7 +142,7 @@ namespace ddknd::graphics
         }
 
         types::GPUID<tag::ShaderProgramGPUTag> CreateShaderProgram(std::string_view vs_source,
-                                                                             std::string_view fs_source) override
+                                                                   std::string_view fs_source) override
         {
             GLuint vs = compile_shader(GL_VERTEX_SHADER, vs_source);
             if (!vs)
@@ -175,7 +190,7 @@ namespace ddknd::graphics
 
             const GLuint prog = get_program(id);
             glUseProgram(prog);
-            
+
             // test
             glDrawArrays(GL_TRIANGLES, 0, 3);
             // test
@@ -238,7 +253,7 @@ namespace ddknd::graphics
         {
             if (!id.Is_valid())
             {
-                //spdlog::error("OpenGLBackend::BindMesh: ");
+                // spdlog::error("OpenGLBackend::BindMesh: ");
                 glBindVertexArray(0);
                 return;
             }
@@ -246,22 +261,38 @@ namespace ddknd::graphics
             if (idx >= prims_.size())
             {
                 glBindVertexArray(0);
-                //spdlog::error("OpenGLBackend::BindMesh: ");
+                // spdlog::error("OpenGLBackend::BindMesh: ");
                 return;
             }
 
             glBindVertexArray(prims_[idx].vao);
         }
 
+        GPUID<PrimitiveTag> CreateOrGetPrimitive(const ImportPrimitive& import, const PrimitiveKey& key) override
+        {
+            if(const auto it = primitiveCache_.find(key); it != primitiveCache_.end())
+                return it->second;
+
+            const auto id = GPUID<PrimitiveTag>(static_cast<std::uint32_t>(prims_.size()));
+
+            buildPrimitiveGPUResource(import);
+            primitiveCache_.emplace(key,id);
+
+            return id;
+        }
+
       private:
         std::vector<GLuint> programs_;
 
-		GLuint get_program(types::GPUID<tag::ShaderProgramGPUTag> id) const noexcept
-		{
-			const auto idx = static_cast<std::size_t>(id.Value());
-			if (idx >= programs_.size())  return 0;
-			return programs_[idx];
-		}
+        GLuint get_program(types::GPUID<tag::ShaderProgramGPUTag> id) const noexcept
+        {
+            const auto idx = static_cast<std::size_t>(id.Value());
+            if (idx >= programs_.size())
+                return 0;
+            return programs_[idx];
+        }
+
+        void buildPrimitiveGPUResource(const ImportPrimitive& import);
 
         struct GLPrimitive
         {
@@ -270,12 +301,68 @@ namespace ddknd::graphics
             GLuint ebo = 0;
         };
         std::vector<GLPrimitive> prims_;
+
+        std::unordered_map<PrimitiveKey, GPUID<PrimitiveTag>, PrimitiveKeyHash> primitiveCache_;
     };
 
-    std::unique_ptr<IRendererBackend>
-	CreateOpenGLBackend(const OpenGLBackendDesc& desc)
-	{
+    // builder
+    void OpenGLRendererBackend::buildPrimitiveGPUResource(const ImportPrimitive& import)
+    {
+        GLPrimitive gl;
+        glGenVertexArrays(1, &gl.vao);
+        glGenBuffers(1, &gl.vbo);
+        glGenBuffers(1, &gl.ebo);
 
-		return std::make_unique<OpenGLRendererBackend>();
-	}
+        // bind
+        glBindVertexArray(gl.vao);
+
+        const auto vertices_size = import.vertices.size() * sizeof(decltype(import.vertices)::value_type);
+        const auto indices_size = import.indices.size() * sizeof(decltype(import.indices)::value_type); 
+        // setup vbo
+        glBindBuffer(GL_ARRAY_BUFFER, gl.vbo);
+        glBufferData(GL_ARRAY_BUFFER, vertices_size , import.vertices.data(), GL_STATIC_DRAW);
+
+        // setup ebo
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gl.ebo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_size, import.indices.data(), GL_STATIC_DRAW);
+
+        using V = typename decltype(import.vertices)::value_type;
+        static_assert(std::is_standard_layout_v<V>, "Vertex must be standard layout");
+        static_assert(std::is_trivially_copyable_v<V>);
+        GLsizei stride = sizeof(V);
+        // setup vao
+        // position (location = 0)
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(0));
+        glEnableVertexAttribArray(0);
+
+        // normal (location = 1)
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(offsetof(Vertex, normal)));
+        glEnableVertexAttribArray(1);
+
+        // texcoords (location = 2)
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(offsetof(Vertex, texCoords)));
+        glEnableVertexAttribArray(2);
+
+        // tangent (location = 3)
+        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(offsetof(Vertex, tangent)));
+        glEnableVertexAttribArray(3);
+
+        // joints (location = 4)
+        glVertexAttribIPointer(4, 4, GL_UNSIGNED_INT, stride, reinterpret_cast<void*>(offsetof(Vertex, joints)));
+        glEnableVertexAttribArray(4);
+
+        // weights (location = 5)
+        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(offsetof(Vertex, weights)));
+        glEnableVertexAttribArray(5);
+
+        glBindVertexArray(0);
+
+        prims_.push_back(std::move(gl));
+    }
+
+    // =========================================== factory ===========================================
+    std::unique_ptr<IRendererBackend> CreateOpenGLBackend(const OpenGLBackendDesc& desc)
+    {
+        return std::make_unique<OpenGLRendererBackend>();
+    }
 } // namespace ddknd::graphics

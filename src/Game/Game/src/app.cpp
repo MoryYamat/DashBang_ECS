@@ -95,20 +95,20 @@ namespace app
         ddknd::graphics::DrawCommand cmd{.shader=shader_res->program};
         // ============= for test ==============
 
-        // while (isRunning_ && !window_->ShouldClose())
-        // {
-        //     ddknd::graphics::FrameDesc frame{.h = h_, .w = w_};
-        //     renderSys_->BeginFrame(frame);    
+        while (isRunning_ && !window_->ShouldClose())
+        {
+            ddknd::graphics::FrameDesc frame{.h = h_, .w = w_};
+            renderSys_->BeginFrame(frame);    
 
-        //     renderSys_->Submit(cmd);
+            renderSys_->Submit(cmd);
 
-        //     renderSys_->EndFrame();
-        //     inputSys_->Update();
-        //     window_->PollEvents();
-        //     window_->SwapBuffers();
-        //     if (inputSys_->isPressing(ddknd::input::Key::Escape))
-        //         isRunning_ = false;
-        // }
+            renderSys_->EndFrame();
+            inputSys_->Update();
+            window_->PollEvents();
+            window_->SwapBuffers();
+            if (inputSys_->isPressing(ddknd::input::Key::Escape))
+                isRunning_ = false;
+        }
     }
 
     void App::Shutdown()
@@ -231,5 +231,6 @@ namespace app
         //         std::cerr << "get it\n";
         //     }
         // }
+
     }
 } // namespace app

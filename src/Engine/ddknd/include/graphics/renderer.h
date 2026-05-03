@@ -7,23 +7,44 @@
 #include <string_view>
 #include <span>
 
+// fwd
+namespace ddknd::graphics::internal::types
+{
+	struct ImportPrimitive;
+}
+
+namespace ddknd::graphics::types
+{
+	struct PrimitiveKey;
+}
+
 
 namespace ddknd::graphics
 {
     class IRendererBackend
     {
+		private:
+			template<typename Tag>
+			using GPUID = ::ddknd::graphics::types::GPUID<Tag>;
+
+			using PrimitiveKey = ::ddknd::graphics::types::PrimitiveKey;
+			using PrimitiveTag = ::ddknd::graphics::tag::PrimitiveTag;
+			using ImportPrimitive = ::ddknd::graphics::internal::types::ImportPrimitive;
+
       public:
         virtual ~IRendererBackend() = default;
-        virtual types::GPUID<tag::ShaderProgramGPUTag> CreateShaderProgram(std::string_view, std::string_view) = 0;
-        virtual void UseShaderProgram(types::GPUID<tag::ShaderProgramGPUTag> id) = 0;
+        virtual GPUID<tag::ShaderProgramGPUTag> CreateShaderProgram(std::string_view, std::string_view) = 0;
+        virtual void UseShaderProgram(GPUID<tag::ShaderProgramGPUTag> id) = 0;
 
-        virtual void DestroyShaderProgram(types::GPUID<tag::ShaderProgramGPUTag> id) = 0;
+        virtual void DestroyShaderProgram(GPUID<tag::ShaderProgramGPUTag> id) = 0;
 
-        virtual void BindMesh(types::GPUID<tag::PrimitiveTag> id) = 0;
+        virtual void BindMesh(GPUID<PrimitiveTag> id) = 0;
         virtual void DrawArraysTriangles(std::uint32_t count) = 0;
 
-        virtual types::GPUID<tag::PrimitiveTag> CreateMesh_Pos3(std::span<const float> xyz) = 0;
-        virtual void DestroyMesh(types::GPUID<tag::PrimitiveTag> id) = 0;
+        virtual GPUID<PrimitiveTag> CreateMesh_Pos3(std::span<const float> xyz) = 0;
+        virtual void DestroyMesh(GPUID<PrimitiveTag> id) = 0;
+
+		virtual GPUID<PrimitiveTag> CreateOrGetPrimitive(const ImportPrimitive&, const PrimitiveKey&) = 0;
     };
 
     struct OpenGLBackendDesc

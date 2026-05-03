@@ -15,7 +15,7 @@ namespace ddknd::graphics::tag
     struct PrimitiveTag // mesh: vec<primitives>
     {
     };
-    // ========== runtime =========
+    // ========== (runtime) =========
     struct ModelTag
     {
     };
@@ -33,6 +33,32 @@ namespace ddknd::graphics::types
     template <typename GPUTag>
     using GPUID = ddknd::core::StrongID<GPUTag, std::uint32_t>;
 
+    struct PrimitiveKey
+    {
+        std::string fileKey;        // (now:vpath)
+        int prim_index = -1;        // import.primitives.index
+
+        bool operator==(const PrimitiveKey& o) const
+        {
+            return prim_index == o.prim_index && fileKey == o.fileKey;
+        }
+    };
+
+    struct PrimitiveKeyHash
+    {
+        std::size_t operator()(const PrimitiveKey& k) const
+        {
+            std::size_t h1 = std::hash<std::string>{}(k.fileKey);
+            std::size_t h2 = std::hash<int>{}(k.prim_index);
+
+            return h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2));
+        }
+    };
+}
+
+namespace ddknd::animation::types
+{
+
     struct Bone
     {
         using Mat4f = ::ddknd::math::Mat4f;
@@ -43,11 +69,10 @@ namespace ddknd::graphics::types
         TRS bindLocal;
     };
 
+    // runtime
     struct SkeletonResource
     {
         std::vector<Bone> bones;
-
-        std::vector<int> boneToNode;
     };
 
     enum class ChannelTarget
@@ -85,7 +110,7 @@ namespace ddknd::graphics::types
     };
 } // namespace ddknd::graphics::types
 
-// =============================static=============================
+// =============================static=============================(it may be internal)
 namespace ddknd::graphics::asset
 {
     template <typename Tag>
@@ -99,6 +124,12 @@ namespace ddknd::graphics::asset
         GPUID<tag::ShaderProgramGPUTag> program;
     };
 
+    struct ModelFileResource
+    {
+        using ModelTag = ::ddknd::graphics::tag::ModelTag;
+        std::vector<AssetID<ModelTag>> scenes;
+    };
+
     struct PrimitiveResource
     {
         GPUID<tag::PrimitiveTag> prim;// GLPrimitive_Index
@@ -108,8 +139,9 @@ namespace ddknd::graphics::asset
 
     struct ModelRenderResource      // AssetID<tag::Model> model;
     {
+        int sourceScene = 0;// default
         std::vector<PrimitiveResource> primitives;
-        std::optional<graphics::types::SkeletonResource> skeleton;
+        std::optional<animation::types::SkeletonResource> skeleton;
         // std::vector<graphics::types::AnimationClipResource> clips;
         std::vector<AssetID<animation::tag::AnimationClipTag>> clips;// Standard clips that can be used with this model
     };
@@ -191,3 +223,8 @@ namespace ddknd::graphics
 //     Pose pose;
 //     AnimationState animState;
 // };
+
+
+// @TODO
+// LOW:
+// - Editor 機能: glTF->Scene(Model分割)->sceneIndex を 表示

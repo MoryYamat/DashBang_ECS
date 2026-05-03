@@ -1,33 +1,36 @@
 #pragma once
 
-
-#include "graphics/graphics_fwd.h"
-#include "io/io.h"
-#include "io/io_fwd.h"
 #include "asset/asset_fwd.h"
 #include "asset/asset_manager.h"
 #include "asset/asset_tag.h"
 #include "gfx_type.h"
-#include "graphics/renderer.h"
+#include "graphics/graphics_fwd.h"
 #include "graphics/model_data.h"
+#include "graphics/renderer.h"
+#include "io/io.h"
+#include "io/io_fwd.h"
+
 
 namespace ddknd::animation
 {
     class AnimationAssetStore
     {
       public:
-        using ModelID = ddknd::asset::AssetID<ddknd::asset::tag::Model>;
-        using ModelAnimationResource = animation::asset::ModelAnimationResource;
-        using ModelTag = ::ddknd::asset::tag::Model; //@TODO Model {render, skeleton, clip}
+        using AnimationTag = ::ddknd::animation::tag::AnimationClipTag;
+        using AnimationID = ::ddknd::asset::AssetID<::ddknd::animation::tag::AnimationClipTag>;
+        using AnimationClipResource = ::ddknd::animation::types::AnimationClipResource;
 
-        const ModelAnimationResource* TryGet(ModelID id) const;
-        void SetLoaded(ModelID id, ModelAnimationResource res);
+        const AnimationClipResource* TryGet(AnimationID id) const;
+        void SetLoaded(AnimationID id, AnimationClipResource res)
+        {
+          anims_.Set(id, std::move(res));
+        }
 
       private:
         template <typename T, typename Tag>
         using AssestStorage = ::ddknd::asset::AssestStorage<T, Tag>;
 
-        AssestStorage<ModelAnimationResource, ModelTag> models_;
+        AssestStorage<AnimationClipResource, AnimationTag> anims_;
     };
 
 } // namespace ddknd::animation
@@ -46,24 +49,24 @@ namespace ddknd::graphics
         using ShaderID = AssetID<ShaderTag>;
         using ModelID = AssetID<ModelTag>;
         using ShaderResource = asset::ShaderResource;
-        using ModelResource = asset::ModelRenderResource;
+        using ModelRenderResource = asset::ModelRenderResource;
 
         const ShaderResource* TryGet(ShaderID id) const
         {
-          return shaders_.TryGet(id);
+            return shaders_.TryGet(id);
         }
-        const ModelResource* TryGet(ModelID id) const
+        const ModelRenderResource* TryGet(ModelID id) const
         {
-          return models_.TryGet(id);
+            return models_.TryGet(id);
         }
 
         void SetLoaded(ShaderID id, ShaderResource res)
         {
-          shaders_.Set(id, std::move(res));
+            shaders_.Set(id, std::move(res));
         }
-        void SetLoaded(ModelID id, ModelResource res)
+        void SetLoaded(ModelID id, ModelRenderResource res)
         {
-          models_.Set(id, std::move(res));
+            models_.Set(id, std::move(res));
         }
 
       private:
@@ -71,8 +74,7 @@ namespace ddknd::graphics
         using AssestStorage = ::ddknd::asset::AssestStorage<T, Tag>;
 
         AssestStorage<ShaderResource, ShaderTag> shaders_;
-        AssestStorage<ModelResource, ModelTag> models_;
-
+        AssestStorage<ModelRenderResource, ModelTag> models_;
     };
 
     class GraphicsAssetLoader
@@ -87,17 +89,23 @@ namespace ddknd::graphics
         using ShaderID = AssetID<ShaderTag>;
         using ModelID = AssetID<ModelTag>;
 
-        using IPathResolver =::ddknd::io::IPathResolver;
+        using ModelRenderResource = asset::ModelRenderResource;
+
+        using IPathResolver = ::ddknd::io::IPathResolver;
         using IRendererBackend = ::ddknd::graphics::IRendererBackend;
 
       public:
         using AnimationAssetStore = ::ddknd::animation::AnimationAssetStore;
 
-        GraphicsAssetLoader(const IPathResolver& resolver, IRendererBackend& backend): resolver_(resolver), backend_(backend){}
+        GraphicsAssetLoader(const IPathResolver& resolver, IRendererBackend& backend)
+            : resolver_(resolver), backend_(backend)
+        {
+        }
 
         bool LoadShader(AssetManager& assets, GraphicsAssetStore& store, ShaderID id);
         bool LoadModel(AssetManager& assets, GraphicsAssetStore& gfxstore, AnimationAssetStore& animstore, ModelID id);
 
+      private:
         const IPathResolver& resolver_;
         IRendererBackend& backend_;
     };

@@ -1,20 +1,21 @@
 #pragma once
 
 #include <vector>
-#include <unordered_map>
 #include <string>
 #include "math/math.h"
 
 // importer/loader intermediate products
-namespace ddknd::graphics::internal::type
+namespace ddknd::graphics::internal::types
 {
+    
+    /*size 80byte*/
     // for loading
     struct Vertex
     {
-        using Vec2f = ::ddknd::math::Vec2f;
-        using Vec3f = ::ddknd::math::Vec3f;
-        using Vec4f = ::ddknd::math::Vec4f;
-        using uVec4 = ::ddknd::math::uVec4;
+        using Vec2f = ::ddknd::math::Vec2f;     // 8byte
+        using Vec3f = ::ddknd::math::Vec3f;     // 12byte
+        using Vec4f = ::ddknd::math::Vec4f;     // 16byte
+        using uVec4 = ::ddknd::math::uVec4;     // 16byte
 
         Vec3f pos;
         Vec3f normal;
@@ -23,10 +24,9 @@ namespace ddknd::graphics::internal::type
 
         uVec4 joints;
         Vec4f weights;
-
     };    
     
-    enum class ChannelType { Unknown, T, R, S};
+    enum class ChannelType : std::uint8_t { Unknown, T, R, S};
 
     struct ImportChannel
     {

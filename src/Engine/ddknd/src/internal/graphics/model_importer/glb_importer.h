@@ -9,5 +9,5 @@
 namespace ddknd::graphics::internal
 {
     // @TODO: dependency
-    std::optional<::ddknd::graphics::internal::type::ModelImportData> ImportModel(const std::string& path);
+    std::optional<::ddknd::graphics::internal::types::ModelImportData> ImportModel(const std::string& path);
 }// namespace ddknd::graphcis::internal
