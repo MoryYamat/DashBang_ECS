@@ -6,23 +6,20 @@ namespace ddknd::component
 {
     struct Pos
     {
-        float x;
-        float y;
-        float z;
+        using Vec3f = ::ddknd::math::Vec3f;
+        Vec3f v{};
     };
 
     struct Vel
     {
-        float x;
-        float y;
-        float z;
+        using Vec3f = ::ddknd::math::Vec3f;
+        Vec3f v{};
     };
 
     struct Acc
     {
-        float x;
-        float y;
-        float z;
+        using Vec3f = ::ddknd::math::Vec3f;
+        Vec3f v{};
     };
 
 

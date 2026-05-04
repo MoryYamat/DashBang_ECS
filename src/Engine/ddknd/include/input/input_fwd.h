@@ -4,6 +4,7 @@
 namespace ddknd::input
 {
     class IInputBackend;
-    class InputSystem;
+    class DeviceInput;
+    class InputRegistry;
 
 }// namespace ddknd::input

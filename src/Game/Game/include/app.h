@@ -41,7 +41,7 @@ namespace app
             std::unique_ptr<ddknd::graphics::IRendererBackend> rendererBackend_;
             std::unique_ptr<ddknd::io::IPathResolver> vfs_;
             std::unique_ptr<ddknd::input::IInputBackend> inputBackend_;
-            std::unique_ptr<ddknd::input::InputSystem> inputSys_;
+            std::unique_ptr<ddknd::input::DeviceInput> inputSys_;
 
             std::unique_ptr<ddknd::graphics::RendererSystem> renderSys_;
 

@@ -57,7 +57,7 @@ namespace app
         vfs_ = ddknd::io::CreateVfsResolver(mounts);
 
         inputBackend_ = ddknd::input::CreateGlfwInputBackend(*window_);
-        inputSys_ = std::make_unique<ddknd::input::InputSystem>(*inputBackend_);
+        inputSys_ = std::make_unique<ddknd::input::DeviceInput>(*inputBackend_);
 
         // renderer backnend
         rendererBackend_ = ddknd::graphics::CreateOpenGLBackend(ddknd::graphics::OpenGLBackendDesc{});
@@ -127,7 +127,7 @@ namespace app
             inputSys_->Update();
             window_->PollEvents();
             window_->SwapBuffers();
-            if (inputSys_->isPressing(ddknd::input::Key::Escape))
+            if (inputSys_->isPressing(ddknd::input::Key::ESCAPE))
                 isRunning_ = false;
         }
     }
@@ -138,6 +138,7 @@ namespace app
 
         ::ddknd::world::World wd{};
 
+        // ======================= test for ecs systems ======================= 
         // auto ent0_0 = wd.Create();
         // auto ent0_1 = wd.Create();
         // auto ent0_2 = wd.Create();
@@ -252,6 +253,67 @@ namespace app
         //         std::cerr << "get it\n";
         //     }
         // }
+        // ======================= test for ecs systems ======================= 
+
+        // ======================= test for input action systems ======================= 
+        using Key = ::ddknd::input::Key;
+        using InputMapping = ::ddknd::input::InputMapping;
+        enum class Action : std::uint32_t
+        {
+            Jump = 10,
+            Attack = 20,
+            Dash = 100
+        };
+
+        struct ActionType
+        {
+            std::size_t v;
+
+            explicit ActionType(std::size_t v)
+                : v(v) {}
+            
+            explicit operator std::size_t() const
+            {
+                return v;
+            }
+        };
+        ActionType move_forward {0};
+
+        InputMapping mapping;
+        mapping.RegisterKeyMap(Key::SPACE, Action::Jump);
+        mapping.RegisterKeyMap(Key::A, Action::Attack);
+        mapping.RegisterKeyMap(Key::LEFT_SHIFT, Action::Dash);
+        mapping.RegisterKeyMap(Key::W, move_forward);
+
+        auto jumpId = mapping.GetActionID(Action::Jump);
+        auto attackId = mapping.GetActionID(Action::Attack);
+        auto dashId = mapping.GetActionID(Action::Dash);
+        auto forwardId = mapping.GetActionID(move_forward);
+
+        assert(jumpId != InputMapping::InvalidID);
+        assert(attackId != InputMapping::InvalidID);
+        assert(dashId != InputMapping::InvalidID);
+        assert(forwardId != InputMapping::InvalidID);
+
+        assert(jumpId != attackId);
+        assert(attackId != dashId);
+
+        assert(mapping.GetActionFromKey(Key::SPACE) == jumpId);
+        assert(mapping.GetActionFromKey(Key::A) == attackId);
+        assert(mapping.GetActionFromKey(Key::LEFT_SHIFT) == dashId);
+        assert(mapping.GetActionFromKey(Key::W) == forwardId);
+
+        assert(mapping.GetKey(jumpId) == Key::SPACE);
+        assert(mapping.GetKey(attackId) == Key::A);
+        assert(mapping.GetKey(dashId) == Key::LEFT_SHIFT);
+        assert(mapping.GetKey(forwardId) == Key::W);
+
+        // 未登録
+        assert(mapping.GetActionID(static_cast<Action>(999)) == InputMapping::InvalidID);
+        assert(mapping.GetActionFromKey(Key::F20) == InputMapping::InvalidID);
+        assert(mapping.GetKey(InputMapping::InvalidID) == InputMapping::InvalidKey);
+        // ======================= test for input action systems ======================= 
+        
     }
 } // namespace app
 

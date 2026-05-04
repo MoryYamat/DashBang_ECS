@@ -66,10 +66,12 @@ namespace ddknd::input
                 return GLFW_KEY_Y;
             case Key::Z:
                 return GLFW_KEY_Z;
-            case Key::Space:
+            case Key::SPACE:
                 return GLFW_KEY_SPACE;
-            case Key::Escape:
+            case Key::ESCAPE:
                 return GLFW_KEY_ESCAPE;
+            case Key::LEFT_SHIFT:
+                return GLFW_KEY_LEFT_SHIFT;
             default:
                 return GLFW_KEY_LAST;
             }

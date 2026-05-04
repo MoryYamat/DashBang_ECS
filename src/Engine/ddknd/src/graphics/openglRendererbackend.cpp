@@ -191,9 +191,7 @@ namespace ddknd::graphics
             const GLuint prog = get_program(id);
             glUseProgram(prog);
 
-            // test
-            glDrawArrays(GL_TRIANGLES, 0, 3);
-            // test
+            glEnable(GL_DEPTH_TEST);
         }
 
         types::GPUID<tag::PrimitiveTag> CreateMesh_Pos3(std::span<const float> xyz) override
@@ -272,15 +270,13 @@ namespace ddknd::graphics
         {
             const auto& prog = programs_[static_cast<std::size_t>(shader.Value())];
 
-            glUseProgram(prog);
-
             GLint loc = glGetUniformLocation(prog, name);
             if (loc < 0)
                 return;
 
             glUniformMatrix4fv(loc, 1,
-                               GL_TRUE, // ここは自前Matのメモリ並び次第
-                               m.Data()  // float* を返す関数
+                               GL_TRUE, // raw-major
+                               m.Data()  // float*
             );
         }
 
