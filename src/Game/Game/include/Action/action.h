@@ -1,19 +1,32 @@
 #pragma once
 
 #include <cstdint>
+#include <cstddef>
 
 namespace app::action
 {
 
+    // good usecase
     enum class Action : std::uint32_t
     {
         // move
-        MoveFoward=0,
+        MoveFoward = 0,
         MoveBackward,
         MoveLeft,
         MoveRight
     };
 
+    // struct ActionType
+    // {
+    //     std::size_t v;
 
+    //     explicit ActionType(std::size_t v) : v(v) {}
 
-}// namespace app::action
+    //     explicit operator std::size_t() const
+    //     {
+    //         return v;
+    //     }
+    // };
+    // inline ActionType move_forward{0};
+
+} // namespace app::action

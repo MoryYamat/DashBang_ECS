@@ -5,6 +5,7 @@
 
 #include <io/io.h>
 
+#include "Action/action.h"
 #include "graphics/renderer.h"
 #include "input/input.h"
 #include "window/window.h"
@@ -35,6 +36,11 @@ namespace
 
     Mat4f Perspective(float fovY, float aspect, float near, float far);
 
+    using Action = ::app::action::Action;
+    using Key = ::ddknd::input::Key;
+
+
+
 } // namespace
 
 namespace app
@@ -57,7 +63,7 @@ namespace app
         vfs_ = ddknd::io::CreateVfsResolver(mounts);
 
         inputBackend_ = ddknd::input::CreateGlfwInputBackend(*window_);
-        inputSys_ = std::make_unique<ddknd::input::DeviceInput>(*inputBackend_);
+        deviceInput_ = std::make_unique<ddknd::input::DeviceInput>(*inputBackend_);
 
         // renderer backnend
         rendererBackend_ = ddknd::graphics::CreateOpenGLBackend(ddknd::graphics::OpenGLBackendDesc{});
@@ -66,6 +72,18 @@ namespace app
         renderSys_ = std::make_unique<ddknd::graphics::RendererSystem>(*rendererBackend_);
 
         cam_ = std::make_unique<::ddknd::component::CameraComponent>();
+
+        // user definition input 
+        inputMapping_ = std::make_unique<::ddknd::input::InputMapping>();
+        inputSys_ = std::make_unique<::ddknd::input::ActionInputSystem>(inputMapping_.get());
+
+        //@TODO: make factory class
+        using Key = ::ddknd::input::Key;
+        using Action = ::app::action::Action;
+        inputMapping_->RegisterKeyMap(Key::W, Action::MoveFoward);
+        inputMapping_->RegisterKeyMap(Key::A, Action::MoveLeft);
+        inputMapping_->RegisterKeyMap(Key::S, Action::MoveBackward);
+        inputMapping_->RegisterKeyMap(Key::D, Action::MoveRight);
 
         return true;
     }
@@ -109,6 +127,9 @@ namespace app
 
         using DrawCommand = ::ddknd::graphics::DrawCommand;
         // DrawCommand cmd{.shader=shader_res->program};
+
+        // INPUT
+        using Action = ::app::action::Action;
         // ============= for test ==============
 
         while (isRunning_ && !window_->ShouldClose())
@@ -124,10 +145,26 @@ namespace app
             }
 
             renderSys_->EndFrame();
-            inputSys_->Update();
+
+
+            deviceInput_->Update();
+            // ================== test for input systems ================== 
+            inputSys_->Update(*deviceInput_.get());
+            {
+                if(inputSys_->IsPressed(Action::MoveFoward))
+                    std::cerr << "pressed=MoveForward\n"; 
+                if(inputSys_->IsDown(Action::MoveBackward))
+                    std::cerr << "down=MoveBackward\n";
+                if(inputSys_->IsReleased(Action::MoveRight))
+                    std::cerr << "Released=MoveRight\n";
+                if(inputSys_->IsDown(Action::MoveLeft))
+                    std::cerr << "Value(MoveLeft)=" << inputSys_->GetValue(Action::MoveLeft) <<  "\n";
+            }
+            // ================== test for input systems ================== 
+
             window_->PollEvents();
             window_->SwapBuffers();
-            if (inputSys_->isPressing(ddknd::input::Key::ESCAPE))
+            if (deviceInput_->isPressing(ddknd::input::Key::ESCAPE))
                 isRunning_ = false;
         }
     }
@@ -257,61 +294,34 @@ namespace app
 
         // ======================= test for input action systems ======================= 
         using Key = ::ddknd::input::Key;
+        using Action = ::app::action::Action;
         using InputMapping = ::ddknd::input::InputMapping;
-        enum class Action : std::uint32_t
-        {
-            Jump = 10,
-            Attack = 20,
-            Dash = 100
-        };
+        using ActionInputSystem = ::ddknd::input::ActionInputSystem;
+        
+        auto move_forward = inputMapping_->GetActionID(Action::MoveFoward);
+        auto move_left = inputMapping_->GetActionID(Action::MoveLeft);
+        auto move_backward = inputMapping_->GetActionID(Action::MoveBackward);
+        auto move_right = inputMapping_->GetActionID(Action::MoveRight);
 
-        struct ActionType
-        {
-            std::size_t v;
+        assert(move_forward != InputMapping::InvalidID);
+        assert(move_left != InputMapping::InvalidID);
+        assert(move_backward != InputMapping::InvalidID);
+        assert(move_right != InputMapping::InvalidID);
 
-            explicit ActionType(std::size_t v)
-                : v(v) {}
-            
-            explicit operator std::size_t() const
-            {
-                return v;
-            }
-        };
-        ActionType move_forward {0};
+        assert(inputMapping_->GetActionFromKey(Key::W) == move_forward);
+        assert(inputMapping_->GetActionFromKey(Key::A) == move_left);
+        assert(inputMapping_->GetActionFromKey(Key::S) == move_backward);
+        assert(inputMapping_->GetActionFromKey(Key::D) == move_right);
 
-        InputMapping mapping;
-        mapping.RegisterKeyMap(Key::SPACE, Action::Jump);
-        mapping.RegisterKeyMap(Key::A, Action::Attack);
-        mapping.RegisterKeyMap(Key::LEFT_SHIFT, Action::Dash);
-        mapping.RegisterKeyMap(Key::W, move_forward);
-
-        auto jumpId = mapping.GetActionID(Action::Jump);
-        auto attackId = mapping.GetActionID(Action::Attack);
-        auto dashId = mapping.GetActionID(Action::Dash);
-        auto forwardId = mapping.GetActionID(move_forward);
-
-        assert(jumpId != InputMapping::InvalidID);
-        assert(attackId != InputMapping::InvalidID);
-        assert(dashId != InputMapping::InvalidID);
-        assert(forwardId != InputMapping::InvalidID);
-
-        assert(jumpId != attackId);
-        assert(attackId != dashId);
-
-        assert(mapping.GetActionFromKey(Key::SPACE) == jumpId);
-        assert(mapping.GetActionFromKey(Key::A) == attackId);
-        assert(mapping.GetActionFromKey(Key::LEFT_SHIFT) == dashId);
-        assert(mapping.GetActionFromKey(Key::W) == forwardId);
-
-        assert(mapping.GetKey(jumpId) == Key::SPACE);
-        assert(mapping.GetKey(attackId) == Key::A);
-        assert(mapping.GetKey(dashId) == Key::LEFT_SHIFT);
-        assert(mapping.GetKey(forwardId) == Key::W);
+        assert(inputMapping_->GetKey(move_forward) == Key::W);
+        assert(inputMapping_->GetKey(move_left) == Key::A);
+        assert(inputMapping_->GetKey(move_backward) == Key::S);
+        assert(inputMapping_->GetKey(move_right) == Key::D);
 
         // 未登録
-        assert(mapping.GetActionID(static_cast<Action>(999)) == InputMapping::InvalidID);
-        assert(mapping.GetActionFromKey(Key::F20) == InputMapping::InvalidID);
-        assert(mapping.GetKey(InputMapping::InvalidID) == InputMapping::InvalidKey);
+        assert(inputMapping_->GetActionID(static_cast<Action>(999)) == InputMapping::InvalidID);
+        assert(inputMapping_->GetActionFromKey(Key::F20) == InputMapping::InvalidID);
+        assert(inputMapping_->GetKey(InputMapping::InvalidID) == InputMapping::InvalidKey);
         // ======================= test for input action systems ======================= 
         
     }

@@ -92,11 +92,13 @@ namespace ddknd::input
             // unused
         }
 
-        bool isKeyPressed(Key k) const override
+        bool IsDown(Key k) const override
         {
-            if (static_cast<int>(k) < 0 || static_cast<int>(k) > GLFW_KEY_LAST)
+            const int glfwKey = toGLFWKey(k);
+            if (glfwKey < 0 || glfwKey > GLFW_KEY_LAST)
                 return false;
-            return keys_[static_cast<std::size_t>(toGLFWKey(k))] == GLFW_PRESS;
+            const int state = keys_[static_cast<std::size_t>(glfwKey)];
+            return state == GLFW_PRESS || state == GLFW_REPEAT;
         }
 
       private:

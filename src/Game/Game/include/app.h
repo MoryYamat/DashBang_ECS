@@ -1,5 +1,6 @@
 #pragma once
 
+#include "input/input.h"
 #include "window/window_fwd.h"
 #include "input/input_fwd.h"
 #include "graphics/graphics_fwd.h"
@@ -41,10 +42,13 @@ namespace app
             std::unique_ptr<ddknd::graphics::IRendererBackend> rendererBackend_;
             std::unique_ptr<ddknd::io::IPathResolver> vfs_;
             std::unique_ptr<ddknd::input::IInputBackend> inputBackend_;
-            std::unique_ptr<ddknd::input::DeviceInput> inputSys_;
+            std::unique_ptr<ddknd::input::DeviceInput> deviceInput_;
 
             std::unique_ptr<ddknd::graphics::RendererSystem> renderSys_;
 
             std::unique_ptr<::ddknd::component::CameraComponent> cam_;
+
+            std::unique_ptr<::ddknd::input::InputMapping> inputMapping_;
+            std::unique_ptr<::ddknd::input::ActionInputSystem> inputSys_;
     };
 }// namespace app

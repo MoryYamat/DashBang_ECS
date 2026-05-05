@@ -154,7 +154,7 @@ namespace ddknd::input
       public:
         virtual ~IInputBackend() = default;
         virtual void Update() = 0;
-        virtual bool isKeyPressed(Key k) const = 0;
+        virtual bool IsDown(Key k) const = 0;
     };
 
     class DeviceInput
@@ -171,7 +171,7 @@ namespace ddknd::input
         {
             for (std::size_t i = 0; i < KeyCount(); i++)
             {
-                curr_[i] = backend_.isKeyPressed(static_cast<Key>(i));
+                curr_[i] = backend_.IsDown(static_cast<Key>(i));
             }
         }
 
@@ -212,6 +212,7 @@ namespace ddknd::input
 
 
     // @TODO: 疎な値群に対して、unordered_map<Action>と自動で切り替える処理の実装
+    // @TODO: consider ways to limit the scope of registrations
     // Support sparse action values using an internal unordered_map.
     // Current implementation assumes action values can be used efficiently
     // as dense indices after conversion to std::size_t.
@@ -263,6 +264,8 @@ namespace ddknd::input
         // @NOTE
         // Actions should be arranged as densely as possible.
         // Using unnecessarily large values ​​increases the internal data size and impairs cache locality.
+        // Actions passed to RegisterKeyMap are considered valid Actions.
+        // The caller is responsible for handling cases where values ​​outside the enum range are passed.
         template <ActionToIndexable Action>
         bool RegisterKeyMap(const key_type key, const Action action)
         {
@@ -367,27 +370,32 @@ namespace ddknd::input
         bool IsDown(Action action) const
         {
             assert(IsValidAction(action));
+            auto idx = ActionToIndex(action);
+            return actions_[idx].down;
         }
 
         template <ActionToIndexable Action>
         bool IsPressed(Action action) const
         {            
             assert(IsValidAction(action));
-
+            const auto idx = ActionToIndex(action);
+            return actions_[idx].pressed;
         }
 
         template <ActionToIndexable Action>
         bool IsReleased(Action action) const
         {
             assert(IsValidAction(action));
-
+            const auto idx = ActionToIndex(action);
+            return actions_[idx].released;
         }
 
         template <ActionToIndexable Action>
         float GetValue(Action action) const
         {
             assert(IsValidAction(action));
-
+            const auto idx = ActionToIndex(action);
+            return actions_[idx].value;
         }
 
       private:
