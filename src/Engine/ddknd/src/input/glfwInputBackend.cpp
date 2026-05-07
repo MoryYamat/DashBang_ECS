@@ -97,13 +97,18 @@ namespace ddknd::input
       public:
         explicit GlfwInputBackend(GLFWwindow* window) : window_(window)
         {
+            // register callback
             glfwSetWindowUserPointer(window_, this);
             glfwSetKeyCallback(window_, &GlfwInputBackend::key_callback);
             glfwSetCursorPosCallback(window_, GlfwInputBackend::curosor_position_callback);
+
+            // settings
             if (glfwRawMouseMotionSupported()) // mouse acceleration
             {
                 glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
             }
+
+            glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
 
         void Update() override
@@ -181,6 +186,7 @@ namespace ddknd::input
                 return;
             }
 
+            // delta
             mouse.deltaX += x - mouse.lastX;
             mouse.deltaY += y - mouse.lastY;
 

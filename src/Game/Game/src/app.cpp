@@ -140,7 +140,7 @@ namespace app
         {
             // =========================== temporaly =========================== 
             auto view = LookAt(cam_->pos, cam_->target, cam_->up);
-            auto proj = Perspective(::ddknd::math::degToRad(60.0f), static_cast<float>(w_)/static_cast<float>(h_), 0.1f, 100.0f);
+            auto proj = Perspective(::ddknd::math::degToRadf(60.0f), static_cast<float>(w_)/static_cast<float>(h_), 0.1f, 100.0f);
             // =========================== temporaly =========================== 
 
             ddknd::graphics::FrameDesc frame{.h = h_, .w = w_, .view = view, .proj = proj};
@@ -161,20 +161,9 @@ namespace app
             // ================== Debug Camera ================== 
             deug_cam.Update();
 
-            // ================== test for input systems ================== 
+            // ================== Update Action Input ================== 
             inputSys_->Update(*deviceInput_.get());
-            {
-                if(inputSys_->IsPressed(Action::MoveFoward))
-                    std::cerr << "pressed=MoveForward\n"; 
-                if(inputSys_->IsDown(Action::MoveBackward))
-                    std::cerr << "down=MoveBackward\n";
-                if(inputSys_->IsReleased(Action::MoveRight))
-                    std::cerr << "Released=MoveRight\n";
-                if(inputSys_->IsDown(Action::MoveLeft))
-                    std::cerr << "Value(MoveLeft)=" << inputSys_->GetValue(Action::MoveLeft) <<  "\n";
-            }
-            // ================== test for input systems ================== 
-
+            
             //window_->PollEvents(); // moved to InputBackend
             window_->SwapBuffers();
             if (deviceInput_->isPressing(ddknd::input::Key::ESCAPE))

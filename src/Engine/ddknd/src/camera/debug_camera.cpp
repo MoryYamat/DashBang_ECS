@@ -1,33 +1,62 @@
 #include "camera/debug_camera.h"
 
+#include <algorithm>
+
 #include "component/test_component.h"
 #include "input/input.h"
+
+#include "math/math.h"
+
+// helpers
+namespace
+{
+
+}
 
 namespace ddknd::debug
 {
     void DebugCameraController::Update()
     {
+        using namespace ::ddknd::math;
         using Key = ::ddknd::input::Key;
 
+        const auto& mouse = input_.Mouse();
         auto& pos = cam_.pos;
+        auto& target = cam_.target;
+        const auto& up = cam_.up;
 
-        //@TODO: need to consider direction cotroll (privided by mouse)
+        // Update Target Vector
+        const auto& sensitivity = cam_.sensitivty;
+        auto& yaw = cam_.yaw;
+        auto& pitch = cam_.pitch;
+        yaw += static_cast<float>(mouse.deltaX) * sensitivity;
+        pitch -= static_cast<float>(mouse.deltaY) * sensitivity;
+        
+        pitch = std::clamp(pitch, -89.0f, 89.0f);
 
-        if(input_.isPressing(Key::W))
+        const float yawRad = math::degToRadf(yaw);
+        const float pitchRad = math::degToRadf(pitch);
+
+        math::Vec3f forward{math::normalize(math::ComputeForawrdVec(yawRad, pitchRad))};
+        math::Vec3f right{math::normalize(math::cross(forward, up))};
+
+        if (input_.isPressing(Key::W))
         {
-            pos[2] -= 1.0f;
+            pos += forward * 0.1;
         }
-        if(input_.isPressing(Key::A))
+        if (input_.isPressing(Key::S))
         {
-            pos[0] -= 1.0f;
+            pos -= forward * 0.1;
         }
-        if(input_.isPressing(Key::S))
+        if (input_.isPressing(Key::A))
         {
-            pos[2] += 1.0f;
+            pos -= right * 0.1;
         }
-        if(input_.isPressing(Key::D))
+        if (input_.isPressing(Key::D))
         {
-            pos[0] += 1.0f;
+            pos += right * 0.1;
         }
+
+        target = pos + forward;
     }
-}
+} // namespace ddknd::debug

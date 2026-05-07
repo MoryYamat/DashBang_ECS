@@ -182,15 +182,19 @@ namespace ddknd::input
 
         void Update()
         {
-            backend_.Update();
-            
+            backend_.Update();//This utilizes the difference between the OS update frequency and the game loop update frequency
+
             for (std::size_t i = 0; i < KeyCount(); i++)
             {
                 curr_[i] = backend_.IsDown(static_cast<Key>(i));
             }
             
             mouse_ = backend_.Mouse();
-            std::cerr << "cursor delta: x=" << mouse_.deltaX << " y=" << mouse_.deltaY << "\n";
+        }
+
+        const MouseState& Mouse() const
+        {
+            return mouse_;
         }
 
         static constexpr std::size_t KeyCount()

@@ -384,5 +384,7 @@ namespace ddknd::math
 // utils
 namespace ddknd::math
 {
-    float degToRad(float degree);
+    float degToRadf(float degree);
+
+    Vec3f ComputeForawrdVec(float yawRad, float pitchRad);
 }
