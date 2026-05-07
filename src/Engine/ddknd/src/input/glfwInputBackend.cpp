@@ -1,4 +1,5 @@
 #include "input/input.h"
+#include "internal/glfw_internal/glfw_internal.h"
 #include "window/window.h"
 
 #include <array>
@@ -82,6 +83,7 @@ namespace ddknd::input
     class GlfwInputBackend final : public IInputBackend
     {
       private:
+        using CallbackState = ::ddknd::internal::platform::glfw::CallbackState;
         struct MouseInternal
         {
             bool first = true;
@@ -95,12 +97,26 @@ namespace ddknd::input
         };
 
       public:
-        explicit GlfwInputBackend(GLFWwindow* window) : window_(window)
+        explicit GlfwInputBackend(GLFWwindow* window, CallbackState& callbacks) : window_(window)
         {
-            // register callback
-            glfwSetWindowUserPointer(window_, this);
+            //
+            callbacks.keyUser = this;
+            callbacks.key = [](void* user, int key, int scancode, int action, int mods)
+            {
+                auto* self = static_cast<GlfwInputBackend*>(user);
+                self->onKey(key, scancode, action, mods);
+            };
+
+            callbacks.cursorUser = this;
+            callbacks.cursor = [](void* user, double x, double y)
+            {
+                auto* self = static_cast<GlfwInputBackend*>(user);
+                self->onCursorPosition(x, y);
+            };
+
+            // register callback to glfw
             glfwSetKeyCallback(window_, &GlfwInputBackend::key_callback);
-            glfwSetCursorPosCallback(window_, GlfwInputBackend::curosor_position_callback);
+            glfwSetCursorPosCallback(window_, GlfwInputBackend::cursor_position_callback);
 
             // settings
             if (glfwRawMouseMotionSupported()) // mouse acceleration
@@ -146,35 +162,22 @@ namespace ddknd::input
         MouseState mouseFrame_{};
         MouseInternal mouseAccum_{};
 
-        static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+        void onKey(int key, int scancode, int action, int mods)
         {
             (void)scancode;
             (void)mods;
 
-            auto* self = static_cast<GlfwInputBackend*>(glfwGetWindowUserPointer(window));
-            if (!self)
+            if (key < 0 || key > GLFW_KEY_LAST)
             {
-                spdlog::error("unexpected error");
                 return;
             }
-            if (key < 0)
-            {
-                spdlog::error("invalid key input");
-                return;
-            }
-            self->keys_[key] = action;
+
+            keys_[static_cast<std::size_t>(key)] = action;
         }
 
-        static void curosor_position_callback(GLFWwindow* window, double x, double y)
+        void onCursorPosition(double x, double y)
         {
-            auto* self = static_cast<GlfwInputBackend*>(glfwGetWindowUserPointer(window));
-
-            if (self == nullptr)
-            {
-                return;
-            }
-
-            MouseInternal& mouse = self->mouseAccum_;
+            MouseInternal& mouse = mouseAccum_;
 
             if (mouse.first)
             {
@@ -186,7 +189,6 @@ namespace ddknd::input
                 return;
             }
 
-            // delta
             mouse.deltaX += x - mouse.lastX;
             mouse.deltaY += y - mouse.lastY;
 
@@ -195,12 +197,42 @@ namespace ddknd::input
             mouse.x = x;
             mouse.y = y;
         }
+
+        static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+        {
+            using CallbackState = ddknd::internal::platform::glfw::CallbackState;
+
+            auto* state = static_cast<CallbackState*>(glfwGetWindowUserPointer(window));
+
+            if (state == nullptr || state->key == nullptr)
+            {
+                return;
+            }
+
+            state->key(state->keyUser, key, scancode, action, mods);
+        }
+
+        static void cursor_position_callback(GLFWwindow* window, double x, double y)
+        {
+            using CallbackState = ddknd::internal::platform::glfw::CallbackState;
+
+            auto* state = static_cast<CallbackState*>(glfwGetWindowUserPointer(window));
+
+            if (state == nullptr || state->cursor == nullptr)
+            {
+                return;
+            }
+
+            state->cursor(state->cursorUser, x, y);
+        }
     };
 
-    std::unique_ptr<ddknd::input::IInputBackend> CreateGlfwInputBackend(const ddknd::window::Window& w)
+    std::unique_ptr<ddknd::input::IInputBackend> CreateGlfwInputBackend(ddknd::window::Window& w)
     {
-        std::unique_ptr<ddknd::input::IInputBackend> backend =
-            std::make_unique<ddknd::input::GlfwInputBackend>(static_cast<GLFWwindow*>(w.nativeHandle()));
-        return std::move(backend);
+        auto* handle = static_cast<GLFWwindow*>(w.nativeHandle());
+
+        auto& callbacks = ddknd::window::detail::glfwCallbackState(w);
+
+        return std::make_unique<GlfwInputBackend>(handle, callbacks);
     }
 } // namespace ddknd::input

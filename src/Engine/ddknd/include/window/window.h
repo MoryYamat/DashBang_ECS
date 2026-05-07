@@ -1,65 +1,97 @@
 #pragma once
 
-#include <string>
+#include <iostream>
 #include <memory>
+#include <string>
+
+// fwd
+namespace ddknd::internal::platform::glfw
+{
+    struct CallbackState;
+}
 
 namespace ddknd::window
 {
     class Window;
-}// namespace ddknd::window
+
+    namespace detail
+    {
+        void onFramebufferResize(Window& window, int width, int height);
+
+        ddknd::internal::platform::glfw::CallbackState& glfwCallbackState(Window& window);
+    } // namespace detail
+
+} // namespace ddknd::window
 
 namespace ddknd::input
 {
     class IInputBackend;
-    std::unique_ptr<ddknd::input::IInputBackend> CreateGlfwInputBackend(const ddknd::window::Window& w);
-}// namespace ddknd::input
+    std::unique_ptr<ddknd::input::IInputBackend> CreateGlfwInputBackend(ddknd::window::Window& w);
+} // namespace ddknd::input
 
 namespace ddknd::window
 {
     class GlfwContext
     {
-        public:
-            GlfwContext();
-            ~GlfwContext();
+      public:
+        GlfwContext();
+        ~GlfwContext();
 
-            GlfwContext(const GlfwContext&) = delete;
-            GlfwContext& operator=(const  GlfwContext&) = delete;
+        GlfwContext(const GlfwContext&) = delete;
+        GlfwContext& operator=(const GlfwContext&) = delete;
 
-        private:
+      private:
     };
 
     // Window(const GlfwContext& glfw, int width, int height, std::string name)
     class Window
     {
-        public:
-            Window(const GlfwContext& glfw, int width, int height, std::string name);
+      public:
+        Window(const GlfwContext& glfw, int width, int height, std::string name);
 
-            ~Window();
+        ~Window();
 
-            Window(const Window&) = delete;
-            Window& operator=(const Window&) = delete;
-            Window(Window&& o)noexcept;
-            Window& operator=(Window&& o)noexcept;
+        Window(const Window&) = delete;
+        Window& operator=(const Window&) = delete;
+        Window(Window&& o) noexcept;
+        Window& operator=(Window&& o) noexcept;
 
         bool ShouldClose() const;
 
-            void PollEvents();
-            void SwapBuffers();
+        void PollEvents();
+        void SwapBuffers();
 
+        float aspectRation() const
+        {
+            if (height_ == 0)
+            {
+                return 1.0f;
+            }
 
+            // std::cerr << "framebuffer resized: {}"<<  width_ << "x" <<  height_ << "\n";
+            return static_cast<float>(width_) / static_cast<float>(height_);
+        }
 
-        private:
-            struct Impl;
-            std::unique_ptr<Impl> impl_;
-            const GlfwContext& glfw_;
+        int GetWidth() const {return width_;}
+        int GetHeight() const {return height_;}
 
-            int width_;
-            int height_;
+      private:
+        struct Impl;
+        std::unique_ptr<Impl> impl_;
+        const GlfwContext& glfw_;
 
-            void init(std::string name);
+        int width_;
+        int height_;
 
-            void* nativeHandle() const;
-            
-            friend std::unique_ptr<ddknd::input::IInputBackend> ddknd::input::CreateGlfwInputBackend(const ddknd::window::Window& w);
+        void init(std::string name);
+
+        void* nativeHandle() const;
+
+        friend std::unique_ptr<ddknd::input::IInputBackend> ddknd::input::CreateGlfwInputBackend(
+            ddknd::window::Window& w);
+
+        friend void detail::onFramebufferResize(Window& window, int width, int height);
+
+        friend ddknd::internal::platform::glfw::CallbackState& detail::glfwCallbackState(Window& window);
     };
-}// namespace ddknd::window
+} // namespace ddknd::window

@@ -25,9 +25,9 @@ namespace ddknd::debug
 
       void Update();
 
-
     private:
       const Input& input_;
       DebugCameraComponent& cam_;
+      
   };
 } // namespace ddknd::camera

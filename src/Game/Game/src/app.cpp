@@ -46,17 +46,17 @@ namespace
 
 namespace app
 {
-    App::App(int w, int h) : w_(w), h_(h) {}
+    App::App(){}
 
     App::~App()
     {
         Shutdown();
     }
 
-    bool App::Init()
+    bool App::Init(int w, int h)
     {
         glfwCtx_ = std::make_unique<ddknd::window::GlfwContext>();
-        window_ = std::make_unique<ddknd::window::Window>(*glfwCtx_, w_, h_, "app");
+        window_ = std::make_unique<ddknd::window::Window>(*glfwCtx_, w, h, "app");
 
         std::vector<::ddknd::io::VfsMount> mounts;
         mounts.push_back(ddknd::io::VfsMount{.scheme = "res", .root = "assets"});
@@ -138,12 +138,13 @@ namespace app
 
         while (isRunning_ && !window_->ShouldClose())
         {
-            // =========================== temporaly =========================== 
+            cam_->aspect = window_->aspectRation();
+            // =========================== temporaly ===========================
             auto view = LookAt(cam_->pos, cam_->target, cam_->up);
-            auto proj = Perspective(::ddknd::math::degToRadf(60.0f), static_cast<float>(w_)/static_cast<float>(h_), 0.1f, 100.0f);
+            auto proj = Perspective(::ddknd::math::degToRadf(60.0f), cam_->aspect, 0.1f, 100.0f);
             // =========================== temporaly =========================== 
 
-            ddknd::graphics::FrameDesc frame{.h = h_, .w = w_, .view = view, .proj = proj};
+            ddknd::graphics::FrameDesc frame{.h = window_->GetHeight(), .w = window_->GetWidth(), .view = view, .proj = proj};
             renderSys_->BeginFrame(frame);
 
             for (const auto& res : model_res->primitives)

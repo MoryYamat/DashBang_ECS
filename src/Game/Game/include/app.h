@@ -20,7 +20,7 @@ namespace app
     class App
     {
         public:
-            App(int w, int h);
+            App();
             ~App();
 
             App(const App&) = delete;
@@ -29,13 +29,12 @@ namespace app
             App(App&&) = delete;
             App& operator=(App&&) = delete;
 
-            bool Init();
+            bool Init(int w, int h);
             void Loop();
             void Shutdown();
 
 
         private:
-            int h_ = 0, w_ = 0;
             bool isRunning_ = false;
             std::unique_ptr<ddknd::window::Window> window_;
             std::unique_ptr<ddknd::window::GlfwContext> glfwCtx_;

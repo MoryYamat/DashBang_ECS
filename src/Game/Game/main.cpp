@@ -29,9 +29,9 @@ int main()
 
 	std::cout<<"hello world\n";
 
-	app::App app(720,480);
+	app::App app;
 
-	if(!app.Init())
+	if(!app.Init(720,480))
 	{
 		std::cerr << "app init failed \n"; 
 	}
