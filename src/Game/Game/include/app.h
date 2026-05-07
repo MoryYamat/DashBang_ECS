@@ -12,7 +12,7 @@
 // fwd
 namespace ddknd::component
 {
-    struct CameraComponent;
+    struct DebugCameraComponent;
 } 
 
 namespace app
@@ -46,7 +46,7 @@ namespace app
 
             std::unique_ptr<ddknd::graphics::RendererSystem> renderSys_;
 
-            std::unique_ptr<::ddknd::component::CameraComponent> cam_;
+            std::unique_ptr<::ddknd::component::DebugCameraComponent> cam_;
 
             std::unique_ptr<::ddknd::input::InputMapping> inputMapping_;
             std::unique_ptr<::ddknd::input::ActionInputSystem> inputSys_;

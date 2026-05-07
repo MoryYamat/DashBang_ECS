@@ -2,6 +2,7 @@
 #include "window/window.h"
 
 #include <array>
+#include <iostream>
 
 #include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
@@ -80,16 +81,48 @@ namespace ddknd::input
 
     class GlfwInputBackend final : public IInputBackend
     {
+      private:
+        struct MouseInternal
+        {
+            bool first = true;
+            double lastX = 0.0;
+            double lastY = 0.0;
+
+            double x = 0.0;
+            double y = 0.0;
+            double deltaX = 0.0;
+            double deltaY = 0.0;
+        };
+
       public:
         explicit GlfwInputBackend(GLFWwindow* window) : window_(window)
         {
             glfwSetWindowUserPointer(window_, this);
             glfwSetKeyCallback(window_, &GlfwInputBackend::key_callback);
+            glfwSetCursorPosCallback(window_, GlfwInputBackend::curosor_position_callback);
+            if (glfwRawMouseMotionSupported()) // mouse acceleration
+            {
+                glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+            }
         }
 
         void Update() override
         {
-            // unused
+            glfwPollEvents();
+
+            mouseFrame_.x = mouseAccum_.x;
+            mouseFrame_.y = mouseAccum_.y;
+            mouseFrame_.deltaX = mouseAccum_.deltaX;
+            mouseFrame_.deltaY = mouseAccum_.deltaY;
+
+            // Rest delta
+            mouseAccum_.deltaX = 0.0;
+            mouseAccum_.deltaY = 0.0;
+        }
+
+        const MouseState& Mouse() const override
+        {
+            return mouseFrame_;
         }
 
         bool IsDown(Key k) const override
@@ -105,6 +138,8 @@ namespace ddknd::input
         GLFWwindow* window_;
 
         std::array<int, GLFW_KEY_LAST + 1> keys_{};
+        MouseState mouseFrame_{};
+        MouseInternal mouseAccum_{};
 
         static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
         {
@@ -123,6 +158,36 @@ namespace ddknd::input
                 return;
             }
             self->keys_[key] = action;
+        }
+
+        static void curosor_position_callback(GLFWwindow* window, double x, double y)
+        {
+            auto* self = static_cast<GlfwInputBackend*>(glfwGetWindowUserPointer(window));
+
+            if (self == nullptr)
+            {
+                return;
+            }
+
+            MouseInternal& mouse = self->mouseAccum_;
+
+            if (mouse.first)
+            {
+                mouse.lastX = x;
+                mouse.lastY = y;
+                mouse.x = x;
+                mouse.y = y;
+                mouse.first = false;
+                return;
+            }
+
+            mouse.deltaX += x - mouse.lastX;
+            mouse.deltaY += y - mouse.lastY;
+
+            mouse.lastX = x;
+            mouse.lastY = y;
+            mouse.x = x;
+            mouse.y = y;
         }
     };
 

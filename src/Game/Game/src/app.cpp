@@ -6,6 +6,7 @@
 #include <io/io.h>
 
 #include "Action/action.h"
+#include "camera/debug_camera.h"
 #include "graphics/renderer.h"
 #include "input/input.h"
 #include "window/window.h"
@@ -71,7 +72,7 @@ namespace app
         // renderer
         renderSys_ = std::make_unique<ddknd::graphics::RendererSystem>(*rendererBackend_);
 
-        cam_ = std::make_unique<::ddknd::component::CameraComponent>();
+        cam_ = std::make_unique<::ddknd::component::DebugCameraComponent>();
 
         // user definition input 
         inputMapping_ = std::make_unique<::ddknd::input::InputMapping>();
@@ -122,18 +123,26 @@ namespace app
         const auto* shader_res = gfx_asset_store.TryGet(res_1);
         const auto* model_res = gfx_asset_store.TryGet(mod_1);
 
-        auto view = LookAt(Vec3f{0, 1, 5}, Vec3f{0, 1, 0}, Vec3f{0, 1, 0});
-        auto proj = Perspective(::ddknd::math::degToRad(60.0f), static_cast<float>(w_)/static_cast<float>(h_), 0.1f, 100.0f);
 
         using DrawCommand = ::ddknd::graphics::DrawCommand;
         // DrawCommand cmd{.shader=shader_res->program};
 
         // INPUT
         using Action = ::app::action::Action;
+
+        // DEBUG CAMERA
+        using DebugCameraCtrl = ::ddknd::debug::DebugCameraController;
+        DebugCameraCtrl deug_cam(*deviceInput_, *cam_);// @TODO change the target vector by the mouse moving
+        cam_->pos = {0.0f, 2.0f, 5.0f};
         // ============= for test ==============
 
         while (isRunning_ && !window_->ShouldClose())
         {
+            // =========================== temporaly =========================== 
+            auto view = LookAt(cam_->pos, cam_->target, cam_->up);
+            auto proj = Perspective(::ddknd::math::degToRad(60.0f), static_cast<float>(w_)/static_cast<float>(h_), 0.1f, 100.0f);
+            // =========================== temporaly =========================== 
+
             ddknd::graphics::FrameDesc frame{.h = h_, .w = w_, .view = view, .proj = proj};
             renderSys_->BeginFrame(frame);
 
@@ -148,6 +157,10 @@ namespace app
 
 
             deviceInput_->Update();
+
+            // ================== Debug Camera ================== 
+            deug_cam.Update();
+
             // ================== test for input systems ================== 
             inputSys_->Update(*deviceInput_.get());
             {
@@ -162,7 +175,7 @@ namespace app
             }
             // ================== test for input systems ================== 
 
-            window_->PollEvents();
+            //window_->PollEvents(); // moved to InputBackend
             window_->SwapBuffers();
             if (deviceInput_->isPressing(ddknd::input::Key::ESCAPE))
                 isRunning_ = false;
@@ -332,7 +345,7 @@ namespace
     Mat4f LookAt(Vec3f eye, Vec3f target, Vec3f up)
     {
         Vec3f f = normalize(target - eye);
-        Vec3f s = normalize(cross(f, up));
+        Vec3f s = normalize(cross(f, up));// create fallback to avoid devide by 0
         Vec3f u = cross(s, f);
 
         Mat4f m{};

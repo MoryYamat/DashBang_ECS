@@ -7,14 +7,17 @@
 #include <limits>
 #include <type_traits>
 #include <vector>
+#include <iostream>
 
 namespace ddknd::input
 {
     template <class>
     inline constexpr bool always_false_v = false;
 
-    template<typename Action>
-    concept ActionToIndexable = requires(Action action){ {static_cast<std::size_t>(action)} -> std::convertible_to<std::size_t>;};
+    template <typename Action>
+    concept ActionToIndexable = requires(Action action) {
+        { static_cast<std::size_t>(action) } -> std::convertible_to<std::size_t>;
+    };
 
     // TODO: add all keys of glfws
     enum class Key : std::uint16_t
@@ -149,12 +152,22 @@ namespace ddknd::input
         bool released = false;
     };
 
+    struct MouseState
+    {
+        bool first = true;
+        double x = 0.0;
+        double y = 0.0;
+        double deltaX = 0.0;
+        double deltaY = 0.0;
+    };
+
     class IInputBackend
     {
       public:
         virtual ~IInputBackend() = default;
         virtual void Update() = 0;
         virtual bool IsDown(Key k) const = 0;
+        virtual const MouseState& Mouse() const = 0;
     };
 
     class DeviceInput
@@ -169,10 +182,15 @@ namespace ddknd::input
 
         void Update()
         {
+            backend_.Update();
+            
             for (std::size_t i = 0; i < KeyCount(); i++)
             {
                 curr_[i] = backend_.IsDown(static_cast<Key>(i));
             }
+            
+            mouse_ = backend_.Mouse();
+            std::cerr << "cursor delta: x=" << mouse_.deltaX << " y=" << mouse_.deltaY << "\n";
         }
 
         static constexpr std::size_t KeyCount()
@@ -182,6 +200,7 @@ namespace ddknd::input
 
       private:
         IInputBackend& backend_;
+        MouseState mouse_{};
 
         std::bitset<static_cast<std::size_t>(Key::COUNT)> curr_;
 
@@ -209,7 +228,6 @@ namespace ddknd::input
             released = wasDown && !down;
         }
     };
-
 
     // @TODO: 疎な値群に対して、unordered_map<Action>と自動で切り替える処理の実装
     // @TODO: consider ways to limit the scope of registrations
@@ -270,12 +288,12 @@ namespace ddknd::input
         bool RegisterKeyMap(const key_type key, const Action action)
         {
             auto action_to_index = ActionToIndex(action);
-            if(action_to_index >= action_to_id_.size() )
+            if (action_to_index >= action_to_id_.size())
                 action_to_id_.resize(action_to_index + 1, InvalidID);
 
             id_type id = action_to_id_[action_to_index];
-            
-            if(id == InvalidID)
+
+            if (id == InvalidID)
             {
                 id = static_cast<id_type>(id_to_key_.size());
                 action_to_id_[action_to_index] = id;
@@ -288,12 +306,12 @@ namespace ddknd::input
             return true;
         }
 
-        template<ActionToIndexable Action>
+        template <ActionToIndexable Action>
         id_type GetActionID(Action action) const
         {
             const auto actionValue = ActionToIndex(action);
 
-            if(actionValue >= action_to_id_.size())
+            if (actionValue >= action_to_id_.size())
                 return InvalidID;
 
             return action_to_id_[actionValue];
@@ -301,7 +319,7 @@ namespace ddknd::input
 
         key_type GetKey(id_type id) const
         {
-            if(static_cast<std::size_t>(id) >= id_to_key_.size())
+            if (static_cast<std::size_t>(id) >= id_to_key_.size())
                 return InvalidKey;
 
             return id_to_key_[id];
@@ -309,21 +327,24 @@ namespace ddknd::input
 
         id_type GetActionFromKey(key_type key) const
         {
-            if(!IsValidKey(key))
+            if (!IsValidKey(key))
                 return InvalidID;
 
             return key_to_action_[KeyToIndex(key)];
         }
 
-        std::size_t GetActionCount()const
+        std::size_t GetActionCount() const
         {
             return id_to_key_.size();
         }
 
       private:
-        std::vector<id_type> action_to_id_;         //  action -> inetrnal action id        (idx: action_value, value: internal action id)
-        std::vector<key_type> id_to_key_;           // internal action id -> key            (idx: internal action id          , value: key)
-        std::vector<id_type> key_to_action_;        // key -> internal action id            (idx: key         , value: internal action id)
+        std::vector<id_type>
+            action_to_id_; //  action -> inetrnal action id        (idx: action_value, value: internal action id)
+        std::vector<key_type>
+            id_to_key_; // internal action id -> key            (idx: internal action id          , value: key)
+        std::vector<id_type>
+            key_to_action_; // key -> internal action id            (idx: key         , value: internal action id)
     };
 
     // system (update state)
@@ -376,7 +397,7 @@ namespace ddknd::input
 
         template <ActionToIndexable Action>
         bool IsPressed(Action action) const
-        {            
+        {
             assert(IsValidAction(action));
             const auto idx = ActionToIndex(action);
             return actions_[idx].pressed;

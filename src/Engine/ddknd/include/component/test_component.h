@@ -23,7 +23,7 @@ namespace ddknd::component
     };
 
 
-    struct CameraComponent
+    struct DebugCameraComponent
     {
         math::Vec3f pos{0.0f, 0.0f, 0.0f};
         math::Vec3f target;
