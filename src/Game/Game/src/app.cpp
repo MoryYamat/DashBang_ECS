@@ -7,10 +7,11 @@
 
 #include "Action/action.h"
 #include "camera/debug_camera.h"
+#include "clock/clock.h"
 #include "graphics/renderer.h"
 #include "input/input.h"
 #include "window/window.h"
-#include "clock/clock.h"
+
 // test
 #include "component/test_component.h"
 #include "ecs/entity/entity.h"
@@ -42,13 +43,11 @@ namespace
     using Action = ::app::action::Action;
     using Key = ::ddknd::input::Key;
 
-
-
 } // namespace
 
 namespace app
 {
-    App::App(){}
+    App::App() {}
 
     App::~App()
     {
@@ -76,7 +75,7 @@ namespace app
 
         cam_ = std::make_unique<::ddknd::component::DebugCameraComponent>();
 
-        // user definition input 
+        // user definition input
         inputMapping_ = std::make_unique<::ddknd::input::InputMapping>();
         inputSys_ = std::make_unique<::ddknd::input::ActionInputSystem>(inputMapping_.get());
 
@@ -112,8 +111,11 @@ namespace app
         auto res_1 = asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/test.shader");
         auto res_2 = asset_mgr.GetOrCreate<MeshTag>("res://meshes/test_triangle.mesh");
         auto mod_1 = asset_mgr.GetOrCreate<ModelTag>("res://Models/paladin/base_action_animation_diago.glb");
-        auto debug_font_shader = asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/debug_text.shader");// debug text shader
-        auto font_res_1 = asset_mgr.GetOrCreate<FontTag>("res://fonts/NotoSans-VariableFont_wdth,wght.ttf");// Font
+        auto debug_font_shader =
+            asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/debug_text.shader"); // debug text shader
+        auto debug_line_shader =
+            asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/debug_line.shader"); // debug text shader
+        auto font_res_1 = asset_mgr.GetOrCreate<FontTag>("res://fonts/NotoSans-VariableFont_wdth,wght.ttf"); // Font
 
         std::cerr << "id1: Idx=" << res_1.Index() << " Gen=" << res_1.Generation() << "\n";
         std::cerr << "id2: Idx=" << res_2.Index() << " Gen=" << res_2.Generation() << "\n";
@@ -128,11 +130,13 @@ namespace app
 
         auto load_res_gfx = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, res_1);
         auto load_res_shader_debug_txt = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, debug_font_shader);
+        auto load_res_shader_debug_line = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, debug_line_shader);
         auto load_mod_gfx = gfx_loader.LoadModel(asset_mgr, gfx_asset_store, gfx_anim_store, mod_1);
         auto load_font_gfx = gfx_loader.LoadFont(asset_mgr, gfx_asset_store, font_res_1);
 
         const auto* shader_res = gfx_asset_store.TryGet(res_1);
         const auto* debug_text_shader_res = gfx_asset_store.TryGet(debug_font_shader);
+        const auto* debug_line_shader_res = gfx_asset_store.TryGet(debug_line_shader);
         const auto* model_res = gfx_asset_store.TryGet(mod_1);
         const auto* font_res = gfx_asset_store.TryGet(font_res_1);
 
@@ -144,15 +148,16 @@ namespace app
 
         // DEBUG CAMERA
         using DebugCameraCtrl = ::ddknd::debug::DebugCameraController;
-        DebugCameraCtrl deug_cam(*deviceInput_, *cam_);// @TODO change the target vector by the mouse moving
+        DebugCameraCtrl deug_cam(*deviceInput_, *cam_); // @TODO change the target vector by the mouse moving
         cam_->pos = {0.0f, 2.0f, 5.0f};
         // ============= for test ==============
 
-        // ************* TIMER ************* 
+        // ************* TIMER *************
         using Timer = ::ddknd::clock::FrameTimer;
         Timer timer{};
 
         debugDraw_->SetFont(font_res);
+        debugDraw_->Axis({0.0f, 0.0f, 0.0f}, 1000.0f);
         while (isRunning_ && !window_->ShouldClose())
         {
             // ************* TIMER **************
@@ -161,11 +166,14 @@ namespace app
 
             cam_->aspect = window_->aspectRation();
             // =========================== temporaly ===========================
-            auto view = LookAt(cam_->pos, cam_->target, cam_->up);// @TODO move to renderer @@@@@@@@@@@@@@@@@@@@@@@ // TODO: System Execution Scheduler
+            auto view =
+                LookAt(cam_->pos, cam_->target,
+                       cam_->up); // @TODO move to renderer @@@@@@@@@@@@@@@@@@@@@@@ // TODO: System Execution Scheduler
             auto proj = Perspective(::ddknd::math::degToRadf(60.0f), cam_->aspect, 0.1f, 100.0f);
-            // =========================== temporaly =========================== 
+            // =========================== temporaly ===========================
 
-            ddknd::graphics::FrameDesc frame{.h = window_->GetHeight(), .w = window_->GetWidth(), .view = view, .proj = proj};
+            ddknd::graphics::FrameDesc frame{
+                .h = window_->GetHeight(), .w = window_->GetWidth(), .view = view, .proj = proj};
             renderSys_->BeginFrame(frame);
 
             for (const auto& res : model_res->primitives)
@@ -175,30 +183,30 @@ namespace app
                     DrawCommand{.mesh = res.prim, .shader = shader_res->program, .indexCount = res.indexCount});
             }
 
-            // ******* DebugDraw ******* 
+            // ******* DebugDraw *******
             debugDraw_->BeginFrame();
-            debugDraw_->Text(10.0f, 20.0f, std::format("FPS: {:.1f}", fps), {1.0f, 1.0f, 0.0f, 1.0f});// FPS
+            debugDraw_->Text(10.0f, 20.0f, std::format("FPS: {:.1f}", fps), {1.0f, 1.0f, 0.0f, 1.0f}); // FPS
+            debugDraw_->Axis({0, 0, 0}, 2.0f);
             debugDraw_->EndFrame();
 
-            renderSys_->Submit(ddknd::graphics::DebugTextDrawCommand{
-                .batch = debugDraw_->TextBatch(),
-                .shader = debug_text_shader_res->program,
-                .texture = debugDraw_->FontAtlas(),
-                .indexCount = debugDraw_->TextIndexCount()
-            });
-
+            renderSys_->Submit(ddknd::graphics::DebugTextDrawCommand{.batch = debugDraw_->TextBatch(),
+                                                                     .shader = debug_text_shader_res->program,
+                                                                     .texture = debugDraw_->FontAtlas(),
+                                                                     .indexCount = debugDraw_->TextIndexCount()});
+            renderSys_->Submit(ddknd::graphics::DebugLineDrawCommand{.batch = debugDraw_->LineBatch(),
+                                                                     .shader = debug_line_shader_res->program,
+                                                                     .vertexCount = debugDraw_->LineVertexCount()});
             renderSys_->EndFrame();
-
 
             deviceInput_->Update();
 
-            // ================== Debug Camera ================== 
+            // ================== Debug Camera ==================
             deug_cam.Update();
 
-            // ================== Update Action Input ================== 
+            // ================== Update Action Input ==================
             inputSys_->Update(*deviceInput_.get());
-            
-            //window_->PollEvents(); // moved to InputBackend
+
+            // window_->PollEvents(); // moved to InputBackend
             window_->SwapBuffers();
             if (deviceInput_->isPressing(ddknd::input::Key::ESCAPE))
                 isRunning_ = false;
@@ -211,7 +219,7 @@ namespace app
 
         ::ddknd::world::World wd{};
 
-        // ======================= test for ecs systems ======================= 
+        // ======================= test for ecs systems =======================
         // auto ent0_0 = wd.Create();
         // auto ent0_1 = wd.Create();
         // auto ent0_2 = wd.Create();
@@ -326,14 +334,14 @@ namespace app
         //         std::cerr << "get it\n";
         //     }
         // }
-        // ======================= test for ecs systems ======================= 
+        // ======================= test for ecs systems =======================
 
-        // ======================= test for input action systems ======================= 
+        // ======================= test for input action systems =======================
         using Key = ::ddknd::input::Key;
         using Action = ::app::action::Action;
         using InputMapping = ::ddknd::input::InputMapping;
         using ActionInputSystem = ::ddknd::input::ActionInputSystem;
-        
+
         auto move_forward = inputMapping_->GetActionID(Action::MoveFoward);
         auto move_left = inputMapping_->GetActionID(Action::MoveLeft);
         auto move_backward = inputMapping_->GetActionID(Action::MoveBackward);
@@ -358,8 +366,7 @@ namespace app
         assert(inputMapping_->GetActionID(static_cast<Action>(999)) == InputMapping::InvalidID);
         assert(inputMapping_->GetActionFromKey(Key::F20) == InputMapping::InvalidID);
         assert(inputMapping_->GetKey(InputMapping::InvalidID) == InputMapping::InvalidKey);
-        // ======================= test for input action systems ======================= 
-        
+        // ======================= test for input action systems =======================
     }
 } // namespace app
 
@@ -368,7 +375,7 @@ namespace
     Mat4f LookAt(Vec3f eye, Vec3f target, Vec3f up)
     {
         Vec3f f = normalize(target - eye);
-        Vec3f s = normalize(cross(f, up));// create fallback to avoid devide by 0
+        Vec3f s = normalize(cross(f, up)); // create fallback to avoid devide by 0
         Vec3f u = cross(s, f);
 
         Mat4f m{};

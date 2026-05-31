@@ -25,6 +25,10 @@ namespace ddknd::graphics::tag
     struct ScreenQuadBatchTag
     {
     };
+    struct LineBatchTag
+    {
+
+    };
     // ========== (runtime) =========
     struct ModelTag
     {
@@ -91,11 +95,18 @@ namespace ddknd::graphics::types
         // float advance;
     };
 
-    // temp
+    // for drawing fonts
     struct ScreenQuadVertex
     {
         math::Vec2f pos; // pixel座標
         math::Vec2f uv;
+        math::Vec4f color;
+    };
+
+    // for drawing Line
+    struct LineVertex
+    {
+        math::Vec3f pos;
         math::Vec4f color;
     };
 } // namespace ddknd::graphics::types

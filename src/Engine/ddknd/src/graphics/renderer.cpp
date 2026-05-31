@@ -17,7 +17,7 @@ namespace ddknd::graphics
         // view port
         glViewport(0, 0, desc.w, desc.h);
         //
-        glClearColor(0.1f, 0.2f, 0.8f, 1.0f);
+        glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
@@ -39,9 +39,17 @@ namespace ddknd::graphics
         {
             backend_.DrawScreenQuadBatch(cmd.batch, cmd.shader, cmd.texture, cmd.indexCount, frame_.w, frame_.h);
         }
+        for (const auto& cmd : debugLineCmds_)
+        {
+            backend_.SetUniform(cmd.shader, "uView", frame_.view);
+            backend_.SetUniform(cmd.shader, "uProj", frame_.proj);
+            backend_.SetUniform(cmd.shader, "uModel", math::Mat4f::Identity());
+            backend_.DrawLineBatch(cmd.batch, cmd.shader, cmd.vertexCount);
+        }
 
         cmds_.clear();
         debugTextCmds_.clear();
+        debugLineCmds_.clear();
     }
 
     // test triangle
@@ -54,6 +62,7 @@ namespace ddknd::graphics
     void DebugDrawList::Init()
     {
         textBatch_ = backend_.CreateScreenQuadBatch();
+        lineBatch_ = backend_.CreateLineBatch();
     }
 
     void DebugDrawList::SetFont(const asset::FontResource* font)
@@ -69,6 +78,7 @@ namespace ddknd::graphics
     void DebugDrawList::BeginFrame()
     {
         texts_.clear();
+        lines_.clear();
     }
 
     void DebugDrawList::Text(float x, float y, std::string text, Color color)
@@ -129,8 +139,69 @@ namespace ddknd::graphics
         backend_.UpdateScreenQuadBatch(textBatch_, textVertices_, textIndices_);
     }
 
+    types::GPUID<tag::ScreenQuadBatchTag> DebugDrawList::TextBatch() const
+    {
+        return textBatch_;
+    }
+
+    std::uint32_t DebugDrawList::TextIndexCount() const
+    {
+        return static_cast<std::uint32_t>(textIndices_.size());
+    }
+
+    types::GPUID<tag::TextureTag> DebugDrawList::FontAtlas() const
+    {
+        if (!font_)
+            return types::GPUID<tag::TextureTag>::Invalid();
+
+        return font_->atlas;
+    }
+
+    // ************ LINE *************
+    void DebugDrawList::Line(Vec3f a, Vec3f b, Color color)
+    {
+        lines_.push_back(DebugLineCommand{.a = a, .b = b, .color = color});
+    }
+    void DebugDrawList::BuildLineVertices()
+    {
+        lineVertices_.clear();
+        for (const auto& cmd : lines_)
+        {
+            lineVertices_.push_back({cmd.a, cmd.color});
+            lineVertices_.push_back({cmd.b, cmd.color});
+        }
+    }
+    void DebugDrawList::FlushLine()
+    {
+        if (lines_.empty())
+            return;
+        BuildLineVertices();
+        backend_.UpdateLineBatch(lineBatch_, lineVertices_);
+    }
+
+    void DebugDrawList::Axis(const math::Vec3f& origin, float length)
+    {
+        const auto x = origin + math::Vec3f{length, 0.0f, 0.0f};
+        const auto y = origin + math::Vec3f{0.0f, length, 0.0f};
+        const auto z = origin + math::Vec3f{0.0f, 0.0f, length};
+
+        Line(origin, x, {1,0,0,1});// x red
+        Line(origin, y, {0,1,0,1});// y green
+        Line(origin, z, {0,0,1,1});// z blue
+    }
+    
+    types::GPUID<tag::LineBatchTag> DebugDrawList::LineBatch() const
+    {
+        return lineBatch_;
+    }
+    std::uint32_t DebugDrawList::LineVertexCount() const
+    {
+        return static_cast<std::uint32_t>(lineVertices_.size());
+    }
+
     void DebugDrawList::EndFrame()
     {
         FlushText();
+        FlushLine();
     }
 } // namespace ddknd::graphics

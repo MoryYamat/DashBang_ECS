@@ -22,7 +22,6 @@ namespace ddknd::graphics::types
 
 namespace ddknd::graphics
 {
-
     class IRendererBackend
     {
       private:
@@ -52,11 +51,7 @@ namespace ddknd::graphics
         virtual void DestroyTexture(GPUID<tag::TextureTag> id) = 0;
         virtual void BindTexture2D(GPUID<tag::TextureTag> id, std::uint32_t slot) = 0;
 
-        // virtual void DrawScreenTexturedQuads(std::span<const types::ScreenQuadVertex> vertices,
-        //                                      std::span<const std::uint32_t> indices, GPUID<tag::TextureTag> texture,
-        //                                      int screenWidth, int screenHeight) = 0;
-
-        //
+        // 
         virtual GPUID<tag::ScreenQuadBatchTag> CreateScreenQuadBatch() = 0;
         virtual void DestroyScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag>) = 0;
         virtual void UpdateScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag>, std::span<const types::ScreenQuadVertex>,
@@ -65,6 +60,13 @@ namespace ddknd::graphics
                                          GPUID<tag::TextureTag> texture, std::uint32_t indexCount, int screenWidth,
                                          int screenHeight) = 0;
 
+        //
+        virtual GPUID<tag::LineBatchTag> CreateLineBatch() = 0;
+        virtual void UpdateLineBatch(GPUID<tag::LineBatchTag> id, std::span<const types::LineVertex> vertices) = 0;
+        virtual void DrawLineBatch(GPUID<tag::LineBatchTag> id, GPUID<tag::ShaderProgramGPUTag> shader, std::uint32_t vertexCount) = 0;
+        virtual void DestroyLineBatch(GPUID<tag::LineBatchTag> id) = 0;
+
+        // helpers
         virtual void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Mat4f& m) = 0;
         virtual void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Vec2f& v) = 0;
     };
@@ -89,6 +91,7 @@ namespace ddknd::graphics
         std::uint32_t indexCount = 0;
     };
 
+    // *********** for Drawing Debug Resources *********** 
     struct DebugTextDrawCommand
     {
         types::GPUID<tag::ScreenQuadBatchTag> batch;
@@ -96,6 +99,12 @@ namespace ddknd::graphics
         types::GPUID<tag::TextureTag> texture;
 
         std::uint32_t indexCount = 0;
+    };
+    struct DebugLineDrawCommand
+    {
+      types::GPUID<tag::LineBatchTag> batch;
+      types::GPUID<tag::ShaderProgramGPUTag> shader;
+      std::uint32_t vertexCount = 0;
     };
 
     // for testing triangle
@@ -137,6 +146,10 @@ namespace ddknd::graphics
         {
             debugTextCmds_.push_back(cmd);
         }
+        void Submit(const DebugLineDrawCommand& cmd)
+        {
+            debugLineCmds_.push_back(cmd);
+        }
 
         // test triangle
         void DrawTestTriangle(TestDrawTriangleCommand test);
@@ -145,11 +158,11 @@ namespace ddknd::graphics
         IRendererBackend& backend_;
         std::vector<DrawCommand> cmds_;
         std::vector<DebugTextDrawCommand> debugTextCmds_;
+        std::vector<DebugLineDrawCommand> debugLineCmds_;
         FrameDesc frame_;
     };
 
     // ==================================== DEBUG RENDERER ====================================
-
     struct DebugTextCommand
     {
       private:
@@ -164,8 +177,12 @@ namespace ddknd::graphics
 
     struct DebugLineCommand
     {
+      math::Vec3f a;
+      math::Vec3f b;
+      math::Vec4f color;
     };
 
+    // Create Debug Resources from Commands
     class DebugDrawList
     {
       private:
@@ -189,38 +206,40 @@ namespace ddknd::graphics
         void Line(Vec3f a, Vec3f b, Color color);
         void EndFrame();
 
-        types::GPUID<tag::ScreenQuadBatchTag> TextBatch() const
-        {
-            return textBatch_;
-        }
+        // Text
+        types::GPUID<tag::ScreenQuadBatchTag> TextBatch() const;
+        std::uint32_t TextIndexCount() const;
+        types::GPUID<tag::TextureTag> FontAtlas() const;
 
-        std::uint32_t TextIndexCount() const
-        {
-            return static_cast<std::uint32_t>(textIndices_.size());
-        }
-
-        types::GPUID<tag::TextureTag> FontAtlas() const
-        {
-          if(!font_)
-            return types::GPUID<tag::TextureTag>::Invalid();
-
-          return font_->atlas;
-        }
+        // Line
+        void Axis(const math::Vec3f& origin, float length = 1.0f);
+        types::GPUID<tag::LineBatchTag> LineBatch() const;
+        std::uint32_t LineVertexCount() const;
 
       private:
+        // Text
         void BuildTextVertices();
         void FlushText();
+
+        // Line
+        void BuildLineVertices();
+        void FlushLine();
 
       private:
         IRendererBackend& backend_;
         const asset::FontResource* font_ = nullptr;
 
+        // Text
         std::vector<DebugTextCommand> texts_;
-        std::vector<DebugLineCommand> lines_;
-
         types::GPUID<tag::ScreenQuadBatchTag> textBatch_;
         std::vector<types::ScreenQuadVertex> textVertices_;
         std::vector<std::uint32_t> textIndices_;
+
+        // Line
+        std::vector<DebugLineCommand> lines_;
+        types::GPUID<tag::LineBatchTag> lineBatch_;
+        std::vector<types::LineVertex> lineVertices_;
+        std::vector<std::uint32_t> lineIndices_;
     };
 
 } // namespace ddknd::graphics

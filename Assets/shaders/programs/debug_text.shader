@@ -1,2 +1,2 @@
-vertex = res://shaders/src/debug_text.vert
-fragment = res://shaders/src/debug_text.frag
+vertex = res://shaders/src/debug/debug_text.vert
+fragment = res://shaders/src/debug/debug_text.frag

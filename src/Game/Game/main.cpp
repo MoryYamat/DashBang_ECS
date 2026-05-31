@@ -49,8 +49,9 @@ int main()
 
 // ========= TODO: ========= 
 // HIGH
+// - Implement DebugLine -> Add Axis Draw -> Draw Skelenton
 // - apply asset management to existing codes
-// - create debug / test codes
+// - 
 // - 
 
 // MIDDLE

@@ -158,6 +158,14 @@ namespace ddknd::graphics
                 if (batch.vao != 0)
                     glDeleteVertexArrays(1, &batch.vao);
             }
+            for (auto& batch : lineBatches_)
+            {
+                if (batch.vbo != 0)
+                    glDeleteBuffers(1, &batch.vbo);
+
+                if (batch.vao != 0)
+                    glDeleteVertexArrays(1, &batch.vao);
+            }
         }
 
         types::GPUID<tag::ShaderProgramGPUTag> CreateShaderProgram(std::string_view vs_source,
@@ -500,6 +508,125 @@ namespace ddknd::graphics
             }
         }
 
+        // ************ Drawing Line ************
+        GPUID<tag::LineBatchTag> CreateLineBatch() override
+        {
+            GLLineBatch batch{};
+
+            glGenVertexArrays(1, &batch.vao);
+            glGenBuffers(1, &batch.vbo);
+
+            glBindVertexArray(batch.vao);
+            glBindBuffer(GL_ARRAY_BUFFER, batch.vbo);
+
+            constexpr GLsizei stride = sizeof(types::LineVertex);
+
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride,
+                                  reinterpret_cast<void*>(offsetof(types::LineVertex, pos)));
+
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, stride,
+                                  reinterpret_cast<void*>(offsetof(types::LineVertex, color)));
+
+            glBindVertexArray(0);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+            const auto id = GPUID<tag::LineBatchTag>(static_cast<std::uint32_t>(lineBatches_.size()));
+
+            lineBatches_.push_back(batch);
+            return id;
+        }
+        void UpdateLineBatch(GPUID<tag::LineBatchTag> id, std::span<const types::LineVertex> vertices) override
+        {
+            if (!id.Is_valid())
+                return;
+
+            const auto idx = static_cast<std::size_t>(id.Value());
+            if (idx >= lineBatches_.size())
+                return;
+
+            if (vertices.empty())
+                return;
+
+            auto& batch = lineBatches_[idx];
+
+            glBindVertexArray(batch.vao);
+
+            glBindBuffer(GL_ARRAY_BUFFER, batch.vbo);
+
+            // ***** update vbo *****
+            glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(vertices.size_bytes()), vertices.data(),
+                         GL_DYNAMIC_DRAW);
+
+            glBindVertexArray(0);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+        }
+        void DrawLineBatch(GPUID<tag::LineBatchTag> id, GPUID<tag::ShaderProgramGPUTag> shader,
+                           std::uint32_t vertexCount) override
+        {
+            if (!id.Is_valid() || !shader.Is_valid())
+            {
+                spdlog::error("DrawLineBatch: invalid id or shader");
+                return;
+            }
+
+            const auto idx = static_cast<std::size_t>(id.Value());
+            if (idx >= lineBatches_.size())
+            {
+                spdlog::error("DrawLineBatch: invalid id");
+                return;
+            }
+
+            if (vertexCount == 0)
+
+                return;
+
+            const auto& batch = lineBatches_[idx];
+
+            const GLuint prog = get_program(shader);
+            if (prog == 0)
+            {
+                spdlog::error("DrawLineBatch: invalid shader");
+                return;
+            }
+
+            glUseProgram(prog);
+
+            glLineWidth(1.0f);
+
+            glDisable(GL_DEPTH_TEST);
+            
+            glBindVertexArray(batch.vao);
+            glDrawArrays(GL_LINES, 0, static_cast<GLsizei>(vertexCount));
+
+            glBindVertexArray(0);
+            glEnable(GL_DEPTH_TEST);
+        }
+        void DestroyLineBatch(GPUID<tag::LineBatchTag> id) override
+        {
+            if (!id.Is_valid())
+                return;
+
+            const auto idx = static_cast<std::size_t>(id.Value());
+            if (idx >= lineBatches_.size())
+                return;
+
+            auto& batch = lineBatches_[idx];
+
+            if (batch.vbo != 0)
+            {
+                glDeleteBuffers(1, &batch.vbo);
+                batch.vbo = 0;
+            }
+
+            if (batch.vao != 0)
+            {
+                glDeleteVertexArrays(1, &batch.vao);
+                batch.vao = 0;
+            }
+        }
+
       private:
         std::vector<GLuint> programs_;
 
@@ -527,8 +654,15 @@ namespace ddknd::graphics
             GLuint ebo = 0;
         };
 
+        struct GLLineBatch
+        {
+            GLuint vao = 0;
+            GLuint vbo = 0;
+        };
+
         std::vector<GLuint> textures_;
         std::vector<GLScreenQuadBatch> screenQuadBatches_;
+        std::vector<GLLineBatch> lineBatches_;
         std::unordered_map<PrimitiveKey, GPUID<PrimitiveTag>, PrimitiveKeyHash> primitiveCache_;
     };
 
