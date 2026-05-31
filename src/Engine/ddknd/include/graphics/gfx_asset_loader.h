@@ -45,11 +45,15 @@ namespace ddknd::graphics
 
         using ShaderTag = ::ddknd::asset::tag::Shader;
         using ModelTag = ::ddknd::asset::tag::Model; //@TODO Model {render, skeleton, clip}
+        using FontTag = ::ddknd::asset::tag::Font;
 
         using ShaderID = AssetID<ShaderTag>;
         using ModelID = AssetID<ModelTag>;
+        using FontID = AssetID<FontTag>;
+
         using ShaderResource = asset::ShaderResource;
         using ModelRenderResource = asset::ModelRenderResource;
+        using FontResource = asset::FontResource;
 
         const ShaderResource* TryGet(ShaderID id) const
         {
@@ -58,6 +62,10 @@ namespace ddknd::graphics
         const ModelRenderResource* TryGet(ModelID id) const
         {
             return models_.TryGet(id);
+        }
+        const FontResource* TryGet(FontID id) const
+        {
+          return fonts_.TryGet(id);
         }
 
         void SetLoaded(ShaderID id, ShaderResource res)
@@ -68,13 +76,18 @@ namespace ddknd::graphics
         {
             models_.Set(id, std::move(res));
         }
+        void SetLoaded(FontID id, FontResource res)
+        {
+            fonts_.Set(id, std::move(res));
+        }
 
       private:
         template <typename T, typename Tag>
-        using AssestStorage = ::ddknd::asset::AssestStorage<T, Tag>;
+        using AssetStorage = ::ddknd::asset::AssestStorage<T, Tag>;
 
-        AssestStorage<ShaderResource, ShaderTag> shaders_;
-        AssestStorage<ModelRenderResource, ModelTag> models_;
+        AssetStorage<ShaderResource, ShaderTag> shaders_;
+        AssetStorage<ModelRenderResource, ModelTag> models_;
+        AssetStorage<FontResource, FontTag> fonts_;
     };
 
     class GraphicsAssetLoader
@@ -85,10 +98,12 @@ namespace ddknd::graphics
 
         using ShaderTag = ::ddknd::asset::tag::Shader;
         using ModelTag = ::ddknd::asset::tag::Model;
+        using FontTag = ::ddknd::asset::tag::Font;
 
         using ShaderID = AssetID<ShaderTag>;
         using ModelID = AssetID<ModelTag>;
-
+        using FontID = AssetID<FontTag>;
+        
         using ModelRenderResource = asset::ModelRenderResource;
 
         using IPathResolver = ::ddknd::io::IPathResolver;
@@ -104,7 +119,7 @@ namespace ddknd::graphics
 
         bool LoadShader(AssetManager& assets, GraphicsAssetStore& store, ShaderID id);
         bool LoadModel(AssetManager& assets, GraphicsAssetStore& gfxstore, AnimationAssetStore& animstore, ModelID id);
-
+        bool LoadFont(AssetManager& assets, GraphicsAssetStore& store, FontID id);
       private:
         const IPathResolver& resolver_;
         IRendererBackend& backend_;

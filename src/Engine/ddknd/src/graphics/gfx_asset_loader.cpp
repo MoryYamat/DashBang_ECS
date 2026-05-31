@@ -13,6 +13,8 @@
 
 #include "internal/graphics/model_importer/glb_importer.h"
 
+#include "internal/graphics/font_importer/stb_font_importer.h"
+
 #include "graphics/gfx_type.h"
 #include "math/math.h"
 
@@ -178,7 +180,10 @@ namespace ddknd::graphics
         // importer
         auto imported = ddknd::graphics::internal::ImportModel(abs);
         if (!imported)
+        {
+            assets.SetState(id, ::ddknd::asset::AssetState::Failed);
             return false;
+        }
 
         // const int sceneIndex = imported->defaultScene;
         const int sceneIndex = 0;
@@ -204,17 +209,81 @@ namespace ddknd::graphics
             res.model.clips = std::move(clipIdx);
         }
         gfxstore.SetLoaded(id, std::move(res.model));
+        assets.SetState(id, ddknd::asset::AssetState::Loaded);
 
         return true;
     }
 
+    bool GraphicsAssetLoader::LoadFont(AssetManager& assets, GraphicsAssetStore& store, FontID id)
+    {
+        constexpr float debugFontSize = 18.0f; // TODO: move to asset data
+
+        if(store.TryGet(id))
+            return true;
+
+        auto vpath = assets.TryPathOf(id);
+        if (!vpath)
+            return false;
+
+        auto path = resolver_.TryResolve(*vpath);
+        if (!path)
+        {
+            assets.SetState(id, ::ddknd::asset::AssetState::Failed);
+            return false;
+        }
+
+        const std::string abs = path->string();
+
+        // importer
+        auto imported = ::ddknd::graphics::internal::ImportFont(abs, debugFontSize);
+        if (!imported)
+        {
+            assets.SetState(id, ::ddknd::asset::AssetState::Failed);
+            return false;
+        }
+
+        auto tex = backend_.CreateTextureR8(imported->atlasWidth, imported->atlasHeight, imported->atlasBitmap);
+
+        if (!tex.Is_valid())
+        {
+            assets.SetState(id, ::ddknd::asset::AssetState::Failed);
+            return false;
+        }
+
+        // create resource
+        asset::FontResource fontRes;
+
+        fontRes.atlas = tex;
+        fontRes.atlasWidth = imported->atlasWidth;
+        fontRes.atlasHeight = imported->atlasHeight;
+        fontRes.firstCodepoint = imported->firstCodepoint;
+        fontRes.glyphCount = imported->glyphCount;
+        fontRes.pixelHeight = debugFontSize;
+
+        fontRes.glyphs.resize(imported->glyphs.size());
+
+        const float invW = 1.0f / static_cast<float>(imported->atlasWidth);
+        const float invH = 1.0f / static_cast<float>(imported->atlasHeight);
+
+        for (std::size_t i = 0; i < imported->glyphs.size(); i++)
+        {
+            const auto& src = imported->glyphs[i];
+            auto& dst = fontRes.glyphs[i];
+
+            dst.uv0 = {src.x0 * invW, src.y0 * invH};
+            dst.uv1 = {src.x1 * invW, src.y1 * invH};
+            dst.size = {src.x1 - src.x0, src.y1 - src.y0};
+            dst.offset = {src.xoff, src.yoff};
+
+            dst.advance = src.xadvance;
+        }
+
+        store.SetLoaded(id, std::move(fontRes));
+        assets.SetState(id, ::ddknd::asset::AssetState::Loaded);
+        return true;
+    }
+
 } // namespace ddknd::graphics
-
-// helpers
-namespace
-{
-
-} // namespace
 
 namespace
 {
@@ -241,7 +310,7 @@ namespace
         using prim_id = GPUID<PrimitiveTag>;
 
         ModelBuildResult result;
-        result.nodeToBone.emplace();// init
+        result.nodeToBone.emplace(); // init
 
         const auto& scenes = import.scenes;
         const auto& nodes = import.nodes;
@@ -466,6 +535,6 @@ namespace
 //   model: res://foo.glb#scene=0
 //   anim : res://foo.glb#anim=0
 //   prim : res://foo.glb#prim=12
-// 
+//
 // AssetManager は key -> AssetID のみ担当し、
 // 各 loader/system が key 生成・解釈を担当する。

@@ -1,3 +1,7 @@
+/*
+.glb 形式の パース 用 データ構造
+*/
+
 #pragma once
 
 #include <vector>

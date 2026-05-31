@@ -8,6 +8,8 @@ Makefile
 build/
 out/
 
+External
+
 # ========================
 # Visual Studio (IDE only)
 # ========================

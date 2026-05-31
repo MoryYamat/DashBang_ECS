@@ -139,6 +139,14 @@ namespace ddknd::graphics
                     prim.ebo = 0;
                 }
             }
+            for(auto& tex: textures_)
+            {
+                if(tex != 0)
+                {
+                    glDeleteTextures(1, &tex);
+                    tex = 0;
+                }
+            }
         }
 
         types::GPUID<tag::ShaderProgramGPUTag> CreateShaderProgram(std::string_view vs_source,
@@ -265,6 +273,64 @@ namespace ddknd::graphics
 
             return id;
         }
+        
+        GPUID<tag::TextureTag> CreateTextureR8(int width, int height, std::span<const std::uint8_t> pixels) override
+        {
+            if(width <= 0 || height <= 0 || pixels.empty())
+                return GPUID<tag::TextureTag>::Invalid();
+
+            GLuint tex = 0;
+            glGenTextures(1, &tex);
+            glBindTexture(GL_TEXTURE_2D, tex);
+
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+            glTexImage2D(
+                    GL_TEXTURE_2D,
+                    0,
+                    GL_R8,
+                    width,
+                    height,
+                    0,
+                    GL_RED,
+                    GL_UNSIGNED_BYTE,
+                    pixels.data()
+            );
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            const auto id = 
+                GPUID<tag::TextureTag>(static_cast<std::uint32_t>(textures_.size()));
+
+            textures_.push_back(tex);
+            return id;
+        }
+        void DestroyTexture(GPUID<tag::TextureTag> id) override
+        {
+            const auto idx = static_cast<std::size_t>(id.Value());
+            if(idx >= textures_.size())
+                return;
+            if(textures_[idx] != 0)
+            {
+                glDeleteTextures(1, &textures_[idx]);
+                textures_[idx] = 0;
+            }
+        }
+        void BindTexture2D(GPUID<tag::TextureTag> id, std::uint32_t slot) override
+        {
+            const auto idx = static_cast<std::size_t>(id.Value());
+            if(idx >= textures_.size())
+                return;
+
+            glActiveTexture(GL_TEXTURE0 + slot);
+            glBindTexture(GL_TEXTURE_2D, textures_[idx]);
+        }
 
         void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Mat4f& m) override
         {
@@ -300,7 +366,7 @@ namespace ddknd::graphics
             GLuint ebo = 0;
         };
         std::vector<GLPrimitive> prims_;
-
+        std::vector<GLuint> textures_; 
         std::unordered_map<PrimitiveKey, GPUID<PrimitiveTag>, PrimitiveKeyHash> primitiveCache_;
     };
 

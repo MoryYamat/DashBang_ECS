@@ -28,6 +28,8 @@
 
 #include <spdlog/spdlog.h>
 
+// test font
+
 // temporaly
 namespace
 {
@@ -99,12 +101,14 @@ namespace app
         using ShaderTag = ::ddknd::asset::tag::Shader;
         using MeshTag = ::ddknd::asset::tag::Mesh;
         using ModelTag = ::ddknd::asset::tag::Model;
+        using FontTag = ::ddknd::asset::tag::Font;
 
         AssetManager asset_mgr;
 
         auto res_1 = asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/test.shader");
         auto res_2 = asset_mgr.GetOrCreate<MeshTag>("res://meshes/test_triangle.mesh");
         auto mod_1 = asset_mgr.GetOrCreate<ModelTag>("res://Models/paladin/base_action_animation_diago.glb");
+        auto font_1 = asset_mgr.GetOrCreate<FontTag>("res://fonts/NotoSans-VariableFont_wdth,wght.ttf");// Font
 
         std::cerr << "id1: Idx=" << res_1.Index() << " Gen=" << res_1.Generation() << "\n";
         std::cerr << "id2: Idx=" << res_2.Index() << " Gen=" << res_2.Generation() << "\n";
@@ -119,10 +123,11 @@ namespace app
 
         auto load_res_gfx = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, res_1);
         auto load_mod_gfx = gfx_loader.LoadModel(asset_mgr, gfx_asset_store, gfx_anim_store, mod_1);
+        auto load_font_gfx = gfx_loader.LoadFont(asset_mgr, gfx_asset_store, font_1);
 
         const auto* shader_res = gfx_asset_store.TryGet(res_1);
         const auto* model_res = gfx_asset_store.TryGet(mod_1);
-
+        const auto* font_res = gfx_asset_store.TryGet(font_1);
 
         using DrawCommand = ::ddknd::graphics::DrawCommand;
         // DrawCommand cmd{.shader=shader_res->program};
@@ -140,7 +145,7 @@ namespace app
         {
             cam_->aspect = window_->aspectRation();
             // =========================== temporaly ===========================
-            auto view = LookAt(cam_->pos, cam_->target, cam_->up);
+            auto view = LookAt(cam_->pos, cam_->target, cam_->up);// @TODO move to renderer @@@@@@@@@@@@@@@@@@@@@@@ // TODO: System Execution Scheduler
             auto proj = Perspective(::ddknd::math::degToRadf(60.0f), cam_->aspect, 0.1f, 100.0f);
             // =========================== temporaly =========================== 
 

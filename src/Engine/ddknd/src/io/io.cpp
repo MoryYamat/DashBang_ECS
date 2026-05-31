@@ -272,4 +272,38 @@ namespace ddknd::io
 
         return std::make_unique<VfsResolver>(std::move(table));
     }
+
+    std::optional<std::vector<std::uint8_t>> ReadAllBytes(const std::filesystem::path& path)
+    {
+        std::ifstream ifs(path, std::ios::binary | std::ios::ate);
+        if (!ifs)
+        {
+            spdlog::error("[ReadAllBytes]: failed to open file");
+            spdlog::error("exists = {}", std::filesystem::exists(path));
+            spdlog::error("path = {}", path.string());
+            return std::nullopt;
+        }
+
+        const std::streamsize size = ifs.tellg();
+
+        if (size <= 0)
+        {
+            spdlog::error("[ReadAllBytes]: invalid file size");
+            return std::nullopt;
+        }
+
+        std::vector<std::uint8_t> buffer(static_cast<std::size_t>(size));
+
+        ifs.seekg(0, std::ios::beg);
+        if(!ifs.read(
+                reinterpret_cast<char*>(buffer.data()),
+                size
+        ))
+        {
+            spdlog::error("[ReadAllBytes]: failed to read file");
+            return std::nullopt;
+        }
+
+        return buffer;
+    }
 } // namespace ddknd::io

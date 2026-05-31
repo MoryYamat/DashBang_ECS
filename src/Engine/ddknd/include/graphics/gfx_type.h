@@ -1,3 +1,7 @@
+/*
+asset のデータを runtime で 保管する 形式 (各種パース済みデータ構造->このデータに変換してasset_storage で 保管)
+*/
+
 #pragma once
 
 #include <optional>
@@ -15,6 +19,9 @@ namespace ddknd::graphics::tag
     struct PrimitiveTag // mesh: vec<primitives>
     {
     };
+    struct TextureTag
+    {
+    };
     // ========== (runtime) =========
     struct ModelTag
     {
@@ -26,7 +33,7 @@ namespace ddknd::animation::tag
     struct AnimationClipTag
     {
     };
-}// namespace ddknd::animation::tag
+} // namespace ddknd::animation::tag
 
 namespace ddknd::graphics::types
 {
@@ -35,8 +42,8 @@ namespace ddknd::graphics::types
 
     struct PrimitiveKey
     {
-        std::string fileKey;        // (now:vpath)
-        int prim_index = -1;        // import.primitives.index
+        std::string fileKey; // (now:vpath)
+        int prim_index = -1; // import.primitives.index
 
         bool operator==(const PrimitiveKey& o) const
         {
@@ -54,7 +61,33 @@ namespace ddknd::graphics::types
             return h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2));
         }
     };
-}
+
+    // Font Resource
+    struct GlyphResource
+    {
+        private: 
+            using Vec2f = math::Vec2f;
+
+        public:
+        Vec2f uv0;
+        Vec2f uv1;
+        Vec2f size;   // glyph bitmap size
+        Vec2f offset; // xoff, yoff
+        float advance = 0.0f;
+
+        // float u0;
+        // float v0;
+        // float u1;
+        // float v1;
+
+        // float width;
+        // float height;
+
+        // float xoff;
+        // float yoff;
+        // float advance;
+    };
+} // namespace ddknd::graphics::types
 
 namespace ddknd::animation::types
 {
@@ -108,7 +141,7 @@ namespace ddknd::animation::types
         float duration = 0.0f;
         std::vector<AnimationChannel> channels;
     };
-} // namespace ddknd::graphics::types
+} // namespace ddknd::animation::types
 
 // =============================static=============================(it may be internal)
 namespace ddknd::graphics::asset
@@ -132,18 +165,34 @@ namespace ddknd::graphics::asset
 
     struct PrimitiveResource
     {
-        GPUID<tag::PrimitiveTag> prim;// GLPrimitive_Index
+        GPUID<tag::PrimitiveTag> prim; // GLPrimitive_Index
         std::uint32_t vertexCount = 0;
         std::uint32_t indexCount = 0;
     };
 
-    struct ModelRenderResource      // AssetID<tag::Model> model;
+    struct ModelRenderResource // AssetID<tag::Model> model;
     {
-        int sourceScene = 0;// default
+        int sourceScene = 0; // default
         std::vector<PrimitiveResource> primitives;
         std::optional<animation::types::SkeletonResource> skeleton;
         // std::vector<graphics::types::AnimationClipResource> clips;
-        std::vector<AssetID<animation::tag::AnimationClipTag>> clips;// Standard clips that can be used with this model
+        std::vector<AssetID<animation::tag::AnimationClipTag>> clips; // Standard clips that can be used with this model
+    };
+
+    // FontResource
+    struct FontResource
+    {
+        GPUID<tag::TextureTag> atlas;
+
+        int atlasWidth = 0;
+        int atlasHeight = 0;
+
+        int firstCodepoint = 32;
+        int glyphCount = 96;
+
+        float pixelHeight = 18.0f;
+
+        std::vector<::ddknd::graphics::types::GlyphResource> glyphs;
     };
 } // namespace ddknd::graphics::asset
 
@@ -163,7 +212,7 @@ namespace ddknd::animation
         std::vector<Mat4f> skinMatrices; // lbs?
     };
 
-    struct AnimationState// AssetID<AnimClip> clips
+    struct AnimationState // AssetID<AnimClip> clips
     {
         AssetID<tag::AnimationClipTag> clip;
         float time = 0.0f;
@@ -179,7 +228,7 @@ namespace ddknd::graphics
     // this is same to ModelComponent
     struct ModelInstance
     {
-        AssetID<tag::ModelTag> model;// from ModelStore
+        AssetID<tag::ModelTag> model; // from ModelStore
         animation::Pose pose;
         animation::AnimationState animState;
     };
@@ -223,7 +272,6 @@ namespace ddknd::graphics
 //     Pose pose;
 //     AnimationState animState;
 // };
-
 
 // @TODO
 // LOW:
