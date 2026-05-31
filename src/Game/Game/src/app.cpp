@@ -10,7 +10,7 @@
 #include "graphics/renderer.h"
 #include "input/input.h"
 #include "window/window.h"
-
+#include "clock/clock.h"
 // test
 #include "component/test_component.h"
 #include "ecs/entity/entity.h"
@@ -88,6 +88,10 @@ namespace app
         inputMapping_->RegisterKeyMap(Key::S, Action::MoveBackward);
         inputMapping_->RegisterKeyMap(Key::D, Action::MoveRight);
 
+        // Debug Draw
+        debugDraw_ = std::make_unique<ddknd::graphics::DebugDrawList>(*rendererBackend_);
+        debugDraw_->Init();
+
         return true;
     }
 
@@ -108,7 +112,8 @@ namespace app
         auto res_1 = asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/test.shader");
         auto res_2 = asset_mgr.GetOrCreate<MeshTag>("res://meshes/test_triangle.mesh");
         auto mod_1 = asset_mgr.GetOrCreate<ModelTag>("res://Models/paladin/base_action_animation_diago.glb");
-        auto font_1 = asset_mgr.GetOrCreate<FontTag>("res://fonts/NotoSans-VariableFont_wdth,wght.ttf");// Font
+        auto debug_font_shader = asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/debug_text.shader");// debug text shader
+        auto font_res_1 = asset_mgr.GetOrCreate<FontTag>("res://fonts/NotoSans-VariableFont_wdth,wght.ttf");// Font
 
         std::cerr << "id1: Idx=" << res_1.Index() << " Gen=" << res_1.Generation() << "\n";
         std::cerr << "id2: Idx=" << res_2.Index() << " Gen=" << res_2.Generation() << "\n";
@@ -122,12 +127,14 @@ namespace app
         GraphicsAssetLoader gfx_loader(*vfs_, *rendererBackend_);
 
         auto load_res_gfx = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, res_1);
+        auto load_res_shader_debug_txt = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, debug_font_shader);
         auto load_mod_gfx = gfx_loader.LoadModel(asset_mgr, gfx_asset_store, gfx_anim_store, mod_1);
-        auto load_font_gfx = gfx_loader.LoadFont(asset_mgr, gfx_asset_store, font_1);
+        auto load_font_gfx = gfx_loader.LoadFont(asset_mgr, gfx_asset_store, font_res_1);
 
         const auto* shader_res = gfx_asset_store.TryGet(res_1);
+        const auto* debug_text_shader_res = gfx_asset_store.TryGet(debug_font_shader);
         const auto* model_res = gfx_asset_store.TryGet(mod_1);
-        const auto* font_res = gfx_asset_store.TryGet(font_1);
+        const auto* font_res = gfx_asset_store.TryGet(font_res_1);
 
         using DrawCommand = ::ddknd::graphics::DrawCommand;
         // DrawCommand cmd{.shader=shader_res->program};
@@ -141,8 +148,17 @@ namespace app
         cam_->pos = {0.0f, 2.0f, 5.0f};
         // ============= for test ==============
 
+        // ************* TIMER ************* 
+        using Timer = ::ddknd::clock::FrameTimer;
+        Timer timer{};
+
+        debugDraw_->SetFont(font_res);
         while (isRunning_ && !window_->ShouldClose())
         {
+            // ************* TIMER **************
+            timer.Tick();
+            const float fps = timer.FPS();
+
             cam_->aspect = window_->aspectRation();
             // =========================== temporaly ===========================
             auto view = LookAt(cam_->pos, cam_->target, cam_->up);// @TODO move to renderer @@@@@@@@@@@@@@@@@@@@@@@ // TODO: System Execution Scheduler
@@ -158,6 +174,18 @@ namespace app
                 renderSys_->Submit(
                     DrawCommand{.mesh = res.prim, .shader = shader_res->program, .indexCount = res.indexCount});
             }
+
+            // ******* DebugDraw ******* 
+            debugDraw_->BeginFrame();
+            debugDraw_->Text(10.0f, 20.0f, std::format("FPS: {:.1f}", fps), {1.0f, 1.0f, 0.0f, 1.0f});// FPS
+            debugDraw_->EndFrame();
+
+            renderSys_->Submit(ddknd::graphics::DebugTextDrawCommand{
+                .batch = debugDraw_->TextBatch(),
+                .shader = debug_text_shader_res->program,
+                .texture = debugDraw_->FontAtlas(),
+                .indexCount = debugDraw_->TextIndexCount()
+            });
 
             renderSys_->EndFrame();
 

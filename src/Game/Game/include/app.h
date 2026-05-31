@@ -1,5 +1,6 @@
 #pragma once
 
+#include "graphics/renderer.h"
 #include "input/input.h"
 #include "window/window_fwd.h"
 #include "input/input_fwd.h"
@@ -49,5 +50,7 @@ namespace app
 
             std::unique_ptr<::ddknd::input::InputMapping> inputMapping_;
             std::unique_ptr<::ddknd::input::ActionInputSystem> inputSys_;
+
+            std::unique_ptr<::ddknd::graphics::DebugDrawList> debugDraw_;
     };
 }// namespace app

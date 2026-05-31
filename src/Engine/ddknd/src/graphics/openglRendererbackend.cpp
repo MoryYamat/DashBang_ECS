@@ -139,13 +139,24 @@ namespace ddknd::graphics
                     prim.ebo = 0;
                 }
             }
-            for(auto& tex: textures_)
+            for (auto& tex : textures_)
             {
-                if(tex != 0)
+                if (tex != 0)
                 {
                     glDeleteTextures(1, &tex);
                     tex = 0;
                 }
+            }
+            for (auto& batch : screenQuadBatches_)
+            {
+                if (batch.vbo != 0)
+                    glDeleteBuffers(1, &batch.vbo);
+
+                if (batch.ebo != 0)
+                    glDeleteBuffers(1, &batch.ebo);
+
+                if (batch.vao != 0)
+                    glDeleteVertexArrays(1, &batch.vao);
             }
         }
 
@@ -154,11 +165,15 @@ namespace ddknd::graphics
         {
             GLuint vs = compile_shader(GL_VERTEX_SHADER, vs_source);
             if (!vs)
+            {
+                spdlog::error("CreateShaderProgram: vertex shader compile failed");
                 return {};
+            }
 
             GLuint fs = compile_shader(GL_FRAGMENT_SHADER, fs_source);
             if (!fs)
             {
+                spdlog::error("CreateShaderProgram: fragment shader compile failed");
                 glDeleteShader(vs);
                 return {};
             }
@@ -167,7 +182,13 @@ namespace ddknd::graphics
             glDeleteShader(vs);
             glDeleteShader(fs);
             if (!prog)
+            {
+
+                spdlog::error("CreateShaderProgram: program link failed");
+                glDeleteShader(vs);
+                glDeleteShader(fs);
                 return {};
+            }
 
             // 登録して発行
             const auto id_val = static_cast<std::uint32_t>(programs_.size());
@@ -273,10 +294,10 @@ namespace ddknd::graphics
 
             return id;
         }
-        
+
         GPUID<tag::TextureTag> CreateTextureR8(int width, int height, std::span<const std::uint8_t> pixels) override
         {
-            if(width <= 0 || height <= 0 || pixels.empty())
+            if (width <= 0 || height <= 0 || pixels.empty())
                 return GPUID<tag::TextureTag>::Invalid();
 
             GLuint tex = 0;
@@ -285,38 +306,28 @@ namespace ddknd::graphics
 
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-            glTexImage2D(
-                    GL_TEXTURE_2D,
-                    0,
-                    GL_R8,
-                    width,
-                    height,
-                    0,
-                    GL_RED,
-                    GL_UNSIGNED_BYTE,
-                    pixels.data()
-            );
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, pixels.data());
 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
             glBindTexture(GL_TEXTURE_2D, 0);
 
-            const auto id = 
-                GPUID<tag::TextureTag>(static_cast<std::uint32_t>(textures_.size()));
+            const auto id = GPUID<tag::TextureTag>(static_cast<std::uint32_t>(textures_.size()));
 
             textures_.push_back(tex);
             return id;
         }
+
         void DestroyTexture(GPUID<tag::TextureTag> id) override
         {
             const auto idx = static_cast<std::size_t>(id.Value());
-            if(idx >= textures_.size())
+            if (idx >= textures_.size())
                 return;
-            if(textures_[idx] != 0)
+            if (textures_[idx] != 0)
             {
                 glDeleteTextures(1, &textures_[idx]);
                 textures_[idx] = 0;
@@ -325,7 +336,7 @@ namespace ddknd::graphics
         void BindTexture2D(GPUID<tag::TextureTag> id, std::uint32_t slot) override
         {
             const auto idx = static_cast<std::size_t>(id.Value());
-            if(idx >= textures_.size())
+            if (idx >= textures_.size())
                 return;
 
             glActiveTexture(GL_TEXTURE0 + slot);
@@ -340,10 +351,153 @@ namespace ddknd::graphics
             if (loc < 0)
                 return;
 
+            glUseProgram(prog);
             glUniformMatrix4fv(loc, 1,
                                GL_TRUE, // raw-major
-                               m.Data()  // float*
+                               m.Data() // float*
             );
+        }
+
+        void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Vec2f& v) override
+        {
+            const GLuint prog = get_program(shader);
+            const GLint loc = glGetUniformLocation(prog, name);
+            if (loc < 0)
+                return;
+
+            glUseProgram(prog);
+            glUniform2f(loc, v[0], v[1]);
+        }
+
+        GPUID<tag::ScreenQuadBatchTag> CreateScreenQuadBatch() override
+        {
+            GLScreenQuadBatch batch{};
+
+            glGenVertexArrays(1, &batch.vao);
+            glGenBuffers(1, &batch.vbo);
+            glGenBuffers(1, &batch.ebo);
+
+            glBindVertexArray(batch.vao);
+            glBindBuffer(GL_ARRAY_BUFFER, batch.vbo);
+
+            constexpr GLsizei stride = sizeof(types::ScreenQuadVertex);
+
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride,
+                                  reinterpret_cast<void*>(offsetof(types::ScreenQuadVertex, pos)));
+
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride,
+                                  reinterpret_cast<void*>(offsetof(types::ScreenQuadVertex, uv)));
+
+            glEnableVertexAttribArray(2);
+            glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, stride,
+                                  reinterpret_cast<void*>(offsetof(types::ScreenQuadVertex, color)));
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batch.ebo);
+
+            glBindVertexArray(0);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+            const auto id = GPUID<tag::ScreenQuadBatchTag>(static_cast<std::uint32_t>(screenQuadBatches_.size()));
+
+            screenQuadBatches_.push_back(batch);
+
+            return id;
+        }
+
+        void UpdateScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag> id, std::span<const types::ScreenQuadVertex> vertices,
+                                   std::span<const std::uint32_t> indices) override
+        {
+            if (!id.Is_valid())
+                return;
+            const auto idx = static_cast<std::size_t>(id.Value());
+            if (idx >= screenQuadBatches_.size())
+                return;
+            if (vertices.empty() || indices.empty())
+                return;
+
+            auto& batch = screenQuadBatches_[idx];
+
+            glBindVertexArray(batch.vao);
+
+            glBindBuffer(GL_ARRAY_BUFFER, batch.vbo);
+            glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(vertices.size_bytes()), vertices.data(),
+                         GL_DYNAMIC_DRAW);
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batch.ebo);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(indices.size_bytes()), indices.data(),
+                         GL_DYNAMIC_DRAW);
+
+            glBindVertexArray(0);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+        }
+
+        void DrawScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag> batchId, GPUID<tag::ShaderProgramGPUTag> shader,
+                                 GPUID<tag::TextureTag> texture, std::uint32_t indexCount, int screenWidth,
+                                 int screenHeight) override
+        {
+            if (!batchId.Is_valid() || !shader.Is_valid() || !texture.Is_valid())
+                return;
+
+            const auto batchIdx = static_cast<std::size_t>(batchId.Value());
+            if (batchIdx >= screenQuadBatches_.size())
+                return;
+
+            const auto& batch = screenQuadBatches_[batchIdx];
+
+            glDisable(GL_DEPTH_TEST);
+
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+            const GLuint prog = get_program(shader);
+            glUseProgram(prog);
+
+            glUniform2f(glGetUniformLocation(prog, "uScreenSize"), static_cast<float>(screenWidth),
+                        static_cast<float>(screenHeight));
+
+            glUniform1i(glGetUniformLocation(prog, "uTexture"), 0);
+
+            BindTexture2D(texture, 0);
+
+            glBindVertexArray(batch.vao);
+
+            glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, nullptr);
+
+            glBindVertexArray(0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            glDisable(GL_BLEND);
+            glEnable(GL_DEPTH_TEST);
+        }
+
+        void DestroyScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag> id) override
+        {
+            if (!id.Is_valid())
+                return;
+
+            const auto idx = static_cast<std::size_t>(id.Value());
+
+            if (idx >= screenQuadBatches_.size())
+                return;
+
+            auto& batch = screenQuadBatches_[idx];
+            if (batch.vbo != 0)
+            {
+                glDeleteBuffers(1, &batch.vbo);
+                batch.vbo = 0;
+            }
+            if (batch.ebo != 0)
+            {
+                glDeleteBuffers(1, &batch.ebo);
+                batch.ebo = 0;
+            }
+            if (batch.vao != 0)
+            {
+                glDeleteVertexArrays(1, &batch.vao);
+                batch.vao = 0;
+            }
         }
 
       private:
@@ -358,7 +512,6 @@ namespace ddknd::graphics
         }
 
         void buildPrimitiveGPUResource(const ImportPrimitive& import);
-
         struct GLPrimitive
         {
             GLuint vao = 0;
@@ -366,7 +519,16 @@ namespace ddknd::graphics
             GLuint ebo = 0;
         };
         std::vector<GLPrimitive> prims_;
-        std::vector<GLuint> textures_; 
+
+        struct GLScreenQuadBatch
+        {
+            GLuint vao = 0;
+            GLuint vbo = 0;
+            GLuint ebo = 0;
+        };
+
+        std::vector<GLuint> textures_;
+        std::vector<GLScreenQuadBatch> screenQuadBatches_;
         std::unordered_map<PrimitiveKey, GPUID<PrimitiveTag>, PrimitiveKeyHash> primitiveCache_;
     };
 

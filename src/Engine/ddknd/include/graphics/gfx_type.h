@@ -22,6 +22,9 @@ namespace ddknd::graphics::tag
     struct TextureTag
     {
     };
+    struct ScreenQuadBatchTag
+    {
+    };
     // ========== (runtime) =========
     struct ModelTag
     {
@@ -65,10 +68,10 @@ namespace ddknd::graphics::types
     // Font Resource
     struct GlyphResource
     {
-        private: 
-            using Vec2f = math::Vec2f;
+      private:
+        using Vec2f = math::Vec2f;
 
-        public:
+      public:
         Vec2f uv0;
         Vec2f uv1;
         Vec2f size;   // glyph bitmap size
@@ -86,6 +89,14 @@ namespace ddknd::graphics::types
         // float xoff;
         // float yoff;
         // float advance;
+    };
+
+    // temp
+    struct ScreenQuadVertex
+    {
+        math::Vec2f pos; // pixel座標
+        math::Vec2f uv;
+        math::Vec4f color;
     };
 } // namespace ddknd::graphics::types
 
