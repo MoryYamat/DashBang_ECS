@@ -398,5 +398,5 @@ namespace ddknd::math
     Vec3f ExtractTranslation(const Mat4f& m);
 
     Mat4f Inverse(const Mat4f& m);
-
+    Mat4f ExtractRotationOnly(const ddknd::math::Mat4f& m);
 }

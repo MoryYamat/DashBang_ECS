@@ -63,7 +63,7 @@ namespace ddknd::graphics::internal::types
         std::vector<int> children;
 
         bool hasMatrix = false;
-        TRS local;
+        TRS localTRS;
         Mat4f localMatrix;
         Mat4f globalMatrix;
 

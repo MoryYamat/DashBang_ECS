@@ -376,6 +376,30 @@ namespace ddknd::graphics
             glUseProgram(prog);
             glUniform2f(loc, v[0], v[1]);
         }
+        void SetUniformMat4Array(GPUID<tag::ShaderProgramGPUTag> shader, const char* name,
+                                 std::span<const math::Mat4f> matrices) override
+        {
+            if (matrices.empty())
+                return;
+
+            const auto& prog = programs_[static_cast<std::size_t>(shader.Value())];
+
+            GLint loc = glGetUniformLocation(prog, name);
+            if (loc < 0)
+                return;
+
+            std::vector<float> raw;
+            raw.reserve(matrices.size() * 16);
+
+            for (const auto& m : matrices)
+            {
+                const float* p = m.Data();
+                raw.insert(raw.end(), p, p + 16);
+            }
+
+            glUseProgram(prog);
+            glUniformMatrix4fv(loc, static_cast<GLsizei>(matrices.size()), GL_TRUE, raw.data());
+        }
 
         GPUID<tag::ScreenQuadBatchTag> CreateScreenQuadBatch() override
         {
@@ -596,7 +620,7 @@ namespace ddknd::graphics
             glLineWidth(1.0f);
 
             glDisable(GL_DEPTH_TEST);
-            
+
             glBindVertexArray(batch.vao);
             glDrawArrays(GL_LINES, 0, static_cast<GLsizei>(vertexCount));
 

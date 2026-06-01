@@ -121,14 +121,18 @@ namespace ddknd::animation::types
 
         int parent = -1;
         Mat4f inverseBindMatrix = Mat4f::Identity();
+        Mat4f parentCorrection = Mat4f::Identity();// 
         Mat4f bindLocalMatrix = Mat4f::Identity();
-        // TRS bindLocal;
+        TRS bindLocalTRS{};
     };
 
     // runtime
     struct SkeletonResource
     {
+        using Mat4f = ::ddknd::math::Mat4f;
         std::vector<Bone> bones;
+
+        Mat4f rootCorrection = Mat4f::Identity();
     };
 
     enum class ChannelTarget
@@ -230,8 +234,8 @@ namespace ddknd::animation
         using TRS = ::ddknd::math::TRS;
         using Mat4f = ::ddknd::math::Mat4f;
 
-        //std::vector<TRS> localTransforms;
-        std::vector<Mat4f> localTransforms;
+        std::vector<TRS> localTRS;
+        std::vector<Mat4f> localMatrices;
         std::vector<Mat4f> globalMatrices;
         std::vector<Mat4f> skinMatrices; // lbs?
     };
@@ -240,7 +244,8 @@ namespace ddknd::animation
     {
         AssetID<tag::AnimationClipTag> clip;
         float time = 0.0f;
-        bool loop = false;
+        float speed = 1.0f;
+        bool loop = true;
     };
 } // namespace ddknd::animation
 

@@ -9,7 +9,7 @@ namespace ddknd::animation::debug
 {
     void TestAnimatorSystemInit(const types::SkeletonResource& skeleton, animation::Pose& pose)
     {
-        ::ddknd::animation::AnimaterSystem::InitializePose(skeleton, pose);
+        ::ddknd::animation::AnimatorSystem::InitializePose(skeleton, pose);
     }
 
     void TestAnimatorSystemUpdate(const animation::types::SkeletonResource& skeleton, animation::Pose& pose,

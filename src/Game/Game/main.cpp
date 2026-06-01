@@ -56,6 +56,7 @@ int main()
 
 // MIDDLE
 // - fix folder 
+// - Correct the design to be fundamentally correct.
 
 // LOW
 // - fix cmake and dependencies

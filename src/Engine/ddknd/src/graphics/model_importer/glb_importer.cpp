@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <limits>
 
-
 #define CGLTF_IMPLEMENTATION
 #include "cgltf/cgltf.h"
 
@@ -128,6 +127,22 @@ namespace
         Vec3f S = n->has_scale ? Vec3f{n->scale[0], n->scale[1], n->scale[2]} : Vec3f{1, 1, 1};
 
         return translate(T) * mat4_cast(R) * scale(S);
+    }
+
+    math::TRS ReadNodeLocalTRS(const cgltf_node* n)
+    {
+        math::TRS trs{};
+
+        if (n->has_translation)
+            trs.translation = {n->translation[0], n->translation[1], n->translation[2]};
+
+        if (n->has_rotation)
+            trs.rotation = {n->rotation[3], n->rotation[0], n->rotation[1], n->rotation[2]};
+
+        if (n->has_scale)
+            trs.scale = {n->scale[0], n->scale[1], n->scale[2]};
+
+        return trs;
     }
 
     void BuildNodeGlobals(const cgltf_data* g, std::vector<int>& parent, std::vector<Mat4f>& globals)
@@ -262,6 +277,7 @@ namespace
                 dst.skin = IndexOf(g->skins, g->skins_count, src->skin);
 
             dst.localMatrix = ReadNodeLocalMatrix(src);
+            dst.localTRS = ReadNodeLocalTRS(src);
             // std::cerr << dst.name << "\n";
             // std::cerr << " ======== local matrix ======= \n" << dst.localMatrix << "\n";
         }
@@ -512,7 +528,7 @@ namespace
                     continue;
 
                 ImportChannel ch{};
-                ch.targetNode = IndexOf(g->nodes, g->nodes_count, srcCh.target_node);// nodeIdx
+                ch.targetNode = IndexOf(g->nodes, g->nodes_count, srcCh.target_node); // nodeIdx
 
                 if (ch.targetNode < 0)
                     continue;

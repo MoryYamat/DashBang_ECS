@@ -8,6 +8,7 @@
 #include "Action/action.h"
 #include "camera/debug_camera.h"
 #include "clock/clock.h"
+#include "graphics/animation.h"
 #include "graphics/gfx_type.h"
 #include "graphics/renderer.h"
 #include "input/input.h"
@@ -28,8 +29,8 @@
 
 #include "math/math.h"
 
-#include "graphics/debug_animation.h"
 #include "component/gfx_component.h"
+#include "graphics/debug_animation.h"
 
 #include <spdlog/spdlog.h>
 
@@ -47,6 +48,17 @@ namespace
     using Action = ::app::action::Action;
     using Key = ::ddknd::input::Key;
 
+    float MaxAbsDiffFromIdentity(const ::ddknd::math::Mat4f& m)
+    {
+        const float* p = m.Data();
+        const float* id = ::ddknd::math::Mat4f::Identity().Data();
+
+        float maxDiff = 0.0f;
+        for (int i = 0; i < 16; ++i)
+            maxDiff = std::max(maxDiff, std::abs(p[i] - id[i]));
+
+        return maxDiff;
+    }
 } // namespace
 
 namespace app
@@ -112,8 +124,9 @@ namespace app
 
         AssetManager asset_mgr;
 
-        auto res_1 = asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/test.shader");
-        auto res_2 = asset_mgr.GetOrCreate<MeshTag>("res://meshes/test_triangle.mesh");
+        auto asset_test_shader = asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/test.shader");
+        auto asset_test_triangle_mesh = asset_mgr.GetOrCreate<MeshTag>("res://meshes/test_triangle.mesh");
+        auto asset_skinned_shader = asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/skinned.shader");
         auto mod_1 = asset_mgr.GetOrCreate<ModelTag>("res://Models/paladin/base_action_animation_diago.glb");
         auto debug_font_shader =
             asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/debug_text.shader"); // debug text shader
@@ -121,8 +134,9 @@ namespace app
             asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/debug_line.shader"); // debug text shader
         auto font_res_1 = asset_mgr.GetOrCreate<FontTag>("res://fonts/NotoSans-VariableFont_wdth,wght.ttf"); // Font
 
-        std::cerr << "id1: Idx=" << res_1.Index() << " Gen=" << res_1.Generation() << "\n";
-        std::cerr << "id2: Idx=" << res_2.Index() << " Gen=" << res_2.Generation() << "\n";
+        std::cerr << "id1: Idx=" << asset_test_shader.Index() << " Gen=" << asset_test_shader.Generation() << "\n";
+        std::cerr << "id2: Idx=" << asset_test_triangle_mesh.Index() << " Gen=" << asset_test_triangle_mesh.Generation()
+                  << "\n";
 
         using GraphicsAssetStore = ::ddknd::graphics::GraphicsAssetStore;
         using AnimationAssetStore = ::ddknd::animation::AnimationAssetStore;
@@ -132,15 +146,17 @@ namespace app
         using GraphicsAssetLoader = ::ddknd::graphics::GraphicsAssetLoader;
         GraphicsAssetLoader gfx_loader(*vfs_, *rendererBackend_);
 
-        auto load_res_gfx = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, res_1);
+        auto load_res_gfx = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, asset_test_shader);
         auto load_res_shader_debug_txt = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, debug_font_shader);
         auto load_res_shader_debug_line = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, debug_line_shader);
+        auto load_res_shader_skinned = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, asset_skinned_shader);
         auto load_mod_gfx = gfx_loader.LoadModel(asset_mgr, gfx_asset_store, gfx_anim_store, mod_1);
         auto load_font_gfx = gfx_loader.LoadFont(asset_mgr, gfx_asset_store, font_res_1);
 
-        const auto* shader_res = gfx_asset_store.TryGet(res_1);
+        const auto* shader_res = gfx_asset_store.TryGet(asset_test_shader);
         const auto* debug_text_shader_res = gfx_asset_store.TryGet(debug_font_shader);
         const auto* debug_line_shader_res = gfx_asset_store.TryGet(debug_line_shader);
+        const auto* shader_skinned = gfx_asset_store.TryGet(asset_skinned_shader);
         const auto* model_res = gfx_asset_store.TryGet(mod_1);
         const auto* font_res = gfx_asset_store.TryGet(font_res_1);
 
@@ -160,11 +176,42 @@ namespace app
         using Timer = ::ddknd::clock::FrameTimer;
         Timer timer{};
 
-        // *********** Animation Test *********** 
+        // *********** Animation Test ***********
+        ::ddknd::component::TransformComponent test_transform_comp;
         ::ddknd::component::AnimatorComponent test_animator_comp;
         ::ddknd::animation::debug::TestAnimatorSystemInit(*model_res->skeleton, test_animator_comp.pose);
+        for (std::size_t i = 0; i < std::min<std::size_t>(model_res->skeleton->bones.size(), 10); ++i)
+        {
+            const auto& skin = test_animator_comp.pose.skinMatrices[i];
+            const auto t = ::ddknd::math::ExtractTranslation(skin);
 
-        // ********* Debug Config ************ 
+            std::cerr << "skin[" << i << "] translation = " << t[0] << ", " << t[1] << ", " << t[2] << "\n";
+        }
+        for (std::size_t i = 0; i < std::min<std::size_t>(model_res->skeleton->bones.size(), 10); ++i)
+        {
+            std::cerr << "skin[" << i
+                      << "] identity diff = " << MaxAbsDiffFromIdentity(test_animator_comp.pose.skinMatrices[i])
+                      << "\n";
+        }
+
+        if (model_res->clips.empty())
+        {
+            std::cerr << "model has no animation clips\n";
+        }
+        else
+        {
+            test_animator_comp.state.clip = model_res->clips[0];
+            test_animator_comp.state.time = 0.0f;
+            test_animator_comp.state.speed = 1.0f;
+            test_animator_comp.state.loop = true;
+        }
+
+        ::ddknd::math::TRS modelTRS;
+        modelTRS.translation = {0.0f, 0.0f, 0.0f};
+        modelTRS.rotation = ::ddknd::math::Quatf::Identity();
+        modelTRS.scale = {0.01f, 0.01f, 0.01f};
+
+        // ********* Debug Config ************
         debugDraw_->SetFont(font_res);
         debugDraw_->Axis({0.0f, 0.0f, 0.0f}, 1000.0f);
         while (isRunning_ && !window_->ShouldClose())
@@ -185,11 +232,27 @@ namespace app
                 .h = window_->GetHeight(), .w = window_->GetWidth(), .view = view, .proj = proj};
             renderSys_->BeginFrame(frame);
 
+            test_transform_comp.worldMatrix = modelTRS.ToMatrix();
+            const auto* test_anim_clip = gfx_anim_store.TryGet(test_animator_comp.state.clip);
+            if (test_anim_clip)
+            {
+                ::ddknd::animation::AnimatorSystem::UpdateAnimator(*model_res->skeleton, *test_anim_clip,
+                                                                   test_animator_comp.state, test_animator_comp.pose,
+                                                                   timer.DeltaTime());
+            }
+
             for (const auto& res : model_res->primitives)
             {
                 // std::cerr << "prim_id=" << res.prim.Value() << "\n";
-                renderSys_->Submit(
-                    DrawCommand{.mesh = res.prim, .shader = shader_res->program, .indexCount = res.indexCount});
+                // renderSys_->Submit(
+                //     DrawCommand{.mesh = res.prim, .shader = shader_res->program, .indexCount = res.indexCount});
+                renderSys_->Submit(::ddknd::graphics::SkinnedDrawCommand{
+                    .mesh = res.prim,
+                    .shader = shader_skinned->program,
+                    .modelMatrix = test_transform_comp.worldMatrix,
+                    .skinMatrices = test_animator_comp.pose.skinMatrices,
+                    .indexCount = res.indexCount,
+                });
             }
 
             // ******* DebugDraw *******
@@ -197,8 +260,7 @@ namespace app
             debugDraw_->Text(10.0f, 20.0f, std::format("FPS: {:.1f}", fps), {1.0f, 1.0f, 0.0f, 1.0f}); // FPS
             debugDraw_->Axis({0, 0, 0}, 2.0f);
 
-            // ************** garbage **************
-            ::ddknd::animation::debug::TestAnimatorSystemUpdate(*model_res->skeleton, test_animator_comp.pose, *debugDraw_.get());
+            //::ddknd::animation::debug::TestAnimatorSystemUpdate(*model_res->skeleton,test_animator_comp.pose,*debugDraw_.get());
 
             debugDraw_->EndFrame();
 
@@ -209,7 +271,7 @@ namespace app
             renderSys_->Submit(ddknd::graphics::DebugLineDrawCommand{.batch = debugDraw_->LineBatch(),
                                                                      .shader = debug_line_shader_res->program,
                                                                      .vertexCount = debugDraw_->LineVertexCount()});
-            
+
             renderSys_->EndFrame();
 
             deviceInput_->Update();

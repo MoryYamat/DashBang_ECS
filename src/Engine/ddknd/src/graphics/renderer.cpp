@@ -34,6 +34,23 @@ namespace ddknd::graphics
             backend_.BindPrimitive(cmd.mesh);
             backend_.DrawIndexed(cmd.indexCount);
         }
+        for(const auto& cmd: skinnedCmds_)
+        {
+            backend_.UseShaderProgram(cmd.shader);
+
+            backend_.SetUniform(cmd.shader, "uModel", cmd.modelMatrix);
+            backend_.SetUniform(cmd.shader, "uView", frame_.view);
+            backend_.SetUniform(cmd.shader, "uProj", frame_.proj);
+
+            backend_.SetUniformMat4Array(
+                cmd.shader,
+                "uSkinMatrices",
+                cmd.skinMatrices
+            );
+            
+            backend_.BindPrimitive(cmd.mesh);
+            backend_.DrawIndexed(cmd.indexCount);
+        }
 
         for (const auto& cmd : debugTextCmds_)
         {
@@ -48,6 +65,7 @@ namespace ddknd::graphics
         }
 
         cmds_.clear();
+        skinnedCmds_.clear();
         debugTextCmds_.clear();
         debugLineCmds_.clear();
     }

@@ -95,4 +95,67 @@ namespace ddknd::math
 
         return inv;
     }
+
+    Mat4f ExtractRotationOnly(const ddknd::math::Mat4f& m)
+    {
+        using ddknd::math::Mat4f;
+
+        Mat4f r = Mat4f::Identity();
+
+        // column 0
+        {
+            float x = m(0, 0);
+            float y = m(1, 0);
+            float z = m(2, 0);
+
+            float len = std::sqrt(x * x + y * y + z * z);
+            if (len > 1e-8f)
+            {
+                r(0, 0) = x / len;
+                r(1, 0) = y / len;
+                r(2, 0) = z / len;
+            }
+        }
+
+        // column 1
+        {
+            float x = m(0, 1);
+            float y = m(1, 1);
+            float z = m(2, 1);
+
+            float len = std::sqrt(x * x + y * y + z * z);
+            if (len > 1e-8f)
+            {
+                r(0, 1) = x / len;
+                r(1, 1) = y / len;
+                r(2, 1) = z / len;
+            }
+        }
+
+        // column 2
+        {
+            float x = m(0, 2);
+            float y = m(1, 2);
+            float z = m(2, 2);
+
+            float len = std::sqrt(x * x + y * y + z * z);
+            if (len > 1e-8f)
+            {
+                r(0, 2) = x / len;
+                r(1, 2) = y / len;
+                r(2, 2) = z / len;
+            }
+        }
+
+        r(0, 3) = 0.0f;
+        r(1, 3) = 0.0f;
+        r(2, 3) = 0.0f;
+
+        r(3, 0) = 0.0f;
+        r(3, 1) = 0.0f;
+        r(3, 2) = 0.0f;
+        r(3, 3) = 1.0f;
+
+        return r;
+    }
 } // namespace ddknd::math

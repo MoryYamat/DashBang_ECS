@@ -2,6 +2,7 @@
 
 // #include "core/StrongID.h"
 #include "gfx_type.h"
+#include "graphics/gfx_type.h"
 #include "math/math.h"
 
 #include <cstdint>
@@ -51,7 +52,7 @@ namespace ddknd::graphics
         virtual void DestroyTexture(GPUID<tag::TextureTag> id) = 0;
         virtual void BindTexture2D(GPUID<tag::TextureTag> id, std::uint32_t slot) = 0;
 
-        // 
+        //
         virtual GPUID<tag::ScreenQuadBatchTag> CreateScreenQuadBatch() = 0;
         virtual void DestroyScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag>) = 0;
         virtual void UpdateScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag>, std::span<const types::ScreenQuadVertex>,
@@ -63,12 +64,15 @@ namespace ddknd::graphics
         //
         virtual GPUID<tag::LineBatchTag> CreateLineBatch() = 0;
         virtual void UpdateLineBatch(GPUID<tag::LineBatchTag> id, std::span<const types::LineVertex> vertices) = 0;
-        virtual void DrawLineBatch(GPUID<tag::LineBatchTag> id, GPUID<tag::ShaderProgramGPUTag> shader, std::uint32_t vertexCount) = 0;
+        virtual void DrawLineBatch(GPUID<tag::LineBatchTag> id, GPUID<tag::ShaderProgramGPUTag> shader,
+                                   std::uint32_t vertexCount) = 0;
         virtual void DestroyLineBatch(GPUID<tag::LineBatchTag> id) = 0;
 
         // helpers
         virtual void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Mat4f& m) = 0;
         virtual void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Vec2f& v) = 0;
+        virtual void SetUniformMat4Array(GPUID<tag::ShaderProgramGPUTag> shader, const char* name,
+                                         std::span<const math::Mat4f> matrices) = 0;
     };
 
     struct OpenGLBackendDesc
@@ -91,7 +95,23 @@ namespace ddknd::graphics
         std::uint32_t indexCount = 0;
     };
 
-    // *********** for Drawing Debug Resources *********** 
+    struct SkinnedDrawCommand
+    {
+      private:
+        template <typename Tag>
+        using GPUID = ::ddknd::graphics::types::GPUID<Tag>;
+
+      public:
+        GPUID<tag::PrimitiveTag> mesh;
+        GPUID<tag::ShaderProgramGPUTag> shader;
+
+        math::Mat4f modelMatrix;                   // TransformComponent
+        std::span<const math::Mat4f> skinMatrices; // AnimatorComponent
+
+        std::uint32_t indexCount = 0;
+    };
+
+    // *********** for Drawing Debug Resources ***********
     struct DebugTextDrawCommand
     {
         types::GPUID<tag::ScreenQuadBatchTag> batch;
@@ -102,9 +122,9 @@ namespace ddknd::graphics
     };
     struct DebugLineDrawCommand
     {
-      types::GPUID<tag::LineBatchTag> batch;
-      types::GPUID<tag::ShaderProgramGPUTag> shader;
-      std::uint32_t vertexCount = 0;
+        types::GPUID<tag::LineBatchTag> batch;
+        types::GPUID<tag::ShaderProgramGPUTag> shader;
+        std::uint32_t vertexCount = 0;
     };
 
     // for testing triangle
@@ -150,6 +170,10 @@ namespace ddknd::graphics
         {
             debugLineCmds_.push_back(cmd);
         }
+        void Submit(const SkinnedDrawCommand& cmd)
+        {
+            skinnedCmds_.push_back(cmd);
+        }
 
         // test triangle
         void DrawTestTriangle(TestDrawTriangleCommand test);
@@ -159,6 +183,7 @@ namespace ddknd::graphics
         std::vector<DrawCommand> cmds_;
         std::vector<DebugTextDrawCommand> debugTextCmds_;
         std::vector<DebugLineDrawCommand> debugLineCmds_;
+        std::vector<SkinnedDrawCommand> skinnedCmds_;
         FrameDesc frame_;
     };
 
@@ -177,9 +202,9 @@ namespace ddknd::graphics
 
     struct DebugLineCommand
     {
-      math::Vec3f a;
-      math::Vec3f b;
-      math::Vec4f color;
+        math::Vec3f a;
+        math::Vec3f b;
+        math::Vec4f color;
     };
 
     // Create Debug Resources from Commands

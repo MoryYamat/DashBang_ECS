@@ -389,8 +389,7 @@ namespace
             const auto& skin = nodes[n].skin;
             if (skin >= 0)
             {
-                result.model.skeleton =
-                    BuildModelSkeletonResource(import, skin, *result.nodeToBone);
+                result.model.skeleton = BuildModelSkeletonResource(import, skin, *result.nodeToBone);
                 break;
             }
         }
@@ -410,6 +409,56 @@ namespace
         return result;
     }
 
+    int FindBoneIndexFromNode(const ImportSkin& skin, int nodeIndex)
+    {
+        for (std::size_t i = 0; i < skin.jointNodes.size(); ++i)
+        {
+            if (skin.jointNodes[i] == nodeIndex)
+                return static_cast<int>(i);
+        }
+
+        return -1;
+    }
+
+    int FindNearestParentBoneIndex(const ImportModelData& import, const ImportSkin& skin, int parentNode,
+                                   math::Mat4f& parentCorrection)
+    {
+        parentCorrection = math::Mat4f::Identity();
+
+        std::vector<int> nonJointParents;
+
+        int n = parentNode;
+
+        while (n >= 0)
+        {
+            const int boneIndex = FindBoneIndexFromNode(skin, n);
+
+            if (boneIndex >= 0)
+            {
+                std::reverse(nonJointParents.begin(), nonJointParents.end());
+
+                for (int nodeIndex : nonJointParents)
+                {
+                    parentCorrection = parentCorrection * import.nodes[nodeIndex].localMatrix;
+                }
+
+                return boneIndex;
+            }
+
+            nonJointParents.push_back(n);
+            n = import.nodes[n].parent;
+        }
+
+        std::reverse(nonJointParents.begin(), nonJointParents.end());
+
+        for (int nodeIndex : nonJointParents)
+        {
+            parentCorrection = parentCorrection * import.nodes[nodeIndex].localMatrix;
+        }
+
+        return -1;
+    }
+
     SkeletonResource BuildModelSkeletonResource(const ImportModelData& import, int skinIndex,
                                                 std::unordered_map<int, int>& nodeToBone)
     {
@@ -424,40 +473,44 @@ namespace
             nodeToBone[nodeIndex] = static_cast<int>(i);
         }
 
-        // 1. まず parent と inverseBindMatrix を入れる
         for (std::size_t i = 0; i < skin.jointNodes.size(); ++i)
         {
             const int nodeIndex = skin.jointNodes[i];
             const auto& node = import.nodes[nodeIndex];
 
-            Bone b;
-            b.parent = FindParentBoneIndex(skin, node.parent);
-            b.inverseBindMatrix = skin.inverseBindMatrices[i];
+            Bone b{};
+
+            math::Mat4f parentCorrection = math::Mat4f::Identity();
+
+            b.parent = FindNearestParentBoneIndex(import, skin, node.parent, parentCorrection);
+            
+            if (b.parent < 0)
+            {
+                out.rootCorrection = ExtractRotationOnly(parentCorrection);
+            }
+            b.parentCorrection = parentCorrection;
+            std::cerr << "[Bone] i=" << i << " node=" << nodeIndex << " name=" << node.name
+                      << " nodeParent=" << node.parent << " parentBone=" << b.parent << "\n";
+            std::cerr << "parentCorrection:\n"
+                      << b.parentCorrection(0, 0) << " " << b.parentCorrection(0, 1) << " " << b.parentCorrection(0, 2)
+                      << " " << b.parentCorrection(0, 3) << "\n"
+                      << b.parentCorrection(1, 0) << " " << b.parentCorrection(1, 1) << " " << b.parentCorrection(1, 2)
+                      << " " << b.parentCorrection(1, 3) << "\n"
+                      << b.parentCorrection(2, 0) << " " << b.parentCorrection(2, 1) << " " << b.parentCorrection(2, 2)
+                      << " " << b.parentCorrection(2, 3) << "\n"
+                      << b.parentCorrection(3, 0) << " " << b.parentCorrection(3, 1) << " " << b.parentCorrection(3, 2)
+                      << " " << b.parentCorrection(3, 3) << "\n";
+
+            if (i < skin.inverseBindMatrices.size())
+                b.inverseBindMatrix = skin.inverseBindMatrices[i];
+            else
+                b.inverseBindMatrix = math::Mat4f::Identity();
+
+            b.bindLocalTRS = node.localTRS;
+            // b.bindLocalMatrix = b.parentCorrection * node.localMatrix;
+            b.bindLocalMatrix = node.localMatrix;
 
             out.bones[i] = b;
-        }
-
-        // 2. inverseBindMatrix から bind global を復元
-        std::vector<math::Mat4f> bindGlobals(out.bones.size());
-
-        for (std::size_t i = 0; i < out.bones.size(); ++i)
-        {
-            bindGlobals[i] = math::Inverse(out.bones[i].inverseBindMatrix);
-        }
-
-        // 3. bind global から bind local を作る
-        for (std::size_t i = 0; i < out.bones.size(); ++i)
-        {
-            const int parent = out.bones[i].parent;
-
-            if (parent < 0)
-            {
-                out.bones[i].bindLocalMatrix = bindGlobals[i];
-            }
-            else
-            {
-                out.bones[i].bindLocalMatrix = math::Inverse(bindGlobals[parent]) * bindGlobals[i];
-            }
         }
 
         return out;
@@ -516,8 +569,15 @@ namespace
         {
             auto it = nodeToBone.find(ch.targetNode);
             if (it == nodeToBone.end())
-                continue;
+            {
+                const auto& node = imported.nodes[ch.targetNode];
 
+                std::cerr << "[Skipped animation channel] "
+                          << "targetNode=" << ch.targetNode << " name=" << node.name << " parent=" << node.parent
+                          << " type=" << static_cast<int>(ch.type) << "\n";
+
+                continue;
+            }
             AnimationChannel dst{};
             dst.bone = it->second;
 
