@@ -24,6 +24,7 @@
 // builder declare
 namespace
 {
+    using namespace ::ddknd;
     // internal
     using ImportModelData = ::ddknd::graphics::internal::types::ModelImportData;
     ;
@@ -60,6 +61,8 @@ namespace
     SkeletonResource BuildModelSkeletonResource(const ImportModelData& import, int skinIndex,
                                                 std::unordered_map<int, int>&);
     int FindParentBoneIndex(const ImportSkin& skin, int parentNode);
+
+    // std::vector<math::Mat4f> BuildImportNodeGlobalMatrices(const ImportModelData& import);
 
     // Animation
     AnimationClipResource BuildAnimationClipResource(const ImportModelData&, const std::size_t,
@@ -218,7 +221,7 @@ namespace ddknd::graphics
     {
         constexpr float debugFontSize = 18.0f; // TODO: move to asset data
 
-        if(store.TryGet(id))
+        if (store.TryGet(id))
             return true;
 
         auto vpath = assets.TryPathOf(id);
@@ -384,10 +387,10 @@ namespace
         for (int n : nodeInScene)
         {
             const auto& skin = nodes[n].skin;
-
             if (skin >= 0)
             {
-                result.model.skeleton = BuildModelSkeletonResource(import, skin, *result.nodeToBone);
+                result.model.skeleton =
+                    BuildModelSkeletonResource(import, skin, *result.nodeToBone);
                 break;
             }
         }
@@ -415,29 +418,50 @@ namespace
         SkeletonResource out;
         out.bones.resize(skin.jointNodes.size());
 
-        for (std::size_t i = 0; i < skin.jointNodes.size(); i++)
+        for (std::size_t i = 0; i < skin.jointNodes.size(); ++i)
         {
-            int nodeIndex = skin.jointNodes[i];
+            const int nodeIndex = skin.jointNodes[i];
             nodeToBone[nodeIndex] = static_cast<int>(i);
         }
 
-        for (int i = 0; i < skin.jointNodes.size(); i++)
+        // 1. まず parent と inverseBindMatrix を入れる
+        for (std::size_t i = 0; i < skin.jointNodes.size(); ++i)
         {
-            int nodeIndex = skin.jointNodes[i];
-            const auto& node = import.nodes[nodeIndex]; // current node's bone index
+            const int nodeIndex = skin.jointNodes[i];
+            const auto& node = import.nodes[nodeIndex];
 
             Bone b;
-            b.parent = FindParentBoneIndex(skin, node.parent); // Parent Bonde index
-
-            b.bindLocal = node.local;
-
+            b.parent = FindParentBoneIndex(skin, node.parent);
             b.inverseBindMatrix = skin.inverseBindMatrices[i];
+
             out.bones[i] = b;
+        }
+
+        // 2. inverseBindMatrix から bind global を復元
+        std::vector<math::Mat4f> bindGlobals(out.bones.size());
+
+        for (std::size_t i = 0; i < out.bones.size(); ++i)
+        {
+            bindGlobals[i] = math::Inverse(out.bones[i].inverseBindMatrix);
+        }
+
+        // 3. bind global から bind local を作る
+        for (std::size_t i = 0; i < out.bones.size(); ++i)
+        {
+            const int parent = out.bones[i].parent;
+
+            if (parent < 0)
+            {
+                out.bones[i].bindLocalMatrix = bindGlobals[i];
+            }
+            else
+            {
+                out.bones[i].bindLocalMatrix = math::Inverse(bindGlobals[parent]) * bindGlobals[i];
+            }
         }
 
         return out;
     }
-
     // parentNode = import.nodes[nodeIndex].parent
     // skin.jointNodes[i]: The index number of the node that has that skin
     // i: 親 node の skin 番号 (親 bone)
@@ -526,6 +550,40 @@ namespace
 
         return out;
     }
+
+    // std::vector<math::Mat4f> BuildImportNodeGlobalMatrices(const ImportModelData& import)
+    // {
+    //     std::vector<math::Mat4f> globals(import.nodes.size(), math::Mat4f::Identity());
+
+    //     std::vector<bool> computed(import.nodes.size(), false);
+
+    //     std::function<void(int)> compute = [&](int nodeIndex)
+    //     {
+    //         if (computed[nodeIndex])
+    //             return;
+
+    //         const auto& node = import.nodes[nodeIndex];
+
+    //         if (node.parent < 0)
+    //         {
+    //             globals[nodeIndex] = node.localMatrix;
+    //         }
+    //         else
+    //         {
+    //             compute(node.parent);
+    //             globals[nodeIndex] = globals[node.parent] * node.localMatrix;
+    //         }
+
+    //         computed[nodeIndex] = true;
+    //     };
+
+    //     for (std::size_t i = 0; i < import.nodes.size(); ++i)
+    //     {
+    //         compute(static_cast<int>(i));
+    //     }
+
+    //     return globals;
+    // }
 
 } // namespace
 

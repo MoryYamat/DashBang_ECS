@@ -10,7 +10,7 @@ namespace Engine::Component
 		float fov = glm::radians(60.0f);
 		float aspect;
 		float nearClip = 0.1f;
-		float farClip = 100.0f;
+		float farClip = 1000.0f;
 
 		float yaw = 0.0f;
 		float pitch = 45.0f;

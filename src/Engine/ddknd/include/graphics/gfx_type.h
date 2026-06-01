@@ -121,7 +121,8 @@ namespace ddknd::animation::types
 
         int parent = -1;
         Mat4f inverseBindMatrix = Mat4f::Identity();
-        TRS bindLocal;
+        Mat4f bindLocalMatrix = Mat4f::Identity();
+        // TRS bindLocal;
     };
 
     // runtime
@@ -229,7 +230,8 @@ namespace ddknd::animation
         using TRS = ::ddknd::math::TRS;
         using Mat4f = ::ddknd::math::Mat4f;
 
-        std::vector<TRS> localTransforms;
+        //std::vector<TRS> localTransforms;
+        std::vector<Mat4f> localTransforms;
         std::vector<Mat4f> globalMatrices;
         std::vector<Mat4f> skinMatrices; // lbs?
     };

@@ -8,6 +8,7 @@
 #include "Action/action.h"
 #include "camera/debug_camera.h"
 #include "clock/clock.h"
+#include "graphics/gfx_type.h"
 #include "graphics/renderer.h"
 #include "input/input.h"
 #include "window/window.h"
@@ -26,6 +27,9 @@
 #include "graphics/gfx_asset_loader.h"
 
 #include "math/math.h"
+
+#include "graphics/debug_animation.h"
+#include "component/gfx_component.h"
 
 #include <spdlog/spdlog.h>
 
@@ -156,6 +160,11 @@ namespace app
         using Timer = ::ddknd::clock::FrameTimer;
         Timer timer{};
 
+        // *********** Animation Test *********** 
+        ::ddknd::component::AnimatorComponent test_animator_comp;
+        ::ddknd::animation::debug::TestAnimatorSystemInit(*model_res->skeleton, test_animator_comp.pose);
+
+        // ********* Debug Config ************ 
         debugDraw_->SetFont(font_res);
         debugDraw_->Axis({0.0f, 0.0f, 0.0f}, 1000.0f);
         while (isRunning_ && !window_->ShouldClose())
@@ -187,6 +196,10 @@ namespace app
             debugDraw_->BeginFrame();
             debugDraw_->Text(10.0f, 20.0f, std::format("FPS: {:.1f}", fps), {1.0f, 1.0f, 0.0f, 1.0f}); // FPS
             debugDraw_->Axis({0, 0, 0}, 2.0f);
+
+            // ************** garbage **************
+            ::ddknd::animation::debug::TestAnimatorSystemUpdate(*model_res->skeleton, test_animator_comp.pose, *debugDraw_.get());
+
             debugDraw_->EndFrame();
 
             renderSys_->Submit(ddknd::graphics::DebugTextDrawCommand{.batch = debugDraw_->TextBatch(),
@@ -196,6 +209,7 @@ namespace app
             renderSys_->Submit(ddknd::graphics::DebugLineDrawCommand{.batch = debugDraw_->LineBatch(),
                                                                      .shader = debug_line_shader_res->program,
                                                                      .vertexCount = debugDraw_->LineVertexCount()});
+            
             renderSys_->EndFrame();
 
             deviceInput_->Update();

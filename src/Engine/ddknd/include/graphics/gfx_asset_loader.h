@@ -20,7 +20,10 @@ namespace ddknd::animation
         using AnimationID = ::ddknd::asset::AssetID<::ddknd::animation::tag::AnimationClipTag>;
         using AnimationClipResource = ::ddknd::animation::types::AnimationClipResource;
 
-        const AnimationClipResource* TryGet(AnimationID id) const;
+        const AnimationClipResource* TryGet(AnimationID id) const
+        {
+          return anims_.TryGet(id);
+        }
         void SetLoaded(AnimationID id, AnimationClipResource res)
         {
           anims_.Set(id, std::move(res));

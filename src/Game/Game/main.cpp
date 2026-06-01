@@ -49,10 +49,10 @@ int main()
 
 // ========= TODO: ========= 
 // HIGH
-// - Implement DebugLine -> Add Axis Draw -> Draw Skelenton
+// - Implement Animate Processing
 // - apply asset management to existing codes
 // - 
-// - 
+// - Implement Skeleton Debug Drawing
 
 // MIDDLE
 // - fix folder 

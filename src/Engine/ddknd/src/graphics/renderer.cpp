@@ -199,6 +199,21 @@ namespace ddknd::graphics
         return static_cast<std::uint32_t>(lineVertices_.size());
     }
 
+    // *************** SKELETON ***************** 
+    void DebugDrawList::Skeleton(const animation::types::SkeletonResource& skeleton, const animation::Pose& pose, Color color)
+    {
+        for(std::size_t i = 0; i < skeleton.bones.size(); ++i)
+        {
+            int parent = skeleton.bones[i].parent;
+            if(parent < 0)
+                continue;
+            Vec3f childPos = ExtractTranslation(pose.globalMatrices[i]);
+            Vec3f parentPos = ExtractTranslation(pose.globalMatrices[parent]);
+
+            Line(parentPos, childPos, color);
+        }
+    }
+
     void DebugDrawList::EndFrame()
     {
         FlushText();

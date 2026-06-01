@@ -299,7 +299,7 @@ namespace ddknd::math
         }
     };
 
-        template <typename T>
+    template <typename T>
     constexpr Mat<T, 4, 4> translate(const Vec<T, 3>& t) noexcept
     {
         auto m = Mat<T, 4, 4>::Identity();
@@ -378,6 +378,13 @@ namespace ddknd::math
         Vec3f translation = Vec3f::Zero();
         Quatf rotation = Quatf::Identity();
         Vec3f scale = Vec3f::One();
+
+        Mat4f ToMatrix() const noexcept
+        {
+            return ddknd::math::translate(translation)
+                * ddknd::math::mat4_cast(rotation)
+                * ddknd::math::scale(scale);
+        }
     };
 } // namespace ddknd::math
 
@@ -387,4 +394,9 @@ namespace ddknd::math
     float degToRadf(float degree);
 
     Vec3f ComputeForawrdVec(float yawRad, float pitchRad);
+
+    Vec3f ExtractTranslation(const Mat4f& m);
+
+    Mat4f Inverse(const Mat4f& m);
+
 }

@@ -216,6 +216,9 @@ namespace ddknd::graphics
         types::GPUID<tag::LineBatchTag> LineBatch() const;
         std::uint32_t LineVertexCount() const;
 
+        // Skeleton
+        void Skeleton(const animation::types::SkeletonResource& skeleton, const animation::Pose& pose, Color color);
+
       private:
         // Text
         void BuildTextVertices();
