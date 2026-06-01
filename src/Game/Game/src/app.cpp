@@ -209,7 +209,7 @@ namespace app
         ::ddknd::math::TRS modelTRS;
         modelTRS.translation = {0.0f, 0.0f, 0.0f};
         modelTRS.rotation = ::ddknd::math::Quatf::Identity();
-        modelTRS.scale = {0.01f, 0.01f, 0.01f};
+        // modelTRS.scale = {0.01f, 0.01f, 0.01f};
 
         // ********* Debug Config ************
         debugDraw_->SetFont(font_res);

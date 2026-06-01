@@ -483,10 +483,10 @@ namespace
             math::Mat4f parentCorrection = math::Mat4f::Identity();
 
             b.parent = FindNearestParentBoneIndex(import, skin, node.parent, parentCorrection);
-            
+
             if (b.parent < 0)
             {
-                out.rootCorrection = ExtractRotationOnly(parentCorrection);
+                out.rootCorrection = parentCorrection;
             }
             b.parentCorrection = parentCorrection;
             std::cerr << "[Bone] i=" << i << " node=" << nodeIndex << " name=" << node.name
