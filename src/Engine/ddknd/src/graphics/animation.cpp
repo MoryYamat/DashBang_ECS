@@ -222,7 +222,7 @@ namespace ddknd::animation
 
             if (skeleton.bones[i].parent < 0)
             {
-                pose.localMatrices[i] = skeleton.rootCorrection * local;
+                pose.localMatrices[i] = skeleton.skeletonRootTransform * local;
             }
             else
             {

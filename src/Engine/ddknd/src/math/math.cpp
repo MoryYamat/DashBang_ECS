@@ -1,5 +1,6 @@
 #include "math/math.h"
 
+#include <cassert>
 #include <cmath>
 #include <numbers>
 
@@ -157,5 +158,80 @@ namespace ddknd::math
         r(3, 3) = 1.0f;
 
         return r;
+    }
+
+    // @brief LookAt / OpenGL / Right-Handed
+    Mat4f LookAtOpenGLRH(const Vec3f& eye, const Vec3f& target, const Vec3f& up)
+    {
+        Vec3f f = normalize(target - eye);
+        assert(lengthSquared(f) > kEpsilonSq<float>);
+
+        Vec3f s = normalize(cross(f, up)); // create fallback to avoid devide by 0
+        assert(lengthSquared(s) > kEpsilonSq<float>);
+
+        Vec3f u = cross(s, f);
+
+        Mat4f m{};
+
+        m(0, 0) = s[0];
+        m(0, 1) = s[1];
+        m(0, 2) = s[2];
+        m(0, 3) = -dot(s, eye);
+        m(1, 0) = u[0];
+        m(1, 1) = u[1];
+        m(1, 2) = u[2];
+        m(1, 3) = -dot(u, eye);
+        m(2, 0) = -f[0];
+        m(2, 1) = -f[1];
+        m(2, 2) = -f[2];
+        m(2, 3) = dot(f, eye);
+        m(3, 0) = 0;
+        m(3, 1) = 0;
+        m(3, 2) = 0;
+        m(3, 3) = 1;
+
+        return m;
+    }
+
+    // Perspective / OpenGL / Right-Handed
+    Mat4f PerspectiveOpenGLRH(float fovYRad, float aspect, float nearZ, float farZ)
+    {
+        assert(aspect != 0.0f);
+        assert(nearZ != farZ);
+        assert(nearZ > 0.0f);
+        assert(farZ > nearZ);
+
+        float f = 1.0f / std::tan(fovYRad * 0.5f);
+
+        Mat4f m{};
+
+        m(0, 0) = f / aspect;
+        m(1, 1) = f;
+        m(2, 2) = (farZ + nearZ) / (nearZ - farZ);
+        m(2, 3) = (2 * farZ * nearZ) / (nearZ - farZ);
+        m(3, 2) = -1.0f;
+
+        return m;
+    }
+
+    Mat4f OrthographicOpenGLRH(float left, float right, float bottom, float top, float nearZ, float farZ) 
+    {
+        assert(std::abs(right - left) > kEpsilon<float>);
+        assert(std::abs(top - bottom) > kEpsilon<float>);
+        assert(std::abs(farZ - nearZ) > kEpsilon<float>);
+
+        Mat4f m{};
+
+        m(0,0) = 2.0f / (right - left);
+        m(1,1) = 2.0f / (top - bottom);
+        m(2,2) = -2.0f / (farZ - nearZ);
+
+        m(0,3) = -(right + left) / (right - left);
+        m(1,3) = -(top + bottom) / (top - bottom);
+        m(2,3) = -(farZ + nearZ) / (farZ - nearZ);
+
+        m(3,3) = 1.0f;
+
+        return m;
     }
 } // namespace ddknd::math

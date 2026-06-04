@@ -41,9 +41,6 @@ namespace
 {
     using Mat4f = ::ddknd::math::Mat4f;
     using Vec3f = ::ddknd::math::Vec3f;
-    Mat4f LookAt(Vec3f eye, Vec3f target, Vec3f up);
-
-    Mat4f Perspective(float fovY, float aspect, float near, float far);
 
     using Action = ::app::action::Action;
     using Key = ::ddknd::input::Key;
@@ -223,9 +220,9 @@ namespace app
             cam_->aspect = window_->aspectRation();
             // =========================== temporaly ===========================
             auto view =
-                LookAt(cam_->pos, cam_->target,
+                ::ddknd::math::LookAtOpenGLRH(cam_->pos, cam_->target,
                        cam_->up); // @TODO move to renderer @@@@@@@@@@@@@@@@@@@@@@@ // TODO: System Execution Scheduler
-            auto proj = Perspective(::ddknd::math::degToRadf(60.0f), cam_->aspect, 0.1f, 100.0f);
+            auto proj = ::ddknd::math::PerspectiveOpenGLRH(::ddknd::math::degToRadf(60.0f), cam_->aspect, 0.1f, 100.0f);
             // =========================== temporaly ===========================
 
             ddknd::graphics::FrameDesc frame{
@@ -260,7 +257,7 @@ namespace app
             debugDraw_->Text(10.0f, 20.0f, std::format("FPS: {:.1f}", fps), {1.0f, 1.0f, 0.0f, 1.0f}); // FPS
             debugDraw_->Axis({0, 0, 0}, 2.0f);
 
-            //::ddknd::animation::debug::TestAnimatorSystemUpdate(*model_res->skeleton,test_animator_comp.pose,*debugDraw_.get());
+            ::ddknd::animation::debug::TestAnimatorSystemUpdate(*model_res->skeleton,test_animator_comp.pose,*debugDraw_.get());
 
             debugDraw_->EndFrame();
 
@@ -448,46 +445,46 @@ namespace app
 
 namespace
 {
-    Mat4f LookAt(Vec3f eye, Vec3f target, Vec3f up)
-    {
-        Vec3f f = normalize(target - eye);
-        Vec3f s = normalize(cross(f, up)); // create fallback to avoid devide by 0
-        Vec3f u = cross(s, f);
+    // Mat4f LookAt(Vec3f eye, Vec3f target, Vec3f up)
+    // {
+    //     Vec3f f = normalize(target - eye);
+    //     Vec3f s = normalize(cross(f, up)); // create fallback to avoid devide by 0
+    //     Vec3f u = cross(s, f);
 
-        Mat4f m{};
+    //     Mat4f m{};
 
-        m(0, 0) = s[0];
-        m(0, 1) = s[1];
-        m(0, 2) = s[2];
-        m(0, 3) = -dot(s, eye);
-        m(1, 0) = u[0];
-        m(1, 1) = u[1];
-        m(1, 2) = u[2];
-        m(1, 3) = -dot(u, eye);
-        m(2, 0) = -f[0];
-        m(2, 1) = -f[1];
-        m(2, 2) = -f[2];
-        m(2, 3) = dot(f, eye);
-        m(3, 0) = 0;
-        m(3, 1) = 0;
-        m(3, 2) = 0;
-        m(3, 3) = 1;
+    //     m(0, 0) = s[0];
+    //     m(0, 1) = s[1];
+    //     m(0, 2) = s[2];
+    //     m(0, 3) = -dot(s, eye);
+    //     m(1, 0) = u[0];
+    //     m(1, 1) = u[1];
+    //     m(1, 2) = u[2];
+    //     m(1, 3) = -dot(u, eye);
+    //     m(2, 0) = -f[0];
+    //     m(2, 1) = -f[1];
+    //     m(2, 2) = -f[2];
+    //     m(2, 3) = dot(f, eye);
+    //     m(3, 0) = 0;
+    //     m(3, 1) = 0;
+    //     m(3, 2) = 0;
+    //     m(3, 3) = 1;
 
-        return m;
-    }
+    //     return m;
+    // }
 
-    Mat4f Perspective(float fovY, float aspect, float near, float far)
-    {
-        float f = 1.0f / std::tan(fovY * 0.5f);
+    // Mat4f Perspective(float fovY, float aspect, float near, float far)
+    // {
+    //     float f = 1.0f / std::tan(fovY * 0.5f);
 
-        Mat4f m{};
+    //     Mat4f m{};
 
-        m(0, 0) = f / aspect;
-        m(1, 1) = f;
-        m(2, 2) = (far + near) / (near - far);
-        m(2, 3) = (2 * far * near) / (near - far);
-        m(3, 2) = -1.0f;
+    //     m(0, 0) = f / aspect;
+    //     m(1, 1) = f;
+    //     m(2, 2) = (far + near) / (near - far);
+    //     m(2, 3) = (2 * far * near) / (near - far);
+    //     m(3, 2) = -1.0f;
 
-        return m;
-    }
+    //     return m;
+    // }
 } // namespace

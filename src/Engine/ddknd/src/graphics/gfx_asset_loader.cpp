@@ -486,20 +486,20 @@ namespace
 
             if (b.parent < 0)
             {
-                out.rootCorrection = parentCorrection;
+                out.skeletonRootTransform = parentCorrection;
             }
             b.parentCorrection = parentCorrection;
-            std::cerr << "[Bone] i=" << i << " node=" << nodeIndex << " name=" << node.name
-                      << " nodeParent=" << node.parent << " parentBone=" << b.parent << "\n";
-            std::cerr << "parentCorrection:\n"
-                      << b.parentCorrection(0, 0) << " " << b.parentCorrection(0, 1) << " " << b.parentCorrection(0, 2)
-                      << " " << b.parentCorrection(0, 3) << "\n"
-                      << b.parentCorrection(1, 0) << " " << b.parentCorrection(1, 1) << " " << b.parentCorrection(1, 2)
-                      << " " << b.parentCorrection(1, 3) << "\n"
-                      << b.parentCorrection(2, 0) << " " << b.parentCorrection(2, 1) << " " << b.parentCorrection(2, 2)
-                      << " " << b.parentCorrection(2, 3) << "\n"
-                      << b.parentCorrection(3, 0) << " " << b.parentCorrection(3, 1) << " " << b.parentCorrection(3, 2)
-                      << " " << b.parentCorrection(3, 3) << "\n";
+            // std::cerr << "[Bone] i=" << i << " node=" << nodeIndex << " name=" << node.name
+            //           << " nodeParent=" << node.parent << " parentBone=" << b.parent << "\n";
+            // std::cerr << "parentCorrection:\n"
+            //           << b.parentCorrection(0, 0) << " " << b.parentCorrection(0, 1) << " " << b.parentCorrection(0, 2)
+            //           << " " << b.parentCorrection(0, 3) << "\n"
+            //           << b.parentCorrection(1, 0) << " " << b.parentCorrection(1, 1) << " " << b.parentCorrection(1, 2)
+            //           << " " << b.parentCorrection(1, 3) << "\n"
+            //           << b.parentCorrection(2, 0) << " " << b.parentCorrection(2, 1) << " " << b.parentCorrection(2, 2)
+            //           << " " << b.parentCorrection(2, 3) << "\n"
+            //           << b.parentCorrection(3, 0) << " " << b.parentCorrection(3, 1) << " " << b.parentCorrection(3, 2)
+            //           << " " << b.parentCorrection(3, 3) << "\n";
 
             if (i < skin.inverseBindMatrices.size())
                 b.inverseBindMatrix = skin.inverseBindMatrices[i];

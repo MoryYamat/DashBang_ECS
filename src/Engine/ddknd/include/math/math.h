@@ -9,8 +9,18 @@
 #include <span>
 #include <type_traits>
 
+
 namespace ddknd::math
 {
+    // =================================== CONSTANTS ===================================
+    template<typename T = float>
+    inline constexpr T kEpsilon = T(1e-6);
+    template<>
+    inline constexpr double kEpsilon<double> = 1e-12;
+    template<typename T>
+    inline constexpr T kEpsilonSq = kEpsilon<T> * kEpsilon<T>;
+
+    // =================================== Linear Algebra =================================== 
     template <typename T, std::size_t N>
     struct Vec
     {
@@ -133,6 +143,18 @@ namespace ddknd::math
             return out;
         }
     };
+
+    template<typename T, typename std::size_t N>
+    T lengthSquared(const Vec<T, N>& v)
+    {
+        return dot(v,v);
+    }
+
+    template<typename T, typename std::size_t N>
+    T length(const Vec<T, N>& v)
+    {
+        return std::sqrt(dot(v,v));
+    }
 
     template <typename T, typename std::size_t N>
     Vec<T, N> normalize(const Vec<T, N>& v)
@@ -400,4 +422,12 @@ namespace ddknd::math
     Mat4f Inverse(const Mat4f& m);
 
     Mat4f ExtractRotationOnly(const ddknd::math::Mat4f& m);
+}
+
+// camera
+namespace ddknd::math
+{
+    Mat4f LookAtOpenGLRH(const Vec3f& eye, const Vec3f& target, const Vec3f& up);
+    Mat4f PerspectiveOpenGLRH(float fovRad, float aspect, float nearZ, float farZ);
+    Mat4f OrthographicOpenGLRH(float left, float right, float bottom, float top, float nearZ, float faZ);
 }

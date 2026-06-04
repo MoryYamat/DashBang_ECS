@@ -17,8 +17,16 @@ namespace
 {
     GLuint compile_shader(GLenum stage, std::string_view src)
     {
-        spdlog::info("VS first bytes: {:02} {:02} {:02}", static_cast<unsigned char>(src[0]),
-                     static_cast<unsigned char>(src[1]), static_cast<unsigned char>(src[2]));
+        if (src.empty())
+        {
+            spdlog::error("Shader source is empty");
+            return 0;
+        }
+
+        const char* stage_name = stage == GL_VERTEX_SHADER     ? "VERTEX"
+                                 : stage == GL_FRAGMENT_SHADER ? "FRAGMENT"
+                                                               : "OTHER";
+        spdlog::info("{} shader source size: {}", stage_name, src.size());
 
         GLuint sh = glCreateShader(stage);
         const char* p = src.data();
@@ -109,6 +117,12 @@ namespace ddknd::graphics
         using PrimitiveKeyHash = ::ddknd::graphics::types::PrimitiveKeyHash;
 
       public:
+        OpenGLRendererBackend() = default;
+        OpenGLRendererBackend(const OpenGLRendererBackend&) = delete;
+        OpenGLRendererBackend& operator=(const OpenGLRendererBackend&) = delete;
+        OpenGLRendererBackend(OpenGLRendererBackend&&) = delete;
+        OpenGLRendererBackend& operator=(OpenGLRendererBackend&&) = delete;
+
         ~OpenGLRendererBackend()
         {
 
@@ -193,8 +207,6 @@ namespace ddknd::graphics
             {
 
                 spdlog::error("CreateShaderProgram: program link failed");
-                glDeleteShader(vs);
-                glDeleteShader(fs);
                 return {};
             }
 
@@ -207,9 +219,13 @@ namespace ddknd::graphics
 
         void DestroyShaderProgram(types::GPUID<tag::ShaderProgramGPUTag> id) override
         {
+            if(!id.Is_valid())
+                return;
+
             const auto idx = static_cast<std::size_t>(id.Value());
             if (idx >= programs_.size())
                 return;
+            
             if (programs_[idx] != 0)
             {
                 glDeleteProgram(programs_[idx]);
@@ -219,16 +235,20 @@ namespace ddknd::graphics
 
         void UseShaderProgram(types::GPUID<tag::ShaderProgramGPUTag> id) override
         {
-            // test
-            GLuint vao;
-            glGenVertexArrays(1, &vao);
-            glBindVertexArray(vao);
-            // test
+            if (!id.Is_valid())
+            {
+                spdlog::error("UseShaderProgram: invalid shader id");
+                return;
+            }
 
-            const GLuint prog = get_program(id);
+            const GLuint prog = try_get_program_handle(id);
+            if (prog == 0)
+            {
+                spdlog::error("UseShaderProgram: shader program not found");
+                return;
+            }
+
             glUseProgram(prog);
-
-            glEnable(GL_DEPTH_TEST);
         }
 
         types::GPUID<tag::PrimitiveTag> CreateMesh_Pos3(std::span<const float> xyz) override
@@ -281,12 +301,27 @@ namespace ddknd::graphics
 
         void BindPrimitive(GPUID<PrimitiveTag> id) override
         {
-            const auto& prim = prims_[static_cast<std::size_t>(id.Value())];
-            glBindVertexArray(prim.vao);
+            if (!id.Is_valid())
+            {
+                spdlog::error("BindPrimitive: invalid primitive id");
+                return;
+            }
+
+            const auto idx = static_cast<std::size_t>(id.Value());
+            if(idx >= prims_.size() || prims_[idx].vao == 0)
+            {
+                spdlog::error("BindPrimitive: primitive not found");
+                return;
+            }
+            
+            glBindVertexArray(prims_[idx].vao);
         }
 
         void DrawIndexed(std::uint32_t indexCount) override
         {
+            if (indexCount == 0)
+                return;
+
             glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
         }
 
@@ -295,9 +330,10 @@ namespace ddknd::graphics
             if (const auto it = primitiveCache_.find(key); it != primitiveCache_.end())
                 return it->second;
 
-            const auto id = GPUID<PrimitiveTag>(static_cast<std::uint32_t>(prims_.size()));
+            const auto id = buildPrimitiveGPUResource(import);
+            if (!id.Is_valid())
+                return GPUID<PrimitiveTag>::Invalid();
 
-            buildPrimitiveGPUResource(import);
             primitiveCache_.emplace(key, id);
 
             return id;
@@ -353,7 +389,18 @@ namespace ddknd::graphics
 
         void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Mat4f& m) override
         {
-            const auto& prog = programs_[static_cast<std::size_t>(shader.Value())];
+            if (name == nullptr)
+            {
+                spdlog::error("SetUniform(Mat4): uniform name is null");
+                return;
+            }
+
+            const GLuint prog = try_get_program_handle(shader);
+            if (prog == 0)
+            {
+                spdlog::error("SetUniform(Mat4): invalid shader");
+                return;
+            }
 
             GLint loc = glGetUniformLocation(prog, name);
             if (loc < 0)
@@ -368,7 +415,19 @@ namespace ddknd::graphics
 
         void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Vec2f& v) override
         {
-            const GLuint prog = get_program(shader);
+            if (name == nullptr)
+            {
+                spdlog::error("SetUniform(Vec2): uniform name is null");
+                return;
+            }
+
+            const GLuint prog = try_get_program_handle(shader);
+            if (prog == 0)
+            {
+                spdlog::error("SetUniform(Vec2): invalid shader");
+                return;
+            }
+
             const GLint loc = glGetUniformLocation(prog, name);
             if (loc < 0)
                 return;
@@ -379,10 +438,21 @@ namespace ddknd::graphics
         void SetUniformMat4Array(GPUID<tag::ShaderProgramGPUTag> shader, const char* name,
                                  std::span<const math::Mat4f> matrices) override
         {
+            if (name == nullptr)
+            {
+                spdlog::error("SetUniformMat4Array: uniform name is null");
+                return;
+            }
+
             if (matrices.empty())
                 return;
 
-            const auto& prog = programs_[static_cast<std::size_t>(shader.Value())];
+            const GLuint prog = try_get_program_handle(shader);
+            if (prog == 0)
+            {
+                spdlog::error("SetUniformMat4Array: invalid shader");
+                return;
+            }
 
             GLint loc = glGetUniformLocation(prog, name);
             if (loc < 0)
@@ -476,6 +546,13 @@ namespace ddknd::graphics
             if (batchIdx >= screenQuadBatches_.size())
                 return;
 
+            const GLuint prog = try_get_program_handle(shader);
+            if (prog == 0)
+            {
+                spdlog::error("DrawScreenQuadBatch: invalid shader");
+                return;
+            }
+
             const auto& batch = screenQuadBatches_[batchIdx];
 
             glDisable(GL_DEPTH_TEST);
@@ -483,7 +560,6 @@ namespace ddknd::graphics
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-            const GLuint prog = get_program(shader);
             glUseProgram(prog);
 
             glUniform2f(glGetUniformLocation(prog, "uScreenSize"), static_cast<float>(screenWidth),
@@ -500,6 +576,7 @@ namespace ddknd::graphics
             glBindVertexArray(0);
             glBindTexture(GL_TEXTURE_2D, 0);
 
+            // TODO: Move GL renderer States to RenderPass / PipelineState
             glDisable(GL_BLEND);
             glEnable(GL_DEPTH_TEST);
         }
@@ -608,7 +685,7 @@ namespace ddknd::graphics
 
             const auto& batch = lineBatches_[idx];
 
-            const GLuint prog = get_program(shader);
+            const GLuint prog = try_get_program_handle(shader);
             if (prog == 0)
             {
                 spdlog::error("DrawLineBatch: invalid shader");
@@ -654,15 +731,19 @@ namespace ddknd::graphics
       private:
         std::vector<GLuint> programs_;
 
-        GLuint get_program(types::GPUID<tag::ShaderProgramGPUTag> id) const noexcept
+        GLuint try_get_program_handle(types::GPUID<tag::ShaderProgramGPUTag> id) const noexcept
         {
+            if (!id.Is_valid())
+                return 0;
+
             const auto idx = static_cast<std::size_t>(id.Value());
             if (idx >= programs_.size())
                 return 0;
             return programs_[idx];
         }
 
-        void buildPrimitiveGPUResource(const ImportPrimitive& import);
+        GPUID<PrimitiveTag> buildPrimitiveGPUResource(const ImportPrimitive& import);
+
         struct GLPrimitive
         {
             GLuint vao = 0;
@@ -691,8 +772,12 @@ namespace ddknd::graphics
     };
 
     // builder
-    void OpenGLRendererBackend::buildPrimitiveGPUResource(const ImportPrimitive& import)
+    ::ddknd::graphics::types::GPUID<::ddknd::graphics::tag::PrimitiveTag> OpenGLRendererBackend::
+        buildPrimitiveGPUResource(const ImportPrimitive& import)
     {
+        if (import.vertices.empty() || import.indices.empty())
+            return GPUID<::ddknd::graphics::tag::PrimitiveTag>::Invalid();
+
         GLPrimitive gl;
         glGenVertexArrays(1, &gl.vao);
         glGenBuffers(1, &gl.vbo);
@@ -742,7 +827,9 @@ namespace ddknd::graphics
 
         glBindVertexArray(0);
 
+        const auto id = GPUID<PrimitiveTag>(static_cast<std::uint32_t>(prims_.size()));
         prims_.push_back(std::move(gl));
+        return id;
     }
 
     // =========================================== factory ===========================================

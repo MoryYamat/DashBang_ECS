@@ -132,7 +132,7 @@ namespace ddknd::animation::types
         using Mat4f = ::ddknd::math::Mat4f;
         std::vector<Bone> bones;
 
-        Mat4f rootCorrection = Mat4f::Identity();
+        Mat4f skeletonRootTransform = Mat4f::Identity();
     };
 
     enum class ChannelTarget
