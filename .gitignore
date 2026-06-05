@@ -54,7 +54,6 @@ Assets/**/*.png
 Assets/**/*.jpg
 Assets/**/*.wav
 
-
 settings.json
 compile_commands.json
 

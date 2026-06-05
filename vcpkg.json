@@ -1,5 +1,5 @@
 {
-    "name": "dashbang-ecs",
+    "name": "ddknd",
     "version-string": "0.1.0",
     "dependencies":[
         "fmt",

@@ -1,0 +1,44 @@
+add_library(gamekit STATIC)
+
+
+file(GLOB_RECURSE gamekit_SRC CONFIGURE_DEPENDS
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
+)
+
+target_sources(gamekit PRIVATE ${gamekit_SRC})
+
+target_include_directories(gamekit 
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_compile_features(gamekit PUBLIC cxx_std_20)
+
+target_link_libraries(gamekit 
+    PUBLIC # The game should not directly include ddknd.
+        ddknd
+)
+
+add_executable(game
+    main.cpp
+)
+
+target_compile_features(game PRIVATE  cxx_std_20)
+
+target_link_libraries(game 
+    PRIVATE
+        gamekit
+        # game should use gamekit as its entry layer, not ddknd directly.
+)
+
+set(assets_src_dir "${CMAKE_SOURCE_DIR}/assets")
+
+add_custom_command(TARGET game POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${assets_src_dir}"
+            "$<TARGET_FILE_DIR:game>/assets"
+    COMMENT "Copy assets -> $<TARGET_FILE_DIR:game>/assets"
+)

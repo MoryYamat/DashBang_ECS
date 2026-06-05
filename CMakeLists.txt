@@ -1,12 +1,13 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.29)
 
 
-project("DashBang_ECS" LANGUAGES CXX)
+project("engine_ddknd" LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 if(POLICY CMP0141)
     cmake_policy(SET CMP0141 NEW)
@@ -19,24 +20,9 @@ if (MSVC)
     add_compile_options(/utf-8)
 endif()
 
-# google test
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
-)
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+include(cmake/Dependencies.cmake)
 
-enable_testing()
+enable_testing()# gtest
 
-
-add_subdirectory("src/Engine/ddknd")
-add_subdirectory("src/Game/Game")
-
-
-set_target_properties(DashBang_ECS PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin/Debug"
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Release"
-)
+add_subdirectory("ddknd")# engine runtime
+add_subdirectory("sandbox/game")# game
