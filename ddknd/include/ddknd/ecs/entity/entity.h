@@ -4,7 +4,7 @@
 
 #include "ddknd/core/StrongID.h"
 
-namespace ddknd::entity
+namespace ddknd::ecs
 {
     struct Entity
     {

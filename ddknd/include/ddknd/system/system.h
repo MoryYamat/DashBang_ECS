@@ -1,16 +1,28 @@
 #pragma once
 
+namespace ddknd::world
+{
+    class World;
+}
 
 namespace ddknd::system
 {
+    struct SystemContext
+    {
+
+    };
+
     // Scheduler
     // topological sort 
     // parallelism
     // 
-    class SystemManager
+    class EngineSystemRunner
     {
-
-    };  
+        public:
+            void Update(::ddknd::world::World& world, const ::ddknd::system::SystemContext& ctx);
+        private:
+            void RunTransform(::ddknd::world::World& world, const ::ddknd::system::SystemContext& ctx);
+    };
 }// namespace ddknd::system
 
 // API Image

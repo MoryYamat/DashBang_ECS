@@ -1,7 +1,7 @@
 #pragma once
 // #include "registry/registry.h"
 
-namespace ddknd::query
+namespace ddknd::ecs
 {
     // Query specific entities that satisfy the specified constraints.
     //
@@ -58,7 +58,6 @@ namespace ddknd::query
     // factory
     inline auto query()
     {
-        using namespace ::ddknd::query;
         return Query<None, TypeList<>, TypeList<>>{};
     }
 

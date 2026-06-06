@@ -15,7 +15,7 @@
 
 #include <spdlog/spdlog.h>
 
-namespace ddknd::registry
+namespace ddknd::ecs
 {
     // Storage set + α
     // Entity CRUD
@@ -23,12 +23,12 @@ namespace ddknd::registry
     // Provides API
     class Registry
     {
-        using id_type = ::ddknd::entity::Entity;
+        using id_type = ::ddknd::ecs::Entity;
 
       private:
         std::vector<std::uint32_t> gens_; // current generation: gens_[i] = gen (i=Index, gen=currentGeneration)
         std::vector<std::uint32_t> free_indices_;
-        std::unordered_map<std::type_index, std::unique_ptr<::ddknd::storage::IStorage>> storages_;
+        std::unordered_map<std::type_index, std::unique_ptr<::ddknd::ecs::IStorage>> storages_;
       public:
         // Entity
         id_type Create()
@@ -96,7 +96,7 @@ namespace ddknd::registry
         {
             auto it = storages_.find(typeid(T));
             if(it == storages_.end()) return nullptr;
-            auto* raw = static_cast<storage::Storage<T>*>(it->second.get());
+            auto* raw = static_cast<ecs::Storage<T>*>(it->second.get());
             return raw->Get(e);
         }
 
@@ -105,7 +105,7 @@ namespace ddknd::registry
         {
             auto it = storages_.find(typeid(T));
             if(it == storages_.end()) return nullptr;
-            auto* raw = static_cast<storage::Storage<T>*>(it->second.get());
+            auto* raw = static_cast<ecs::Storage<T>*>(it->second.get());
             return raw->Get(e);
         }
 
@@ -142,18 +142,18 @@ namespace ddknd::registry
         }
 
         template<typename T>
-        storage::Storage<T>& AssureStorage()
+        ecs::Storage<T>& AssureStorage()
         {
             const std::type_index key{typeid(T)};
             auto it = storages_.find(key);
             if(it == storages_.end())
             {
-                auto ptr = std::make_unique<storage::Storage<T>>();
+                auto ptr = std::make_unique<ecs::Storage<T>>();
                 auto* raw = ptr.get();
                 storages_.emplace(key, std::move(ptr));
                 return *raw;
             }
-            return *static_cast<storage::Storage<T>*>(it->second.get());
+            return *static_cast<ecs::Storage<T>*>(it->second.get());
         }
 
         template<typename Query>

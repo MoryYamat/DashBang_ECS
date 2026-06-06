@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ddknd::world
+namespace ddknd::ecs
 {
     class World;
 }// namespace ddknd::world

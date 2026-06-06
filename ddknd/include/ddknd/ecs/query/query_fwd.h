@@ -2,7 +2,7 @@
 
 
 
-namespace ddknd::query
+namespace ddknd::ecs
 {
     struct Query;
 

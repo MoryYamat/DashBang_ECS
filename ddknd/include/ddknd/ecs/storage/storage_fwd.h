@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ddknd::storage
+namespace ddknd::ecs
 {
     struct IStorage;
     

@@ -3,10 +3,10 @@
 #include "ddknd/ecs/entity/entity.h"
 #include "ddknd/ecs/registry/registry.h"
 
-namespace ddknd::world
+namespace ddknd::ecs
 {
-    using Registry = ::ddknd::registry::Registry;
-    using Entity = ::ddknd::entity::Entity;
+    using Registry = ::ddknd::ecs::Registry;
+    using Entity = ::ddknd::ecs::Entity;
     struct World::Impl
     {
         Registry regs;

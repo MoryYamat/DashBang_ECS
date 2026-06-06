@@ -292,9 +292,9 @@ namespace app
 
     void App::Shutdown()
     {
-        ::ddknd::entity::Entity test{};
+        ::ddknd::ecs::Entity test{};
 
-        ::ddknd::world::World wd{};
+        ::ddknd::ecs::World wd{};
 
         // ======================= test for ecs systems =======================
         // auto ent0_0 = wd.Create();

@@ -10,16 +10,16 @@
 #include "ddknd/ecs/storage/storage_fwd.h"
 
 // helper
-namespace ddknd::view::detail
+namespace ddknd::ecs::detail
 {
     template<typename List>
     struct StoragePointerTuple;
 
     template<typename... R>
-    struct StoragePointerTuple<query::TypeList<R...>>
+    struct StoragePointerTuple<TypeList<R...>>
     {
-        using Registry = registry::Registry;
-        using type = std::tuple<storage::Storage<R>*...>;
+        using Registry = ecs::Registry;
+        using type = std::tuple<ecs::Storage<R>*...>;
 
         template<typename Registry>
         static type make(Registry* regs)
@@ -32,10 +32,10 @@ namespace ddknd::view::detail
     struct HasAll;
 
     template <typename... Ts>
-    struct HasAll<query::TypeList<Ts...>>
+    struct HasAll<TypeList<Ts...>>
     {
-        using Registry = registry::Registry;
-        using Entity = entity::Entity;
+        using Registry = ecs::Registry;
+        using Entity = ecs::Entity;
         template<typename Tuple>
         static bool check(const Tuple& storages, Entity e)
         {
@@ -53,10 +53,10 @@ namespace ddknd::view::detail
     struct HasNone;
 
     template <typename... Ts>
-    struct HasNone<query::TypeList<Ts...>>
+    struct HasNone<TypeList<Ts...>>
     {
-        using Registry = registry::Registry;
-        using Entity = entity::Entity;
+        using Registry = ecs::Registry;
+        using Entity = ecs::Entity;
         template<typename Tuple>
         static bool check(const Tuple& storages, Entity e)
         {
@@ -74,7 +74,7 @@ namespace ddknd::view::detail
     struct DerefTuple;
 
     template <typename S, typename... R>
-    struct DerefTuple<S, query::TypeList<R...>, false>
+    struct DerefTuple<S, TypeList<R...>, false>
     {
         using type = std::tuple<S&, R&...>;
 
@@ -100,9 +100,9 @@ namespace ddknd::view::detail
     };
 
     template <typename S, typename... R>
-    struct DerefTuple<S, query::TypeList<R...>, true>
+    struct DerefTuple<S, TypeList<R...>, true>
     {
-        using Entity = entity::Entity;
+        using Entity = ecs::Entity;
         using type = std::tuple<Entity, S&, R&...>;
 
         template<typename Storage, typename RequiredStorages>
@@ -122,13 +122,13 @@ namespace ddknd::view::detail
 
 } // namespace ddknd::view::detail
 
-namespace ddknd::view
+namespace ddknd::ecs
 {
     template <typename Query, bool IncludeEntity = false>
     class View
     {
       public:
-        using Registry = ::ddknd::registry::Registry;
+        using Registry = ::ddknd::ecs::Registry;
 
         using selected = Query::selected;
         using requiredList = Query::requiredList;
@@ -146,9 +146,9 @@ namespace ddknd::view
         // lazy view
         struct Iterator
         {
-            using Registry = ::ddknd::registry::Registry;
-            using Entity = ::ddknd::entity::Entity;
-            using SelectedStorage = typename ::ddknd::storage::Storage<selected>;
+            using Registry = ::ddknd::ecs::Registry;
+            using Entity = ::ddknd::ecs::Entity;
+            using SelectedStorage = typename ::ddknd::ecs::Storage<selected>;
             using RequiredStorage = typename detail::StoragePointerTuple<requiredList>::type;
             using ExcludedStorage = typename detail::StoragePointerTuple<excludedList>::type;
             
@@ -243,11 +243,11 @@ namespace ddknd::view
 } // namespace ddknd::view
 
 // to define
-namespace ddknd::registry
+namespace ddknd::ecs
 {
     template <typename Query>
     auto Registry::view(Query q)
     {
-        return view::View<Query>{q, this};
+        return ecs::View<Query>{q, this};
     }
 } // namespace ddknd::registry

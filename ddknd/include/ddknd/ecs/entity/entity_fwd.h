@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace ddknd::entity
+namespace ddknd::ecs
 {
     struct Entity;
 }// namespace ddknd::entity

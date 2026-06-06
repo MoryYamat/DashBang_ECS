@@ -9,12 +9,12 @@
 
 #include "ddknd/ecs/entity/entity.h"
 
-namespace ddknd::storage
+namespace ddknd::ecs
 {
     inline constexpr std::size_t npos = std::numeric_limits<std::size_t>::max();
     struct IStorage
     {
-        using Entity = ::ddknd::entity::Entity;
+        using Entity = ::ddknd::ecs::Entity;
         virtual ~IStorage() = default;
         virtual bool Has(Entity e) const = 0;
         virtual void Remove(Entity e) = 0;
@@ -28,7 +28,7 @@ namespace ddknd::storage
     class Storage final : public IStorage
     {
         public:
-        using Entity = ::ddknd::entity::Entity;
+        using Entity = ::ddknd::ecs::Entity;
         using comp_type = T;
 
         template<typename ...Args>

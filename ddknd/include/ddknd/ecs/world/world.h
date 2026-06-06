@@ -5,14 +5,14 @@
 #include "ddknd/ecs/entity/entity_fwd.h"
 #include "ddknd/ecs/registry/registry_fwd.h"
 
-namespace ddknd::world
+namespace ddknd::ecs
 {
     // orchestrator
     class World
     {
         public:
-            using Entity = ::ddknd::entity::Entity;
-            using Registry = ::ddknd::registry::Registry;
+            using Entity = ::ddknd::ecs::Entity;
+            using Registry = ::ddknd::ecs::Registry;
             World();
             ~World();
             
