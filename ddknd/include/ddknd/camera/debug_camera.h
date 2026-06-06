@@ -4,7 +4,8 @@
 // fwd
 namespace ddknd::component
 {
-  struct DebugCameraComponent;
+  struct TransformComponent;
+  struct DebugCameraControllerComponent;
 }
 // fwd
 namespace ddknd::input
@@ -19,15 +20,16 @@ namespace ddknd::debug
   {
     private:
       using Input = ::ddknd::input::DeviceInput;
-      using DebugCameraComponent = ::ddknd::component::DebugCameraComponent;
+      using DebugCameraControllerComponent = ::ddknd::component::DebugCameraControllerComponent;
+      using TrasnformComponent = ::ddknd::component::TransformComponent;
     public:
-      DebugCameraController(const Input& input, DebugCameraComponent& cam): input_(input), cam_(cam) {}
+      DebugCameraController(const Input& input, DebugCameraControllerComponent& debug, TrasnformComponent& tsr): input_(input), debug_(debug), transform_(tsr) {}
 
-      void Update();
+      void Update(float dt);
 
     private:
       const Input& input_;
-      DebugCameraComponent& cam_;
-      
+      DebugCameraControllerComponent& debug_;
+      TrasnformComponent& transform_;
   };
 } // namespace ddknd::camera

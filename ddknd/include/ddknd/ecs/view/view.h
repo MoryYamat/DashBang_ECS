@@ -143,6 +143,7 @@ namespace ddknd::view
             std::cerr << "excluded=" << typeid(excludedList).name() << "\n";
         }
 
+        // lazy view
         struct Iterator
         {
             using Registry = ::ddknd::registry::Registry;

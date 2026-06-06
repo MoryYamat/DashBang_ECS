@@ -22,19 +22,15 @@ namespace ddknd::component
         Vec3f v{};
     };
 
-
-    struct DebugCameraComponent
+    struct DebugCameraControllerComponent
     {
-        math::Vec3f pos{0.0f, 0.0f, 0.0f};
-        math::Vec3f target;
-        const math::Vec3f up{0.0f, 1.0f, 0.0f};// fixed (fps type camera)
+        float yawDeg = -90.0f;
+        float pitchDeg = 0.0f;
 
-        float yaw = -90.0f;
-        float pitch = 0.0f;
-        float sensitivty = 0.1f;
-        float fovRadians;
-        float aspect;
-        float nearZ = 0.1f;
-        float farZ = 1000.0f;
+        float sensitivity = 0.1f;
+        float moveSpeed = 5.0f;
+
+        math::Vec3f worldUp{0.0f, 1.0f, 0.0f};
+        math::Vec3f forward{0.0f, 0.0f, -1.0f};
     };
-}// namespace ddknd::component
+} // namespace ddknd::component

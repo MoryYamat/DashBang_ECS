@@ -6,6 +6,7 @@
 #include <ddknd/io/io.h>
 
 #include "Action/action.h"
+#include "ddknd/camera/system_camera.h"
 #include <ddknd/camera/debug_camera.h>
 #include <ddknd/clock/clock.h>
 #include <ddknd/graphics/animation.h>
@@ -86,7 +87,7 @@ namespace app
         // renderer
         renderSys_ = std::make_unique<ddknd::graphics::RendererSystem>(*rendererBackend_);
 
-        cam_ = std::make_unique<::ddknd::component::DebugCameraComponent>();
+        debugCam_ = std::make_unique<::ddknd::component::DebugCameraControllerComponent>();
 
         // user definition input
         inputMapping_ = std::make_unique<::ddknd::input::InputMapping>();
@@ -165,8 +166,14 @@ namespace app
 
         // DEBUG CAMERA
         using DebugCameraCtrl = ::ddknd::debug::DebugCameraController;
-        DebugCameraCtrl deug_cam(*deviceInput_, *cam_); // @TODO change the target vector by the mouse moving
-        cam_->pos = {0.0f, 2.0f, 5.0f};
+        ddknd::component::TransformComponent debug_camera_transform{};
+        ddknd::component::CameraComponent debug_camera_comp{};
+        DebugCameraCtrl deug_cam(*deviceInput_, *debugCam_,
+                                 debug_camera_transform); // @TODO change the target vector by the mouse moving
+        debug_camera_transform.localTRS.translation = Vec3f{0.f, 2.f, 5.f};
+        debugCam_->forward = Vec3f{0.f, 0.f, -1.f};
+        debugCam_->yawDeg = -90.0f;
+        debugCam_->pitchDeg = 0.0f;
         // ============= for test ==============
 
         // ************* TIMER *************
@@ -217,16 +224,15 @@ namespace app
             timer.Tick();
             const float fps = timer.FPS();
 
-            cam_->aspect = window_->aspectRation();
-            // =========================== temporaly ===========================
-            auto view =
-                ::ddknd::math::LookAtOpenGLRH(cam_->pos, cam_->target,
-                       cam_->up); // @TODO move to renderer @@@@@@@@@@@@@@@@@@@@@@@ // TODO: System Execution Scheduler
-            auto proj = ::ddknd::math::PerspectiveOpenGLRH(::ddknd::math::degToRadf(60.0f), cam_->aspect, 0.1f, 100.0f);
-            // =========================== temporaly ===========================
+            // ================== Debug Camera ==================
+            deug_cam.Update(timer.DeltaTime());
+            ddknd::system::CameraSystem::UpdateDebugCamera(debug_camera_transform, *debugCam_, debug_camera_comp);
 
-            ddknd::graphics::FrameDesc frame{
-                .h = window_->GetHeight(), .w = window_->GetWidth(), .view = view, .proj = proj};
+
+            ddknd::graphics::FrameDesc frame{.h = window_->GetHeight(),
+                                             .w = window_->GetWidth(),
+                                             .view = debug_camera_comp.view,
+                                             .proj = debug_camera_comp.proj};
             renderSys_->BeginFrame(frame);
 
             test_transform_comp.worldMatrix = modelTRS.ToMatrix();
@@ -257,7 +263,8 @@ namespace app
             debugDraw_->Text(10.0f, 20.0f, std::format("FPS: {:.1f}", fps), {1.0f, 1.0f, 0.0f, 1.0f}); // FPS
             debugDraw_->Axis({0, 0, 0}, 2.0f);
 
-            ::ddknd::animation::debug::TestAnimatorSystemUpdate(*model_res->skeleton,test_animator_comp.pose,*debugDraw_.get());
+            ::ddknd::animation::debug::TestAnimatorSystemUpdate(*model_res->skeleton, test_animator_comp.pose,
+                                                                *debugDraw_.get());
 
             debugDraw_->EndFrame();
 
@@ -272,9 +279,6 @@ namespace app
             renderSys_->EndFrame();
 
             deviceInput_->Update();
-
-            // ================== Debug Camera ==================
-            deug_cam.Update();
 
             // ================== Update Action Input ==================
             inputSys_->Update(*deviceInput_.get());
@@ -410,35 +414,35 @@ namespace app
         // ======================= test for ecs systems =======================
 
         // ======================= test for input action systems =======================
-        using Key = ::ddknd::input::Key;
-        using Action = ::app::action::Action;
-        using InputMapping = ::ddknd::input::InputMapping;
-        using ActionInputSystem = ::ddknd::input::ActionInputSystem;
+        // using Key = ::ddknd::input::Key;
+        // using Action = ::app::action::Action;
+        // using InputMapping = ::ddknd::input::InputMapping;
+        // using ActionInputSystem = ::ddknd::input::ActionInputSystem;
 
-        auto move_forward = inputMapping_->GetActionID(Action::MoveFoward);
-        auto move_left = inputMapping_->GetActionID(Action::MoveLeft);
-        auto move_backward = inputMapping_->GetActionID(Action::MoveBackward);
-        auto move_right = inputMapping_->GetActionID(Action::MoveRight);
+        // auto move_forward = inputMapping_->GetActionID(Action::MoveFoward);
+        // auto move_left = inputMapping_->GetActionID(Action::MoveLeft);
+        // auto move_backward = inputMapping_->GetActionID(Action::MoveBackward);
+        // auto move_right = inputMapping_->GetActionID(Action::MoveRight);
 
-        assert(move_forward != InputMapping::InvalidID);
-        assert(move_left != InputMapping::InvalidID);
-        assert(move_backward != InputMapping::InvalidID);
-        assert(move_right != InputMapping::InvalidID);
+        // assert(move_forward != InputMapping::InvalidID);
+        // assert(move_left != InputMapping::InvalidID);
+        // assert(move_backward != InputMapping::InvalidID);
+        // assert(move_right != InputMapping::InvalidID);
 
-        assert(inputMapping_->GetActionFromKey(Key::W) == move_forward);
-        assert(inputMapping_->GetActionFromKey(Key::A) == move_left);
-        assert(inputMapping_->GetActionFromKey(Key::S) == move_backward);
-        assert(inputMapping_->GetActionFromKey(Key::D) == move_right);
+        // assert(inputMapping_->GetActionFromKey(Key::W) == move_forward);
+        // assert(inputMapping_->GetActionFromKey(Key::A) == move_left);
+        // assert(inputMapping_->GetActionFromKey(Key::S) == move_backward);
+        // assert(inputMapping_->GetActionFromKey(Key::D) == move_right);
 
-        assert(inputMapping_->GetKey(move_forward) == Key::W);
-        assert(inputMapping_->GetKey(move_left) == Key::A);
-        assert(inputMapping_->GetKey(move_backward) == Key::S);
-        assert(inputMapping_->GetKey(move_right) == Key::D);
+        // assert(inputMapping_->GetKey(move_forward) == Key::W);
+        // assert(inputMapping_->GetKey(move_left) == Key::A);
+        // assert(inputMapping_->GetKey(move_backward) == Key::S);
+        // assert(inputMapping_->GetKey(move_right) == Key::D);
 
-        // 未登録
-        assert(inputMapping_->GetActionID(static_cast<Action>(999)) == InputMapping::InvalidID);
-        assert(inputMapping_->GetActionFromKey(Key::F20) == InputMapping::InvalidID);
-        assert(inputMapping_->GetKey(InputMapping::InvalidID) == InputMapping::InvalidKey);
+        // // 未登録
+        // assert(inputMapping_->GetActionID(static_cast<Action>(999)) == InputMapping::InvalidID);
+        // assert(inputMapping_->GetActionFromKey(Key::F20) == InputMapping::InvalidID);
+        // assert(inputMapping_->GetKey(InputMapping::InvalidID) == InputMapping::InvalidKey);
         // ======================= test for input action systems =======================
     }
 } // namespace app

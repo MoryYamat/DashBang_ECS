@@ -415,7 +415,7 @@ namespace ddknd::math
 {
     float degToRadf(float degree);
 
-    Vec3f ComputeForawrdVec(float yawRad, float pitchRad);
+    Vec3f ComputeForwardVec(float yawRad, float pitchRad);
 
     Vec3f ExtractTranslation(const Mat4f& m);
 

@@ -11,7 +11,7 @@ namespace ddknd::math
         return degree * (std::numbers::pi_v<float> / 180.0f);
     }
 
-    Vec3f ComputeForawrdVec(float yawRad, float pitchRad)
+    Vec3f ComputeForwardVec(float yawRad, float pitchRad)
     {
         Vec3f forward;
         forward[0] = std::cos(yawRad) * std::cos(pitchRad);

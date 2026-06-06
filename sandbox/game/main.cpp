@@ -49,13 +49,12 @@ int main()
 
 // ========= TODO: ========= 
 // HIGH
-// - Implement Animate Processing
-// - apply asset management to existing codes
 // - 
-// - Implement Skeleton Debug Drawing
+// - 
 
 // MIDDLE
-// - fix folder 
+// - implement match index -> dense index (it will improve view performance)
+// - implement storage version to the ECS::Storage for caching
 // - Correct the design to be fundamentally correct.
 
 // LOW
@@ -70,3 +69,8 @@ int main()
 // /include: 
 // /src:
 //   / internal
+
+// System::Update() の 効率化
+// 1 全 TransformComponent を走査し、UpdateOne 内で dirty を見る
+// 2 View / Query で DirtyTransformComponent を持つ entity だけ走査する
+// 3 dirty entity list / changed list を持ち、変更された Transform だけ処理する

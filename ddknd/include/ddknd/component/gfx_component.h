@@ -16,11 +16,11 @@ namespace ddknd::component
 
     struct TransformComponent
     {
-        private: 
-            using TRS = ::ddknd::math::TRS;
-            using Mat4f = ::ddknd::math::Mat4f;
+      private:
+        using TRS = ::ddknd::math::TRS;
+        using Mat4f = ::ddknd::math::Mat4f;
 
-        public:
+      public:
         TRS localTRS;
 
         Mat4f worldMatrix = Mat4f::Identity();
@@ -33,4 +33,31 @@ namespace ddknd::component
         ::ddknd::animation::AnimationState state;
         ::ddknd::animation::Pose pose;
     };
-}// namespace ddknd::component
+} // namespace ddknd::component
+
+namespace ddknd::component
+{
+    enum class ProjectionType
+    {
+        Perspective,
+        Orthographic
+    };
+
+    struct CameraComponent
+    {
+        ProjectionType projectionType = ProjectionType::Perspective;
+
+        float fovYRad = math::degToRadf(60.0f);
+        float orthoHeight = 10.0f;
+
+        float aspect = 16.0f / 9.0f;
+        float nearZ = 0.1f;
+        float farZ = 1000.0f;
+
+        bool primary = false;
+
+        math::Mat4f view;
+        math::Mat4f proj;
+        math::Mat4f viewProj;
+    };
+} // namespace ddknd::component
