@@ -1,12 +1,12 @@
-#include "app.h"
+#include "game/app.h"
 
 #include <cmath>
 #include <iostream>
 
 #include <ddknd/io/io.h>
 
-#include "Action/action.h"
-#include "ddknd/camera/system_camera.h"
+#include "game/Action/action.h"
+#include "ddknd/camera/system_debug_camera.h"
 #include <ddknd/camera/debug_camera.h>
 #include <ddknd/clock/clock.h>
 #include <ddknd/graphics/animation.h>
@@ -167,11 +167,10 @@ namespace app
         // DEBUG CAMERA
         using DebugCameraCtrl = ::ddknd::debug::DebugCameraController;
         ddknd::component::TransformComponent debug_camera_transform{};
-        ddknd::component::CameraComponent debug_camera_comp{};
         DebugCameraCtrl deug_cam(*deviceInput_, *debugCam_,
                                  debug_camera_transform); // @TODO change the target vector by the mouse moving
         debug_camera_transform.localTRS.translation = Vec3f{0.f, 2.f, 5.f};
-        debugCam_->forward = Vec3f{0.f, 0.f, -1.f};
+        debugCam_->look.forward = Vec3f{0.f, 0.f, -1.f};
         debugCam_->yawDeg = -90.0f;
         debugCam_->pitchDeg = 0.0f;
         // ============= for test ==============
@@ -226,13 +225,13 @@ namespace app
 
             // ================== Debug Camera ==================
             deug_cam.Update(timer.DeltaTime());
-            ddknd::system::CameraSystem::UpdateDebugCamera(debug_camera_transform, *debugCam_, debug_camera_comp);
+            ddknd::system::DebugCameraSystem::UpdateDebugCamera(debug_camera_transform, *debugCam_);
 
 
             ddknd::graphics::FrameDesc frame{.h = window_->GetHeight(),
                                              .w = window_->GetWidth(),
-                                             .view = debug_camera_comp.view,
-                                             .proj = debug_camera_comp.proj};
+                                             .view = debugCam_->matrices.view,
+                                             .proj = debugCam_->matrices.proj};
             renderSys_->BeginFrame(frame);
 
             test_transform_comp.worldMatrix = modelTRS.ToMatrix();

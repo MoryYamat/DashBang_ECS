@@ -46,6 +46,48 @@ namespace ddknd::math
             return v[i];
         }
 
+        // x, y, z, w accessors
+        constexpr T& x() noexcept
+            requires(N>=1)
+        {
+            return v[0];
+        }
+        constexpr const T& x() const noexcept
+            requires(N>=1)
+        {
+            return v[0];
+        }
+        constexpr T& y() noexcept
+            requires(N>=2)
+        {
+            return v[1];
+        }
+        constexpr const T& y() const noexcept
+            requires(N>=2)
+        {
+            return v[1];
+        }
+        constexpr T& z() noexcept
+            requires(N>=3)
+        {
+            return v[2];
+        }
+        constexpr const T& z() const noexcept
+            requires(N>=3)
+        {
+            return v[2];
+        }
+        constexpr T& w() noexcept
+            requires(N>=4)
+        {
+            return v[3];
+        }
+        constexpr const T& w() const noexcept
+            requires(N>=4)
+        {
+            return v[3];
+        }
+
         constexpr Vec<T, N>& operator+=(const Vec<T, N>& b) noexcept
         {
             for (std::size_t i = 0; i < N; i++)

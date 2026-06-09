@@ -2,6 +2,8 @@
 
 #include "ddknd/math/math.h"
 
+#include <ddknd/component/gfx_component.h>
+
 namespace ddknd::component
 {
     struct Pos
@@ -30,7 +32,8 @@ namespace ddknd::component
         float sensitivity = 0.1f;
         float moveSpeed = 5.0f;
 
-        math::Vec3f worldUp{0.0f, 1.0f, 0.0f};
-        math::Vec3f forward{0.0f, 0.0f, -1.0f};
+        CameraLookComponent look{};
+        CameraProjectionComponent projection{};
+        CameraMatricesComponent matrices{};
     };
 } // namespace ddknd::component

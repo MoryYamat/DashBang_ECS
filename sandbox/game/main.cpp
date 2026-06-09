@@ -3,7 +3,7 @@
 // memo
 
 #include <iostream>
-#include "app.h"
+#include "game/app.h"
 // #include "Game/Game.h"
 
 #include <Windows.h>
@@ -49,7 +49,7 @@ int main()
 
 // ========= TODO: ========= 
 // HIGH
-// - 
+// - implement animator_system: asset_manager and ecs orchestration
 // - 
 
 // MIDDLE

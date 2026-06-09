@@ -33,7 +33,7 @@ namespace ddknd::debug
         const float pitchRad = degToRadf(debug_.pitchDeg);
 
         Vec3f forward = normalize(ComputeForwardVec(yawRad, pitchRad));
-        Vec3f right = normalize(cross(forward, debug_.worldUp));
+        Vec3f right = normalize(cross(forward, debug_.look.up));
 
         const float step = debug_.moveSpeed * dt;
 
@@ -54,7 +54,7 @@ namespace ddknd::debug
             pos += right * step;
         }
 
-        debug_.forward = forward;
+        debug_.look.forward = forward;
         transform_.dirty = true;
     }
 } // namespace ddknd::debug

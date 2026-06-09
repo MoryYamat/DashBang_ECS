@@ -28,6 +28,17 @@ namespace ddknd::component
         bool dirty = true;
     };
 
+    struct AnimationPlaybackComponent
+    {
+        ::ddknd::animation::AnimationState state;
+    };
+
+    struct PoseComponent
+    {
+        ::ddknd::animation::Pose pose;
+    };
+
+    // delete
     struct AnimatorComponent
     {
         ::ddknd::animation::AnimationState state;
@@ -43,7 +54,13 @@ namespace ddknd::component
         Orthographic
     };
 
-    struct CameraComponent
+    struct CameraLookComponent
+    {
+        math::Vec3f forward{0.0f, 0.0f, -1.0f};
+        math::Vec3f up{0.0f, 1.0f, 0.0f};
+    };
+
+    struct CameraProjectionComponent
     {
         ProjectionType projectionType = ProjectionType::Perspective;
 
@@ -55,9 +72,27 @@ namespace ddknd::component
         float farZ = 1000.0f;
 
         bool primary = false;
+    };
 
+    struct CameraMatricesComponent
+    {
         math::Mat4f view;
         math::Mat4f proj;
         math::Mat4f viewProj;
     };
 } // namespace ddknd::component
+
+
+// assets
+namespace ddknd::component
+{
+    struct SkinnedModelComponent
+    {
+        asset::AssetID<asset::tag::Model> model;
+    };
+
+    struct MaterialComponent
+    {
+        asset::AssetID<asset::tag::Shader> shader;
+    };
+}

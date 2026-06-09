@@ -9,4 +9,25 @@ namespace ddknd::graphics
     std::unique_ptr<IRendererBackend> CreateOpenGLBackend(const OpenGLBackendDesc& desc);
 
     class RendererSystem;
-}// namespace ddknd::graphics
+    class GraphicsAssetStore;
+
+    namespace asset
+    {
+        struct ShaderResource;
+        struct ModelFileResource;
+        struct PrimitiveResource;
+        struct ModelRenderResource;
+        struct FontResource;
+    } // namespace asset
+
+} // namespace ddknd::graphics
+
+namespace ddknd::animation
+{
+    class AnimationAssetStore;
+    namespace types
+    {
+        struct SkeletonResource;
+        struct AnimationClipResource;
+    } // namespace animation::types
+}
