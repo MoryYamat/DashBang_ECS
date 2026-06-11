@@ -5,8 +5,38 @@
 #include "ddknd/graphics/renderer.h"
 #include "ddknd/math/math.h"
 
+#include <ddknd/component/gfx_component.h>
+#include <ddknd/graphics/gfx_asset_loader.h>
+
+// helper
+namespace
+{
+    ::ddknd::math::Vec3f TransformPoint(const ::ddknd::math::Mat4f& m, const ::ddknd::math::Vec3f& p)
+    {
+        const auto v = m * ::ddknd::math::Vec4f{p.x(), p.y(), p.z(), 1.0f};
+
+        return ::ddknd::math::Vec3f{v.x(),v.y(),v.z()};
+    }
+}
+
 namespace ddknd::animation::debug
 {
+    void SkeletonDebugDrawSystem::UpdateOne(const ::ddknd::component::SkinnedModelComponent& modelComp,
+                                            const ::ddknd::component::PoseComponent& poseComp,
+                                            const ::ddknd::component::TransformComponent& transformComp,
+                                            const ::ddknd::graphics::GraphicsAssetStore& graphicsStore,
+                                            const ::ddknd::math::Vec4f& color,
+                                            ::ddknd::graphics::DebugDrawList& debugDraw)
+    {
+        const auto* model = graphicsStore.TryGet(modelComp.model);
+        if (!model || !model->skeleton)
+        {
+            return;
+        }
+
+        ::ddknd::animation::debug::DrawSkeleton(*model->skeleton, poseComp.pose, transformComp.worldMatrix, color, debugDraw);
+    }
+
     void TestAnimatorSystemInit(const types::SkeletonResource& skeleton, animation::Pose& pose)
     {
         ::ddknd::animation::AnimatorSystem::InitializePose(skeleton, pose);
@@ -27,5 +57,53 @@ namespace ddknd::animation::debug
             math::Vec4f color{0.0f, 1.0f, 1.0f, 1.0f};
             draw.Line(a, b, color);
         }
+    }
+
+    void DrawSkeleton(const ::ddknd::animation::types::SkeletonResource& skeleton, const ::ddknd::animation::Pose& pose,
+                      const ::ddknd::math::Mat4f& modelMatrix, const ::ddknd::math::Vec4f& color, ::ddknd::graphics::DebugDrawList& debugDraw)
+    {
+        const auto boneCount = skeleton.bones.size();
+
+        if(pose.globalMatrices.size() < boneCount)
+        {
+            return;
+        }
+
+        for(std::size_t i = 0; i < boneCount; ++i)
+        {
+            const auto& bone = skeleton.bones[i];
+
+            if(bone.parent < 0)
+            {
+                continue;
+            }
+
+            const auto parentIndex = static_cast<std::size_t>(bone.parent);
+
+            if(parentIndex >= boneCount)
+            {
+                continue;
+            }
+
+            const auto childLocal = 
+                    ::ddknd::math::ExtractTranslation(pose.globalMatrices[i]);
+
+            const auto parentLocal=
+                    ::ddknd::math::ExtractTranslation(pose.globalMatrices[parentIndex]);
+
+            const auto childWorld =
+                    TransformPoint(modelMatrix, childLocal);
+
+            const auto parentWorld =
+                    TransformPoint(modelMatrix, parentLocal);
+
+            debugDraw.Line(
+                parentWorld,
+                childWorld,
+                color
+            );
+        }
+
+
     }
 } // namespace ddknd::animation::debug

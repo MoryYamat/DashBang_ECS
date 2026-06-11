@@ -9,6 +9,8 @@ namespace ddknd::graphics
     std::unique_ptr<IRendererBackend> CreateOpenGLBackend(const OpenGLBackendDesc& desc);
 
     class RendererSystem;
+    class DebugDrawList;
+
     class GraphicsAssetStore;
     class GraphicsAssetLoader;
 

@@ -206,7 +206,12 @@ namespace ddknd::graphics
         math::Vec3f b;
         math::Vec4f color;
     };
-
+    struct DebugAxisColors
+    {
+        math::Vec4f x{1.0f, 0.0f, 0.0f ,1.0f};
+        math::Vec4f y{0.0f, 1.0f, 0.0f ,1.0f};
+        math::Vec4f z{0.0f, 0.0f, 1.0f ,1.0f};
+    };
     // Create Debug Resources from Commands
     class DebugDrawList
     {
@@ -240,6 +245,7 @@ namespace ddknd::graphics
         void Axis(const math::Vec3f& origin, float length = 1.0f);
         types::GPUID<tag::LineBatchTag> LineBatch() const;
         std::uint32_t LineVertexCount() const;
+        void Axis(const math::Vec3f& origin, const DebugAxisColors& colors, float length = 1.0f);
 
         // Skeleton
         void Skeleton(const animation::types::SkeletonResource& skeleton, const animation::Pose& pose, Color color);

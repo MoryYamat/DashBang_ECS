@@ -20,6 +20,7 @@
 #include <ddknd/graphics/gfx_asset_loader.h>
 
 #include "game/system/game_system.h"
+#include <ddknd/debug/debug_system.h>
 #include <ddknd/system/system.h>
 
 // test
@@ -156,9 +157,9 @@ namespace app
 
         // debug font
         // shader
-        auto debug_font_shader = assetMgr_->GetOrCreate<ShaderTag>("res://shaders/programs/debug_text.shader");
+        auto debug_font_shader_id = assetMgr_->GetOrCreate<ShaderTag>("res://shaders/programs/debug_text.shader");
         auto loaded_res_shader_debug_font =
-            graphicsAssetLoader_->LoadShader(*assetMgr_, *graphicsAssetStore_, debug_font_shader);
+            graphicsAssetLoader_->LoadShader(*assetMgr_, *graphicsAssetStore_, debug_font_shader_id);
         // const auto debug_font_shader_res = graphicsAssetStore_->TryGet(debug_font_shader);
         // resource
         auto font_res_id = assetMgr_->GetOrCreate<FontTag>("res://fonts/NotoSans-VariableFont_wdth,wght.ttf");
@@ -182,7 +183,7 @@ namespace app
             graphicsAssetLoader_->LoadShader(*assetMgr_, *graphicsAssetStore_, debug_line_shader_id);
 
         // TryGet()
-        const auto debug_font_shader_res = graphicsAssetStore_->TryGet(debug_font_shader);
+        const auto debug_font_shader_res = graphicsAssetStore_->TryGet(debug_font_shader_id);
         const auto font_res = graphicsAssetStore_->TryGet(font_res_id);
         const auto debug_line_shader_res = graphicsAssetStore_->TryGet(debug_line_shader_id);
 
@@ -279,8 +280,11 @@ namespace app
         // modelTRS.scale = {0.01f, 0.01f, 0.01f};
 
         // ********* Debug Config ************
-        debugDraw_->SetFont(font_res);
-        debugDraw_->Axis({0.0f, 0.0f, 0.0f}, 1000.0f);
+        ::ddknd::debug::DebugSystemRunner debugSystemRunner{};
+        ::ddknd::debug::DebugConfig debugConfig{.drawAxis = true, .drawFps = true, .drawSkeletons = true};
+        ::ddknd::debug::DebugDrawResources debugDrawResouces{.textShader = debug_font_shader_id, .lineShader = debug_line_shader_id, .font = font_res_id};
+        // debugDraw_->SetFont(font_res);
+        // debugDraw_->Axis({0.0f, 0.0f, 0.0f}, 1000.0f);
         while (isRunning_ && !window_->ShouldClose())
         {
             // ************* TIMER **************
@@ -304,6 +308,7 @@ namespace app
                                                    .renderer = renderSys_.get()};
             ::app::system::GameFrameContext gameCtx{.frame = &frameCtx, .input = inputSys_.get(), .paused = false};
 
+            ::ddknd::debug::DebugContext debugCtx{.frame = &frameCtx, .debugDraw = debugDraw_.get(), .config = &debugConfig, .resources = &debugDrawResouces, .fps=timer.FPS()};
             // ************* BEGIN FRAME *************
             ddknd::graphics::FrameDesc frame{.h = window_->GetHeight(),
                                              .w = window_->GetWidth(),
@@ -311,10 +316,14 @@ namespace app
                                              .proj = debugCam_->matrices.proj};
             renderSys_->BeginFrame(frame);
 
-            // ************* DEBUG DRAW *************
             gameSystemRunner_->Update(*world_, gameCtx);
             engineSystemRunner_->Update(*world_, frameCtx);
 
+            // ************* DEBUG DRAW *************
+            debugDraw_->BeginFrame();
+            // debugDraw_->Text(10.0f, 20.0f, std::format("FPS: {:.1f}", fps), {1.0f, 1.0f, 0.0f, 1.0f}); // FPS
+            // debugDraw_->Axis({0, 0, 0}, 2.0f);
+            debugSystemRunner.Update(*world_, debugCtx);
             // test_transform_comp.worldMatrix = modelTRS.ToMatrix();
             // const auto* test_anim_clip = gfx_anim_store.TryGet(test_animator_comp.state.clip);
             // if (test_anim_clip)
@@ -338,23 +347,20 @@ namespace app
             //     });
             // }
 
-            // ************* DebugDraw *************
-            debugDraw_->BeginFrame();
-            debugDraw_->Text(10.0f, 20.0f, std::format("FPS: {:.1f}", fps), {1.0f, 1.0f, 0.0f, 1.0f}); // FPS
-            debugDraw_->Axis({0, 0, 0}, 2.0f);
+
 
             // ::ddknd::animation::debug::TestAnimatorSystemUpdate(*model_res->skeleton, test_animator_comp.pose,
             //                                                     *debugDraw_.get());
 
             debugDraw_->EndFrame();
-
-            renderSys_->Submit(ddknd::graphics::DebugTextDrawCommand{.batch = debugDraw_->TextBatch(),
-                                                                     .shader = debug_font_shader_res->program,
-                                                                     .texture = debugDraw_->FontAtlas(),
-                                                                     .indexCount = debugDraw_->TextIndexCount()});
-            renderSys_->Submit(ddknd::graphics::DebugLineDrawCommand{.batch = debugDraw_->LineBatch(),
-                                                                     .shader = debug_line_shader_res->program,
-                                                                     .vertexCount = debugDraw_->LineVertexCount()});
+            debugSystemRunner.Submit(debugCtx);
+            // renderSys_->Submit(ddknd::graphics::DebugTextDrawCommand{.batch = debugDraw_->TextBatch(),
+            //                                                          .shader = debug_font_shader_res->program,
+            //                                                          .texture = debugDraw_->FontAtlas(),
+            //                                                          .indexCount = debugDraw_->TextIndexCount()});
+            // renderSys_->Submit(ddknd::graphics::DebugLineDrawCommand{.batch = debugDraw_->LineBatch(),
+            //                                                          .shader = debug_line_shader_res->program,
+            //                                                          .vertexCount = debugDraw_->LineVertexCount()});
 
             // std::cerr << "pos = " << debug_camera_transform.localTRS.translation << "\n";
             // ************* END FRAME *************

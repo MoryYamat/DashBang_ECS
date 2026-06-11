@@ -321,6 +321,21 @@ namespace ddknd::math
         }
         return res;
     }
+    template<typename T, std::size_t R, std::size_t C>
+    constexpr Vec<T, R> operator*(const Mat<T, R, C>& m, const Vec<T,C>& v) noexcept
+    {
+        Vec<T, R> res{};
+
+        for(std::size_t r = 0; r < R; r++)
+        {
+            for(std::size_t c = 0; c < C; c++)
+            {
+                res[r] += m(r,c) * v[c];
+            }
+        }
+
+        return res;
+    }
 
     template <typename T>
     struct Quat

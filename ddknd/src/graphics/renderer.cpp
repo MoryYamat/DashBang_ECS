@@ -83,6 +83,7 @@ namespace ddknd::graphics
         lineBatch_ = backend_.CreateLineBatch();
     }
 
+    // @TODO: Dangling pointer countermeasures are needed.
     void DebugDrawList::SetFont(const asset::FontResource* font)
     {
         if (!font)
@@ -206,6 +207,18 @@ namespace ddknd::graphics
         Line(origin, x, {1,0,0,1});// x red
         Line(origin, y, {0,1,0,1});// y green
         Line(origin, z, {0,0,1,1});// z blue
+    }
+
+    void DebugDrawList::Axis(const math::Vec3f& origin, const DebugAxisColors& colors, float length)
+    {
+
+        const auto x = origin + math::Vec3f{length, 0.0f, 0.0f};
+        const auto y = origin + math::Vec3f{0.0f, length, 0.0f};
+        const auto z = origin + math::Vec3f{0.0f, 0.0f, length};
+
+        Line(origin, x, colors.x);// x red
+        Line(origin, y, colors.y);// y green
+        Line(origin, z, colors.z);// z blue
     }
     
     types::GPUID<tag::LineBatchTag> DebugDrawList::LineBatch() const
