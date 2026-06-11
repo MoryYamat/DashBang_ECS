@@ -11,6 +11,8 @@ namespace ddknd::component
     struct CameraProjectionComponent;
     struct CameraMatricesComponent;
 
+    struct SkinnedModelComponent;
+    struct MaterialComponent;
     struct AnimationPlaybackComponent;
     struct PoseComponent;
 }

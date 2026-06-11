@@ -8,7 +8,7 @@
 
 namespace ddknd::system
 {
-    void AnimatorSystem::UpdateOne(::ddknd::component::AnimationPlaybackComponent& playback,
+    void AnimationPlaybackSystem::UpdateOne(::ddknd::component::AnimationPlaybackComponent& playback,
                        ::ddknd::component::PoseComponent& pose,
                        const ::ddknd::animation::types::SkeletonResource& skeleton,
                        const ::ddknd::animation::types::AnimationClipResource& clip, const float dt)

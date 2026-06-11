@@ -3,15 +3,20 @@
 #include <cassert>
 
 #include <ddknd/ecs/ecs.h>
+#include <ddknd/component/gfx_component.h>
 #include <ddknd/component/movement_component.h>
 #include <ddknd/system/system.h>
 
 
 #include "game/component/IntentComponent.h"
 #include "game/component/character_stats_component.h"
+#include "game/component/state_component.h"
+#include "game/component/animation_component.h"
 
-#include "game/system/input_system.h"
-#include "game/system/movement_system.h"
+
+#include "game/system/request/input_system.h"
+#include "game/system/logic/movement_system.h"
+#include "game/system/logic/animation_system.h"
 
 
 namespace app::system
@@ -45,6 +50,8 @@ namespace app::system
     void GameSystemRunner::RunLogic(::ddknd::ecs::World& world, GameFrameContext& ctx)
     {
         RunMovement(world,ctx);
+        // RunPlayerLocomotionState(world,ctx); discretize the locomotion state
+        RunPlayerLocomotionAnimation(world,ctx);
     }
 
 
@@ -67,8 +74,21 @@ namespace app::system
             PlayerMovementIntentSystem::UpdateOne(requested_intent,input);
         }
     }
-    void GameSystemRunner::RunPlayerAnimation(::ddknd::ecs::World& world, GameFrameContext& ctx)
+
+    void GameSystemRunner::RunPlayerLocomotionAnimation(::ddknd::ecs::World& world, GameFrameContext& ctx)
     {
+        using namespace ::ddknd::ecs;
+
+        auto& reg = world.GetRegistry();
+
+        auto view = reg.view(query().select<::ddknd::component::AnimationPlaybackComponent>()
+                                    .require<component::PlayerLocomotionStateComponent,
+                                            component::PlayerAnimationClipsComponent>());
+
+        for(auto [playback, playerState, clips] : view)
+        {
+            PlayerAnimationSystem::UpdateOne(playback, playerState, clips);
+        }
     }
 
     

@@ -518,7 +518,7 @@ namespace
             auto& dstAnim = out.animations[ai];
 
             dstAnim.name = srcAnim->name ? srcAnim->name : "anim_" + std::to_string(ai);
-            // std::cerr << "anim_name=" << dstAnim.name << "\n";
+            std::cerr << "anim_name=" << dstAnim.name << "\n";
 
             for (cgltf_size ci = 0; ci < srcAnim->channels_count; ci++)
             {

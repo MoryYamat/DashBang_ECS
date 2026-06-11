@@ -9,4 +9,10 @@ namespace app::component
     struct CharacterMoveStatsComponent;
     struct PlayerControlComponent; 
     struct MovementIntentComponent;
+
+    // state
+    struct PlayerLocomotionStateComponent;
+
+    // animation 
+    struct PlayerAnimationClipsComponent;
 }

@@ -1,0 +1,14 @@
+#pragma once
+
+#include <ddknd/component/component_fwd.h>
+
+
+#include "game/component/game_component_fwd.h"
+
+namespace app::system
+{
+    struct PlayerAnimationSystem
+    {
+        static void UpdateOne(::ddknd::component::AnimationPlaybackComponent& playback, const component::PlayerLocomotionStateComponent& playerState, const component::PlayerAnimationClipsComponent& clips);
+    };
+}

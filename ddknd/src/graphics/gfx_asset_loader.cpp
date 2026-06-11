@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 
+#include "ddknd/asset/sub_asset_key.h"
 #include "ddknd/asset/asset_manager.h"
 
 #include "ddknd/graphics/model_data.h"
@@ -29,7 +30,7 @@ namespace
     using ImportModelData = ::ddknd::graphics::internal::types::ModelImportData;
     ;
     using ImportSkin = ::ddknd::graphics::internal::types::ImportSkin;
-    using AnimationClipTag = ::ddknd::animation::tag::AnimationClipTag;
+    using AnimationClipTag = ::ddknd::asset::tag::AnimationClip;
     using ImportChannelType = ddknd::graphics::internal::types::ChannelType;
 
     using ModelRenderResource = ::ddknd::graphics::asset::ModelRenderResource;
@@ -69,7 +70,7 @@ namespace
                                                      const std::unordered_map<int, int>&);
 
     // temporaly
-    std::vector<AssetID<AnimationClipTag>> RegisterAnimationClips(AssetManager&, const ImportModelData&,
+    std::vector<AssetID<::ddknd::asset::tag::AnimationClip>> RegisterAnimationClips(AssetManager&, const ImportModelData&,
                                                                   const std::string& vpath /*vpath: Model_Asset_Key*/);
 } // namespace
 
@@ -191,7 +192,7 @@ namespace ddknd::graphics
         // const int sceneIndex = imported->defaultScene;
         const int sceneIndex = 0;
 
-        std::vector<AssetID<AnimationClipTag>> clipIdx;
+        std::vector<AssetID<AnimTag>> clipIdx;
 
         if (!imported->animations.empty())
         {
@@ -202,6 +203,7 @@ namespace ddknd::graphics
         auto res =
             BuildModelRenderResource(*imported, sceneIndex /*Default SceneIndex*/, backend_, std::string(*vpath));
 
+        // The animations within the GLB are treated as sub-assets and given asset IDs
         if (res.nodeToBone)
         {
             for (std::size_t i = 0; i < clipIdx.size(); i++)
@@ -532,20 +534,46 @@ namespace
         return -1;
     }
 
-    // tmp
-    std::string MakeAnimationClipKey(std::string_view modelPath, std::size_t animIndex)
-    {
-        return std::string(modelPath) + "#anim=" + std::to_string(animIndex);
-    }
+    // delete
+    // std::string MakeAnimationClipKey(std::string_view modelPath, std::size_t animIndex)
+    // {
+    //     return std::string(modelPath) + "#anim=" + std::to_string(animIndex);
+    // }
 
-    std::vector<AssetID<AnimationClipTag>> RegisterAnimationClips(AssetManager& assets, const ImportModelData& imported,
+    // delete
+    // std::vector<AssetID<AnimationClipTag>> RegisterAnimationClips(AssetManager& assets, const ImportModelData& imported,
+    //                                                               const std::string& vpath /*vpath: Model_Asset_Key*/)
+    // {
+    //     std::vector<AssetID<AnimationClipTag>> out;
+    //     for (std::size_t i = 0; i < imported.animations.size(); i++)
+    //     {
+    //         auto key = MakeAnimationClipKey(vpath, i);
+    //         auto clipId = assets.GetOrCreate<AnimationClipTag>(key);
+    //         out.push_back(clipId);
+    //     }
+
+    //     return out;
+    // }
+
+    // 
+    std::vector<AssetID<::ddknd::asset::tag::AnimationClip>> RegisterAnimationClips(AssetManager& assets, const ImportModelData& imported,
                                                                   const std::string& vpath /*vpath: Model_Asset_Key*/)
     {
-        std::vector<AssetID<AnimationClipTag>> out;
+        std::vector<AssetID<::ddknd::asset::tag::AnimationClip>> out;
         for (std::size_t i = 0; i < imported.animations.size(); i++)
         {
-            auto key = MakeAnimationClipKey(vpath, i);
-            auto clipId = assets.GetOrCreate<AnimationClipTag>(key);
+            const auto& anim = imported.animations[i];
+
+            if(anim.name.empty())
+            {
+                auto key = std::string(vpath) + "#anim/index/" + std::to_string(i);
+                out.push_back(assets.GetOrCreate<::ddknd::asset::tag::AnimationClip>(key));
+                continue;
+            }
+
+            auto key = ::ddknd::asset::MakeAnimationClipKey(vpath, anim.name);
+            auto clipId = assets.GetOrCreate<::ddknd::asset::tag::AnimationClip>(key);
+
             out.push_back(clipId);
         }
 

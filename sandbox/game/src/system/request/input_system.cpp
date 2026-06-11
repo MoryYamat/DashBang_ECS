@@ -1,4 +1,4 @@
-#include "game/system/input_system.h"
+#include "game/system/request/input_system.h"
 
 #include <ddknd/math/math.h>
 #include <ddknd/input/input.h>

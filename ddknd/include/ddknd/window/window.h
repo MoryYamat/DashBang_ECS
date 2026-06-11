@@ -61,7 +61,7 @@ namespace ddknd::window
         void PollEvents();
         void SwapBuffers();
 
-        float aspectRation() const
+        float aspectRatio() const
         {
             if (height_ == 0)
             {

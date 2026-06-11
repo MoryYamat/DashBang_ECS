@@ -8,6 +8,9 @@
 #include "game/component/IntentComponent.h"
 #include "game/assets/actor/paladin_assets.h"
 
+#include "game/component/animation_component.h"
+#include "game/component/state_component.h"
+
 namespace app::player
 {
     ::ddknd::ecs::Entity CreatePaladinPlayer(::ddknd::ecs::World& world, const app::assets::actor::PaladinAssetIDs& paladinAssets, const PlayerSpawnDesc& desc)
@@ -19,11 +22,30 @@ namespace app::player
         transform.localTRS.translation = desc.position;
         transform.dirty = true;
 
+        // ============== control / intent ============== 
         reg.AddComponent<app::component::PlayerControlComponent>(e);
+        reg.AddComponent<app::component::RequestedMovementIntentComponent>(e);
         reg.AddComponent<app::component::MovementIntentComponent>(e);
-        reg.AddComponent<app::component::CharacterMoveStatsComponent>(e, app::component::CharacterMoveStatsComponent{.moveSpeed = desc.moveSpeed});
 
+        // ============== movement logic ==============
+        reg.AddComponent<app::component::CharacterMoveStatsComponent>(e, app::component::CharacterMoveStatsComponent{.moveSpeed = desc.moveSpeed});
         reg.AddComponent<::ddknd::component::VelocityComponent>(e);
+
+        // ============== animation section ==============
+        reg.AddComponent<app::component::PlayerAnimationClipsComponent>(e, 
+            app::component::PlayerAnimationClipsComponent{
+                .idle = paladinAssets.idle,
+                .runForward = paladinAssets.runForward,
+                .runBackward = paladinAssets.runBackward,
+                .runRight = paladinAssets.runRight,
+                .runLeft = paladinAssets.runLeft,
+                .runRightFowardDiagonal = paladinAssets.runRightForwardDiagonal,
+                .runLeftFowardDiagonal = paladinAssets.runLeftForwardDiagonal,
+                .runRightBackDiagonal = paladinAssets.runRightBackDiagonal,
+                .runLeftBackDiagonal = paladinAssets.runLeftBackDiagonal,
+            });
+
+        reg.AddComponent<app::component::PlayerLocomotionStateComponent>(e);
 
         return e;
     }

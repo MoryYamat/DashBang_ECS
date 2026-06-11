@@ -1,4 +1,4 @@
-#include "game/system/movement_system.h"
+#include "game/system/logic/movement_system.h"
 
 #include <ddknd/component/movement_component.h>
 

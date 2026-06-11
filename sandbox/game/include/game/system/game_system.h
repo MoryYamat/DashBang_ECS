@@ -24,7 +24,7 @@ namespace app::system
             void RunLogic(::ddknd::ecs::World& world, GameFrameContext& ctx);
 
             void RunPlayerInput(::ddknd::ecs::World& world, GameFrameContext& ctx);
-            void RunPlayerAnimation(::ddknd::ecs::World& world, GameFrameContext& ctx);
+            void RunPlayerLocomotionAnimation(::ddknd::ecs::World& world, GameFrameContext& ctx);
 
             void RunMovement(::ddknd::ecs::World& world, GameFrameContext& ctx);
     };

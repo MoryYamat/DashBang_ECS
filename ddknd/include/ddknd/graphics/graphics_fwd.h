@@ -10,6 +10,7 @@ namespace ddknd::graphics
 
     class RendererSystem;
     class GraphicsAssetStore;
+    class GraphicsAssetLoader;
 
     namespace asset
     {

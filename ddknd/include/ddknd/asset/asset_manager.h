@@ -56,8 +56,8 @@ namespace ddknd::asset
                 ID id{meta.generation, idx};
 
                 // @TODO allocator
-                metas_.push_back(std::move(meta));
                 pathToId_.emplace(meta.vpath, id);
+                metas_.push_back(std::move(meta));
 
                 return id;
             }
@@ -166,7 +166,7 @@ namespace ddknd::asset
             if(!table)
                 return nullptr;
             return table->TryGetMeta(id);
-        }        
+        }
 
       private:
         std::unordered_map<std::type_index, std::unique_ptr<IAssetTable>> tables_;
@@ -212,7 +212,7 @@ namespace ddknd::asset
     };
 
     template <typename T, typename Tag>
-    class AssestStorage
+    class AssetStorage
     {
       public:
         using ID = ::ddknd::core::HandleID<Tag>;

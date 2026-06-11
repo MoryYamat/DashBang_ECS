@@ -3,37 +3,36 @@
 #include "ddknd/asset/asset_fwd.h"
 #include "ddknd/asset/asset_manager.h"
 #include "ddknd/asset/asset_tag.h"
-#include "gfx_type.h"
 #include "ddknd/graphics/graphics_fwd.h"
 #include "ddknd/graphics/model_data.h"
 #include "ddknd/graphics/renderer.h"
 #include "ddknd/io/io.h"
 #include "ddknd/io/io_fwd.h"
-
+#include "gfx_type.h"
 
 namespace ddknd::animation
 {
     class AnimationAssetStore
     {
       public:
-        using AnimationTag = ::ddknd::animation::tag::AnimationClipTag;
-        using AnimationID = ::ddknd::asset::AssetID<::ddknd::animation::tag::AnimationClipTag>;
+        using AnimationClipTag = ::ddknd::asset::tag::AnimationClip;
+        using AnimationID = ::ddknd::asset::AssetID<AnimationClipTag>;
         using AnimationClipResource = ::ddknd::animation::types::AnimationClipResource;
 
         const AnimationClipResource* TryGet(AnimationID id) const
         {
-          return anims_.TryGet(id);
+            return anims_.TryGet(id);
         }
         void SetLoaded(AnimationID id, AnimationClipResource res)
         {
-          anims_.Set(id, std::move(res));
+            anims_.Set(id, std::move(res));
         }
 
       private:
         template <typename T, typename Tag>
-        using AssestStorage = ::ddknd::asset::AssestStorage<T, Tag>;
+        using AssestStorage = ::ddknd::asset::AssetStorage<T, Tag>;
 
-        AssestStorage<AnimationClipResource, AnimationTag> anims_;
+        AssestStorage<AnimationClipResource, AnimationClipTag> anims_;
     };
 
 } // namespace ddknd::animation
@@ -68,7 +67,7 @@ namespace ddknd::graphics
         }
         const FontResource* TryGet(FontID id) const
         {
-          return fonts_.TryGet(id);
+            return fonts_.TryGet(id);
         }
 
         void SetLoaded(ShaderID id, ShaderResource res)
@@ -86,7 +85,7 @@ namespace ddknd::graphics
 
       private:
         template <typename T, typename Tag>
-        using AssetStorage = ::ddknd::asset::AssestStorage<T, Tag>;
+        using AssetStorage = ::ddknd::asset::AssetStorage<T, Tag>;
 
         AssetStorage<ShaderResource, ShaderTag> shaders_;
         AssetStorage<ModelRenderResource, ModelTag> models_;
@@ -102,11 +101,12 @@ namespace ddknd::graphics
         using ShaderTag = ::ddknd::asset::tag::Shader;
         using ModelTag = ::ddknd::asset::tag::Model;
         using FontTag = ::ddknd::asset::tag::Font;
+        using AnimTag = ::ddknd::asset::tag::AnimationClip;//
 
         using ShaderID = AssetID<ShaderTag>;
         using ModelID = AssetID<ModelTag>;
         using FontID = AssetID<FontTag>;
-        
+
         using ModelRenderResource = asset::ModelRenderResource;
 
         using IPathResolver = ::ddknd::io::IPathResolver;
@@ -123,6 +123,7 @@ namespace ddknd::graphics
         bool LoadShader(AssetManager& assets, GraphicsAssetStore& store, ShaderID id);
         bool LoadModel(AssetManager& assets, GraphicsAssetStore& gfxstore, AnimationAssetStore& animstore, ModelID id);
         bool LoadFont(AssetManager& assets, GraphicsAssetStore& store, FontID id);
+
       private:
         const IPathResolver& resolver_;
         IRendererBackend& backend_;

@@ -5,8 +5,8 @@
 
 #include <ddknd/io/io.h>
 
-#include "game/Action/action.h"
 #include "ddknd/camera/system_debug_camera.h"
+#include "game/Action/action.h"
 #include <ddknd/camera/debug_camera.h>
 #include <ddknd/clock/clock.h>
 #include <ddknd/graphics/animation.h>
@@ -14,6 +14,13 @@
 #include <ddknd/graphics/renderer.h>
 #include <ddknd/input/input.h>
 #include <ddknd/window/window.h>
+
+#include <ddknd/asset/asset_manager.h>
+#include <ddknd/ecs/ecs.h>
+#include <ddknd/graphics/gfx_asset_loader.h>
+
+#include "game/system/game_system.h"
+#include <ddknd/system/system.h>
 
 // test
 #include <ddknd/component/test_component.h>
@@ -23,10 +30,7 @@
 #include <ddknd/ecs/view/view.h>
 #include <ddknd/ecs/world/world.h>
 
-#include <ddknd/asset/asset_manager.h>
 #include <ddknd/asset/asset_tag.h>
-
-#include <ddknd/graphics/gfx_asset_loader.h>
 
 #include <ddknd/math/math.h>
 
@@ -34,6 +38,9 @@
 #include <ddknd/graphics/debug_animation.h>
 
 #include <spdlog/spdlog.h>
+
+#include "game/scene/game_scene.h"
+#include "game/system/game_system.h"
 
 // test font
 
@@ -105,6 +112,31 @@ namespace app
         debugDraw_ = std::make_unique<ddknd::graphics::DebugDrawList>(*rendererBackend_);
         debugDraw_->Init();
 
+        // assets
+        assetMgr_ = std::make_unique<::ddknd::asset::AssetManager>();
+        graphicsAssetLoader_ = std::make_unique<::ddknd::graphics::GraphicsAssetLoader>(*vfs_, *rendererBackend_);
+        graphicsAssetStore_ = std::make_unique<::ddknd::graphics::GraphicsAssetStore>();
+        animationAssetStore_ = std::make_unique<::ddknd::animation::AnimationAssetStore>();
+
+        // world
+        world_ = std::make_unique<::ddknd::ecs::World>();
+
+        // scene
+        scene_ = std::make_unique<::app::scene::GameScene>(::app::scene::CreateMainScene(*world_, *assetMgr_));
+        app::scene::SceneLoadContext loadCtx{.assetManager = assetMgr_.get(),
+                                             .graphicsLoader = graphicsAssetLoader_.get(),
+                                             .graphicsStore = graphicsAssetStore_.get(),
+                                             .animationStore = animationAssetStore_.get()};
+
+        const bool loaded = app::scene::LoadMainSceneAssets(scene_->assets, loadCtx);
+        if (!loaded)
+        {
+            return false;
+        }
+
+        // system
+        engineSystemRunner_ = std::make_unique<::ddknd::system::EngineSystemRunner>();
+
         return true;
     }
 
@@ -120,56 +152,88 @@ namespace app
         using ModelTag = ::ddknd::asset::tag::Model;
         using FontTag = ::ddknd::asset::tag::Font;
 
-        AssetManager asset_mgr;
+        // AssetManager asset_mgr;
 
-        auto asset_test_shader = asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/test.shader");
-        auto asset_test_triangle_mesh = asset_mgr.GetOrCreate<MeshTag>("res://meshes/test_triangle.mesh");
-        auto asset_skinned_shader = asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/skinned.shader");
-        auto mod_1 = asset_mgr.GetOrCreate<ModelTag>("res://Models/paladin/base_action_animation_diago.glb");
-        auto debug_font_shader =
-            asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/debug_text.shader"); // debug text shader
-        auto debug_line_shader =
-            asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/debug_line.shader"); // debug text shader
-        auto font_res_1 = asset_mgr.GetOrCreate<FontTag>("res://fonts/NotoSans-VariableFont_wdth,wght.ttf"); // Font
+        // debug font
+        // shader
+        auto debug_font_shader = assetMgr_->GetOrCreate<ShaderTag>("res://shaders/programs/debug_text.shader");
+        auto loaded_res_shader_debug_font =
+            graphicsAssetLoader_->LoadShader(*assetMgr_, *graphicsAssetStore_, debug_font_shader);
+        // const auto debug_font_shader_res = graphicsAssetStore_->TryGet(debug_font_shader);
+        // resource
+        auto font_res_id = assetMgr_->GetOrCreate<FontTag>("res://fonts/NotoSans-VariableFont_wdth,wght.ttf");
+        auto loaded_res_font_res = graphicsAssetLoader_->LoadFont(*assetMgr_, *graphicsAssetStore_, font_res_id);
+        // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        // AssetStore の内部 storage が std::vector<T> のため
+        // Set/resize によって capacity を超えると再配置が発生
+        // 予め TryGet() で取得した T* が dangling pointer になる
+        // 一時対策:
+        //   - すべての Resource を Load した後に TryGet() する
+        //   - または使用直前に TryGet() する
+        // 原則:
+        //   - 長期保持するのは AssetID
+        //   - Resource* は短命な参照として扱う
+        // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        // const auto font_res = graphicsAssetStore_->TryGet(font_res_id);
 
-        std::cerr << "id1: Idx=" << asset_test_shader.Index() << " Gen=" << asset_test_shader.Generation() << "\n";
-        std::cerr << "id2: Idx=" << asset_test_triangle_mesh.Index() << " Gen=" << asset_test_triangle_mesh.Generation()
-                  << "\n";
+        // debug axis
+        auto debug_line_shader_id = assetMgr_->GetOrCreate<ShaderTag>("res://shaders/programs/debug_line.shader");
+        auto loaded_res_shader_debug_line =
+            graphicsAssetLoader_->LoadShader(*assetMgr_, *graphicsAssetStore_, debug_line_shader_id);
 
-        using GraphicsAssetStore = ::ddknd::graphics::GraphicsAssetStore;
-        using AnimationAssetStore = ::ddknd::animation::AnimationAssetStore;
-        GraphicsAssetStore gfx_asset_store;
-        AnimationAssetStore gfx_anim_store;
+        // TryGet()
+        const auto debug_font_shader_res = graphicsAssetStore_->TryGet(debug_font_shader);
+        const auto font_res = graphicsAssetStore_->TryGet(font_res_id);
+        const auto debug_line_shader_res = graphicsAssetStore_->TryGet(debug_line_shader_id);
 
-        using GraphicsAssetLoader = ::ddknd::graphics::GraphicsAssetLoader;
-        GraphicsAssetLoader gfx_loader(*vfs_, *rendererBackend_);
+        assert(debug_font_shader_res);
+        assert(font_res);
+        assert(debug_line_shader_res);
 
-        auto load_res_gfx = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, asset_test_shader);
-        auto load_res_shader_debug_txt = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, debug_font_shader);
-        auto load_res_shader_debug_line = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, debug_line_shader);
-        auto load_res_shader_skinned = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, asset_skinned_shader);
-        auto load_mod_gfx = gfx_loader.LoadModel(asset_mgr, gfx_asset_store, gfx_anim_store, mod_1);
-        auto load_font_gfx = gfx_loader.LoadFont(asset_mgr, gfx_asset_store, font_res_1);
+        // auto asset_test_shader = asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/test.shader");
+        // auto asset_test_triangle_mesh = asset_mgr.GetOrCreate<MeshTag>("res://meshes/test_triangle.mesh");
+        // auto asset_skinned_shader = asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/skinned.shader");
+        // auto mod_1 = asset_mgr.GetOrCreate<ModelTag>("res://Models/paladin/base_action_animation_diago.glb");
+        // auto debug_font_shader =
+        // asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/debug_text.shader"); // debug text shader
+        // auto debug_line_shader =
+        // asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/debug_line.shader"); // debug text shader
+        // auto font_res_1 = asset_mgr.GetOrCreate<FontTag>("res://fonts/NotoSans-VariableFont_wdth,wght.ttf"); // Font
 
-        const auto* shader_res = gfx_asset_store.TryGet(asset_test_shader);
-        const auto* debug_text_shader_res = gfx_asset_store.TryGet(debug_font_shader);
-        const auto* debug_line_shader_res = gfx_asset_store.TryGet(debug_line_shader);
-        const auto* shader_skinned = gfx_asset_store.TryGet(asset_skinned_shader);
-        const auto* model_res = gfx_asset_store.TryGet(mod_1);
-        const auto* font_res = gfx_asset_store.TryGet(font_res_1);
+        // using GraphicsAssetStore = ::ddknd::graphics::GraphicsAssetStore;
+        // using AnimationAssetStore = ::ddknd::animation::AnimationAssetStore;
+        // GraphicsAssetStore gfx_asset_store;
+        // AnimationAssetStore gfx_anim_store;
 
-        using DrawCommand = ::ddknd::graphics::DrawCommand;
+        // using GraphicsAssetLoader = ::ddknd::graphics::GraphicsAssetLoader;
+        // GraphicsAssetLoader gfx_loader(*vfs_, *rendererBackend_);
+
+        // auto load_res_gfx = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, asset_test_shader);
+        // auto load_res_shader_debug_txt = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, debug_font_shader);
+        // auto load_res_shader_debug_line = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, debug_line_shader);
+        // auto load_res_shader_skinned = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, asset_skinned_shader);
+        // auto load_mod_gfx = gfx_loader.LoadModel(asset_mgr, gfx_asset_store, gfx_anim_store, mod_1);
+        // auto load_font_gfx = gfx_loader.LoadFont(asset_mgr, gfx_asset_store, font_res_1);
+
+        // const auto* shader_res = gfx_asset_store.TryGet(asset_test_shader);
+        // const auto* debug_text_shader_res = gfx_asset_store.TryGet(debug_font_shader);
+        // const auto* debug_line_shader_res = gfx_asset_store.TryGet(debug_line_shader);
+        // const auto* shader_skinned = gfx_asset_store.TryGet(asset_skinned_shader);
+        // const auto* model_res = gfx_asset_store.TryGet(mod_1);
+        // const auto* font_res = gfx_asset_store.TryGet(font_res_1);
+
+        // using DrawCommand = ::ddknd::graphics::DrawCommand;
         // DrawCommand cmd{.shader=shader_res->program};
 
         // INPUT
-        using Action = ::app::action::Action;
+        // using Action = ::app::action::Action;
 
         // DEBUG CAMERA
         using DebugCameraCtrl = ::ddknd::debug::DebugCameraController;
         ddknd::component::TransformComponent debug_camera_transform{};
         DebugCameraCtrl deug_cam(*deviceInput_, *debugCam_,
                                  debug_camera_transform); // @TODO change the target vector by the mouse moving
-        debug_camera_transform.localTRS.translation = Vec3f{0.f, 2.f, 5.f};
+        debug_camera_transform.localTRS.translation = Vec3f{0.f, 0.f, 5.f};
         debugCam_->look.forward = Vec3f{0.f, 0.f, -1.f};
         debugCam_->yawDeg = -90.0f;
         debugCam_->pitchDeg = 0.0f;
@@ -180,38 +244,38 @@ namespace app
         Timer timer{};
 
         // *********** Animation Test ***********
-        ::ddknd::component::TransformComponent test_transform_comp;
-        ::ddknd::component::AnimatorComponent test_animator_comp;
-        ::ddknd::animation::debug::TestAnimatorSystemInit(*model_res->skeleton, test_animator_comp.pose);
-        for (std::size_t i = 0; i < std::min<std::size_t>(model_res->skeleton->bones.size(), 10); ++i)
-        {
-            const auto& skin = test_animator_comp.pose.skinMatrices[i];
-            const auto t = ::ddknd::math::ExtractTranslation(skin);
+        // ::ddknd::component::TransformComponent test_transform_comp;
+        // ::ddknd::component::AnimatorComponent test_animator_comp;
+        // ::ddknd::animation::debug::TestAnimatorSystemInit(*model_res->skeleton, test_animator_comp.pose);
+        // for (std::size_t i = 0; i < std::min<std::size_t>(model_res->skeleton->bones.size(), 10); ++i)
+        // {
+        //     const auto& skin = test_animator_comp.pose.skinMatrices[i];
+        //     const auto t = ::ddknd::math::ExtractTranslation(skin);
 
-            std::cerr << "skin[" << i << "] translation = " << t[0] << ", " << t[1] << ", " << t[2] << "\n";
-        }
-        for (std::size_t i = 0; i < std::min<std::size_t>(model_res->skeleton->bones.size(), 10); ++i)
-        {
-            std::cerr << "skin[" << i
-                      << "] identity diff = " << MaxAbsDiffFromIdentity(test_animator_comp.pose.skinMatrices[i])
-                      << "\n";
-        }
+        //     std::cerr << "skin[" << i << "] translation = " << t[0] << ", " << t[1] << ", " << t[2] << "\n";
+        // }
+        // for (std::size_t i = 0; i < std::min<std::size_t>(model_res->skeleton->bones.size(), 10); ++i)
+        // {
+        //     std::cerr << "skin[" << i
+        //               << "] identity diff = " << MaxAbsDiffFromIdentity(test_animator_comp.pose.skinMatrices[i])
+        //               << "\n";
+        // }
 
-        if (model_res->clips.empty())
-        {
-            std::cerr << "model has no animation clips\n";
-        }
-        else
-        {
-            test_animator_comp.state.clip = model_res->clips[0];
-            test_animator_comp.state.time = 0.0f;
-            test_animator_comp.state.speed = 1.0f;
-            test_animator_comp.state.loop = true;
-        }
+        // if (model_res->clips.empty())
+        // {
+        //     std::cerr << "model has no animation clips\n";
+        // }
+        // else
+        // {
+        //     test_animator_comp.state.clip = model_res->clips[0];
+        //     test_animator_comp.state.time = 0.0f;
+        //     test_animator_comp.state.speed = 1.0f;
+        //     test_animator_comp.state.loop = true;
+        // }
 
-        ::ddknd::math::TRS modelTRS;
-        modelTRS.translation = {0.0f, 0.0f, 0.0f};
-        modelTRS.rotation = ::ddknd::math::Quatf::Identity();
+        // ::ddknd::math::TRS modelTRS;
+        // modelTRS.translation = {0.0f, 0.0f, 0.0f};
+        // modelTRS.rotation = ::ddknd::math::Quatf::Identity();
         // modelTRS.scale = {0.01f, 0.01f, 0.01f};
 
         // ********* Debug Config ************
@@ -223,69 +287,85 @@ namespace app
             timer.Tick();
             const float fps = timer.FPS();
 
-            // ================== Debug Camera ==================
+            // ************* Input *************
+            deviceInput_->Update();
+            inputSys_->Update(*deviceInput_.get());
+
+            // ************* CAMERA *************
             deug_cam.Update(timer.DeltaTime());
             ddknd::system::DebugCameraSystem::UpdateDebugCamera(debug_camera_transform, *debugCam_);
 
+            // ************* FRAME CONTEXT *************
+            ::ddknd::system::FrameContext frameCtx{.deltaTime = timer.DeltaTime(),
+                                                   .actionInput = inputSys_.get(),
+                                                   .aspect = window_->aspectRatio(),
+                                                   .graphicsAssetStore = graphicsAssetStore_.get(),
+                                                   .animationAssetStore = animationAssetStore_.get(),
+                                                   .renderer = renderSys_.get()};
+            ::app::system::GameFrameContext gameCtx{.frame = &frameCtx, .input = inputSys_.get(), .paused = false};
 
+            // ************* BEGIN FRAME *************
             ddknd::graphics::FrameDesc frame{.h = window_->GetHeight(),
                                              .w = window_->GetWidth(),
                                              .view = debugCam_->matrices.view,
                                              .proj = debugCam_->matrices.proj};
             renderSys_->BeginFrame(frame);
 
-            test_transform_comp.worldMatrix = modelTRS.ToMatrix();
-            const auto* test_anim_clip = gfx_anim_store.TryGet(test_animator_comp.state.clip);
-            if (test_anim_clip)
-            {
-                ::ddknd::animation::AnimatorSystem::UpdateAnimator(*model_res->skeleton, *test_anim_clip,
-                                                                   test_animator_comp.state, test_animator_comp.pose,
-                                                                   timer.DeltaTime());
-            }
+            // ************* DEBUG DRAW *************
+            gameSystemRunner_->Update(*world_, gameCtx);
+            engineSystemRunner_->Update(*world_, frameCtx);
 
-            for (const auto& res : model_res->primitives)
-            {
-                // std::cerr << "prim_id=" << res.prim.Value() << "\n";
-                // renderSys_->Submit(
-                //     DrawCommand{.mesh = res.prim, .shader = shader_res->program, .indexCount = res.indexCount});
-                renderSys_->Submit(::ddknd::graphics::SkinnedDrawCommand{
-                    .mesh = res.prim,
-                    .shader = shader_skinned->program,
-                    .modelMatrix = test_transform_comp.worldMatrix,
-                    .skinMatrices = test_animator_comp.pose.skinMatrices,
-                    .indexCount = res.indexCount,
-                });
-            }
+            // test_transform_comp.worldMatrix = modelTRS.ToMatrix();
+            // const auto* test_anim_clip = gfx_anim_store.TryGet(test_animator_comp.state.clip);
+            // if (test_anim_clip)
+            // {
+            //     ::ddknd::animation::AnimatorSystem::UpdateAnimator(*model_res->skeleton, *test_anim_clip,
+            //                                                        test_animator_comp.state, test_animator_comp.pose,
+            //                                                        timer.DeltaTime());
+            // }
 
-            // ******* DebugDraw *******
+            // for (const auto& res : model_res->primitives)
+            // {
+            //     // std::cerr << "prim_id=" << res.prim.Value() << "\n";
+            //     // renderSys_->Submit(
+            //     //     DrawCommand{.mesh = res.prim, .shader = shader_res->program, .indexCount = res.indexCount});
+            //     renderSys_->Submit(::ddknd::graphics::SkinnedDrawCommand{
+            //         .mesh = res.prim,
+            //         .shader = shader_skinned->program,
+            //         .modelMatrix = test_transform_comp.worldMatrix,
+            //         .skinMatrices = test_animator_comp.pose.skinMatrices,
+            //         .indexCount = res.indexCount,
+            //     });
+            // }
+
+            // ************* DebugDraw *************
             debugDraw_->BeginFrame();
             debugDraw_->Text(10.0f, 20.0f, std::format("FPS: {:.1f}", fps), {1.0f, 1.0f, 0.0f, 1.0f}); // FPS
             debugDraw_->Axis({0, 0, 0}, 2.0f);
 
-            ::ddknd::animation::debug::TestAnimatorSystemUpdate(*model_res->skeleton, test_animator_comp.pose,
-                                                                *debugDraw_.get());
+            // ::ddknd::animation::debug::TestAnimatorSystemUpdate(*model_res->skeleton, test_animator_comp.pose,
+            //                                                     *debugDraw_.get());
 
             debugDraw_->EndFrame();
 
             renderSys_->Submit(ddknd::graphics::DebugTextDrawCommand{.batch = debugDraw_->TextBatch(),
-                                                                     .shader = debug_text_shader_res->program,
+                                                                     .shader = debug_font_shader_res->program,
                                                                      .texture = debugDraw_->FontAtlas(),
                                                                      .indexCount = debugDraw_->TextIndexCount()});
             renderSys_->Submit(ddknd::graphics::DebugLineDrawCommand{.batch = debugDraw_->LineBatch(),
                                                                      .shader = debug_line_shader_res->program,
                                                                      .vertexCount = debugDraw_->LineVertexCount()});
 
+            // std::cerr << "pos = " << debug_camera_transform.localTRS.translation << "\n";
+            // ************* END FRAME *************
             renderSys_->EndFrame();
-
-            deviceInput_->Update();
-
-            // ================== Update Action Input ==================
-            inputSys_->Update(*deviceInput_.get());
 
             // window_->PollEvents(); // moved to InputBackend
             window_->SwapBuffers();
             if (deviceInput_->isPressing(ddknd::input::Key::ESCAPE))
+            {
                 isRunning_ = false;
+            }
         }
     }
 

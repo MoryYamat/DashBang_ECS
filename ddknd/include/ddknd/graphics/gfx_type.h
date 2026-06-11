@@ -35,8 +35,10 @@ namespace ddknd::graphics::tag
     };
 } // namespace ddknd::graphics::tag
 
+// delete
 namespace ddknd::animation::tag
 {
+    // delete
     struct AnimationClipTag
     {
     };
@@ -203,7 +205,7 @@ namespace ddknd::graphics::asset
         std::vector<PrimitiveResource> primitives;
         std::optional<animation::types::SkeletonResource> skeleton;
         // std::vector<graphics::types::AnimationClipResource> clips;
-        std::vector<AssetID<animation::tag::AnimationClipTag>> clips; // Standard clips that can be used with this model
+        std::vector<AssetID<::ddknd::asset::tag::AnimationClip>> clips; // Standard clips that can be used with this model
     };
 
     // FontResource
@@ -242,7 +244,7 @@ namespace ddknd::animation
 
     struct AnimationState // AssetID<AnimClip> clips
     {
-        AssetID<tag::AnimationClipTag> clip;
+        AssetID<::ddknd::asset::tag::AnimationClip> clip;
         float time = 0.0f;
         float speed = 1.0f;
         bool loop = true;

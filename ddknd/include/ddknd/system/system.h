@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ddknd/input/input_fwd.h>
+#include <ddknd/graphics/graphics_fwd.h>
 
 // ================================ Forward Declarations ================================
 namespace ddknd::ecs
@@ -35,6 +36,9 @@ namespace ddknd::system
         // asset references
         ddknd::graphics::GraphicsAssetStore* graphicsAssetStore = nullptr;
         ddknd::animation::AnimationAssetStore* animationAssetStore = nullptr;
+
+        // renderer
+        ::ddknd::graphics::RendererSystem* renderer = nullptr;
     };
 
     // Scheduler
@@ -52,6 +56,9 @@ namespace ddknd::system
         void RunCameraMatrices(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
         void RunCameraProjection(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
         void RunAnimator(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
+
+        // rendering
+        void RunSkinnedRenderSubmit(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
     };
 } // namespace ddknd::system
 
