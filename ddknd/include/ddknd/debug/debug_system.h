@@ -71,12 +71,17 @@ namespace ddknd::debug
     class DebugSystemRunner
     {
       public:
-        void Update(::ddknd::ecs::World& world, const DebugContext& ctx);
+        void BeginFrame(const DebugContext& ctx);
+        void EndFrame(const DebugContext& ctx);
+      
+      void Update(::ddknd::ecs::World& world, const DebugContext& ctx);
         void Submit(const DebugContext& ctx);
 
       private:
         void RunSkeletonDebug(::ddknd::ecs::World& world, const DebugContext& ctx);
         void RunFpsDebug(const DebugContext& ctx);
         void RunAxisDebug(const DebugContext& ctx);
+
+        bool PrepareTextDebug(const DebugContext& ctx);
     };
 } // namespace ddknd::debug

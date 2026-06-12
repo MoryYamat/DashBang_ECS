@@ -9,23 +9,39 @@
 
 namespace ddknd::debug
 {
+
+    void DebugSystemRunner::BeginFrame(const DebugContext& ctx)
+    {
+        assert(ctx.debugDraw);
+        ctx.debugDraw->BeginFrame();
+
+        
+    }
+    void DebugSystemRunner::EndFrame(const DebugContext& ctx)
+    {
+        assert(ctx.debugDraw);
+        ctx.debugDraw->EndFrame();
+    }
+
     void DebugSystemRunner::Update(::ddknd::ecs::World& world, const DebugContext& ctx)
     {
         assert(ctx.frame);
         assert(ctx.debugDraw);
         assert(ctx.config);
 
+        const bool textReady = PrepareTextDebug(ctx);
+
         if (ctx.config->drawSkeletons)
         {
             RunSkeletonDebug(world, ctx);
         }
 
-        if(ctx.config->drawFps)
+        if (ctx.config->drawFps && textReady)
         {
             RunFpsDebug(ctx);
         }
 
-        if(ctx.config->drawAxis)
+        if (ctx.config->drawAxis)
         {
             RunAxisDebug(ctx);
         }
@@ -73,25 +89,16 @@ namespace ddknd::debug
         for (auto [model, pose, transform] : view)
         {
             ::ddknd::animation::debug::SkeletonDebugDrawSystem::UpdateOne(
-                model, pose, transform, *ctx.frame->graphicsAssetStore, ctx.config->skeletonStyle.color, *ctx.debugDraw);
+                model, pose, transform, *ctx.frame->graphicsAssetStore, ctx.config->skeletonStyle.color,
+                *ctx.debugDraw);
         }
     }
 
     void DebugSystemRunner::RunFpsDebug(const DebugContext& ctx)
     {
-        assert(ctx.frame);
         assert(ctx.debugDraw);
         assert(ctx.config);
-        assert(ctx.frame->graphicsAssetStore);
-        assert(ctx.resources);
 
-        const auto* font = ctx.frame->graphicsAssetStore->TryGet(ctx.resources->font);
-        if(!font)
-        {
-            return;
-        }
-
-        ctx.debugDraw->SetFont(font);
         ctx.debugDraw->Text(10.0f, 20.0f, std::format("FPS: {:.1f}", ctx.fps), ctx.config->fpsStyle.color);
     }
 
@@ -102,6 +109,25 @@ namespace ddknd::debug
 
         const auto& style = ctx.config->axisStyle;
 
-        ctx.debugDraw->Axis(style.origin, graphics::DebugAxisColors{style.axisX, style.axisY, style.axisZ}, style.length);
+        ctx.debugDraw->Axis(style.origin, graphics::DebugAxisColors{style.axisX, style.axisY, style.axisZ},
+                            style.length);
+    }
+
+    bool DebugSystemRunner::PrepareTextDebug(const DebugContext& ctx)
+    {
+        assert(ctx.frame);
+        assert(ctx.frame->graphicsAssetStore);
+        assert(ctx.debugDraw);
+        assert(ctx.resources);
+
+        const auto* font = ctx.frame->graphicsAssetStore->TryGet(ctx.resources->font);
+
+        if (!font)
+        {
+            return false;
+        }
+
+        ctx.debugDraw->SetFont(font);
+        return true;
     }
 } // namespace ddknd::debug

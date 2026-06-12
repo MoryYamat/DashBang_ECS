@@ -320,9 +320,10 @@ namespace app
             engineSystemRunner_->Update(*world_, frameCtx);
 
             // ************* DEBUG DRAW *************
-            debugDraw_->BeginFrame();
+            // debugDraw_->BeginFrame();
             // debugDraw_->Text(10.0f, 20.0f, std::format("FPS: {:.1f}", fps), {1.0f, 1.0f, 0.0f, 1.0f}); // FPS
             // debugDraw_->Axis({0, 0, 0}, 2.0f);
+            debugSystemRunner.BeginFrame(debugCtx);
             debugSystemRunner.Update(*world_, debugCtx);
             // test_transform_comp.worldMatrix = modelTRS.ToMatrix();
             // const auto* test_anim_clip = gfx_anim_store.TryGet(test_animator_comp.state.clip);
@@ -352,7 +353,8 @@ namespace app
             // ::ddknd::animation::debug::TestAnimatorSystemUpdate(*model_res->skeleton, test_animator_comp.pose,
             //                                                     *debugDraw_.get());
 
-            debugDraw_->EndFrame();
+            // debugDraw_->EndFrame();
+            debugSystemRunner.EndFrame(debugCtx);
             debugSystemRunner.Submit(debugCtx);
             // renderSys_->Submit(ddknd::graphics::DebugTextDrawCommand{.batch = debugDraw_->TextBatch(),
             //                                                          .shader = debug_font_shader_res->program,
