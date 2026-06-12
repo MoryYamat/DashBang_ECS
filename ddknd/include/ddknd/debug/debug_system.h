@@ -12,8 +12,9 @@ namespace ddknd::debug
 {
     struct DebugFPSTextStyle
     {
-    private:
+      private:
         using Color = ::ddknd::math::Vec4f;
+
       public:
         Color color{1.0f, 1.0f, 0.0f, 1.0f};
     };
@@ -47,6 +48,21 @@ namespace ddknd::debug
         ::ddknd::asset::AssetID<::ddknd::asset::tag::Font> font;
     };
 
+    enum class CameraOverrideMode
+    {
+        None,       // Use normal app/game camera for rendering
+        DebugCamera // Use debug camera view/proj for rendering
+    };
+
+    struct DebugCameraConfig
+    {
+        CameraOverrideMode overrideMode = CameraOverrideMode::None;
+
+        bool consumeInput = true;
+        float moveSpeed = 10.0f;
+        float lookSensitivity = 0.1f;
+    };
+
     struct DebugConfig
     {
         bool drawAxis = true;
@@ -56,6 +72,8 @@ namespace ddknd::debug
         DebugAxisStyle axisStyle{};
         DebugSkeletonStyle skeletonStyle{};
         DebugFPSTextStyle fpsStyle{};
+
+        DebugCameraConfig camera{};
     };
 
     struct DebugContext
@@ -73,8 +91,8 @@ namespace ddknd::debug
       public:
         void BeginFrame(const DebugContext& ctx);
         void EndFrame(const DebugContext& ctx);
-      
-      void Update(::ddknd::ecs::World& world, const DebugContext& ctx);
+
+        void Update(::ddknd::ecs::World& world, const DebugContext& ctx);
         void Submit(const DebugContext& ctx);
 
       private:

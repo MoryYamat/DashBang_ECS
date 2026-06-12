@@ -39,6 +39,7 @@ namespace ddknd::system
 
         // renderer
         ::ddknd::graphics::RendererSystem* renderer = nullptr;
+        ::ddknd::graphics::RenderCamera* renderCamera = nullptr;
     };
 
     // Scheduler
@@ -59,6 +60,7 @@ namespace ddknd::system
 
         // rendering
         void RunSkinnedRenderSubmit(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
+        void RunMainCameraExport(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
     };
 } // namespace ddknd::system
 

@@ -54,6 +54,8 @@ namespace ddknd::component
         Orthographic
     };
 
+    struct MainCameraTag{};
+
     struct CameraLookComponent
     {
         math::Vec3f forward{0.0f, 0.0f, -1.0f};

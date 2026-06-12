@@ -11,9 +11,9 @@ namespace ddknd::graphics
         glEnable(GL_DEPTH_TEST);
     }
 
-    void RendererSystem::BeginFrame(FrameDesc& desc)
+    void RendererSystem::BeginFrame(FrameBeginDesc& desc)
     {
-        frame_ = desc;
+        frameBegin_ = desc;
         // view port
         glViewport(0, 0, desc.w, desc.h);
         //
@@ -27,39 +27,36 @@ namespace ddknd::graphics
         {
             backend_.UseShaderProgram(cmd.shader);
 
-            backend_.SetUniform(cmd.shader, "uView", frame_.view);
-            backend_.SetUniform(cmd.shader, "uProj", frame_.proj);
+            backend_.SetUniform(cmd.shader, "uView", frameCamera_.view);
+            backend_.SetUniform(cmd.shader, "uProj", frameCamera_.proj);
             backend_.SetUniform(cmd.shader, "uModel", math::Mat4f::Identity());
 
             backend_.BindPrimitive(cmd.mesh);
             backend_.DrawIndexed(cmd.indexCount);
         }
-        for(const auto& cmd: skinnedCmds_)
+        for (const auto& cmd : skinnedCmds_)
         {
             backend_.UseShaderProgram(cmd.shader);
 
             backend_.SetUniform(cmd.shader, "uModel", cmd.modelMatrix);
-            backend_.SetUniform(cmd.shader, "uView", frame_.view);
-            backend_.SetUniform(cmd.shader, "uProj", frame_.proj);
+            backend_.SetUniform(cmd.shader, "uView", frameCamera_.view);
+            backend_.SetUniform(cmd.shader, "uProj", frameCamera_.proj);
 
-            backend_.SetUniformMat4Array(
-                cmd.shader,
-                "uSkinMatrices",
-                cmd.skinMatrices
-            );
-            
+            backend_.SetUniformMat4Array(cmd.shader, "uSkinMatrices", cmd.skinMatrices);
+
             backend_.BindPrimitive(cmd.mesh);
             backend_.DrawIndexed(cmd.indexCount);
         }
 
         for (const auto& cmd : debugTextCmds_)
         {
-            backend_.DrawScreenQuadBatch(cmd.batch, cmd.shader, cmd.texture, cmd.indexCount, frame_.w, frame_.h);
+            backend_.DrawScreenQuadBatch(cmd.batch, cmd.shader, cmd.texture, cmd.indexCount, frameBegin_.w,
+                                         frameBegin_.h);
         }
         for (const auto& cmd : debugLineCmds_)
         {
-            backend_.SetUniform(cmd.shader, "uView", frame_.view);
-            backend_.SetUniform(cmd.shader, "uProj", frame_.proj);
+            backend_.SetUniform(cmd.shader, "uView", frameCamera_.view);
+            backend_.SetUniform(cmd.shader, "uProj", frameCamera_.proj);
             backend_.SetUniform(cmd.shader, "uModel", math::Mat4f::Identity());
             backend_.DrawLineBatch(cmd.batch, cmd.shader, cmd.vertexCount);
         }
@@ -74,6 +71,13 @@ namespace ddknd::graphics
     void RendererSystem::DrawTestTriangle(TestDrawTriangleCommand test)
     {
         backend_.UseShaderProgram(test.shader);
+    }
+
+    void RendererSystem::SetFrameCamera(const ::ddknd::graphics::RenderCamera& camera) 
+    {
+        assert(camera.valid);
+        frameCamera_.view = camera.view;
+        frameCamera_.proj = camera.proj;
     }
 
     // =========================== Debug Renderer ===========================
@@ -204,9 +208,9 @@ namespace ddknd::graphics
         const auto y = origin + math::Vec3f{0.0f, length, 0.0f};
         const auto z = origin + math::Vec3f{0.0f, 0.0f, length};
 
-        Line(origin, x, {1,0,0,1});// x red
-        Line(origin, y, {0,1,0,1});// y green
-        Line(origin, z, {0,0,1,1});// z blue
+        Line(origin, x, {1, 0, 0, 1}); // x red
+        Line(origin, y, {0, 1, 0, 1}); // y green
+        Line(origin, z, {0, 0, 1, 1}); // z blue
     }
 
     void DebugDrawList::Axis(const math::Vec3f& origin, const DebugAxisColors& colors, float length)
@@ -216,11 +220,11 @@ namespace ddknd::graphics
         const auto y = origin + math::Vec3f{0.0f, length, 0.0f};
         const auto z = origin + math::Vec3f{0.0f, 0.0f, length};
 
-        Line(origin, x, colors.x);// x red
-        Line(origin, y, colors.y);// y green
-        Line(origin, z, colors.z);// z blue
+        Line(origin, x, colors.x); // x red
+        Line(origin, y, colors.y); // y green
+        Line(origin, z, colors.z); // z blue
     }
-    
+
     types::GPUID<tag::LineBatchTag> DebugDrawList::LineBatch() const
     {
         return lineBatch_;
@@ -230,13 +234,14 @@ namespace ddknd::graphics
         return static_cast<std::uint32_t>(lineVertices_.size());
     }
 
-    // *************** SKELETON ***************** 
-    void DebugDrawList::Skeleton(const animation::types::SkeletonResource& skeleton, const animation::Pose& pose, Color color)
+    // *************** SKELETON *****************
+    void DebugDrawList::Skeleton(const animation::types::SkeletonResource& skeleton, const animation::Pose& pose,
+                                 Color color)
     {
-        for(std::size_t i = 0; i < skeleton.bones.size(); ++i)
+        for (std::size_t i = 0; i < skeleton.bones.size(); ++i)
         {
             int parent = skeleton.bones[i].parent;
-            if(parent < 0)
+            if (parent < 0)
                 continue;
             Vec3f childPos = ExtractTranslation(pose.globalMatrices[i]);
             Vec3f parentPos = ExtractTranslation(pose.globalMatrices[parent]);

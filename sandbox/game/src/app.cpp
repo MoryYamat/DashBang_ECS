@@ -278,10 +278,11 @@ namespace app
         // modelTRS.translation = {0.0f, 0.0f, 0.0f};
         // modelTRS.rotation = ::ddknd::math::Quatf::Identity();
         // modelTRS.scale = {0.01f, 0.01f, 0.01f};
-
+        ::ddknd::graphics::RenderCamera frameCamera{};
         // ********* Debug Config ************
         ::ddknd::debug::DebugSystemRunner debugSystemRunner{};
-        ::ddknd::debug::DebugConfig debugConfig{.drawAxis = true, .drawFps = true, .drawSkeletons = true};
+        ::ddknd::debug::DebugCameraConfig debugCameraConfig{.overrideMode = ::ddknd::debug::CameraOverrideMode::DebugCamera};
+        ::ddknd::debug::DebugConfig debugConfig{.drawAxis = true, .drawFps = true, .drawSkeletons = true, .camera = debugCameraConfig};
         ::ddknd::debug::DebugDrawResources debugDrawResouces{.textShader = debug_font_shader_id, .lineShader = debug_line_shader_id, .font = font_res_id};
         // debugDraw_->SetFont(font_res);
         // debugDraw_->Axis({0.0f, 0.0f, 0.0f}, 1000.0f);
@@ -305,67 +306,35 @@ namespace app
                                                    .aspect = window_->aspectRatio(),
                                                    .graphicsAssetStore = graphicsAssetStore_.get(),
                                                    .animationAssetStore = animationAssetStore_.get(),
-                                                   .renderer = renderSys_.get()};
+                                                   .renderer = renderSys_.get(),
+                                                   .renderCamera = &frameCamera};
+
             ::app::system::GameFrameContext gameCtx{.frame = &frameCtx, .input = inputSys_.get(), .paused = false};
 
             ::ddknd::debug::DebugContext debugCtx{.frame = &frameCtx, .debugDraw = debugDraw_.get(), .config = &debugConfig, .resources = &debugDrawResouces, .fps=timer.FPS()};
             // ************* BEGIN FRAME *************
-            ddknd::graphics::FrameDesc frame{.h = window_->GetHeight(),
-                                             .w = window_->GetWidth(),
-                                             .view = debugCam_->matrices.view,
-                                             .proj = debugCam_->matrices.proj};
-            renderSys_->BeginFrame(frame);
+            ddknd::graphics::FrameBeginDesc frameBegin{.h = window_->GetHeight(),
+                                             .w = window_->GetWidth()};
+
+            renderSys_->BeginFrame(frameBegin);
 
             gameSystemRunner_->Update(*world_, gameCtx);
             engineSystemRunner_->Update(*world_, frameCtx);
-
+            
             // ************* DEBUG DRAW *************
-            // debugDraw_->BeginFrame();
-            // debugDraw_->Text(10.0f, 20.0f, std::format("FPS: {:.1f}", fps), {1.0f, 1.0f, 0.0f, 1.0f}); // FPS
-            // debugDraw_->Axis({0, 0, 0}, 2.0f);
             debugSystemRunner.BeginFrame(debugCtx);
             debugSystemRunner.Update(*world_, debugCtx);
-            // test_transform_comp.worldMatrix = modelTRS.ToMatrix();
-            // const auto* test_anim_clip = gfx_anim_store.TryGet(test_animator_comp.state.clip);
-            // if (test_anim_clip)
-            // {
-            //     ::ddknd::animation::AnimatorSystem::UpdateAnimator(*model_res->skeleton, *test_anim_clip,
-            //                                                        test_animator_comp.state, test_animator_comp.pose,
-            //                                                        timer.DeltaTime());
-            // }
-
-            // for (const auto& res : model_res->primitives)
-            // {
-            //     // std::cerr << "prim_id=" << res.prim.Value() << "\n";
-            //     // renderSys_->Submit(
-            //     //     DrawCommand{.mesh = res.prim, .shader = shader_res->program, .indexCount = res.indexCount});
-            //     renderSys_->Submit(::ddknd::graphics::SkinnedDrawCommand{
-            //         .mesh = res.prim,
-            //         .shader = shader_skinned->program,
-            //         .modelMatrix = test_transform_comp.worldMatrix,
-            //         .skinMatrices = test_animator_comp.pose.skinMatrices,
-            //         .indexCount = res.indexCount,
-            //     });
-            // }
-
-
-
-            // ::ddknd::animation::debug::TestAnimatorSystemUpdate(*model_res->skeleton, test_animator_comp.pose,
-            //                                                     *debugDraw_.get());
-
-            // debugDraw_->EndFrame();
             debugSystemRunner.EndFrame(debugCtx);
             debugSystemRunner.Submit(debugCtx);
-            // renderSys_->Submit(ddknd::graphics::DebugTextDrawCommand{.batch = debugDraw_->TextBatch(),
-            //                                                          .shader = debug_font_shader_res->program,
-            //                                                          .texture = debugDraw_->FontAtlas(),
-            //                                                          .indexCount = debugDraw_->TextIndexCount()});
-            // renderSys_->Submit(ddknd::graphics::DebugLineDrawCommand{.batch = debugDraw_->LineBatch(),
-            //                                                          .shader = debug_line_shader_res->program,
-            //                                                          .vertexCount = debugDraw_->LineVertexCount()});
+            if(debugConfig.camera.overrideMode == ::ddknd::debug::CameraOverrideMode::DebugCamera)
+            {
+                frameCamera.view = debugCam_->matrices.view;
+                frameCamera.proj = debugCam_->matrices.proj;
+                frameCamera.valid = true;
+            }
 
-            // std::cerr << "pos = " << debug_camera_transform.localTRS.translation << "\n";
             // ************* END FRAME *************
+            renderSys_->SetFrameCamera(frameCamera);
             renderSys_->EndFrame();
 
             // window_->PollEvents(); // moved to InputBackend

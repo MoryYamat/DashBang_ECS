@@ -10,6 +10,7 @@ namespace ddknd::graphics
 
     class RendererSystem;
     class DebugDrawList;
+    struct RenderCamera;
 
     class GraphicsAssetStore;
     class GraphicsAssetLoader;

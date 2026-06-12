@@ -1,9 +1,10 @@
 #pragma once
 
 // #include "core/StrongID.h"
-#include "gfx_type.h"
 #include "ddknd/graphics/gfx_type.h"
 #include "ddknd/math/math.h"
+#include "gfx_type.h"
+
 
 #include <cstdint>
 #include <memory>
@@ -95,6 +96,13 @@ namespace ddknd::graphics
         std::uint32_t indexCount = 0;
     };
 
+    struct RenderCamera
+    {
+      ::ddknd::math::Mat4f view;
+      ::ddknd::math::Mat4f proj;
+      bool valid = false;
+    };
+
     struct SkinnedDrawCommand
     {
       private:
@@ -135,12 +143,18 @@ namespace ddknd::graphics
         std::uint32_t vcount;
     };
 
-    struct FrameDesc
+    struct FrameBeginDesc
     {
         int h;
         int w;
-        math::Mat4f view;
-        math::Mat4f proj;
+        // math::Mat4f view;
+        // math::Mat4f proj;
+    };
+
+    struct FrameCameraDesc
+    {
+      ::ddknd::math::Mat4f view;
+      ::ddknd::math::Mat4f proj;
     };
 
     class RendererSystem
@@ -155,7 +169,7 @@ namespace ddknd::graphics
         RendererSystem& operator=(RendererSystem&&) = delete;
 
         void Set_Test();
-        void BeginFrame(FrameDesc& des);
+        void BeginFrame(FrameBeginDesc& des);
         void EndFrame();
 
         void Submit(const DrawCommand& cmd)
@@ -178,13 +192,15 @@ namespace ddknd::graphics
         // test triangle
         void DrawTestTriangle(TestDrawTriangleCommand test);
 
+        void SetFrameCamera(const ::ddknd::graphics::RenderCamera& camera);
       private:
         IRendererBackend& backend_;
         std::vector<DrawCommand> cmds_;
         std::vector<DebugTextDrawCommand> debugTextCmds_;
         std::vector<DebugLineDrawCommand> debugLineCmds_;
         std::vector<SkinnedDrawCommand> skinnedCmds_;
-        FrameDesc frame_;
+        FrameBeginDesc frameBegin_;
+        FrameCameraDesc frameCamera_;
     };
 
     // ==================================== DEBUG RENDERER ====================================
@@ -208,9 +224,9 @@ namespace ddknd::graphics
     };
     struct DebugAxisColors
     {
-        math::Vec4f x{1.0f, 0.0f, 0.0f ,1.0f};
-        math::Vec4f y{0.0f, 1.0f, 0.0f ,1.0f};
-        math::Vec4f z{0.0f, 0.0f, 1.0f ,1.0f};
+        math::Vec4f x{1.0f, 0.0f, 0.0f, 1.0f};
+        math::Vec4f y{0.0f, 1.0f, 0.0f, 1.0f};
+        math::Vec4f z{0.0f, 0.0f, 1.0f, 1.0f};
     };
     // Create Debug Resources from Commands
     class DebugDrawList
