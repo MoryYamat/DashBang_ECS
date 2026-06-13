@@ -28,12 +28,13 @@
 
 namespace ddknd::system
 {
-    void EngineSystemRunner::Update(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
+    void EngineSystemRunner::UpdateSimulation(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
     {
-        //
-        RunKinematic(world, ctx);
-        RunTransform(world, ctx);
-
+        RunKinematic(world,ctx);
+        RunTransform(world,ctx);
+    }
+    void EngineSystemRunner::UpdateRenderPrepare(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
+    {
         // camera
         RunCameraProjection(world, ctx);
         RunCameraMatrices(world, ctx);
@@ -42,6 +43,13 @@ namespace ddknd::system
         // rendering
         RunAnimator(world, ctx);
         RunSkinnedRenderSubmit(world, ctx);
+    }
+        
+    void EngineSystemRunner::Update(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
+    {
+        //
+        UpdateSimulation(world, ctx);
+        UpdateRenderPrepare(world,ctx);
     }
 
     void EngineSystemRunner::RunTransform(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)

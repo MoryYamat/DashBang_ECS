@@ -281,7 +281,7 @@ namespace app
         ::ddknd::graphics::RenderCamera frameCamera{};
         // ********* Debug Config ************
         ::ddknd::debug::DebugSystemRunner debugSystemRunner{};
-        ::ddknd::debug::DebugCameraConfig debugCameraConfig{.overrideMode = ::ddknd::debug::CameraOverrideMode::DebugCamera};
+        ::ddknd::debug::DebugCameraConfig debugCameraConfig{.overrideMode = ::ddknd::debug::CameraOverrideMode::None};
         ::ddknd::debug::DebugConfig debugConfig{.drawAxis = true, .drawFps = true, .drawSkeletons = true, .camera = debugCameraConfig};
         ::ddknd::debug::DebugDrawResources debugDrawResouces{.textShader = debug_font_shader_id, .lineShader = debug_line_shader_id, .font = font_res_id};
         // debugDraw_->SetFont(font_res);
@@ -318,8 +318,10 @@ namespace app
 
             renderSys_->BeginFrame(frameBegin);
 
-            gameSystemRunner_->Update(*world_, gameCtx);
-            engineSystemRunner_->Update(*world_, frameCtx);
+            gameSystemRunner_->UpdatePreEngine(*world_, gameCtx);
+            engineSystemRunner_->UpdateSimulation(*world_, frameCtx);
+            gameSystemRunner_->UpdatePostEngine(*world_, gameCtx);
+            engineSystemRunner_->UpdateRenderPrepare(*world_, frameCtx);
             
             // ************* DEBUG DRAW *************
             debugSystemRunner.BeginFrame(debugCtx);

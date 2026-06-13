@@ -4,10 +4,13 @@ namespace app::component
 {
     // requested intent
     struct RequestedMovementIntentComponent;
+    struct CameraDesiredPoseComponent;
+    struct CameraFollowTargetComponent;
+    struct CameraOrbitComponent;
 
     // instanced data
     struct CharacterMoveStatsComponent;
-    struct PlayerControlComponent; 
+    struct PlayerControllerComponent; 
     struct MovementIntentComponent;
 
     // state

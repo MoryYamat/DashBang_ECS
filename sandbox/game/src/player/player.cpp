@@ -22,9 +22,7 @@ namespace app::player
         transform.localTRS.translation = desc.position;
         transform.dirty = true;
 
-        // ============== control / intent ============== 
-        reg.AddComponent<app::component::PlayerControlComponent>(e);
-        reg.AddComponent<app::component::RequestedMovementIntentComponent>(e);
+        // ============== actor intent / resoloved intent ============== 
         reg.AddComponent<app::component::MovementIntentComponent>(e);
 
         // ============== movement logic ==============

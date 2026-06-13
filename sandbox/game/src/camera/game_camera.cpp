@@ -1,9 +1,11 @@
-#include "game/camera/camera.h"
+#include "game/camera/game_camera.h"
 
 #include <ddknd/ecs/ecs.h>
 
 #include <ddknd/component/gfx_component.h>
 #include <ddknd/math/math.h>
+
+#include "game/component/controller_component.h"
 
 namespace
 {
@@ -54,6 +56,21 @@ namespace app::camera
 
         std::cerr << "ent pos " << desc.position << "\n";
         std::cerr << "ent look " << forward << "\n";
+        return e;
+    }
+
+    ::ddknd::ecs::Entity CreatePlayerCameraRig(::ddknd::ecs::World& world, const PlayerCameraRigSpawnDesc& desc) 
+    {
+        auto& reg = world.GetRegistry();
+
+        auto e = reg.Create();
+
+        reg.AddComponent<app::component::PlayerCameraRigComponent>(e);
+        reg.AddComponent<app::component::CameraFollowTargetComponent>(e, app::component::CameraFollowTargetComponent{.target = desc.target, .lookOffset = desc.lookOffset});
+        reg.AddComponent<app::component::CameraOrbitComponent>(e, app::component::CameraOrbitComponent{.yawDeg = desc.yawDeg, .pitchDeg = desc.pitchDeg, .distance = desc.distance});
+
+        reg.AddComponent<app::component::CameraDesiredPoseComponent>(e);
+        reg.AddComponent<app::component::CameraOutputComponent>(e, app::component::CameraOutputComponent{.camera = desc.camera});
         return e;
     }
 } // namespace app::camera

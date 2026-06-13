@@ -6,8 +6,9 @@
 #include <ddknd/graphics/gfx_asset_loader.h>
 
 #include "game/assets/actor/paladin_assets.h"
+#include "game/camera/game_camera.h"
 #include "game/player/player.h"
-#include "game/camera/camera.h"
+#include "game/player/player_controller.h"
 
 #include <cassert>
 
@@ -22,6 +23,17 @@ namespace app::scene
 
         auto mainCamera = ::app::camera::CreateCameraEntity(world, ::app::camera::CameraEntityDesc{});
 
+        auto cameraRig = ::app::camera::CreatePlayerCameraRig(
+            world, ::app::camera::PlayerCameraRigSpawnDesc{.target = player,
+                                                           .camera = mainCamera,
+                                                           .lookOffset = {0.0f, 2.0f, 0.0f},
+                                                           .yawDeg = -90.0f,
+                                                           .pitchDeg = 25.0f,
+                                                           .distance = 6.0f});
+
+        auto controller = app::player::CreateLocalPlayerController(
+            world, ::app::player::PlayerControllerSpawnDesc{.actor = player, .cameraRig = cameraRig});
+
         GameSceneAssets assets{.paladin = paladinAssets};
         GameSceneEntities entities{.player = player, .mainCamera = mainCamera};
 
@@ -34,7 +46,7 @@ namespace app::scene
         assert(ctx.graphicsLoader);
         assert(ctx.graphicsStore);
         assert(ctx.animationStore);
-        
+
         bool ok = true;
 
         ok &= ctx.graphicsLoader->LoadShader(*ctx.assetManager, *ctx.graphicsStore, assets.paladin.skinnedShader);

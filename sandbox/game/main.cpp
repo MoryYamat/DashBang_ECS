@@ -65,6 +65,7 @@ int main()
 // Super LOW:
 // - It provides zero-cost abstractions and intuitive type generation and manipulation interfaces for all (semantic) types through logical operations.
 // - Editors: camera, asset, semantic validation layer
+// - Design and implementation of an IntentLayer that does not include game semantics.
 
 // Folder
 // /include: 

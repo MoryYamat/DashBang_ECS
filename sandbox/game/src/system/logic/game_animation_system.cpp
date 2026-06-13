@@ -1,4 +1,4 @@
-#include "game/system/logic/animation_system.h"
+#include "game/system/logic/game_animation_system.h"
 
 #include <ddknd/component/gfx_component.h>
 

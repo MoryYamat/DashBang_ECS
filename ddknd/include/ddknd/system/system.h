@@ -49,6 +49,8 @@ namespace ddknd::system
     class EngineSystemRunner
     {
       public:
+        void UpdateSimulation(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
+        void UpdateRenderPrepare(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
         void Update(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
 
       private:

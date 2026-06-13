@@ -14,6 +14,25 @@ raw input -> Requested intent -> Resolver(FSM) -> ResolvedIntent -> UpdateLogic 
 `AcceptedIntent`と`Stats`から`GamePlayState`を更新する
 
 
+### 例
+camera
+```
+RawInput
+↓
+ActionInput
+↓
+PlayerControllerEntity
+
+RequestedCameraIntentComponent
+↓
+CameraRigEntity
+↓
+CameraDesiredPoseComponent
+
+CameraEntity
+↓
+Transform/CameraLook/CameraMatrices
+```
 
 ## 確認されている問題点
 

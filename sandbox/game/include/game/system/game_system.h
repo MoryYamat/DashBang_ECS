@@ -16,16 +16,23 @@ namespace app::system
     class GameSystemRunner
     {
         public:
-            void Update(::ddknd::ecs::World& world, GameFrameContext& ctx);
+            void UpdatePreEngine(::ddknd::ecs::World& world, GameFrameContext& ctx);
+            void UpdatePostEngine(::ddknd::ecs::World& world, GameFrameContext& ctx);
         private:
             void RunIntentRequest(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunState(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunIntentResolve(::ddknd::ecs::World& world, GameFrameContext& ctx);
-            void RunLogic(::ddknd::ecs::World& world, GameFrameContext& ctx);
+
+            void RunLogicPreEngine(::ddknd::ecs::World& world, GameFrameContext& ctx);
+            void RunLogicPostEngine(::ddknd::ecs::World& world, GameFrameContext& ctx);
 
             void RunPlayerInput(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunPlayerLocomotionAnimation(::ddknd::ecs::World& world, GameFrameContext& ctx);
 
+            void RunMovementIntentResolve(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunMovement(::ddknd::ecs::World& world, GameFrameContext& ctx);
+
+            void RunCameraDesiredPose(::ddknd::ecs::World& world, GameFrameContext& ctx);
+            void RunCameraApply(::ddknd::ecs::World& world, GameFrameContext& ctx);
     };
 }
