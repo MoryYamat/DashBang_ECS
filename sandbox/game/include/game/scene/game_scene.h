@@ -13,6 +13,7 @@ namespace app::scene
     struct GameSceneEntities
     {
         ::ddknd::ecs::Entity player;
+        ::ddknd::ecs::Entity mainCamera;
     };
 
     struct GameSceneAssets

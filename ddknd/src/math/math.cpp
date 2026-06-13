@@ -163,7 +163,10 @@ namespace ddknd::math
     // @brief LookAt / OpenGL / Right-Handed
     Mat4f LookAtOpenGLRH(const Vec3f& eye, const Vec3f& target, const Vec3f& up)
     {
-        Vec3f f = normalize(target - eye);
+        Vec3f fRaw = target - eye;
+        assert(lengthSquared(fRaw) > kEpsilonSq<float>);
+
+        Vec3f f = normalize(fRaw);
         assert(lengthSquared(f) > kEpsilonSq<float>);
 
         Vec3f s = normalize(cross(f, up)); // create fallback to avoid devide by 0

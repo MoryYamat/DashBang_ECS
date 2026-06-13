@@ -57,13 +57,14 @@ int main()
 // - implement storage version to the ECS::Storage for caching
 // - Correct the design to be fundamentally correct.
 
+
 // LOW
 // - fix cmake and dependencies
-
+// - Creating a custom memory allocator
 
 // Super LOW:
 // - It provides zero-cost abstractions and intuitive type generation and manipulation interfaces for all (semantic) types through logical operations.
-
+// - Editors: camera, asset, semantic validation layer
 
 // Folder
 // /include: 

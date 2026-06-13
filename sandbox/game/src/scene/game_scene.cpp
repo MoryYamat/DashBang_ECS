@@ -7,6 +7,7 @@
 
 #include "game/assets/actor/paladin_assets.h"
 #include "game/player/player.h"
+#include "game/camera/camera.h"
 
 #include <cassert>
 
@@ -19,8 +20,10 @@ namespace app::scene
         auto player = ::app::player::CreatePaladinPlayer(
             world, paladinAssets, ::app::player::PlayerSpawnDesc{.position = {0.0f, 0.0f, 0.0f}, .moveSpeed = 5.0f});
 
+        auto mainCamera = ::app::camera::CreateCameraEntity(world, ::app::camera::CameraEntityDesc{});
+
         GameSceneAssets assets{.paladin = paladinAssets};
-        GameSceneEntities entities{.player = player};
+        GameSceneEntities entities{.player = player, .mainCamera = mainCamera};
 
         return GameScene{.assets = assets, .entities = entities};
     }
