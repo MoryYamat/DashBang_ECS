@@ -4,10 +4,11 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
+#include <iostream>
 #include <limits>
 #include <type_traits>
 #include <vector>
-#include <iostream>
+
 
 namespace ddknd::input
 {
@@ -144,6 +145,43 @@ namespace ddknd::input
         COUNT
     };
 
+    enum class MouseAxis : std::uint8_t
+    {
+        DeltaX,
+        DeltaY,
+        WheelY,
+        COUNT
+    };
+
+    enum class InputSourceKind : std::uint8_t
+    {
+        Key,
+        MouseAxis
+    };
+
+    struct InputSource
+    {
+        InputSourceKind kind = InputSourceKind::Key;
+        Key key = Key::COUNT;
+        MouseAxis mouseAxis = MouseAxis::COUNT;
+
+        static InputSource FromKey(Key k)
+        {
+            InputSource s{};
+            s.kind = InputSourceKind::Key;
+            s.key = k;
+            return s;
+        }
+
+        static InputSource FromMouseAxis(MouseAxis a)
+        {
+            InputSource s{};
+            s.kind = InputSourceKind::MouseAxis;
+            s.mouseAxis = a;
+            return s;
+        }
+    };
+
     struct InputState
     {
         float value = 0.0f;
@@ -159,6 +197,8 @@ namespace ddknd::input
         double y = 0.0;
         double deltaX = 0.0;
         double deltaY = 0.0;
+
+        double wheelY = 0.0;
     };
 
     class IInputBackend
@@ -182,13 +222,14 @@ namespace ddknd::input
 
         void Update()
         {
-            backend_.Update();//This utilizes the difference between the OS update frequency and the game loop update frequency
+            backend_.Update(); // This utilizes the difference between the OS update frequency and the game loop update
+                               // frequency
 
             for (std::size_t i = 0; i < KeyCount(); i++)
             {
                 curr_[i] = backend_.IsDown(static_cast<Key>(i));
             }
-            
+
             mouse_ = backend_.Mouse();
         }
 
@@ -299,13 +340,39 @@ namespace ddknd::input
 
             if (id == InvalidID)
             {
-                id = static_cast<id_type>(id_to_key_.size());
+                id = static_cast<id_type>(id_to_source_.size());
                 action_to_id_[action_to_index] = id;
-                id_to_key_.push_back(InvalidKey);
+                id_to_source_.push_back(InvalidKey);
             }
 
             key_to_action_[KeyToIndex(key)] = id;
-            id_to_key_[id] = key;
+            id_to_source_[id] = key;
+
+            return true;
+        }
+
+        template <ActionToIndexable Action>
+        bool RegisterMouseAxisMap(const MouseAxis axis, const Action action)
+        {
+            auto action_to_index = ActionToIndex(action);
+            if (action_to_index >= action_to_id_.size())
+            {
+                action_to_id_.resize(action_to_index + 1, InvalidID);
+            }
+
+            id_type id = action_to_id_[action_to_index];
+
+            if (id == InvalidID)
+            {
+                id = static_cast<id_type>(id_to_source_.size());
+                action_to_id_[action_to_index] = id;
+                id_to_source_.push_back(InvalidKey);
+            }
+
+            const auto axisIdx = static_cast<std::size_t>(axis);
+            if (axisIdx >= mouse_axis_to_action_.size())
+                mouse_axis_to_action_.resize(axisIdx + 1, InvalidID);
+            mouse_axis_to_action_[axisIdx] = id;
 
             return true;
         }
@@ -323,10 +390,10 @@ namespace ddknd::input
 
         key_type GetKey(id_type id) const
         {
-            if (static_cast<std::size_t>(id) >= id_to_key_.size())
+            if (static_cast<std::size_t>(id) >= id_to_source_.size())
                 return InvalidKey;
 
-            return id_to_key_[id];
+            return id_to_source_[id];
         }
 
         id_type GetActionFromKey(key_type key) const
@@ -339,16 +406,27 @@ namespace ddknd::input
 
         std::size_t GetActionCount() const
         {
-            return id_to_key_.size();
+            return id_to_source_.size();
+        }
+
+        id_type GetActionFromMouseAxis(MouseAxis axis) const
+        {
+            const auto idx = static_cast<std::size_t>(axis);
+            if (idx >= mouse_axis_to_action_.size())
+                return InvalidID;
+
+            return mouse_axis_to_action_[idx];
         }
 
       private:
         std::vector<id_type>
             action_to_id_; //  action -> inetrnal action id        (idx: action_value, value: internal action id)
         std::vector<key_type>
-            id_to_key_; // internal action id -> key            (idx: internal action id          , value: key)
+            id_to_source_; // internal action id -> key            (idx: internal action id          , value: key)
         std::vector<id_type>
             key_to_action_; // key -> internal action id            (idx: key         , value: internal action id)
+
+        std::vector<id_type> mouse_axis_to_action_;
     };
 
     // system (update state)
@@ -415,6 +493,11 @@ namespace ddknd::input
             return actions_[idx].released;
         }
 
+        // @NOTE: 
+        // GetValue expects a gameplay Action enum, not an input source.
+        // Example: 
+        //   GetValue(app::action::Action::CameraLookX)
+        // Do not pass MouseAxis::DeltaX directly.
         template <ActionToIndexable Action>
         float GetValue(Action action) const
         {

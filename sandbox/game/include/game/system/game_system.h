@@ -30,9 +30,11 @@ namespace app::system
             void RunPlayerLocomotionAnimation(::ddknd::ecs::World& world, GameFrameContext& ctx);
 
             void RunMovementIntentResolve(::ddknd::ecs::World& world, GameFrameContext& ctx);
+            void RunPlayerCameraInput(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunMovement(::ddknd::ecs::World& world, GameFrameContext& ctx);
 
             void RunCameraDesiredPose(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunCameraApply(::ddknd::ecs::World& world, GameFrameContext& ctx);
+            void RunCameraIntentResolve(::ddknd::ecs::World& world, GameFrameContext& ctx);
     };
 }

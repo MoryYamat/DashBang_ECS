@@ -1,7 +1,8 @@
 #include "ddknd/input/input.h"
 
-#include <vector>
 #include <cstddef>
+#include <vector>
+
 
 namespace ddknd::input
 {
@@ -9,31 +10,64 @@ namespace ddknd::input
     {
         const auto action_count = mappings_.GetActionCount();
 
-        if(actions_.size() != action_count)
+        if (actions_.size() != action_count)
             actions_.resize(action_count);
 
-        if(action_values_.size() != action_count)
+        if (action_values_.size() != action_count)
             action_values_.resize(action_count);
 
         std::fill(action_values_.begin(), action_values_.end(), 0.0f);
 
-        for(std::size_t i = 0; i < input.KeyCount(); i++)
+        auto setActionValue = [&](id_type actionID, float value)
+        {
+            if (actionID == InvalidID)
+                return;
+            const auto idx = static_cast<std::size_t>(actionID);
+            if (idx >= action_values_.size())
+                return;
+            action_values_[idx] = value;
+        };
+
+        // =============================
+        //  key -> Action value
+        // =============================
+        for (std::size_t i = 0; i < input.KeyCount(); i++)
         {
             auto key = static_cast<Key>(i);
 
             auto actionID = mappings_.GetActionFromKey(key);
-            if(actionID == InvalidID)
+            if (actionID == InvalidID)
                 continue;
 
-            if(static_cast<std::size_t>(actionID) >= action_values_.size())
+            if (static_cast<std::size_t>(actionID) >= action_values_.size())
                 continue;
-            if(input.isPressing(key))
+            if (input.isPressing(key))
             {
                 action_values_[static_cast<std::size_t>(actionID)] = 1.0f;
             }
         }
 
-        for(std::size_t i = 0; i < actions_.size(); ++i)
+        // =============================
+        //  MouseAxis -> Action value
+        // =============================
+        const auto& mouse = input.Mouse();
+        {
+            auto actionID = mappings_.GetActionFromMouseAxis(MouseAxis::DeltaX);
+            setActionValue(actionID, static_cast<float>(mouse.deltaX));
+        }
+        {
+            auto actionID = mappings_.GetActionFromMouseAxis(MouseAxis::DeltaY);
+            setActionValue(actionID, static_cast<float>(mouse.deltaY));
+        }
+        {
+            auto actionID = mappings_.GetActionFromMouseAxis(MouseAxis::WheelY);
+            setActionValue(actionID, static_cast<float>(mouse.wheelY));
+        }
+
+        // =============================
+        // Final ActionState update
+        // =============================
+        for (std::size_t i = 0; i < actions_.size(); ++i)
         {
             actions_[i].Update(action_values_[i]);
         }

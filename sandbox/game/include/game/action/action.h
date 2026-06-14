@@ -13,7 +13,12 @@ namespace app::action
         MoveFoward = 0,
         MoveBackward,
         MoveLeft,
-        MoveRight
+        MoveRight,
+
+        CameraLookX,
+        CameraLookY,
+
+        CameraZoom
     };
 
     // struct ActionType

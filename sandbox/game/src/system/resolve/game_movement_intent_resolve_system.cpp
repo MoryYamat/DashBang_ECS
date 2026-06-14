@@ -5,6 +5,7 @@
 #include <ddknd/component/gfx_component.h>
 
 #include <ddknd/math/math.h>
+#include <algorithm>
 
 namespace app::system
 {
@@ -30,9 +31,9 @@ namespace app::system
             out.direction = {0.0f, 0.0f, 0.0f};
             return;
         }
-        
+
         forward = ::ddknd::math::normalize(forward);
-        
+
         // right-handed
         ::ddknd::math::Vec3f right{-forward.z(), 0.0f, forward.x()};
 
@@ -48,5 +49,18 @@ namespace app::system
             out.direction = {0.0f, 0.0f, 0.0f};
             out.active = false;
         }
+    }
+
+    void CameraIntentResolveSystem::UpdateOne(app::component::CameraOrbitComponent& orbit,
+                                              const app::component::RequestedCameraIntentComponent& request)
+    {
+        if(!request.active)
+            return;
+
+        orbit.yawDeg += request.yawDeltaDeg;
+        orbit.pitchDeg += request.pitchDeltaDeg;
+
+        orbit.pitchDeg = std::clamp(orbit.pitchDeg, orbit.minPitchDeg, orbit.maxPitchDeg);
+        orbit.distance = std::clamp(orbit.distance + request.zoomDelta, orbit.minDistance, orbit.maxDistance);
     }
 } // namespace app::system

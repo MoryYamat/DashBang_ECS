@@ -5,9 +5,7 @@
 #include <ddknd/input/input.h>
 #include <ddknd/math/math.h>
 
-
 #include "game/action/action.h"
-
 
 namespace app::system
 {
@@ -21,7 +19,7 @@ namespace app::system
             out.moveAxis = {0.0f, 0.0f};
             return;
         }
-            
+
         ::ddknd::math::Vec2f dir{0.0f, 0.0f};
 
         if (input.IsDown(Action::MoveFoward))
@@ -51,5 +49,34 @@ namespace app::system
             out.moveAxis = {0.0f, 0.0f};
             out.active = false;
         }
+    }
+
+    void PlayerCameraIntentSystem::UpdateOne(app::component::RequestedCameraIntentComponent& out,
+                                             const ::ddknd::input::ActionInputSystem& input)
+    {
+        using namespace ::app::action;
+
+        if(!out.enabled)
+        {
+            out.active = false;
+            out.yawDeltaDeg = 0.0f;
+            out.pitchDeltaDeg = 0.0f;
+            out.zoomDelta = 0.0f;
+            return;
+        }
+
+        constexpr float lookSensitivity = 0.1f;
+        constexpr float zoomSensitivity = 0.5f;
+
+        const float lookX = input.GetValue(Action::CameraLookX);
+        const float lookY = input.GetValue(Action::CameraLookY);
+        const float zoom = input.GetValue(Action::CameraZoom);
+
+        out.yawDeltaDeg = lookX * lookSensitivity;
+        out.pitchDeltaDeg = lookY * lookSensitivity;
+
+        out.zoomDelta = -zoom * zoomSensitivity;
+
+        out.active = std::abs(out.yawDeltaDeg) > 0.0001f || std::abs(out.pitchDeltaDeg) > 0.0001f || std::abs(out.zoomDelta) > 0.0001f;
     }
 } // namespace app::system

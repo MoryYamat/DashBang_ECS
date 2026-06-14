@@ -7,6 +7,7 @@ namespace app::component
     struct CameraDesiredPoseComponent;
     struct CameraFollowTargetComponent;
     struct CameraOrbitComponent;
+    struct RequestedCameraIntentComponent;
 
     // instanced data
     struct CharacterMoveStatsComponent;

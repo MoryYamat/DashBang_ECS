@@ -49,11 +49,13 @@ namespace app::system
     void GameSystemRunner::RunIntentRequest(::ddknd::ecs::World& world, GameFrameContext& ctx)
     {
         RunPlayerInput(world, ctx);
+        RunCameraIntentResolve(world, ctx);
     }
     void GameSystemRunner::RunState(::ddknd::ecs::World& world, GameFrameContext& ctx) {}
     void GameSystemRunner::RunIntentResolve(::ddknd::ecs::World& world, GameFrameContext& ctx)
     {
         RunMovementIntentResolve(world, ctx);
+        RunPlayerCameraInput(world,ctx);
         // later:
         // RunCameraIntentResolve(world,ctx);
     }
@@ -143,6 +145,22 @@ namespace app::system
         }
     }
 
+    void GameSystemRunner::RunPlayerCameraInput(::ddknd::ecs::World& world, GameFrameContext& ctx)
+    {
+        using namespace ::ddknd::ecs;
+
+        auto& reg = world.GetRegistry();
+
+        auto view = reg.view(query().select<app::component::RequestedCameraIntentComponent>().require<app::component::PlayerControllerComponent>());
+
+        for(auto [request, controller] : view)
+        {
+            (void)controller;
+
+            PlayerCameraIntentSystem::UpdateOne(request, *ctx.frame->actionInput);
+        }
+    }
+
     void GameSystemRunner::RunMovement(::ddknd::ecs::World& world, GameFrameContext& ctx)
     {
         using namespace ::ddknd::ecs;
@@ -220,6 +238,26 @@ namespace app::system
             }
 
             CameraApplySystem::UpdateOne(*cameraTransform, *cameraLook, desired);
+        }
+    }
+
+    void GameSystemRunner::RunCameraIntentResolve(::ddknd::ecs::World& world, GameFrameContext& ctx)
+    {
+        using namespace ::ddknd::ecs;
+
+        auto& reg = world.GetRegistry();
+
+        auto view = reg.view(query().select<app::component::RequestedCameraIntentComponent>().require<app::component::PlayerControllerComponent,app::component::ControlledCameraRigComponent>());
+
+        for(auto [request, controller, controlledCameraRig] : view)
+        {
+            (void)controller;
+
+            auto* orbit = reg.TryGetComponent<app::component::CameraOrbitComponent>(controlledCameraRig.cameraRig);
+            if(!orbit)
+                continue;
+
+            CameraIntentResolveSystem::UpdateOne(*orbit, request);
         }
     }
 } // namespace app::system

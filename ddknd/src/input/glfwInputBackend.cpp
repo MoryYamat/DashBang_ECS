@@ -94,6 +94,8 @@ namespace ddknd::input
             double y = 0.0;
             double deltaX = 0.0;
             double deltaY = 0.0;
+
+            double wheelY = 0.0;
         };
 
       public:
@@ -114,9 +116,17 @@ namespace ddknd::input
                 self->onCursorPosition(x, y);
             };
 
+            callbacks.scrollUser = this;
+            callbacks.scroll = [](void* user, double xoffset, double yoffset)
+            {
+                auto* self = static_cast<GlfwInputBackend*>(user);
+                self->onScroll(xoffset, yoffset);
+            };
+
             // register callback to glfw
             glfwSetKeyCallback(window_, &GlfwInputBackend::key_callback);
             glfwSetCursorPosCallback(window_, GlfwInputBackend::cursor_position_callback);
+            glfwSetScrollCallback(window_, GlfwInputBackend::scroll_callback);
 
             // settings
             if (glfwRawMouseMotionSupported()) // mouse acceleration
@@ -135,10 +145,13 @@ namespace ddknd::input
             mouseFrame_.y = mouseAccum_.y;
             mouseFrame_.deltaX = mouseAccum_.deltaX;
             mouseFrame_.deltaY = mouseAccum_.deltaY;
+            mouseFrame_.wheelY = mouseAccum_.wheelY;
 
             // Rest delta
             mouseAccum_.deltaX = 0.0;
             mouseAccum_.deltaY = 0.0;
+            mouseAccum_.wheelY = 0.0;
+
         }
 
         const MouseState& Mouse() const override
@@ -198,6 +211,12 @@ namespace ddknd::input
             mouse.y = y;
         }
 
+        void onScroll(double xoffset, double yoffset)
+        {
+            (void) xoffset;
+            mouseAccum_.wheelY += yoffset;
+        }
+
         static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
         {
             using CallbackState = ddknd::internal::platform::glfw::CallbackState;
@@ -224,6 +243,20 @@ namespace ddknd::input
             }
 
             state->cursor(state->cursorUser, x, y);
+        }
+
+        static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+        {
+            using CallbackState = ddknd::internal::platform::glfw::CallbackState;
+
+            auto state = static_cast<CallbackState*>(glfwGetWindowUserPointer(window));
+
+            if(state == nullptr || state->scroll == nullptr)
+            {
+                return;
+            }
+
+            state->scroll(state->scrollUser, xoffset, yoffset);
         }
     };
 

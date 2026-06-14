@@ -22,4 +22,14 @@ namespace app::component
         Vec3f direction{0.0f, 0.0f, 0.0f};
         bool active = false;
     };
+
+    struct RequestedCameraIntentComponent
+    {
+        bool enabled = true;
+        bool active = false;
+
+        float yawDeltaDeg = 0.0f;
+        float pitchDeltaDeg = 0.0f;
+        float zoomDelta = 0.0f;
+    };
 }// namespace app::component

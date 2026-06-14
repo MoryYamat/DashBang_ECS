@@ -20,7 +20,7 @@ namespace app::player
 
         // *********** Requested Intent Components ***********
         reg.AddComponent<app::component::RequestedMovementIntentComponent>(e);
-
+        reg.AddComponent<app::component::RequestedCameraIntentComponent>(e);
         return e;
     }
 }

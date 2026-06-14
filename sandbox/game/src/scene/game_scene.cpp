@@ -29,7 +29,7 @@ namespace app::scene
                                                            .lookOffset = {0.0f, 2.0f, 0.0f},
                                                            .yawDeg = -90.0f,
                                                            .pitchDeg = 25.0f,
-                                                           .distance = 6.0f});
+                                                           .distance = 5.0f});
 
         auto controller = app::player::CreateLocalPlayerController(
             world, ::app::player::PlayerControllerSpawnDesc{.actor = player, .cameraRig = cameraRig});

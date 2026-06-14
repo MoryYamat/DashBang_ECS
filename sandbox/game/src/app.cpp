@@ -103,11 +103,15 @@ namespace app
 
         //@TODO: make factory class
         using Key = ::ddknd::input::Key;
+        using MouseAxis = ::ddknd::input::MouseAxis;
         using Action = ::app::action::Action;
         inputMapping_->RegisterKeyMap(Key::W, Action::MoveFoward);
         inputMapping_->RegisterKeyMap(Key::A, Action::MoveLeft);
         inputMapping_->RegisterKeyMap(Key::S, Action::MoveBackward);
         inputMapping_->RegisterKeyMap(Key::D, Action::MoveRight);
+        inputMapping_->RegisterMouseAxisMap(MouseAxis::DeltaX, Action::CameraLookX);
+        inputMapping_->RegisterMouseAxisMap(MouseAxis::DeltaY, Action::CameraLookY);
+        inputMapping_->RegisterMouseAxisMap(MouseAxis::WheelY, Action::CameraZoom);
 
         // Debug Draw
         debugDraw_ = std::make_unique<ddknd::graphics::DebugDrawList>(*rendererBackend_);
@@ -296,6 +300,9 @@ namespace app
             deviceInput_->Update();
             inputSys_->Update(*deviceInput_.get());
 
+            // std::cerr << "delta x: " << inputSys_->GetValue(Action::CameraLookX) << "\n";
+            // std::cerr << "delta y: " << inputSys_->GetValue(Action::CameraLookY) << "\n";
+            // std::cerr << "wheel y:" << inputSys_->GetValue(Action::CameraZoom) << "\n";
             // ************* CAMERA *************
             deug_cam.Update(timer.DeltaTime());
             ddknd::system::DebugCameraSystem::UpdateDebugCamera(debug_camera_transform, *debugCam_);
