@@ -3,7 +3,6 @@
 #include <ddknd/component/component_fwd.h>
 #include <ddknd/input/input_fwd.h>
 
-
 namespace app::system
 {
     struct PlayerMovementIntentSystem
@@ -15,6 +14,7 @@ namespace app::system
     struct PlayerCameraIntentSystem
     {
         static void UpdateOne(app::component::RequestedCameraIntentComponent& out,
+                              const app::component::CameraControllerSettingsComponent& settings,
                               const ::ddknd::input::ActionInputSystem& input);
     };
 } // namespace app::system

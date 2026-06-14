@@ -57,4 +57,12 @@ namespace app::component
     {
         ::ddknd::ecs::Entity camera{};
     };
+
+    struct CameraControllerSettingsComponent
+    {
+        float lookSensitivityDeg = 0.1f;
+        float zoomSensitivity = 0.5f;
+
+        bool invertY = false;
+    };
 } // namespace app::component

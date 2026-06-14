@@ -19,7 +19,6 @@
 #include "game/system/request/game_input_system.h"
 #include "game/system/resolve/game_movement_intent_resolve_system.h"
 
-
 namespace app::system
 {
 
@@ -55,7 +54,7 @@ namespace app::system
     void GameSystemRunner::RunIntentResolve(::ddknd::ecs::World& world, GameFrameContext& ctx)
     {
         RunMovementIntentResolve(world, ctx);
-        RunPlayerCameraInput(world,ctx);
+        RunPlayerCameraInput(world, ctx);
         // later:
         // RunCameraIntentResolve(world,ctx);
     }
@@ -130,13 +129,14 @@ namespace app::system
                 continue;
             }
 
-            auto* cameraOutput = reg.TryGetComponent<app::component::CameraOutputComponent>(controlledCameraRig.cameraRig);
-            if(!cameraOutput)
+            auto* cameraOutput =
+                reg.TryGetComponent<app::component::CameraOutputComponent>(controlledCameraRig.cameraRig);
+            if (!cameraOutput)
             {
                 continue;
             }
             auto* cameraLook = reg.TryGetComponent<::ddknd::component::CameraLookComponent>(cameraOutput->camera);
-            if(!cameraLook)
+            if (!cameraLook)
             {
                 continue;
             }
@@ -151,13 +151,15 @@ namespace app::system
 
         auto& reg = world.GetRegistry();
 
-        auto view = reg.view(query().select<app::component::RequestedCameraIntentComponent>().require<app::component::PlayerControllerComponent>());
+        auto view = reg.view(query()
+                                 .select<app::component::RequestedCameraIntentComponent>()
+                                 .require<app::component::PlayerControllerComponent, app::component::CameraControllerSettingsComponent>());
 
-        for(auto [request, controller] : view)
+        for (auto [request, controller, settings] : view)
         {
             (void)controller;
 
-            PlayerCameraIntentSystem::UpdateOne(request, *ctx.frame->actionInput);
+            PlayerCameraIntentSystem::UpdateOne(request, settings, *ctx.frame->actionInput);
         }
     }
 
@@ -247,14 +249,17 @@ namespace app::system
 
         auto& reg = world.GetRegistry();
 
-        auto view = reg.view(query().select<app::component::RequestedCameraIntentComponent>().require<app::component::PlayerControllerComponent,app::component::ControlledCameraRigComponent>());
+        auto view = reg.view(
+            query()
+                .select<app::component::RequestedCameraIntentComponent>()
+                .require<app::component::PlayerControllerComponent, app::component::ControlledCameraRigComponent>());
 
-        for(auto [request, controller, controlledCameraRig] : view)
+        for (auto [request, controller, controlledCameraRig] : view)
         {
             (void)controller;
 
             auto* orbit = reg.TryGetComponent<app::component::CameraOrbitComponent>(controlledCameraRig.cameraRig);
-            if(!orbit)
+            if (!orbit)
                 continue;
 
             CameraIntentResolveSystem::UpdateOne(*orbit, request);

@@ -1,5 +1,6 @@
 #include "game/system/request/game_input_system.h"
 
+#include "game/component/controller_component.h"
 #include "game/component/IntentComponent.h"
 #include <ddknd/component/gfx_component.h>
 #include <ddknd/input/input.h>
@@ -52,6 +53,7 @@ namespace app::system
     }
 
     void PlayerCameraIntentSystem::UpdateOne(app::component::RequestedCameraIntentComponent& out,
+                                            const app::component::CameraControllerSettingsComponent& settings,
                                              const ::ddknd::input::ActionInputSystem& input)
     {
         using namespace ::app::action;
@@ -65,17 +67,15 @@ namespace app::system
             return;
         }
 
-        constexpr float lookSensitivity = 0.1f;
-        constexpr float zoomSensitivity = 0.5f;
-
         const float lookX = input.GetValue(Action::CameraLookX);
         const float lookY = input.GetValue(Action::CameraLookY);
         const float zoom = input.GetValue(Action::CameraZoom);
 
-        out.yawDeltaDeg = lookX * lookSensitivity;
-        out.pitchDeltaDeg = lookY * lookSensitivity;
+        out.yawDeltaDeg = lookX * settings.lookSensitivityDeg;
+        const float pitchSign = settings.invertY ? -1.0f : 1.0f;
+        out.pitchDeltaDeg = lookY * settings.lookSensitivityDeg * pitchSign;
 
-        out.zoomDelta = -zoom * zoomSensitivity;
+        out.zoomDelta = -zoom * settings.zoomSensitivity;
 
         out.active = std::abs(out.yawDeltaDeg) > 0.0001f || std::abs(out.pitchDeltaDeg) > 0.0001f || std::abs(out.zoomDelta) > 0.0001f;
     }
