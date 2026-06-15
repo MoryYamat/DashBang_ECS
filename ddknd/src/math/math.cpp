@@ -20,6 +20,15 @@ namespace ddknd::math
 
         return forward;
     }
+    Quatf FromAxisAngle(const Vec3f& a, const float rad)
+    {
+        Vec3f n = normalize(a);
+
+        float half = rad / 2;
+        float s = std::sin(half);
+
+        return {std::cos(half), n.x() * s, n.y() * s, n.z() * s};
+    }
 
     Vec3f ExtractTranslation(const Mat4f& m)
     {

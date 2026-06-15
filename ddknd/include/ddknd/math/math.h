@@ -473,6 +473,7 @@ namespace ddknd::math
     float degToRadf(float degree);
 
     Vec3f ComputeForwardVec(float yawRad, float pitchRad);
+    Quatf FromAxisAngle(const Vec3f& a, const float rad);
 
     Vec3f ExtractTranslation(const Mat4f& m);
 

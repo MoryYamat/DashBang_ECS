@@ -13,11 +13,14 @@
 #include "game/component/controller_component.h"
 #include "game/component/state_component.h"
 
+
+#include "game/system/request/game_input_system.h"
+#include "game/system/state/game_character_state_system.h"
+#include "game/system/resolve/game_movement_intent_resolve_system.h"
 #include "game/system/logic/game_animation_system.h"
 #include "game/system/logic/game_camera_system.h"
 #include "game/system/logic/game_movement_system.h"
-#include "game/system/request/game_input_system.h"
-#include "game/system/resolve/game_movement_intent_resolve_system.h"
+#include "game/system/logic/game_character_facing_system.h"
 
 namespace app::system
 {
@@ -62,6 +65,8 @@ namespace app::system
     void GameSystemRunner::RunLogicPreEngine(::ddknd::ecs::World& world, GameFrameContext& ctx)
     {
         RunMovement(world, ctx);
+        RunCharacterFacing(world,ctx);
+        RunPlayerLocomotionState(world, ctx);
         RunPlayerLocomotionAnimation(world, ctx);
     }
     void GameSystemRunner::RunLogicPostEngine(::ddknd::ecs::World& world, GameFrameContext& ctx)
@@ -176,6 +181,35 @@ namespace app::system
         for (auto [velocity, intent, stats] : view)
         {
             MovementSystem::UpdateOne(velocity, intent, stats);
+        }
+    }
+
+    void GameSystemRunner::RunCharacterFacing(::ddknd::ecs::World& world, GameFrameContext& ctx)
+    {
+        using namespace ::ddknd::ecs;
+
+        auto& reg = world.GetRegistry();
+
+        auto view = reg.view(query().select<::ddknd::component::TransformComponent>().require<app::component::MovementIntentComponent>());
+
+        for(auto [transform, moveIntent] : view)
+        {
+            CharacterFacingSystem::UpdateOne(transform, moveIntent);
+        }
+
+    }
+
+    void GameSystemRunner::RunPlayerLocomotionState(::ddknd::ecs::World& world, GameFrameContext& ctx)
+    {
+        using namespace ::ddknd::ecs;
+
+        auto& reg = world.GetRegistry();
+
+        auto view = reg.view(query().select<app::component::PlayerLocomotionStateComponent>().require<app::component::MovementIntentComponent>());
+
+        for(auto [state, moveIntent]: view)
+        {
+            PlayerLocomotionStateSystem::UpdateOne(state, moveIntent);
         }
     }
 

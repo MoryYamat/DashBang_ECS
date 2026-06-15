@@ -32,6 +32,8 @@ namespace app::system
             void RunMovementIntentResolve(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunPlayerCameraInput(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunMovement(::ddknd::ecs::World& world, GameFrameContext& ctx);
+            void RunCharacterFacing(::ddknd::ecs::World& world, GameFrameContext& ctx);
+            void RunPlayerLocomotionState(::ddknd::ecs::World& world, GameFrameContext& ctx);
 
             void RunCameraDesiredPose(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunCameraApply(::ddknd::ecs::World& world, GameFrameContext& ctx);
