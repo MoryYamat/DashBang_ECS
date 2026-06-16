@@ -26,6 +26,7 @@ namespace ddknd::ecs
         using id_type = ::ddknd::ecs::Entity;
 
       private:
+        // @TODO Change the `std::type_index` part to access and manage using name string-index mapping.
         std::vector<std::uint32_t> gens_; // current generation: gens_[i] = gen (i=Index, gen=currentGeneration)
         std::vector<std::uint32_t> free_indices_;
         std::unordered_map<std::type_index, std::unique_ptr<::ddknd::ecs::IStorage>> storages_;
@@ -46,7 +47,7 @@ namespace ddknd::ecs
                 gens_.push_back(0);
             }
 
-            std::cerr << "new Entity: gen=" << std::bitset<32>(gens_[idx]) << " idx=" << std::bitset<32>(idx) << "\n";
+            // std::cerr << "new Entity: gen=" << std::bitset<32>(gens_[idx]) << " idx=" << std::bitset<32>(idx) << "\n";
             return id_type{gens_[idx], idx};
         }
 

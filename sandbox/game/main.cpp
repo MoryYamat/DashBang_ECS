@@ -50,7 +50,7 @@ int main()
 // ========= TODO: ========= 
 // HIGH
 // - implement animator_system: asset_manager and ecs orchestration
-// - 
+// - implement A* algo
 
 // MIDDLE
 // - implement match index -> dense index (it will improve view performance)
