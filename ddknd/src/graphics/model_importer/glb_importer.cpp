@@ -2,6 +2,7 @@
 #include "internal/graphics/model_importer/model_import_types.h"
 
 #include <algorithm>
+#include <cstddef>
 #include <limits>
 
 #define CGLTF_IMPLEMENTATION
@@ -253,14 +254,536 @@ namespace
         return out;
     }
 
+    bool GetImageBytes_FromBufferView(const cgltf_image* img, // memory上にあり
+                                      const unsigned char*& bytes, std::size_t& size)
+    {
+        bytes = nullptr;
+        size = 0;
+
+        if (!img || !img->buffer_view)
+            return false;
+
+        const cgltf_buffer_view* bv = img->buffer_view;
+
+        if (!bv->buffer || !bv->buffer->data)
+            return false;
+
+        // offset境界チェック
+        const std::size_t buf_size = static_cast<std::size_t>(bv->buffer->size);
+        const std::size_t off = static_cast<std::size_t>(bv->offset);
+        const std::size_t len = static_cast<std::size_t>(bv->size);
+        if (off > buf_size)
+            return false;
+        if (len > buf_size - off)
+            return false;
+
+        const unsigned char* base = static_cast<const unsigned char*>(bv->buffer->data);
+
+        bytes = base + off;
+        size = len;
+
+        return bytes != nullptr && size > 0;
+    }
+
+    cgltf_wrap_mode NormalizeWrapMode(cgltf_wrap_mode mode)
+    {
+        switch (mode)
+        {
+        case cgltf_wrap_mode_clamp_to_edge:
+        case cgltf_wrap_mode_mirrored_repeat:
+        case cgltf_wrap_mode_repeat:
+            return mode;
+
+        default:
+            return cgltf_wrap_mode_repeat;
+        }
+    }
+
+    std::optional<glType::ImportIndex> ToImportIndex(int index)
+    {
+        if (index < 0)
+            return std::nullopt;
+
+        return static_cast<glType::ImportIndex>(index);
+    }
+
+    void ReadTextureInfo(const cgltf_data* g, const cgltf_texture_view& src, glType::ImportTextureInfo& out)
+    {
+        out.index = src.texture ? ToImportIndex(IndexOf(g->textures, g->textures_count, src.texture)) : std::nullopt;
+
+        if (out.index)
+        {
+            out.texCoord = static_cast<std::uint32_t>(src.texcoord);
+        }
+        // else out.texCoord = 0; (default)
+    }
+
+    void ReadNormalTextureInfo(const cgltf_data* g, const cgltf_texture_view& src, glType::ImportNormalTexture& out)
+    {
+        out.index = src.texture ? ToImportIndex(IndexOf(g->textures, g->textures_count, src.texture)) : std::nullopt;
+
+        if (out.index)
+        {
+            out.texCoord = static_cast<std::uint32_t>(src.texcoord);
+            out.scale = src.scale;
+        }
+    }
+
+    void ReadOcclusionTextureInfo(const cgltf_data* g, const cgltf_texture_view& src,
+                                  glType::ImportOcclusionTexture& out)
+    {
+        out.index = src.texture ? ToImportIndex(IndexOf(g->textures, g->textures_count, src.texture)) : std::nullopt;
+        if (out.index)
+        {
+            out.texCoord = static_cast<std::uint32_t>(src.texcoord);
+            out.strength = src.scale;
+        }
+    }
+
+    void DebugTextureSlot(const ModelImportData& out, const char* label, const glType::ImportTextureInfo& info)
+    {
+        std::cerr << "  " << label << "\n";
+
+        if (!info.index)
+        {
+            std::cerr << "    texture: none\n";
+            return;
+        }
+
+        const auto textureIndex = *info.index;
+
+        std::cerr << "    texture index=" << textureIndex << "\n";
+        std::cerr << "    texCoord=" << info.texCoord << "\n";
+
+        if (textureIndex >= out.textures.size())
+        {
+            std::cerr << "    ERROR: texture index out of range\n";
+            return;
+        }
+
+        const auto& tex = out.textures[textureIndex];
+
+        std::cerr << "    texture name=" << tex.name << "\n";
+
+        if (!tex.source)
+        {
+            std::cerr << "    image: none\n";
+            return;
+        }
+
+        const auto imageIndex = *tex.source;
+
+        std::cerr << "    image index=" << imageIndex << "\n";
+
+        if (imageIndex >= out.images.size())
+        {
+            std::cerr << "    ERROR: image index out of range\n";
+            return;
+        }
+
+        const auto& img = out.images[imageIndex];
+
+        std::cerr << "    image name=" << img.name << "\n";
+        std::cerr << "    image uri=" << img.uri << "\n";
+        std::cerr << "    encoded size=" << img.encodedBytes.size() << "\n";
+    }
+
+    void DebugNormalTextureSlot(const ModelImportData& out, const char* label, const glType::ImportNormalTexture& info)
+    {
+        std::cerr << "  " << label << "\n";
+
+        if (!info.index)
+        {
+            std::cerr << "    texture: none\n";
+            return;
+        }
+
+        const auto textureIndex = *info.index;
+
+        std::cerr << "    texture index=" << textureIndex << "\n";
+        std::cerr << "    texCoord=" << info.texCoord << "\n";
+        std::cerr << "    scale=" << info.scale << "\n";
+
+        if (textureIndex >= out.textures.size())
+        {
+            std::cerr << "    ERROR: texture index out of range\n";
+            return;
+        }
+
+        const auto& tex = out.textures[textureIndex];
+
+        std::cerr << "    texture name=" << tex.name << "\n";
+
+        if (!tex.source)
+        {
+            std::cerr << "    image: none\n";
+            return;
+        }
+
+        const auto imageIndex = *tex.source;
+
+        std::cerr << "    image index=" << imageIndex << "\n";
+
+        if (imageIndex >= out.images.size())
+        {
+            std::cerr << "    ERROR: image index out of range\n";
+            return;
+        }
+
+        const auto& img = out.images[imageIndex];
+
+        std::cerr << "    image name=" << img.name << "\n";
+        std::cerr << "    image uri=" << img.uri << "\n";
+        std::cerr << "    encoded size=" << img.encodedBytes.size() << "\n";
+    }
+
+    void DebugOcclusionTextureSlot(const ModelImportData& out, const char* label,
+                                   const glType::ImportOcclusionTexture& info)
+    {
+        std::cerr << "  " << label << "\n";
+
+        if (!info.index)
+        {
+            std::cerr << "    texture: none\n";
+            return;
+        }
+
+        const auto textureIndex = *info.index;
+
+        std::cerr << "    texture index=" << textureIndex << "\n";
+        std::cerr << "    texCoord=" << info.texCoord << "\n";
+        std::cerr << "    strength=" << info.strength << "\n";
+
+        if (textureIndex >= out.textures.size())
+        {
+            std::cerr << "    ERROR: texture index out of range\n";
+            return;
+        }
+
+        const auto& tex = out.textures[textureIndex];
+
+        std::cerr << "    texture name=" << tex.name << "\n";
+
+        if (!tex.source)
+        {
+            std::cerr << "    image: none\n";
+            return;
+        }
+
+        const auto imageIndex = *tex.source;
+
+        std::cerr << "    image index=" << imageIndex << "\n";
+
+        if (imageIndex >= out.images.size())
+        {
+            std::cerr << "    ERROR: image index out of range\n";
+            return;
+        }
+
+        const auto& img = out.images[imageIndex];
+
+        std::cerr << "    image name=" << img.name << "\n";
+        std::cerr << "    image uri=" << img.uri << "\n";
+        std::cerr << "    encoded size=" << img.encodedBytes.size() << "\n";
+    }
+
+    const char* ToString(glType::AlphaMode mode)
+    {
+        switch (mode)
+        {
+        case glType::AlphaMode::OPAQUE:
+            return "OPAQUE";
+        case glType::AlphaMode::MASK:
+            return "MASK";
+        case glType::AlphaMode::BLEND:
+            return "BLEND";
+        default:
+            return "UNKNOWN";
+        }
+    }
+
+    void DebugImportedMaterials(const ModelImportData& out)
+    {
+        std::cerr << "================ Imported Materials Debug ================\n";
+        std::cerr << "materials=" << out.materials.size() << "\n";
+        std::cerr << "textures =" << out.textures.size() << "\n";
+        std::cerr << "images   =" << out.images.size() << "\n";
+        std::cerr << "samplers =" << out.samplers.size() << "\n";
+
+        for (std::size_t mi = 0; mi < out.materials.size(); ++mi)
+        {
+            const auto& mat = out.materials[mi];
+            const auto& pbr = mat.pbrMetallicRoughness;
+
+            std::cerr << "----------------------------------------------------------\n";
+            std::cerr << "material[" << mi << "] name=" << mat.name << "\n";
+
+            std::cerr << "  baseColorFactor=(" << pbr.baseColorFactor.x() << ", " << pbr.baseColorFactor.y() << ", "
+                      << pbr.baseColorFactor.z() << ", " << pbr.baseColorFactor.w() << ")\n";
+
+            std::cerr << "  metallicFactor=" << pbr.metallicFactor << "\n";
+            std::cerr << "  roughnessFactor=" << pbr.roughnessFactor << "\n";
+
+            DebugTextureSlot(out, "baseColorTexture", pbr.baseColorTexture);
+
+            DebugTextureSlot(out, "metallicRoughnessTexture", pbr.metallicRoughnessTexture);
+
+            DebugNormalTextureSlot(out, "normalTexture", mat.normalTexture);
+
+            DebugOcclusionTextureSlot(out, "occlusionTexture", mat.occlusionTexture);
+
+            DebugTextureSlot(out, "emissiveTexture", mat.emissiveTexture);
+
+            std::cerr << "  emissiveFactor=(" << mat.emissiveFactor.x() << ", " << mat.emissiveFactor.y() << ", "
+                      << mat.emissiveFactor.z() << ")\n";
+
+            std::cerr << "  alphaMode=" << ToString(mat.alphaMode) << "\n";
+            std::cerr << "  alphaCutoff=" << mat.alphaCutoff << "\n";
+            std::cerr << "  doubleSided=" << mat.doubleSided << "\n";
+        }
+
+        std::cerr << "==========================================================\n";
+    }
 } // namespace
 
 // functions
 namespace
 {
+    void debug(const cgltf_data* g, ModelImportData& out)
+    {
+        std::cerr << "material size=" << g->materials_count << "\n";
+        std::cerr << "texture count=" << g->textures_count << "\n";
+        std::cerr << "image count =" << g->images_count << "\n";
+
+        for (cgltf_size mi = 0; mi < g->materials_count; mi++)
+        {
+            const cgltf_material& m = g->materials[mi];
+            const auto& pbr = m.pbr_metallic_roughness;
+
+            if (pbr.base_color_texture.texture)
+            {
+                const cgltf_texture* tex = pbr.base_color_texture.texture;
+                const cgltf_image* img = tex->image;
+
+                std::cerr << "material[" << mi << "] name=" << (m.name ? m.name : "") << "\n";
+                std::cerr << " has baseColorTexture\n";
+
+                if (img)
+                {
+                    std::cerr << " image name=" << (img->name ? img->name : "") << "\n";
+                    std::cerr << " image uri=" << (img->uri ? img->uri : "") << "\n";
+                    std::cerr << "image mime=" << (img->mime_type ? img->mime_type : "(null)") << "\n";
+                    std::cerr << "has buffer_view=" << (img->buffer_view != nullptr) << "\n";
+                }
+            }
+        }
+    }
+
+    void DebugImportedMaterialLinks(const ModelImportData& out)
+    {
+        std::cerr << "materials=" << out.materials.size() << "\n";
+        std::cerr << "textures =" << out.textures.size() << "\n";
+        std::cerr << "images   =" << out.images.size() << "\n";
+
+        for (std::size_t mi = 0; mi < out.materials.size(); mi++)
+        {
+            const auto& mat = out.materials[mi];
+
+            std::cerr << "material[" << mi << "] name=" << mat.name << "\n";
+            const auto& baseColor = mat.pbrMetallicRoughness.baseColorTexture;
+
+            if (!baseColor.index)
+            {
+                std::cerr << "      baseColorTexture: none\n";
+                continue;
+            }
+
+            const auto textureIndex = *baseColor.index;
+            std::cerr << "      baseColorTexture texture index=" << textureIndex << "\n";
+
+            if (textureIndex >= out.textures.size())
+            {
+                std::cerr << "      ERROR: texture index out of range\n";
+                continue;
+            }
+
+            const auto& tex = out.textures[textureIndex];
+            if (!tex.source)
+            {
+                std::cerr << "      texture source image: none\n";
+                continue;
+            }
+
+            const auto& imageIndex = *tex.source;
+            std::cerr << "      texture source image index=" << imageIndex << "\n";
+
+            if (imageIndex >= out.images.size())
+            {
+                std::cerr << "      ERROR: image index out of range\n";
+                continue;
+            }
+
+            const auto& img = out.images[imageIndex];
+
+            std::cerr << "      image name=" << img.name << "\n";
+            std::cerr << "      image uri=" << img.uri << "\n";
+            std::cerr << "      image encoded size=" << img.encodedBytes.size() << "\n";
+        }
+    }
+
+    void ReadImages(const cgltf_data* g, ModelImportData& out)
+    {
+        out.images.resize(static_cast<std::size_t>(g->images_count));
+
+        for (cgltf_size i = 0; i < g->images_count; i++)
+        {
+            const cgltf_image& src = g->images[i];
+            auto& dst = out.images[i];
+
+            dst.name = src.name ? src.name : "";
+            dst.uri = src.uri ? src.uri : "";
+
+            if (src.mime_type)
+            {
+                if (static_cast<std::string>(src.mime_type) == "image/jpeg")
+                {
+                    dst.mimeType = ddknd::graphics::internal::types::MimeType::jpeg;
+                }
+                else if (static_cast<std::string>(src.mime_type) == "image/png")
+                {
+                    dst.mimeType = ddknd::graphics::internal::types::MimeType::png;
+                }
+            }
+            else
+            {
+                dst.mimeType = std::nullopt;
+            }
+
+            const unsigned char* bytes = nullptr;
+            std::size_t byteSize = 0;
+            if (GetImageBytes_FromBufferView(&src, bytes, byteSize))
+            {
+                dst.encodedBytes.assign(bytes, bytes + byteSize);
+            }
+
+            // std::cerr << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
+            // std::cerr << "image name=" << dst.name <<"\n";
+            // std::cerr << "image uri=" << dst.uri <<"\n";
+            // std::cerr << "image mimetype=" << (src.mime_type ? src.mime_type : "") << "\n";
+            // std::cerr << "has buffer_view=" << (src.buffer_view!=nullptr) << "\n";
+            // std::cerr << "encoded size=" << dst.encodedBytes.size() <<"\n";
+        }
+    }
+
+    void ReadSamplers(const cgltf_data* g, ModelImportData& out)
+    {
+        out.samplers.resize(static_cast<std::size_t>(g->samplers_count));
+
+        for (cgltf_size si = 0; si < g->samplers_count; si++)
+        {
+            const auto& src = g->samplers[si];
+            auto& dst = out.samplers[static_cast<std::size_t>(si)];
+
+            dst.name = src.name ? src.name : "";
+
+            dst.magFilter = (src.mag_filter != cgltf_filter_type_undefined)
+                                ? std::optional<std::uint32_t>{static_cast<std::uint32_t>(src.mag_filter)}
+                                : std::nullopt;
+            dst.minFilter = (src.min_filter != cgltf_filter_type_undefined)
+                                ? std::optional<std::uint32_t>{static_cast<std::uint32_t>(src.min_filter)}
+                                : std::nullopt;
+
+            dst.wrapS = NormalizeWrapMode(src.wrap_s);
+            dst.wrapT = NormalizeWrapMode(src.wrap_t);
+
+            // std::cerr << "sampler name=" << dst.name << "\n";
+            // std::cerr << "sampler magFilter Index=" << dst.magFilter.value() << "\n";
+            // std::cerr << "sampler minFilter Index=" << dst.minFilter.value() << "\n";
+            // std::cerr << "sampler wrapS=" << dst.wrapS << "\n";
+            // std::cerr << "sampler wrapT=" << dst.wrapT << "\n";
+        }
+    }
+
+    void ReadTextures(const cgltf_data* g, ModelImportData& out)
+    {
+        out.textures.resize(static_cast<std::size_t>(g->textures_count));
+
+        for (cgltf_size ti = 0; ti < g->textures_count; ti++)
+        {
+            const auto& src = g->textures[ti];
+            auto& dst = out.textures[static_cast<std::size_t>(ti)];
+
+            dst.name = src.name ? src.name : "";
+
+            dst.sampler =
+                src.sampler ? ToImportIndex(IndexOf(g->samplers, g->samplers_count, src.sampler)) : std::nullopt;
+
+            dst.source = src.image ? ToImportIndex(IndexOf(g->images, g->images_count, src.image)) : std::nullopt;
+
+            // std::cerr << "texture name=" << dst.name << "\n";
+            // std::cerr << "texture sampler=" << (dst.sampler ? std::to_string(*dst.sampler) : "(null)") << "\n";
+            // std::cerr << "texture source=" << (dst.source ? std::to_string(*dst.source) : "(null)") << "\n";
+        }
+    }
+
+    void ReadMaterials(const cgltf_data* g, ModelImportData& out)
+    {
+        out.materials.resize(static_cast<std::size_t>(g->materials_count));
+
+        for (cgltf_size mi = 0; mi < g->materials_count; mi++)
+        {
+            const auto& src = g->materials[mi];
+            auto& dst = out.materials[static_cast<std::size_t>(mi)];
+            dst.name = src.name ? src.name : "";
+
+            const auto& pbr = src.pbr_metallic_roughness;
+
+            if (src.has_pbr_metallic_roughness)
+            {
+                // base color factor
+                dst.pbrMetallicRoughness.baseColorFactor = {pbr.base_color_factor[0], pbr.base_color_factor[1],
+                                                            pbr.base_color_factor[2], pbr.base_color_factor[3]};
+
+                // textures
+                ReadTextureInfo(g, pbr.base_color_texture, dst.pbrMetallicRoughness.baseColorTexture);
+                ReadTextureInfo(g, pbr.metallic_roughness_texture, dst.pbrMetallicRoughness.metallicRoughnessTexture);
+
+                // factors
+                dst.pbrMetallicRoughness.metallicFactor = pbr.metallic_factor;
+                dst.pbrMetallicRoughness.roughnessFactor = pbr.roughness_factor;
+            }
+
+            ReadNormalTextureInfo(g, src.normal_texture, dst.normalTexture);
+            ReadOcclusionTextureInfo(g, src.occlusion_texture, dst.occlusionTexture);
+            ReadTextureInfo(g, src.emissive_texture, dst.emissiveTexture);
+            dst.emissiveFactor = {src.emissive_factor[0], src.emissive_factor[1], src.emissive_factor[2]};
+
+            switch (src.alpha_mode)
+            {
+            case cgltf_alpha_mode_opaque:
+                dst.alphaMode = glType::AlphaMode::OPAQUE;
+                break;
+            case cgltf_alpha_mode_mask:
+                dst.alphaMode = glType::AlphaMode::MASK;
+                break;
+            case cgltf_alpha_mode_blend:
+                dst.alphaMode = glType::AlphaMode::BLEND;
+                break;
+            default:
+                dst.alphaMode = glType::AlphaMode::OPAQUE;
+                break;
+            }
+
+            dst.alphaCutoff = src.alpha_cutoff;
+            dst.doubleSided = src.double_sided;
+
+            std::cerr << "material name=" << dst.name << "\n";
+        }
+    }
+
     void ReadNodes(const cgltf_data* g, ModelImportData& out)
     {
-        out.nodes.resize(g->nodes_count);
+        out.nodes.resize(static_cast<std::size_t>(g->nodes_count));
 
         for (cgltf_size ni = 0; ni < g->nodes_count; ni++)
         {
@@ -309,7 +832,7 @@ namespace
 
     void ReadScenes(const cgltf_data* g, ModelImportData& out)
     {
-        out.scenes.resize(g->scenes_count);
+        out.scenes.resize(static_cast<std::size_t>(g->scenes_count));
 
         for (cgltf_size si = 0; si < g->scenes_count; si++)
         {
@@ -440,7 +963,7 @@ namespace
 
     void ReadSkins(const cgltf_data* g, ModelImportData& out)
     {
-        out.skins.resize(g->skins_count);
+        out.skins.resize(static_cast<std::size_t>(g->skins_count));
         for (cgltf_size si = 0; si < g->skins_count; si++)
         {
             const cgltf_skin* src = &g->skins[si];
@@ -488,7 +1011,7 @@ namespace
 
     void ReadMeshes(const cgltf_data* g, ModelImportData& out)
     {
-        out.meshes.resize(g->meshes_count);
+        out.meshes.resize(static_cast<std::size_t>(g->meshes_count));
         for (cgltf_size mi = 0; mi < g->meshes_count; mi++)
         {
             const cgltf_mesh* srcMesh = &g->meshes[mi];
@@ -510,7 +1033,7 @@ namespace
 
     void ReadAnimations(const cgltf_data* g, ModelImportData& out)
     {
-        out.animations.resize(g->animations_count);
+        out.animations.resize(static_cast<std::size_t>(g->animations_count));
 
         for (cgltf_size ai = 0; ai < g->animations_count; ai++)
         {
@@ -518,7 +1041,7 @@ namespace
             auto& dstAnim = out.animations[ai];
 
             dstAnim.name = srcAnim->name ? srcAnim->name : "anim_" + std::to_string(ai);
-            std::cerr << "anim_name=" << dstAnim.name << "\n";
+            // std::cerr << "anim_name=" << dstAnim.name << "\n";
 
             for (cgltf_size ci = 0; ci < srcAnim->channels_count; ci++)
             {
@@ -617,6 +1140,15 @@ namespace ddknd::graphics::internal
             cgltf_free(g);
             return std::nullopt;
         }
+
+        ReadImages(g, model);
+        ReadSamplers(g, model);
+        ReadTextures(g, model);
+        ReadMaterials(g, model);
+
+        debug(g, model);
+        //DebugImportedMaterialLinks(model);
+        DebugImportedMaterials(model);
 
         ReadNodes(g, model);
         ReadScenes(g, model);

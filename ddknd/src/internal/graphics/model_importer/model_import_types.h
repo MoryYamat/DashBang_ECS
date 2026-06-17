@@ -4,9 +4,12 @@
 
 #pragma once
 
+#include "internal/graphics/model_importer/glTF_material_types.h"
+
 #include <vector>
 #include <string>
 #include "ddknd/math/math.h"
+
 
 // importer/loader intermediate products
 namespace ddknd::graphics::internal::types
@@ -108,16 +111,18 @@ namespace ddknd::graphics::internal::types
     {
         int defaultScene = -1;
 
+        // @TODO: Refactor the vertex information to better retain the structure of glTF.
         std::vector<ImportScene> scenes;
         std::vector<ImportNode> nodes;
         std::vector<ImportMesh> meshes;
         std::vector<ImportPrimitive> primitives;
         std::vector<ImportSkin> skins;
         std::vector<ImportAnimation> animations;
+
+        // Materials
+        std::vector<ImportMaterial> materials;
+        std::vector<ImportTexture> textures;
+        std::vector<ImportImage> images;
+        std::vector<ImportSampler> samplers;
     };
 }
-
-
-
-
-

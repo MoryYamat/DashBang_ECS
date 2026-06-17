@@ -56,6 +56,7 @@ int main()
 // - implement match index -> dense index (it will improve view performance)
 // - implement storage version to the ECS::Storage for caching
 // - Correct the design to be fundamentally correct.
+// - Improve the vertex data definition and import implementation of glTFImportData (-> Align the granularity with texture and image data) 
 
 
 // LOW
