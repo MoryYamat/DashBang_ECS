@@ -76,6 +76,7 @@ namespace ddknd::graphics
         // helpers
         virtual void SetUniformInt(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const int v) = 0;
         virtual void SetUniformBool(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const int v) = 0;
+        virtual void SetUniformFloat(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const float v) = 0;
         virtual void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Mat4f& m) = 0;
         virtual void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Vec2f& v) = 0;
         virtual void SetUniformVec4(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Vec4f& v) = 0;

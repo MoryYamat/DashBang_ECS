@@ -6,6 +6,47 @@
 #include "ddknd/math/math.h"
 #include <glad/glad.h>
 
+namespace 
+{
+    void BeginOpaquePass()
+    {
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+        glDepthMask(GL_TRUE);
+
+        glDisable(GL_BLEND);
+
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CCW);
+    }
+
+    void BeginLinePass()
+    {
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_FALSE);
+
+        glDisable(GL_BLEND);
+    }
+
+    void BeginOverlayPass()
+    {
+        glDisable(GL_DEPTH_TEST);
+        glDepthMask(GL_FALSE);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    void ResetDefaultRenderState()
+    {
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
+        glDisable(GL_BLEND);
+        glEnable(GL_CULL_FACE);
+    }
+}
+
 namespace ddknd::graphics
 {
     void RendererSystem::Set_Test()
@@ -25,6 +66,9 @@ namespace ddknd::graphics
 
     void RendererSystem::EndFrame()
     {
+        // Opaque 3D pass
+        BeginOpaquePass();
+
         for (const auto& cmd : cmds_)
         {
             backend_.UseShaderProgram(cmd.shader);
@@ -36,6 +80,7 @@ namespace ddknd::graphics
             backend_.BindPrimitive(cmd.mesh);
             backend_.DrawIndexed(cmd.indexCount);
         }
+        
         for (const auto& cmd : skinnedCmds_)
         {
             const auto& mat = cmd.material;
@@ -45,31 +90,36 @@ namespace ddknd::graphics
             backend_.SetUniform(cmd.shader, "uView", frameCamera_.view);
             backend_.SetUniform(cmd.shader, "uProj", frameCamera_.proj);
 
-            backend_.SetUniformVec4(cmd.shader, "uBaseColorFactor", mat.baseColorFactor);
+            // ********** materials **********
+            const bool hasBaseColorTexture = mat.baseColorTexture.texture.Is_valid();
 
-            // materials
-            if(mat.baseColorTexture.texture.Is_valid())
+            backend_.SetUniformVec4(cmd.shader, "uBaseColorFactor", mat.baseColorFactor);
+            backend_.SetUniformBool(cmd.shader, "uHasBaseColorTexture", hasBaseColorTexture);
+
+            if(hasBaseColorTexture)
             {
                 backend_.BindTexture2D(mat.baseColorTexture.texture, graphics::internal::binding::BaseColorTexture);
                 backend_.SetUniformInt(cmd.shader, "uBaseColorTexture", graphics::internal::binding::BaseColorTexture);
-                backend_.SetUniformBool(cmd.shader, "uHasBaseColorTexture", true);
             }
-            else
-            {
-                backend_.SetUniformBool(cmd.shader, "uHasBaseColorTexture", false);
-            }
+            // ********************************
 
             backend_.SetUniformMat4Array(cmd.shader, "uSkinMatrices", cmd.skinMatrices);
 
             backend_.BindPrimitive(cmd.mesh);
             backend_.DrawIndexed(cmd.indexCount);
         }
+        
+        // Debug Line Pass
+        BeginLinePass();
 
         for (const auto& cmd : debugTextCmds_)
         {
             backend_.DrawScreenQuadBatch(cmd.batch, cmd.shader, cmd.texture, cmd.indexCount, frameBegin_.w,
                                          frameBegin_.h);
         }
+
+        // overlay
+        BeginOverlayPass();
         for (const auto& cmd : debugLineCmds_)
         {
             backend_.SetUniform(cmd.shader, "uView", frameCamera_.view);
@@ -77,6 +127,8 @@ namespace ddknd::graphics
             backend_.SetUniform(cmd.shader, "uModel", math::Mat4f::Identity());
             backend_.DrawLineBatch(cmd.batch, cmd.shader, cmd.vertexCount);
         }
+
+        ResetDefaultRenderState();
 
         cmds_.clear();
         skinnedCmds_.clear();

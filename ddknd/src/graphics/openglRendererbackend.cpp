@@ -597,6 +597,29 @@ namespace ddknd::graphics
             glUniform1i(loc, v ? 1 : 0);
         }
 
+        void SetUniformFloat(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, float v) override
+        {
+                        if (name == nullptr)
+            {
+                spdlog::error("SetUniform(Mat4): uniform name is null");
+                return;
+            }
+
+            const GLuint prog = try_get_program_handle(shader);
+            if (prog == 0)
+            {
+                spdlog::error("SetUniform(Mat4): invalid shader");
+                return;
+            }
+
+            GLint loc = glGetUniformLocation(prog, name);
+            if (loc < 0)
+                return;
+
+            glUseProgram(prog);
+            glUniform1f(loc, v);
+        }
+
         void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Mat4f& m) override
         {
             if (name == nullptr)

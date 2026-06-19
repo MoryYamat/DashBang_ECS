@@ -51,6 +51,7 @@ int main()
 // HIGH
 // - implement animator_system: asset_manager and ecs orchestration
 // - implement A* algo
+// - add simple directional light and lambert diffuse
 
 // MIDDLE
 // - implement match index -> dense index (it will improve view performance)

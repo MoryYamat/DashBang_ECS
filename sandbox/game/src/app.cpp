@@ -330,13 +330,17 @@ namespace app
             gameSystemRunner_->UpdatePostEngine(*world_, gameCtx);
             engineSystemRunner_->UpdateRenderPrepare(*world_, frameCtx);
             
-            // ************* DEBUG DRAW *************
-            debugSystemRunner.BeginFrame(debugCtx);
-            debugSystemRunner.Update(*world_, debugCtx);
-            debugSystemRunner.EndFrame(debugCtx);
-            debugSystemRunner.Submit(debugCtx);
+
             if(debugConfig.camera.overrideMode == ::ddknd::debug::CameraOverrideMode::DebugCamera)
             {
+                
+                // ************* DEBUG DRAW *************
+                debugSystemRunner.BeginFrame(debugCtx);
+                debugSystemRunner.Update(*world_, debugCtx);
+                debugSystemRunner.EndFrame(debugCtx);
+                debugSystemRunner.Submit(debugCtx);
+
+                // ************* DEBUG CAMERA *************
                 frameCamera.view = debugCam_->matrices.view;
                 frameCamera.proj = debugCam_->matrices.proj;
                 frameCamera.valid = true;
