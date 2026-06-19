@@ -1,5 +1,7 @@
 #include "ddknd/graphics/renderer.h"
 
+#include "internal/graphics/renderer_binding.h"
+
 // TODO: need to remove
 #include "ddknd/math/math.h"
 #include <glad/glad.h>
@@ -36,11 +38,26 @@ namespace ddknd::graphics
         }
         for (const auto& cmd : skinnedCmds_)
         {
+            const auto& mat = cmd.material;
             backend_.UseShaderProgram(cmd.shader);
 
             backend_.SetUniform(cmd.shader, "uModel", cmd.modelMatrix);
             backend_.SetUniform(cmd.shader, "uView", frameCamera_.view);
             backend_.SetUniform(cmd.shader, "uProj", frameCamera_.proj);
+
+            backend_.SetUniformVec4(cmd.shader, "uBaseColorFactor", mat.baseColorFactor);
+
+            // materials
+            if(mat.baseColorTexture.texture.Is_valid())
+            {
+                backend_.BindTexture2D(mat.baseColorTexture.texture, graphics::internal::binding::BaseColorTexture);
+                backend_.SetUniformInt(cmd.shader, "uBaseColorTexture", graphics::internal::binding::BaseColorTexture);
+                backend_.SetUniformBool(cmd.shader, "uHasBaseColorTexture", true);
+            }
+            else
+            {
+                backend_.SetUniformBool(cmd.shader, "uHasBaseColorTexture", false);
+            }
 
             backend_.SetUniformMat4Array(cmd.shader, "uSkinMatrices", cmd.skinMatrices);
 

@@ -3,6 +3,7 @@
 const int MAX_BONES = 128;
 
 layout(location = 0) in vec3 aPos;
+layout(location = 2) in vec2 aTexCoord0;
 layout(location = 4) in uvec4 aJoints;
 layout(location = 5) in vec4 aWeights;
 
@@ -11,6 +12,8 @@ uniform mat4 uView;
 uniform mat4 uProj;
 
 uniform mat4 uSkinMatrices[MAX_BONES];
+
+out vec2 vTexCoord0;
 
 void main()
 {
@@ -21,6 +24,8 @@ void main()
         aWeights.w * uSkinMatrices[aJoints.w];
 
     vec4 skinnedPos = skin * vec4(aPos, 1.0);
+
+    vTexCoord0 = aTexCoord0;
 
     gl_Position = uProj * uView * uModel * skinnedPos;
 }

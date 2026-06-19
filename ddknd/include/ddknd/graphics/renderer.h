@@ -5,7 +5,6 @@
 #include "ddknd/math/math.h"
 #include "gfx_type.h"
 
-
 #include <cstdint>
 #include <memory>
 #include <span>
@@ -49,7 +48,8 @@ namespace ddknd::graphics
 
         virtual GPUID<PrimitiveTag> CreateOrGetPrimitive(const ImportPrimitive&, const PrimitiveKey&) = 0;
 
-        virtual GPUID<tag::TextureGPUTag> CreateTextureR8(int width, int height, std::span<const std::uint8_t> pixels) = 0;
+        virtual GPUID<tag::TextureGPUTag> CreateTextureR8(int width, int height,
+                                                          std::span<const std::uint8_t> pixels) = 0;
         virtual void DestroyTexture(GPUID<tag::TextureGPUTag> id) = 0;
         virtual void BindTexture2D(GPUID<tag::TextureGPUTag> id, std::uint32_t slot) = 0;
 
@@ -70,11 +70,15 @@ namespace ddknd::graphics
         virtual void DestroyLineBatch(GPUID<tag::LineBatchTag> id) = 0;
 
         // Texture
-        virtual GPUID<tag::TextureGPUTag> CreateTexture2D(const ::ddknd::graphics::types::Texture2DCreateDesc& desc) = 0;
+        virtual GPUID<tag::TextureGPUTag> CreateTexture2D(
+            const ::ddknd::graphics::types::Texture2DCreateDesc& desc) = 0;
 
         // helpers
+        virtual void SetUniformInt(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const int v) = 0;
+        virtual void SetUniformBool(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const int v) = 0;
         virtual void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Mat4f& m) = 0;
         virtual void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Vec2f& v) = 0;
+        virtual void SetUniformVec4(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Vec4f& v) = 0;
         virtual void SetUniformMat4Array(GPUID<tag::ShaderProgramGPUTag> shader, const char* name,
                                          std::span<const math::Mat4f> matrices) = 0;
     };
@@ -90,6 +94,48 @@ namespace ddknd::graphics
 // renderer system
 namespace ddknd::graphics
 {
+
+    // @TODO: Separated into a separate file
+    struct TextureGPURef
+    {
+        graphics::types::GPUID<tag::TextureGPUTag> texture;
+        std::uint32_t texCoord = 0;
+    };
+
+    struct NormalTextureGPURef
+    {
+        graphics::types::GPUID<tag::TextureGPUTag> texture;
+        std::uint32_t texCoord = 0;
+        float scale = 1.0f;
+    };
+
+    struct OcclusionTextureGPURef
+    {
+        graphics::types::GPUID<tag::TextureGPUTag> texture;
+        std::uint32_t texCoord = 0;
+        float strength = 1.0f;
+    };
+
+    struct MaterialDrawData
+    {
+        math::Vec4f baseColorFactor{1, 1, 1, 1};
+        TextureGPURef baseColorTexture;
+
+        float metallicFactor = 1.0f;
+        float roughnessFactor = 1.0f;
+        TextureGPURef metallicRoughnessTexture;
+
+        NormalTextureGPURef normalTexture;
+        OcclusionTextureGPURef occlusionTexture;
+
+        TextureGPURef emissiveTexture;
+        math::Vec3f emissiveFactor{0, 0, 0};
+
+        graphics::types::AlphaMode alphaMode = graphics::types::AlphaMode::OPAQUE;
+        float alphaCutoff = 0.5f;
+        bool doubleSided = false;
+    };
+
     // A command that tells the renderer to draw the mesh information for your app
     struct DrawCommand
     {
@@ -101,9 +147,9 @@ namespace ddknd::graphics
 
     struct RenderCamera
     {
-      ::ddknd::math::Mat4f view;
-      ::ddknd::math::Mat4f proj;
-      bool valid = false;
+        ::ddknd::math::Mat4f view;
+        ::ddknd::math::Mat4f proj;
+        bool valid = false;
     };
 
     struct SkinnedDrawCommand
@@ -120,6 +166,8 @@ namespace ddknd::graphics
         std::span<const math::Mat4f> skinMatrices; // AnimatorComponent
 
         std::uint32_t indexCount = 0;
+
+        MaterialDrawData material;
     };
 
     // *********** for Drawing Debug Resources ***********
@@ -156,8 +204,8 @@ namespace ddknd::graphics
 
     struct FrameCameraDesc
     {
-      ::ddknd::math::Mat4f view;
-      ::ddknd::math::Mat4f proj;
+        ::ddknd::math::Mat4f view;
+        ::ddknd::math::Mat4f proj;
     };
 
     class RendererSystem
@@ -196,6 +244,7 @@ namespace ddknd::graphics
         void DrawTestTriangle(TestDrawTriangleCommand test);
 
         void SetFrameCamera(const ::ddknd::graphics::RenderCamera& camera);
+
       private:
         IRendererBackend& backend_;
         std::vector<DrawCommand> cmds_;
@@ -267,7 +316,8 @@ namespace ddknd::graphics
         void Axis(const math::Vec3f& origin, const DebugAxisColors& colors, float length = 1.0f);
 
         // Skeleton
-        void Skeleton(const animation::types::SkeletonResource& skeleton, const animation::types::Pose& pose, Color color);
+        void Skeleton(const animation::types::SkeletonResource& skeleton, const animation::types::Pose& pose,
+                      Color color);
 
       private:
         // Text

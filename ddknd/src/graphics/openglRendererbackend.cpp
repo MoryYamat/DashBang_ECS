@@ -481,7 +481,7 @@ namespace ddknd::graphics
             GLuint tex = 0;
             glGenTextures(1, &tex);
 
-            if(tex == 0)
+            if (tex == 0)
                 return GPUID<tag::TextureGPUTag>::Invalid();
             glBindTexture(GL_TEXTURE_2D, tex);
 
@@ -513,9 +513,13 @@ namespace ddknd::graphics
 
         void DestroyTexture(GPUID<tag::TextureGPUTag> id) override
         {
+            if (!id.Is_valid())
+                return;
+
             const auto idx = static_cast<std::size_t>(id.Value());
             if (idx >= textures_.size())
                 return;
+
             if (textures_[idx].texture != 0)
             {
                 glDeleteTextures(1, &textures_[idx].texture);
@@ -524,12 +528,73 @@ namespace ddknd::graphics
         }
         void BindTexture2D(GPUID<tag::TextureGPUTag> id, std::uint32_t slot) override
         {
+            if (!id.Is_valid())
+                return;
+
             const auto idx = static_cast<std::size_t>(id.Value());
             if (idx >= textures_.size())
                 return;
 
             glActiveTexture(GL_TEXTURE0 + slot);
             glBindTexture(GL_TEXTURE_2D, textures_[idx].texture);
+        }
+
+        void SetUniformInt(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const int v) override
+        {
+            if (!shader.Is_valid())
+            {
+                spdlog::error("Invalid id");
+                return;
+            }
+
+            if (name == nullptr)
+            {
+                spdlog::error("SetUniform(Int): uniform name is null");
+                return;
+            }
+
+            const GLuint prog = try_get_program_handle(shader);
+            if (prog == 0)
+            {
+                spdlog::error("SetUniform(Int): invalid shader");
+                return;
+            }
+
+            GLint loc = glGetUniformLocation(prog, name);
+            if (loc < 0)
+                return;
+
+            glUseProgram(prog);
+            glUniform1i(loc, v);
+        }
+
+        void SetUniformBool(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const int v) override
+        {
+            if (!shader.Is_valid())
+            {
+                spdlog::error("SetUniformBool: invalid shader id");
+                return;
+            }
+
+            if (name == nullptr)
+            {
+                spdlog::error("SetUniformBool: uniform name is null");
+                return;
+            }
+
+            const GLuint prog = try_get_program_handle(shader);
+            if (prog == 0)
+            {
+                spdlog::error("SetUniformBool: invalid shader");
+                return;
+            }
+
+            const GLint loc = glGetUniformLocation(prog, name);
+            if (loc < 0)
+                return;
+
+            glUseProgram(prog);
+            glUniform1i(loc, v ? 1 : 0);
         }
 
         void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Mat4f& m) override
@@ -580,6 +645,36 @@ namespace ddknd::graphics
             glUseProgram(prog);
             glUniform2f(loc, v[0], v[1]);
         }
+
+        void SetUniformVec4(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Vec4f& v) override
+        {
+            if (!shader.Is_valid())
+            {
+                spdlog::error("SetUniformVec4: invalid shader id");
+                return;
+            }
+
+            if (name == nullptr)
+            {
+                spdlog::error("SetUniformVec4: uniform name is null");
+                return;
+            }
+
+            const GLuint prog = try_get_program_handle(shader);
+            if (prog == 0)
+            {
+                spdlog::error("SetUniformVec4: invalid shader");
+                return;
+            }
+
+            const GLint loc = glGetUniformLocation(prog, name);
+            if (loc < 0)
+                return;
+
+            glUseProgram(prog);
+            glUniform4f(loc, v.x(), v.y(), v.z(), v.w());
+        }
+
         void SetUniformMat4Array(GPUID<tag::ShaderProgramGPUTag> shader, const char* name,
                                  std::span<const math::Mat4f> matrices) override
         {
