@@ -330,6 +330,26 @@ namespace
     template <typename Tag>
     using GPUID = ::ddknd::graphics::types::GPUID<Tag>;
 
+    std::uint32_t ResolveMaterialIndexOrDefault(int importMaterialIndex, std::size_t materialCount)
+    {
+        if(materialCount == 0)
+        {
+            return 0;
+        }
+
+        if(importMaterialIndex < 0)
+        {
+            return 0;
+        }
+
+        const auto index = static_cast<std::size_t>(importMaterialIndex);
+
+        if(index >= materialCount)
+            return 0;
+
+        return static_cast<std::uint32_t>(index);
+    }
+
     ModelBuildResult BuildModelRenderResource(const ImportModelData& import, int sceneIndex, RendererBackned& backend,
                                               std::span<const TextureID> textureMap,const std::string& vpath /*vpath: Model_Asset_Key*/)
     {
@@ -349,8 +369,8 @@ namespace
         using model_id = GPUID<ModelTag>;
         using prim_id = GPUID<PrimitiveTag>;
 
-        ModelBuildResult result;
-        result.nodeToBone.emplace(); // init
+        ModelBuildResult out;
+        out.nodeToBone.emplace(); // init
 
         const auto& scenes = import.scenes;
         const auto& nodes = import.nodes;
@@ -364,10 +384,29 @@ namespace
             return {};
         }
         // source scene
-        result.model.sourceScene = sceneIndex;
+        out.model.sourceScene = sceneIndex;
 
         const auto& scene = scenes[sceneIndex];
         // std::cerr << "scene_name=" << scene.name << "\n";
+
+        // ==================== MATERIALS =========================
+        out.model.materials.resize(import.materials.size());
+
+        for (std::size_t i = 0; i < import.materials.size(); ++i)
+        {
+            out.model.materials[i] =
+                BuildMaterialResourceFromImport(
+                    import,
+                    static_cast<std::uint32_t>(i),
+                    textureMap
+                );
+        }
+
+        // fallback
+        if(out.model.materials.empty())
+        {
+            out.model.materials.push_back(MaterialResource{});
+        }
 
         // ===================== NODES =====================
         std::vector<int> roots = scene.rootNodes;
@@ -416,8 +455,9 @@ namespace
                 r.prim = gpuPrim;
                 r.vertexCount = static_cast<std::uint32_t>(prim.vertices.size());
                 r.indexCount = static_cast<std::uint32_t>(prim.indices.size());
+                r.materialIndex = ResolveMaterialIndexOrDefault(prim.material, out.model.materials.size());
 
-                result.model.primitives.push_back(r);
+                out.model.primitives.push_back(r);
             }
         }
 
@@ -426,21 +466,9 @@ namespace
             const auto& skin = nodes[n].skin;
             if (skin >= 0)
             {
-                result.model.skeleton = BuildModelSkeletonResource(import, skin, *result.nodeToBone);
+                out.model.skeleton = BuildModelSkeletonResource(import, skin, *out.nodeToBone);
                 break;
             }
-        }
-
-        result.model.materials.resize(import.materials.size());
-
-        for (std::size_t i = 0; i < import.materials.size(); ++i)
-        {
-            result.model.materials[i] =
-                BuildMaterialResourceFromImport(
-                    import,
-                    static_cast<std::uint32_t>(i),
-                    textureMap
-                );
         }
 
         // for(const auto& prim: out.primitives)
@@ -455,7 +483,7 @@ namespace
         //     }
         // }
 
-        return result;
+        return out;
     }
 
     int FindBoneIndexFromNode(const ImportSkin& skin, int nodeIndex)
@@ -795,7 +823,7 @@ namespace
         const auto& importMaterial = import.materials[materialIndex];
         const auto& pbr = importMaterial.pbrMetallicRoughness;
 
-        std::cerr << "material name=" << importMaterial.name << "\n";
+        // std::cerr << "material name=" << importMaterial.name << "\n";
 
         // copy factors
         out.baseColorFactor = pbr.baseColorFactor;

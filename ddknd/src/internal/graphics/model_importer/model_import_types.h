@@ -86,7 +86,7 @@ namespace ddknd::graphics::internal::types
         std::vector<Vertex> vertices;
         std::vector<std::uint32_t> indices;
 
-        int material = -1;
+        int material = -1;// -1: Default invalid value
     };
 
     struct ImportSkin
