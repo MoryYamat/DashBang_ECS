@@ -1,6 +1,9 @@
 #include "internal/graphics/model_importer/glb_importer.h"
 #include "internal/graphics/model_importer/model_import_types.h"
 
+
+#include "ddknd/graphics/gfx_type.h"
+
 #include <algorithm>
 #include <cstddef>
 #include <limits>
@@ -487,15 +490,15 @@ namespace
         std::cerr << "    encoded size=" << img.encodedBytes.size() << "\n";
     }
 
-    const char* ToString(glType::AlphaMode mode)
+    const char* ToString(::ddknd::graphics::types::AlphaMode mode)
     {
         switch (mode)
         {
-        case glType::AlphaMode::OPAQUE:
+        case ::ddknd::graphics::types::AlphaMode::OPAQUE:
             return "OPAQUE";
-        case glType::AlphaMode::MASK:
+        case ::ddknd::graphics::types::AlphaMode::MASK:
             return "MASK";
-        case glType::AlphaMode::BLEND:
+        case ::ddknd::graphics::types::AlphaMode::BLEND:
             return "BLEND";
         default:
             return "UNKNOWN";
@@ -543,6 +546,46 @@ namespace
         }
 
         std::cerr << "==========================================================\n";
+    }
+
+    ::ddknd::graphics::types::TextureFilter ToTextureFilter(cgltf_filter_type f)
+    {
+        using Filter = ::ddknd::graphics::types::TextureFilter;
+
+        switch (f)
+        {
+        case cgltf_filter_type_nearest:
+            return Filter::Nearest;
+        case cgltf_filter_type_linear:
+            return Filter::Linear;
+        case cgltf_filter_type_nearest_mipmap_nearest:
+            return Filter::NearestMipmapNearest;
+        case cgltf_filter_type_linear_mipmap_nearest:
+            return Filter::LinearMipmapNearest;
+        case cgltf_filter_type_nearest_mipmap_linear:
+            return Filter::NearestMipmapLinear;
+        case cgltf_filter_type_linear_mipmap_linear:
+            return Filter::LinearMipmapLinear;
+        default:
+            return Filter::Linear;
+        }
+    }
+
+    ::ddknd::graphics::types::TextureWrap ToTextureWrap(cgltf_wrap_mode w)
+    {
+        using Wrap = ::ddknd::graphics::types::TextureWrap;
+
+        switch (w)
+        {
+        case cgltf_wrap_mode_clamp_to_edge:
+            return Wrap::ClampToEdge;
+        case cgltf_wrap_mode_mirrored_repeat:
+            return Wrap::MirroredRepeat;
+        case cgltf_wrap_mode_repeat:
+            return Wrap::Repeat;
+        default:
+            return Wrap::Repeat;
+        }
     }
 } // namespace
 
@@ -647,11 +690,11 @@ namespace
             {
                 if (static_cast<std::string>(src.mime_type) == "image/jpeg")
                 {
-                    dst.mimeType = ddknd::graphics::internal::types::MimeType::jpeg;
+                    dst.mimeType = ddknd::graphics::types::MimeType::jpeg;
                 }
                 else if (static_cast<std::string>(src.mime_type) == "image/png")
                 {
-                    dst.mimeType = ddknd::graphics::internal::types::MimeType::png;
+                    dst.mimeType = ddknd::graphics::types::MimeType::png;
                 }
             }
             else
@@ -687,14 +730,14 @@ namespace
             dst.name = src.name ? src.name : "";
 
             dst.magFilter = (src.mag_filter != cgltf_filter_type_undefined)
-                                ? std::optional<std::uint32_t>{static_cast<std::uint32_t>(src.mag_filter)}
+                                ? std::optional{ToTextureFilter(src.mag_filter)}
                                 : std::nullopt;
             dst.minFilter = (src.min_filter != cgltf_filter_type_undefined)
-                                ? std::optional<std::uint32_t>{static_cast<std::uint32_t>(src.min_filter)}
+                                ? std::optional{ToTextureFilter(src.min_filter)}
                                 : std::nullopt;
 
-            dst.wrapS = NormalizeWrapMode(src.wrap_s);
-            dst.wrapT = NormalizeWrapMode(src.wrap_t);
+            dst.wrapS = ToTextureWrap(src.wrap_s);
+            dst.wrapT = ToTextureWrap(src.wrap_t);
 
             // std::cerr << "sampler name=" << dst.name << "\n";
             // std::cerr << "sampler magFilter Index=" << dst.magFilter.value() << "\n";
@@ -761,16 +804,16 @@ namespace
             switch (src.alpha_mode)
             {
             case cgltf_alpha_mode_opaque:
-                dst.alphaMode = glType::AlphaMode::OPAQUE;
+                dst.alphaMode = ::ddknd::graphics::types::AlphaMode::OPAQUE;
                 break;
             case cgltf_alpha_mode_mask:
-                dst.alphaMode = glType::AlphaMode::MASK;
+                dst.alphaMode = ::ddknd::graphics::types::AlphaMode::MASK;
                 break;
             case cgltf_alpha_mode_blend:
-                dst.alphaMode = glType::AlphaMode::BLEND;
+                dst.alphaMode = ::ddknd::graphics::types::AlphaMode::BLEND;
                 break;
             default:
-                dst.alphaMode = glType::AlphaMode::OPAQUE;
+                dst.alphaMode = ::ddknd::graphics::types::AlphaMode::OPAQUE;
                 break;
             }
 
@@ -1146,9 +1189,9 @@ namespace ddknd::graphics::internal
         ReadTextures(g, model);
         ReadMaterials(g, model);
 
-        debug(g, model);
-        //DebugImportedMaterialLinks(model);
-        DebugImportedMaterials(model);
+        // debug(g, model);
+        // // DebugImportedMaterialLinks(model);
+        // DebugImportedMaterials(model);
 
         ReadNodes(g, model);
         ReadScenes(g, model);

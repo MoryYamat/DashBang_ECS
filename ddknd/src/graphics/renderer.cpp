@@ -88,7 +88,7 @@ namespace ddknd::graphics
     }
 
     // @TODO: Dangling pointer countermeasures are needed.
-    void DebugDrawList::SetFont(const asset::FontResource* font)
+    void DebugDrawList::SetFont(const ::ddknd::graphics::types::FontResource* font)
     {
         if (!font)
         {
@@ -172,10 +172,10 @@ namespace ddknd::graphics
         return static_cast<std::uint32_t>(textIndices_.size());
     }
 
-    types::GPUID<tag::TextureTag> DebugDrawList::FontAtlas() const
+    types::GPUID<tag::TextureGPUTag> DebugDrawList::FontAtlas() const
     {
         if (!font_)
-            return types::GPUID<tag::TextureTag>::Invalid();
+            return types::GPUID<tag::TextureGPUTag>::Invalid();
 
         return font_->atlas;
     }
@@ -235,7 +235,7 @@ namespace ddknd::graphics
     }
 
     // *************** SKELETON *****************
-    void DebugDrawList::Skeleton(const animation::types::SkeletonResource& skeleton, const animation::Pose& pose,
+    void DebugDrawList::Skeleton(const animation::types::SkeletonResource& skeleton, const ::ddknd::animation::types::Pose& pose,
                                  Color color)
     {
         for (std::size_t i = 0; i < skeleton.bones.size(); ++i)

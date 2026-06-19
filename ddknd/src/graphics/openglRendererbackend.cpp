@@ -7,6 +7,7 @@
 #include <string_view>
 #include <vector>
 
+#include "internal/graphics/builder/backend_create_descriptor.h"
 #include "internal/graphics/model_importer/model_import_types.h"
 
 #include <glad/glad.h>
@@ -99,6 +100,107 @@ namespace
 
         return prog;
     }
+
+    struct GLTextureFormatDesc
+    {
+        GLint internalFormat;
+        GLenum uploadFormat;
+        GLenum uploadType;
+    };
+
+    GLTextureFormatDesc ToGLTextureFormat(ddknd::graphics::types::TextureFormat format)
+    {
+        using Format = ddknd::graphics::types::TextureFormat;
+
+        switch (format)
+        {
+        case Format::R8:
+            return {GL_R8, GL_RED, GL_UNSIGNED_BYTE};
+
+        case Format::RGB8:
+            return {GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE};
+
+        case Format::RGBA8:
+            return {GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE};
+
+        case Format::SRGB8:
+            return {GL_SRGB8, GL_RGB, GL_UNSIGNED_BYTE};
+
+        case Format::SRGBA8:
+            return {GL_SRGB8_ALPHA8, GL_RGBA, GL_UNSIGNED_BYTE};
+
+        default:
+            return {GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE};
+        }
+    }
+
+    GLint ToGLTextureFilter(ddknd::graphics::types::TextureFilter filter)
+    {
+        using F = ddknd::graphics::types::TextureFilter;
+
+        switch (filter)
+        {
+        case F::Nearest:
+            return GL_NEAREST;
+
+        case F::Linear:
+            return GL_LINEAR;
+
+        case F::NearestMipmapNearest:
+            return GL_NEAREST_MIPMAP_NEAREST;
+
+        case F::LinearMipmapNearest:
+            return GL_LINEAR_MIPMAP_NEAREST;
+
+        case F::NearestMipmapLinear:
+            return GL_NEAREST_MIPMAP_LINEAR;
+
+        case F::LinearMipmapLinear:
+            return GL_LINEAR_MIPMAP_LINEAR;
+
+        default:
+            return GL_LINEAR;
+        }
+    }
+
+    GLint ToGLTextureWrap(ddknd::graphics::types::TextureWrap wrap)
+    {
+        using W = ddknd::graphics::types::TextureWrap;
+
+        switch (wrap)
+        {
+        case W::ClampToEdge:
+            return GL_CLAMP_TO_EDGE;
+
+        case W::MirroredRepeat:
+            return GL_MIRRORED_REPEAT;
+
+        case W::Repeat:
+            return GL_REPEAT;
+
+        default:
+            return GL_REPEAT;
+        }
+    }
+
+    std::uint32_t BytesPerPixel(::ddknd::graphics::types::TextureFormat format)
+    {
+        using F = ::ddknd::graphics::types::TextureFormat;
+
+        switch (format)
+        {
+        case F::R8:
+            return 1;
+        case F::RGB8:
+        case F::SRGB8:
+            return 3;
+        case F::RGBA8:
+        case F::SRGBA8:
+            return 4;
+        default:
+            return 0;
+        }
+    }
 } // namespace
 
 namespace ddknd::graphics
@@ -155,10 +257,10 @@ namespace ddknd::graphics
             }
             for (auto& tex : textures_)
             {
-                if (tex != 0)
+                if (tex.texture != 0)
                 {
-                    glDeleteTextures(1, &tex);
-                    tex = 0;
+                    glDeleteTextures(1, &tex.texture);
+                    tex.texture = 0;
                 }
             }
             for (auto& batch : screenQuadBatches_)
@@ -219,13 +321,13 @@ namespace ddknd::graphics
 
         void DestroyShaderProgram(types::GPUID<tag::ShaderProgramGPUTag> id) override
         {
-            if(!id.Is_valid())
+            if (!id.Is_valid())
                 return;
 
             const auto idx = static_cast<std::size_t>(id.Value());
             if (idx >= programs_.size())
                 return;
-            
+
             if (programs_[idx] != 0)
             {
                 glDeleteProgram(programs_[idx]);
@@ -308,12 +410,12 @@ namespace ddknd::graphics
             }
 
             const auto idx = static_cast<std::size_t>(id.Value());
-            if(idx >= prims_.size() || prims_[idx].vao == 0)
+            if (idx >= prims_.size() || prims_[idx].vao == 0)
             {
                 spdlog::error("BindPrimitive: primitive not found");
                 return;
             }
-            
+
             glBindVertexArray(prims_[idx].vao);
         }
 
@@ -339,52 +441,95 @@ namespace ddknd::graphics
             return id;
         }
 
-        GPUID<tag::TextureTag> CreateTextureR8(int width, int height, std::span<const std::uint8_t> pixels) override
+        // @TODO Changed to use CreateTexture2D.
+        GPUID<tag::TextureGPUTag> CreateTextureR8(int width, int height, std::span<const std::uint8_t> pixels) override
         {
             if (width <= 0 || height <= 0 || pixels.empty())
-                return GPUID<tag::TextureTag>::Invalid();
+                return GPUID<tag::TextureGPUTag>::Invalid();
+            ::ddknd::graphics::types::Texture2DCreateDesc desc{};
+
+            desc.width = static_cast<std::uint32_t>(width);
+            desc.height = static_cast<std::uint32_t>(height);
+            desc.format = ::ddknd::graphics::types::TextureFormat::R8;
+            desc.pixels = pixels;
+            desc.sampler.minFilter = ::ddknd::graphics::types::TextureFilter::Linear;
+            desc.sampler.magFilter = ::ddknd::graphics::types::TextureFilter::Linear;
+            desc.sampler.wrapS = ::ddknd::graphics::types::TextureWrap::ClampToEdge;
+            desc.sampler.wrapT = ::ddknd::graphics::types::TextureWrap::ClampToEdge;
+            desc.generateMipmap = false;
+
+            return CreateTexture2D(desc);
+        }
+
+        GPUID<tag::TextureGPUTag> CreateTexture2D(const ::ddknd::graphics::types::Texture2DCreateDesc& desc) override
+        {
+            if (desc.width == 0 || desc.height == 0 || desc.pixels.empty())
+                return GPUID<tag::TextureGPUTag>::Invalid();
+
+            const auto bpp = BytesPerPixel(desc.format);
+            if (bpp == 0)
+                return GPUID<tag::TextureGPUTag>::Invalid();
+
+            const std::size_t expectedSize =
+                static_cast<std::size_t>(desc.width) * static_cast<std::size_t>(desc.height) * bpp;
+
+            if (desc.pixels.size() < expectedSize)
+                return GPUID<tag::TextureGPUTag>::Invalid();
+
+            const auto glfmt = ToGLTextureFormat(desc.format);
 
             GLuint tex = 0;
             glGenTextures(1, &tex);
+
+            if(tex == 0)
+                return GPUID<tag::TextureGPUTag>::Invalid();
             glBindTexture(GL_TEXTURE_2D, tex);
 
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, pixels.data());
+            glTexImage2D(GL_TEXTURE_2D, 0, glfmt.internalFormat, static_cast<GLsizei>(desc.width),
+                         static_cast<GLsizei>(desc.height), 0, glfmt.uploadFormat, glfmt.uploadType,
+                         desc.pixels.data());
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, ToGLTextureFilter(desc.sampler.minFilter));
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, ToGLTextureFilter(desc.sampler.magFilter));
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, ToGLTextureWrap(desc.sampler.wrapS));
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, ToGLTextureWrap(desc.sampler.wrapT));
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            if (desc.generateMipmap)
+            {
+                glGenerateMipmap(GL_TEXTURE_2D);
+            }
 
             glBindTexture(GL_TEXTURE_2D, 0);
 
-            const auto id = GPUID<tag::TextureTag>(static_cast<std::uint32_t>(textures_.size()));
+            const auto id = GPUID<tag::TextureGPUTag>(static_cast<std::uint32_t>(textures_.size()));
 
-            textures_.push_back(tex);
+            textures_.push_back(
+                GLTextureObject{.texture = tex, .width = desc.width, .height = desc.height, .format = desc.format});
+
             return id;
         }
 
-        void DestroyTexture(GPUID<tag::TextureTag> id) override
+        void DestroyTexture(GPUID<tag::TextureGPUTag> id) override
         {
             const auto idx = static_cast<std::size_t>(id.Value());
             if (idx >= textures_.size())
                 return;
-            if (textures_[idx] != 0)
+            if (textures_[idx].texture != 0)
             {
-                glDeleteTextures(1, &textures_[idx]);
-                textures_[idx] = 0;
+                glDeleteTextures(1, &textures_[idx].texture);
+                textures_[idx].texture = 0;
             }
         }
-        void BindTexture2D(GPUID<tag::TextureTag> id, std::uint32_t slot) override
+        void BindTexture2D(GPUID<tag::TextureGPUTag> id, std::uint32_t slot) override
         {
             const auto idx = static_cast<std::size_t>(id.Value());
             if (idx >= textures_.size())
                 return;
 
             glActiveTexture(GL_TEXTURE0 + slot);
-            glBindTexture(GL_TEXTURE_2D, textures_[idx]);
+            glBindTexture(GL_TEXTURE_2D, textures_[idx].texture);
         }
 
         void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Mat4f& m) override
@@ -536,7 +681,7 @@ namespace ddknd::graphics
         }
 
         void DrawScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag> batchId, GPUID<tag::ShaderProgramGPUTag> shader,
-                                 GPUID<tag::TextureTag> texture, std::uint32_t indexCount, int screenWidth,
+                                 GPUID<tag::TextureGPUTag> texture, std::uint32_t indexCount, int screenWidth,
                                  int screenHeight) override
         {
             if (!batchId.Is_valid() || !shader.Is_valid() || !texture.Is_valid())
@@ -765,7 +910,16 @@ namespace ddknd::graphics
             GLuint vbo = 0;
         };
 
-        std::vector<GLuint> textures_;
+        struct GLTextureObject
+        {
+            GLuint texture = 0;
+            std::uint32_t width = 0;
+            std::uint32_t height = 0;
+
+            graphics::types::TextureFormat format = graphics::types::TextureFormat::Unknown;
+        };
+
+        std::vector<GLTextureObject> textures_;
         std::vector<GLScreenQuadBatch> screenQuadBatches_;
         std::vector<GLLineBatch> lineBatches_;
         std::unordered_map<PrimitiveKey, GPUID<PrimitiveTag>, PrimitiveKeyHash> primitiveCache_;

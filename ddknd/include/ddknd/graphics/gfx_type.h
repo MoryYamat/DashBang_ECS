@@ -19,7 +19,7 @@ namespace ddknd::graphics::tag
     struct PrimitiveTag // mesh: vec<primitives>
     {
     };
-    struct TextureTag
+    struct TextureGPUTag
     {
     };
     struct ScreenQuadBatchTag
@@ -27,22 +27,12 @@ namespace ddknd::graphics::tag
     };
     struct LineBatchTag
     {
-
     };
     // ========== (runtime) =========
     struct ModelTag
     {
     };
 } // namespace ddknd::graphics::tag
-
-// delete
-namespace ddknd::animation::tag
-{
-    // delete
-    struct AnimationClipTag
-    {
-    };
-} // namespace ddknd::animation::tag
 
 namespace ddknd::graphics::types
 {
@@ -111,10 +101,104 @@ namespace ddknd::graphics::types
         math::Vec3f pos;
         math::Vec4f color;
     };
+
+    enum class MimeType
+    {
+        jpeg,
+        png
+    };
+
+    enum class AlphaMode
+    {
+        OPAQUE,
+        MASK,
+        BLEND
+    };
+
+    enum class TextureFilter
+    {
+        Nearest,
+        Linear,
+
+        NearestMipmapNearest,
+        LinearMipmapNearest,
+        NearestMipmapLinear,
+        LinearMipmapLinear
+    };
+
+    enum class TextureWrap
+    {
+        ClampToEdge,
+        MirroredRepeat,
+        Repeat
+    };
+
+    enum class TextureFormat
+    {
+        Unknown,
+        R8,
+
+        RGB8,
+        RGBA8,
+
+        SRGB8,
+        SRGBA8,
+    };
+
+    enum class TextureUsage
+    {
+        Unknown,
+        FontAtlas,
+        BaseColor,
+        Normal,
+        MetallicRoughness,
+        Occlusion,
+        Emissive,
+    };
+
+    struct SamplerDesc
+    {
+        ::ddknd::graphics::types::TextureFilter minFilter = ::ddknd::graphics::types::TextureFilter::Linear;
+        ::ddknd::graphics::types::TextureFilter magFilter = ::ddknd::graphics::types::TextureFilter::Linear;
+        ::ddknd::graphics::types::TextureWrap wrapS = ::ddknd::graphics::types::TextureWrap::Repeat;
+        ::ddknd::graphics::types::TextureWrap wrapT = ::ddknd::graphics::types::TextureWrap::Repeat;
+    };
+
+    struct Texture2DCreateDesc
+    {
+        std::uint32_t width;
+        std::uint32_t height;
+        ::ddknd::graphics::types::TextureFormat format;
+        std::span<const std::uint8_t> pixels;
+        SamplerDesc sampler;
+        bool generateMipmap;
+    };
 } // namespace ddknd::graphics::types
 
+// =============================runtime=============================
 namespace ddknd::animation::types
 {
+    template <typename Tag>
+    using AssetID = ::ddknd::asset::AssetID<Tag>;
+
+    struct Pose
+    {
+        using TRS = ::ddknd::math::TRS;
+        using Mat4f = ::ddknd::math::Mat4f;
+
+        std::vector<TRS> localTRS;
+        std::vector<Mat4f> localMatrices;
+        std::vector<Mat4f> globalMatrices;
+        std::vector<Mat4f> skinMatrices; // lbs?
+    };
+
+    struct AnimationState // AssetID<AnimClip> clips
+    {
+        AssetID<::ddknd::asset::tag::AnimationClip> clip;
+        float time = 0.0f;
+        float speed = 1.0f;
+        bool loop = true;
+    };
 
     struct Bone
     {
@@ -123,12 +207,11 @@ namespace ddknd::animation::types
 
         int parent = -1;
         Mat4f inverseBindMatrix = Mat4f::Identity();
-        Mat4f parentCorrection = Mat4f::Identity();// 
+        Mat4f parentCorrection = Mat4f::Identity(); //
         Mat4f bindLocalMatrix = Mat4f::Identity();
         TRS bindLocalTRS{};
     };
 
-    // runtime
     struct SkeletonResource
     {
         using Mat4f = ::ddknd::math::Mat4f;
@@ -172,14 +255,56 @@ namespace ddknd::animation::types
     };
 } // namespace ddknd::animation::types
 
-// =============================static=============================(it may be internal)
-namespace ddknd::graphics::asset
+namespace ddknd::animation::types
 {
+} // namespace ddknd::animation::types
+
+// =============================static=============================(it may be internal)
+namespace ddknd::graphics::types
+{
+
     template <typename Tag>
     using AssetID = ::ddknd::asset::AssetID<Tag>;
 
     template <typename Tag>
     using GPUID = ::ddknd::graphics::types::GPUID<Tag>;
+
+    struct TextureSlot
+    {
+        std::optional<AssetID<::ddknd::asset::tag::TextureTag>> texture;
+        std::uint32_t texCoord = 0;
+    };
+    struct NormalTextureSlot
+    {
+        std::optional<AssetID<::ddknd::asset::tag::TextureTag>> texture;
+        std::uint32_t texCoord = 0;
+        float scale = 1.0f;
+    };
+    struct OcclusionTextureSlot
+    {
+        std::optional<AssetID<::ddknd::asset::tag::TextureTag>> texture;
+        std::uint32_t texCoord = 0;
+        float strength = 1.0f;
+    };
+
+    struct MaterialResource
+    {
+        math::Vec4f baseColorFactor{1, 1, 1, 1};
+        TextureSlot baseColorTexture;
+        float metallicFactor = 1.0f;
+        float roughnessFactor = 1.0f;
+        TextureSlot metallicRoughnessTexture;
+
+        NormalTextureSlot normalTexture;
+        OcclusionTextureSlot occlusionTexture;
+
+        TextureSlot emissiveTexture;
+        math::Vec3f emissiveFactor{0, 0, 0};
+
+        types::AlphaMode alphaMode = types::AlphaMode::OPAQUE;
+        float alphaCutoff = 0.5f;
+        bool doubleSided = false;
+    };
 
     struct ShaderResource
     {
@@ -192,26 +317,41 @@ namespace ddknd::graphics::asset
         std::vector<AssetID<ModelTag>> scenes;
     };
 
+    struct TextureResource
+    {
+        GPUID<tag::TextureGPUTag> gpuTexture;
+
+        std::uint32_t width = 0;
+        std::uint32_t height = 0;
+        std::uint32_t channels = 0;
+
+        graphics::types::TextureFormat format = graphics::types::TextureFormat::RGBA8;
+    };
+
     struct PrimitiveResource
     {
         GPUID<tag::PrimitiveTag> prim; // GLPrimitive_Index
         std::uint32_t vertexCount = 0;
         std::uint32_t indexCount = 0;
+
+        std::uint32_t materialIndex = 0;
     };
 
     struct ModelRenderResource // AssetID<tag::Model> model;
     {
         int sourceScene = 0; // default
         std::vector<PrimitiveResource> primitives;
+        std::vector<MaterialResource> materials;
         std::optional<animation::types::SkeletonResource> skeleton;
         // std::vector<graphics::types::AnimationClipResource> clips;
-        std::vector<AssetID<::ddknd::asset::tag::AnimationClip>> clips; // Standard clips that can be used with this model
+        std::vector<AssetID<::ddknd::asset::tag::AnimationClip>>
+            clips; // Standard clips that can be used with this model
     };
 
     // FontResource
     struct FontResource
     {
-        GPUID<tag::TextureTag> atlas;
+        GPUID<tag::TextureGPUTag> atlas;
 
         int atlasWidth = 0;
         int atlasHeight = 0;
@@ -223,35 +363,9 @@ namespace ddknd::graphics::asset
 
         std::vector<::ddknd::graphics::types::GlyphResource> glyphs;
     };
-} // namespace ddknd::graphics::asset
+} // namespace ddknd::graphics::types
 
-// =============================runtime=============================
-namespace ddknd::animation
-{
-    template <typename Tag>
-    using AssetID = ::ddknd::asset::AssetID<Tag>;
-
-    struct Pose
-    {
-        using TRS = ::ddknd::math::TRS;
-        using Mat4f = ::ddknd::math::Mat4f;
-
-        std::vector<TRS> localTRS;
-        std::vector<Mat4f> localMatrices;
-        std::vector<Mat4f> globalMatrices;
-        std::vector<Mat4f> skinMatrices; // lbs?
-    };
-
-    struct AnimationState // AssetID<AnimClip> clips
-    {
-        AssetID<::ddknd::asset::tag::AnimationClip> clip;
-        float time = 0.0f;
-        float speed = 1.0f;
-        bool loop = true;
-    };
-} // namespace ddknd::animation
-
-namespace ddknd::graphics
+namespace ddknd::graphics::types
 {
     template <typename Tag>
     using AssetID = ::ddknd::asset::AssetID<Tag>;
@@ -260,10 +374,10 @@ namespace ddknd::graphics
     struct ModelInstance
     {
         AssetID<tag::ModelTag> model; // from ModelStore
-        animation::Pose pose;
-        animation::AnimationState animState;
+        animation::types::Pose pose;
+        animation::types::AnimationState animState;
     };
-} // namespace ddknd::graphics
+} // namespace ddknd::graphics::types
 // ===================================================================
 
 // @TODO: 3Dmodel実行時データ構造の設計とIR->Runtime変換の実装

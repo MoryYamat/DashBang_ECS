@@ -8,13 +8,12 @@
 // fwd
 namespace ddknd::animation
 {
-
     namespace types
     {
         struct SkeletonResource;
+        struct Pose;
     }
 
-    struct Pose;
 } // namespace ddknd::animation
 
 namespace ddknd::graphics
@@ -24,8 +23,8 @@ namespace ddknd::graphics
 
 namespace ddknd::animation::debug
 {
-    void TestAnimatorSystemInit(const animation::types::SkeletonResource& skeleton, animation::Pose& pose);
-    void TestAnimatorSystemUpdate(const animation::types::SkeletonResource& skeleton, animation::Pose& pose,
+    void TestAnimatorSystemInit(const animation::types::SkeletonResource& skeleton, animation::types::Pose& pose);
+    void TestAnimatorSystemUpdate(const animation::types::SkeletonResource& skeleton, animation::types::Pose& pose,
                                   graphics::DebugDrawList& draw);
 
     struct SkeletonDebugDrawSystem
@@ -38,6 +37,6 @@ namespace ddknd::animation::debug
                               ::ddknd::graphics::DebugDrawList& debugDraw);
     };
 
-    void DrawSkeleton(const ::ddknd::animation::types::SkeletonResource& skeleton, const ::ddknd::animation::Pose& pose,
+    void DrawSkeleton(const ::ddknd::animation::types::SkeletonResource& skeleton, const ::ddknd::animation::types::Pose& pose,
                       const ::ddknd::math::Mat4f& modelMatrix, const ::ddknd::math::Vec4f& color, ::ddknd::graphics::DebugDrawList& debugDraw);
 } // namespace ddknd::animation::debug

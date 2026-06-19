@@ -49,9 +49,9 @@ namespace ddknd::graphics
 
         virtual GPUID<PrimitiveTag> CreateOrGetPrimitive(const ImportPrimitive&, const PrimitiveKey&) = 0;
 
-        virtual GPUID<tag::TextureTag> CreateTextureR8(int width, int height, std::span<const std::uint8_t> pixels) = 0;
-        virtual void DestroyTexture(GPUID<tag::TextureTag> id) = 0;
-        virtual void BindTexture2D(GPUID<tag::TextureTag> id, std::uint32_t slot) = 0;
+        virtual GPUID<tag::TextureGPUTag> CreateTextureR8(int width, int height, std::span<const std::uint8_t> pixels) = 0;
+        virtual void DestroyTexture(GPUID<tag::TextureGPUTag> id) = 0;
+        virtual void BindTexture2D(GPUID<tag::TextureGPUTag> id, std::uint32_t slot) = 0;
 
         //
         virtual GPUID<tag::ScreenQuadBatchTag> CreateScreenQuadBatch() = 0;
@@ -59,7 +59,7 @@ namespace ddknd::graphics
         virtual void UpdateScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag>, std::span<const types::ScreenQuadVertex>,
                                            std::span<const std::uint32_t>) = 0;
         virtual void DrawScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag> batchId, GPUID<tag::ShaderProgramGPUTag> shader,
-                                         GPUID<tag::TextureTag> texture, std::uint32_t indexCount, int screenWidth,
+                                         GPUID<tag::TextureGPUTag> texture, std::uint32_t indexCount, int screenWidth,
                                          int screenHeight) = 0;
 
         //
@@ -68,6 +68,9 @@ namespace ddknd::graphics
         virtual void DrawLineBatch(GPUID<tag::LineBatchTag> id, GPUID<tag::ShaderProgramGPUTag> shader,
                                    std::uint32_t vertexCount) = 0;
         virtual void DestroyLineBatch(GPUID<tag::LineBatchTag> id) = 0;
+
+        // Texture
+        virtual GPUID<tag::TextureGPUTag> CreateTexture2D(const ::ddknd::graphics::types::Texture2DCreateDesc& desc) = 0;
 
         // helpers
         virtual void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Mat4f& m) = 0;
@@ -124,7 +127,7 @@ namespace ddknd::graphics
     {
         types::GPUID<tag::ScreenQuadBatchTag> batch;
         types::GPUID<tag::ShaderProgramGPUTag> shader;
-        types::GPUID<tag::TextureTag> texture;
+        types::GPUID<tag::TextureGPUTag> texture;
 
         std::uint32_t indexCount = 0;
     };
@@ -245,7 +248,7 @@ namespace ddknd::graphics
 
         void Init();
 
-        void SetFont(const asset::FontResource* font);
+        void SetFont(const ::ddknd::graphics::types::FontResource* font);
 
         void BeginFrame();
         void Text(float x, float y, std::string text, Color color);
@@ -255,7 +258,7 @@ namespace ddknd::graphics
         // Text
         types::GPUID<tag::ScreenQuadBatchTag> TextBatch() const;
         std::uint32_t TextIndexCount() const;
-        types::GPUID<tag::TextureTag> FontAtlas() const;
+        types::GPUID<tag::TextureGPUTag> FontAtlas() const;
 
         // Line
         void Axis(const math::Vec3f& origin, float length = 1.0f);
@@ -264,7 +267,7 @@ namespace ddknd::graphics
         void Axis(const math::Vec3f& origin, const DebugAxisColors& colors, float length = 1.0f);
 
         // Skeleton
-        void Skeleton(const animation::types::SkeletonResource& skeleton, const animation::Pose& pose, Color color);
+        void Skeleton(const animation::types::SkeletonResource& skeleton, const animation::types::Pose& pose, Color color);
 
       private:
         // Text
@@ -277,7 +280,7 @@ namespace ddknd::graphics
 
       private:
         IRendererBackend& backend_;
-        const asset::FontResource* font_ = nullptr;
+        const ::ddknd::graphics::types::FontResource* font_ = nullptr;
 
         // Text
         std::vector<DebugTextCommand> texts_;

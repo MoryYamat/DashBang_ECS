@@ -30,19 +30,19 @@ namespace ddknd::component
 
     struct AnimationPlaybackComponent
     {
-        ::ddknd::animation::AnimationState state;
+        ::ddknd::animation::types::AnimationState state;
     };
 
     struct PoseComponent
     {
-        ::ddknd::animation::Pose pose;
+        ::ddknd::animation::types::Pose pose;
     };
 
     // delete
     struct AnimatorComponent
     {
-        ::ddknd::animation::AnimationState state;
-        ::ddknd::animation::Pose pose;
+        ::ddknd::animation::types::AnimationState state;
+        ::ddknd::animation::types::Pose pose;
     };
 } // namespace ddknd::component
 

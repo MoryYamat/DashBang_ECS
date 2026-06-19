@@ -48,14 +48,17 @@ namespace ddknd::graphics
         using ShaderTag = ::ddknd::asset::tag::Shader;
         using ModelTag = ::ddknd::asset::tag::Model; //@TODO Model {render, skeleton, clip}
         using FontTag = ::ddknd::asset::tag::Font;
+        using TextureTag = ::ddknd::asset::tag::TextureTag;
 
         using ShaderID = AssetID<ShaderTag>;
         using ModelID = AssetID<ModelTag>;
         using FontID = AssetID<FontTag>;
+        using TextureID = AssetID<TextureTag>;
 
-        using ShaderResource = asset::ShaderResource;
-        using ModelRenderResource = asset::ModelRenderResource;
-        using FontResource = asset::FontResource;
+        using ShaderResource = ::ddknd::graphics::types::ShaderResource;
+        using ModelRenderResource = ::ddknd::graphics::types::ModelRenderResource;
+        using FontResource = ::ddknd::graphics::types::FontResource;
+        using TextureResource = ::ddknd::graphics::types::TextureResource;
 
         const ShaderResource* TryGet(ShaderID id) const
         {
@@ -68,6 +71,10 @@ namespace ddknd::graphics
         const FontResource* TryGet(FontID id) const
         {
             return fonts_.TryGet(id);
+        }
+        const TextureResource* TryGet(TextureID id) const
+        {
+            return textures_.TryGet(id);
         }
 
         void SetLoaded(ShaderID id, ShaderResource res)
@@ -82,6 +89,10 @@ namespace ddknd::graphics
         {
             fonts_.Set(id, std::move(res));
         }
+        void SetLoaded(TextureID id, TextureResource res)
+        {
+            textures_.Set(id, std::move(res));
+        }
 
       private:
         template <typename T, typename Tag>
@@ -90,6 +101,7 @@ namespace ddknd::graphics
         AssetStorage<ShaderResource, ShaderTag> shaders_;
         AssetStorage<ModelRenderResource, ModelTag> models_;
         AssetStorage<FontResource, FontTag> fonts_;
+        AssetStorage<TextureResource, TextureTag> textures_;
     };
 
     class GraphicsAssetLoader
@@ -102,12 +114,12 @@ namespace ddknd::graphics
         using ModelTag = ::ddknd::asset::tag::Model;
         using FontTag = ::ddknd::asset::tag::Font;
         using AnimTag = ::ddknd::asset::tag::AnimationClip;//
+        using TextureTag = ::ddknd::asset::tag::TextureTag;
 
         using ShaderID = AssetID<ShaderTag>;
         using ModelID = AssetID<ModelTag>;
         using FontID = AssetID<FontTag>;
-
-        using ModelRenderResource = asset::ModelRenderResource;
+        using TextureID = AssetID<TextureTag>;
 
         using IPathResolver = ::ddknd::io::IPathResolver;
         using IRendererBackend = ::ddknd::graphics::IRendererBackend;
@@ -123,6 +135,7 @@ namespace ddknd::graphics
         bool LoadShader(AssetManager& assets, GraphicsAssetStore& store, ShaderID id);
         bool LoadModel(AssetManager& assets, GraphicsAssetStore& gfxstore, AnimationAssetStore& animstore, ModelID id);
         bool LoadFont(AssetManager& assets, GraphicsAssetStore& store, FontID id);
+        bool LoadTexture(AssetManager& assets, GraphicsAssetStore& store, TextureID id);
 
       private:
         const IPathResolver& resolver_;

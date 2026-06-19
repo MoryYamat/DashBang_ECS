@@ -37,12 +37,12 @@ namespace ddknd::animation::debug
         ::ddknd::animation::debug::DrawSkeleton(*model->skeleton, poseComp.pose, transformComp.worldMatrix, color, debugDraw);
     }
 
-    void TestAnimatorSystemInit(const types::SkeletonResource& skeleton, animation::Pose& pose)
+    void TestAnimatorSystemInit(const types::SkeletonResource& skeleton, animation::types::Pose& pose)
     {
         ::ddknd::animation::AnimatorSystem::InitializePose(skeleton, pose);
     }
 
-    void TestAnimatorSystemUpdate(const animation::types::SkeletonResource& skeleton, animation::Pose& pose,
+    void TestAnimatorSystemUpdate(const animation::types::SkeletonResource& skeleton, animation::types::Pose& pose,
                                   graphics::DebugDrawList& draw)
     {
         using namespace math;
@@ -59,7 +59,7 @@ namespace ddknd::animation::debug
         }
     }
 
-    void DrawSkeleton(const ::ddknd::animation::types::SkeletonResource& skeleton, const ::ddknd::animation::Pose& pose,
+    void DrawSkeleton(const ::ddknd::animation::types::SkeletonResource& skeleton, const ::ddknd::animation::types::Pose& pose,
                       const ::ddknd::math::Mat4f& modelMatrix, const ::ddknd::math::Vec4f& color, ::ddknd::graphics::DebugDrawList& debugDraw)
     {
         const auto boneCount = skeleton.bones.size();

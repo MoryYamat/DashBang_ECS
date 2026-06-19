@@ -3,14 +3,18 @@
 #include <cstddef>
 #include <cstdint>
 
-#include "ddknd/asset/sub_asset_key.h"
 #include "ddknd/asset/asset_manager.h"
+#include "ddknd/asset/sub_asset_key.h"
+
 
 #include "ddknd/graphics/model_data.h"
 #include "ddknd/graphics/renderer.h"
 #include "internal/asset/shader_descriptor_parser.h"
+#include "internal/graphics/builder/backend_create_descriptor.h"
 #include "internal/graphics/model_importer/model_import_types.h"
+#include "internal/graphics/model_importer/stb_image_decoder.h"
 #include "internal/io/io.h"
+
 
 #include "internal/graphics/model_importer/glb_importer.h"
 
@@ -33,10 +37,13 @@ namespace
     using AnimationClipTag = ::ddknd::asset::tag::AnimationClip;
     using ImportChannelType = ddknd::graphics::internal::types::ChannelType;
 
-    using ModelRenderResource = ::ddknd::graphics::asset::ModelRenderResource;
+    using ModelRenderResource = ::ddknd::graphics::types::ModelRenderResource;
     using SkeletonResource = ::ddknd::animation::types::SkeletonResource;
     using AnimationChannel = ::ddknd::animation::types::AnimationChannel;
     using Bone = ::ddknd::animation::types::Bone;
+
+    using TextureResource = ::ddknd::graphics::types::TextureResource;
+    using MaterialResource = ::ddknd::graphics::types::MaterialResource;
 
     template <typename Tag>
     using AssetID = ::ddknd::asset::AssetID<Tag>;
@@ -45,6 +52,7 @@ namespace
     using GraphicsAssetStore = ::ddknd::graphics::GraphicsAssetStore;
     using RendererBackned = ::ddknd::graphics::IRendererBackend;
     using PrimitiveKey = ::ddknd::graphics::types::PrimitiveKey;
+    using TextureID = AssetID<asset::tag::TextureTag>;
 
     using AnimationAssetStore = ::ddknd::animation::AnimationAssetStore;
     using AnimationClipResource = ::ddknd::animation::types::AnimationClipResource;
@@ -58,7 +66,7 @@ namespace
 
     // ModelRenderResource BuildModelRenderResource(ImportModelData& data, GraphicsAssetStore& gfxstore);
     ModelBuildResult BuildModelRenderResource(const ImportModelData& import, int sceneIndex, RendererBackned& backend,
-                                              const std::string& vpath /*vpath: Model_Asset_Key*/);
+                                              std::span<const TextureID> textureMap,const std::string& vpath /*vpath: Model_Asset_Key*/);
     SkeletonResource BuildModelSkeletonResource(const ImportModelData& import, int skinIndex,
                                                 std::unordered_map<int, int>&);
     int FindParentBoneIndex(const ImportSkin& skin, int parentNode);
@@ -70,8 +78,14 @@ namespace
                                                      const std::unordered_map<int, int>&);
 
     // temporaly
-    std::vector<AssetID<::ddknd::asset::tag::AnimationClip>> RegisterAnimationClips(AssetManager&, const ImportModelData&,
-                                                                  const std::string& vpath /*vpath: Model_Asset_Key*/);
+    std::vector<AssetID<::ddknd::asset::tag::AnimationClip>> RegisterAnimationClips(
+        AssetManager&, const ImportModelData&, const std::string& vpath /*vpath: Model_Asset_Key*/);
+
+    std::optional<TextureResource> BuildTextureResourceFromImport(const ImportModelData& import,
+                                                                  std::uint32_t textureIndex,
+                                                                  graphics::IRendererBackend& backend);
+    MaterialResource BuildMaterialResourceFromImport(const ImportModelData& import, std::uint32_t materialIndex,
+                                                     std::span<const TextureID> textureMap);
 } // namespace
 
 namespace ddknd::graphics
@@ -155,7 +169,7 @@ namespace ddknd::graphics
             return false;
         }
 
-        asset::ShaderResource res{};
+        ::ddknd::graphics::types::ShaderResource res{};
         res.program = prog;
 
         store.SetLoaded(id, std::move(res));
@@ -189,6 +203,26 @@ namespace ddknd::graphics
             return false;
         }
 
+        std::vector<TextureID> textureMap(imported->textures.size());
+
+        for (std::size_t i = 0; i < imported->textures.size(); i++)
+        {
+            auto texture_resource = BuildTextureResourceFromImport(*imported, static_cast<std::uint32_t>(i), backend_);
+
+            if (!texture_resource)
+            {
+                spdlog::warn("[LoadModel]: Failed to build texture resource. textureIndex={}", i);
+                continue;
+            }
+
+            const std::string textureVpath = ::ddknd::asset::MakeTextureKey(*vpath, i);
+            TextureID textureID = assets.GetOrCreate<TextureTag>(textureVpath);
+            gfxstore.SetLoaded(textureID, std::move(*texture_resource));
+            assets.SetState(textureID, ::ddknd::asset::AssetState::Loaded);
+
+            textureMap[i] = textureID;
+        }
+
         // const int sceneIndex = imported->defaultScene;
         const int sceneIndex = 0;
 
@@ -201,7 +235,7 @@ namespace ddknd::graphics
 
         // build and set resources
         auto res =
-            BuildModelRenderResource(*imported, sceneIndex /*Default SceneIndex*/, backend_, std::string(*vpath));
+            BuildModelRenderResource(*imported, sceneIndex /*Default SceneIndex*/, backend_, textureMap, std::string(*vpath));
 
         // The animations within the GLB are treated as sub-assets and given asset IDs
         if (res.nodeToBone)
@@ -213,6 +247,7 @@ namespace ddknd::graphics
             }
             res.model.clips = std::move(clipIdx);
         }
+
         gfxstore.SetLoaded(id, std::move(res.model));
         assets.SetState(id, ddknd::asset::AssetState::Loaded);
 
@@ -256,7 +291,7 @@ namespace ddknd::graphics
         }
 
         // create resource
-        asset::FontResource fontRes;
+        ::ddknd::graphics::types::FontResource fontRes;
 
         fontRes.atlas = tex;
         fontRes.atlasWidth = imported->atlasWidth;
@@ -296,7 +331,7 @@ namespace
     using GPUID = ::ddknd::graphics::types::GPUID<Tag>;
 
     ModelBuildResult BuildModelRenderResource(const ImportModelData& import, int sceneIndex, RendererBackned& backend,
-                                              const std::string& vpath)
+                                              std::span<const TextureID> textureMap,const std::string& vpath /*vpath: Model_Asset_Key*/)
     {
         // ====================== build these resource ======================
         // struct PrimitiveResource
@@ -308,7 +343,7 @@ namespace
         using ModelTag = ::ddknd::graphics::tag::ModelTag;
         using PrimitiveTag = ::ddknd::graphics::tag::PrimitiveTag;
 
-        using PrimitiveResource = ::ddknd::graphics::asset::PrimitiveResource;
+        using PrimitiveResource = ::ddknd::graphics::types::PrimitiveResource;
 
         // resource container index
         using model_id = GPUID<ModelTag>;
@@ -394,6 +429,18 @@ namespace
                 result.model.skeleton = BuildModelSkeletonResource(import, skin, *result.nodeToBone);
                 break;
             }
+        }
+
+        result.model.materials.resize(import.materials.size());
+
+        for (std::size_t i = 0; i < import.materials.size(); ++i)
+        {
+            result.model.materials[i] =
+                BuildMaterialResourceFromImport(
+                    import,
+                    static_cast<std::uint32_t>(i),
+                    textureMap
+                );
         }
 
         // for(const auto& prim: out.primitives)
@@ -494,13 +541,17 @@ namespace
             // std::cerr << "[Bone] i=" << i << " node=" << nodeIndex << " name=" << node.name
             //           << " nodeParent=" << node.parent << " parentBone=" << b.parent << "\n";
             // std::cerr << "parentCorrection:\n"
-            //           << b.parentCorrection(0, 0) << " " << b.parentCorrection(0, 1) << " " << b.parentCorrection(0, 2)
+            //           << b.parentCorrection(0, 0) << " " << b.parentCorrection(0, 1) << " " << b.parentCorrection(0,
+            //           2)
             //           << " " << b.parentCorrection(0, 3) << "\n"
-            //           << b.parentCorrection(1, 0) << " " << b.parentCorrection(1, 1) << " " << b.parentCorrection(1, 2)
+            //           << b.parentCorrection(1, 0) << " " << b.parentCorrection(1, 1) << " " << b.parentCorrection(1,
+            //           2)
             //           << " " << b.parentCorrection(1, 3) << "\n"
-            //           << b.parentCorrection(2, 0) << " " << b.parentCorrection(2, 1) << " " << b.parentCorrection(2, 2)
+            //           << b.parentCorrection(2, 0) << " " << b.parentCorrection(2, 1) << " " << b.parentCorrection(2,
+            //           2)
             //           << " " << b.parentCorrection(2, 3) << "\n"
-            //           << b.parentCorrection(3, 0) << " " << b.parentCorrection(3, 1) << " " << b.parentCorrection(3, 2)
+            //           << b.parentCorrection(3, 0) << " " << b.parentCorrection(3, 1) << " " << b.parentCorrection(3,
+            //           2)
             //           << " " << b.parentCorrection(3, 3) << "\n";
 
             if (i < skin.inverseBindMatrices.size())
@@ -541,8 +592,10 @@ namespace
     // }
 
     // delete
-    // std::vector<AssetID<AnimationClipTag>> RegisterAnimationClips(AssetManager& assets, const ImportModelData& imported,
-    //                                                               const std::string& vpath /*vpath: Model_Asset_Key*/)
+    // std::vector<AssetID<AnimationClipTag>> RegisterAnimationClips(AssetManager& assets, const ImportModelData&
+    // imported,
+    //                                                               const std::string& vpath /*vpath:
+    //                                                               Model_Asset_Key*/)
     // {
     //     std::vector<AssetID<AnimationClipTag>> out;
     //     for (std::size_t i = 0; i < imported.animations.size(); i++)
@@ -555,16 +608,16 @@ namespace
     //     return out;
     // }
 
-    // 
-    std::vector<AssetID<::ddknd::asset::tag::AnimationClip>> RegisterAnimationClips(AssetManager& assets, const ImportModelData& imported,
-                                                                  const std::string& vpath /*vpath: Model_Asset_Key*/)
+    //
+    std::vector<AssetID<::ddknd::asset::tag::AnimationClip>> RegisterAnimationClips(
+        AssetManager& assets, const ImportModelData& imported, const std::string& vpath /*vpath: Model_Asset_Key*/)
     {
         std::vector<AssetID<::ddknd::asset::tag::AnimationClip>> out;
         for (std::size_t i = 0; i < imported.animations.size(); i++)
         {
             const auto& anim = imported.animations[i];
 
-            if(anim.name.empty())
+            if (anim.name.empty())
             {
                 auto key = std::string(vpath) + "#anim/index/" + std::to_string(i);
                 out.push_back(assets.GetOrCreate<::ddknd::asset::tag::AnimationClip>(key));
@@ -638,6 +691,174 @@ namespace
 
         return out;
     }
+
+    ::ddknd::graphics::types::SamplerDesc BuildSamplerDescOrDefault(
+        const ImportModelData& import, const ddknd::graphics::internal::types::ImportTexture& tex)
+    {
+        using namespace ::ddknd::graphics::types;
+        SamplerDesc desc{};
+
+        if (!tex.sampler)
+            return desc;
+
+        const auto samplerIndex = *tex.sampler;
+        if (samplerIndex >= import.samplers.size())
+        {
+            spdlog::warn("[BuildSamplerDescOrDefault]: Invalid samplerindex.");
+            return desc;
+        }
+
+        const auto& src = import.samplers[samplerIndex];
+
+        if (src.minFilter)
+            desc.minFilter = *src.minFilter;
+        if (src.magFilter)
+            desc.magFilter = *src.magFilter;
+
+        desc.wrapS = src.wrapS;
+        desc.wrapT = src.wrapT;
+
+        return desc;
+    }
+
+    std::optional<TextureResource> BuildTextureResourceFromImport(const ImportModelData& import,
+                                                                  std::uint32_t textureIndex,
+                                                                  graphics::IRendererBackend& backend)
+    {
+
+        if (textureIndex >= import.textures.size())
+            return std::nullopt;
+        const auto& importTexture = import.textures[textureIndex];
+
+        if (!importTexture.source)
+            return std::nullopt;
+        const auto imageIndex = *importTexture.source;
+
+        if (imageIndex >= import.images.size())
+            return std::nullopt;
+        const auto& image = import.images[imageIndex];
+
+        auto decoded = ::ddknd::graphics::internal::DecodeImageRGBA8(image.encodedBytes);
+        if (!decoded)
+            return std::nullopt;
+
+        const auto samplerDesc = BuildSamplerDescOrDefault(import, importTexture);
+
+        ::ddknd::graphics::types::Texture2DCreateDesc desc{};
+        desc.width = decoded->width;
+        desc.height = decoded->height;
+        desc.format = ::ddknd::graphics::types::TextureFormat::RGBA8;
+        desc.pixels = std::span<const std::uint8_t>(decoded->pixels.data(), decoded->pixels.size());
+        desc.sampler = samplerDesc;
+        desc.generateMipmap = true;
+
+        const auto gpuTexture = backend.CreateTexture2D(desc);
+        if (!gpuTexture.Is_valid())
+        {
+            return std::nullopt;
+        }
+
+        TextureResource out{};
+        out.gpuTexture = gpuTexture;
+        out.width = desc.width;
+        out.height = desc.height;
+        out.channels = decoded->channels;
+        out.format = desc.format;
+
+        return out;
+    }
+
+    std::optional<TextureID> ResolveTextureID(std::span<const TextureID> textureMap, std::optional<std::uint32_t> importTextureIndex)
+    {
+        if(!importTextureIndex)
+            return std::nullopt;
+
+        const auto index = *importTextureIndex;
+
+        if(index >= textureMap.size())
+            return std::nullopt;
+
+        const TextureID id = textureMap[index];
+
+        if(!id.Is_valid())
+            return std::nullopt;
+
+        return id;
+    }
+
+    MaterialResource BuildMaterialResourceFromImport(const ImportModelData& import, std::uint32_t materialIndex,
+                                                     std::span<const TextureID> textureMap)
+    {
+        MaterialResource out{};
+        if(materialIndex >= import.materials.size())
+            return out;
+        const auto& importMaterial = import.materials[materialIndex];
+        const auto& pbr = importMaterial.pbrMetallicRoughness;
+
+        std::cerr << "material name=" << importMaterial.name << "\n";
+
+        // copy factors
+        out.baseColorFactor = pbr.baseColorFactor;
+        out.metallicFactor = pbr.metallicFactor;
+        out.roughnessFactor = pbr.roughnessFactor;
+        out.emissiveFactor = importMaterial.emissiveFactor;
+        out.alphaMode = importMaterial.alphaMode;
+        out.alphaCutoff = importMaterial.alphaCutoff;
+        out.doubleSided = importMaterial.doubleSided;
+
+        // resolve ImportIndex - TextureID and copies its datas
+        const auto baseColorTexture = ResolveTextureID(textureMap, pbr.baseColorTexture.index);
+        if(baseColorTexture)
+        {
+            out.baseColorTexture.texture = *baseColorTexture;
+            out.baseColorTexture.texCoord = pbr.baseColorTexture.texCoord;
+        }
+
+
+        const auto metallicRoughnessTexture = ResolveTextureID(textureMap, pbr.metallicRoughnessTexture.index);
+        if(metallicRoughnessTexture)
+        {
+            out.metallicRoughnessTexture.texture = *metallicRoughnessTexture;
+            out.metallicRoughnessTexture.texCoord = pbr.metallicRoughnessTexture.texCoord;
+        }
+        
+        const auto& normal = importMaterial.normalTexture;
+        const auto normalTexture = ResolveTextureID(textureMap, normal.index);
+        if(normalTexture)
+        {
+            out.normalTexture.texture = *normalTexture;
+            out.normalTexture.texCoord = normal.texCoord;
+            out.normalTexture.scale = normal.scale;
+        }
+
+        const auto& occlusion = importMaterial.occlusionTexture;
+        const auto occlusionTexture = ResolveTextureID(textureMap, occlusion.index);
+        if(occlusionTexture)
+        {
+            out.occlusionTexture.texture = *occlusionTexture;
+            out.occlusionTexture.texCoord = occlusion.texCoord;
+            out.occlusionTexture.strength = occlusion.strength;
+        }
+
+        const auto& emissive = importMaterial.emissiveTexture;
+        const auto emissiveTexture = ResolveTextureID(textureMap, emissive.index);
+        if(emissiveTexture)
+        {
+            out.emissiveTexture.texture = *emissiveTexture;
+            out.emissiveTexture.texCoord = emissive.texCoord;
+        }
+
+        return out;
+    }
+
+    // struct TextureResource
+    // {
+    //     GPUID<tag::TextureGPUTag> gpuTexture;
+    //     std::uint32_t width = 0;
+    //     std::uint32_t height = 0;
+    //     std::uint32_t channels = 0;
+    //     graphics::types::TextureFormat format = graphics::types::TextureFormat::RGBA8;
+    // };
 
     // std::vector<math::Mat4f> BuildImportNodeGlobalMatrices(const ImportModelData& import)
     // {

@@ -1,59 +1,49 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include <cstdint>
 #include <optional>
+#include <string>
+#include <vector>
 
+
+#include "ddknd/graphics/gfx_type.h"
 #include "ddknd/math/math.h"
+
 
 namespace ddknd::graphics::internal::types
 {
     using ImportIndex = std::uint32_t;
 
-    enum class MimeType
-    {
-        jpeg,
-        png
-    };
-
-    enum class AlphaMode
-    {
-        OPAQUE,
-        MASK,
-        BLEND
-    };
-
     struct ImportImage
     {
         std::string name;
         std::string uri;
-        std::optional<MimeType> mimeType;
+        std::optional<::ddknd::graphics::types::MimeType> mimeType;
 
-        std::vector<std::uint8_t> encodedBytes;// PNG/JPEG's encoded bytes
+        std::vector<std::uint8_t> encodedBytes; // PNG/JPEG's encoded bytes
     };
 
     struct ImportSampler
     {
         std::string name;
-        std::optional<std::uint32_t> magFilter; // 9728/9729
-        std::optional<std::uint32_t> minFilter; // 9728/9729/9984/9985/9986/9987
-        std::uint32_t wrapS = 10497;     // 33071/33648/10497
-        std::uint32_t wrapT = 10497;     // 33071/33648/10497
+        std::optional<::ddknd::graphics::types::TextureFilter> magFilter; // 9728/9729
+        std::optional<::ddknd::graphics::types::TextureFilter> minFilter; // 9728/9729/9984/9985/9986/9987
+        ::ddknd::graphics::types::TextureWrap wrapS = ::ddknd::graphics::types::TextureWrap::Repeat;            // 33071/33648/10497
+        ::ddknd::graphics::types::TextureWrap wrapT = ::ddknd::graphics::types::TextureWrap::Repeat;            // 33071/33648/10497
     };
 
     struct ImportTexture
     {
         std::string name;
 
-        std::optional<ImportIndex> sampler;//index to sampler
-        std::optional<ImportIndex> source;//index to image
+        std::optional<ImportIndex> sampler; // index to sampler
+        std::optional<ImportIndex> source;  // index to image
     };
 
     struct ImportTextureInfo
     {
         std::optional<ImportIndex> index;
-        std::uint32_t texCoord = 0;     // TEXCOORD_N
+        std::uint32_t texCoord = 0; // TEXCOORD_N
     };
 
     struct ImportPBRMetallicRoughness
@@ -80,7 +70,6 @@ namespace ddknd::graphics::internal::types
         float strength = 1.0f;
     };
 
-
     struct ImportMaterial
     {
         using Vec4f = ::ddknd::math::Vec4f;
@@ -92,9 +81,10 @@ namespace ddknd::graphics::internal::types
         ImportOcclusionTexture occlusionTexture;
 
         ImportTextureInfo emissiveTexture;
-        Vec3f emissiveFactor = {0.0f,0.0f,0.0f};
+        Vec3f emissiveFactor = {0.0f, 0.0f, 0.0f};
 
-        AlphaMode alphaMode = AlphaMode::OPAQUE;           // OPAQUE / MASK / BLEND
+        ::ddknd::graphics::types::AlphaMode alphaMode =
+            ::ddknd::graphics::types::AlphaMode::OPAQUE; // OPAQUE / MASK / BLEND
         float alphaCutoff = 0.5f;
         bool doubleSided = false;
     };

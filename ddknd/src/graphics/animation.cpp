@@ -9,7 +9,7 @@
 
 namespace
 {
-    void ComputeBoneGlobal(const ddknd::animation::types::SkeletonResource& skeleton, ddknd::animation::Pose& pose,
+    void ComputeBoneGlobal(const ddknd::animation::types::SkeletonResource& skeleton, ddknd::animation::types::Pose& pose,
                            std::size_t boneIndex, std::vector<bool>& computed)
     {
         if (computed[boneIndex])
@@ -135,7 +135,7 @@ namespace
 
 namespace ddknd::animation
 {
-    void AnimatorSystem::InitializePose(const types::SkeletonResource& skeleton, Pose& pose)
+    void AnimatorSystem::InitializePose(const types::SkeletonResource& skeleton, types::Pose& pose)
     {
         const std::size_t boneCount = skeleton.bones.size();
 
@@ -150,7 +150,7 @@ namespace ddknd::animation
 
         UpdateGlobalPose(skeleton, pose);
     }
-    void AnimatorSystem::UpdateGlobalPose(const types::SkeletonResource& skeleton, Pose& pose)
+    void AnimatorSystem::UpdateGlobalPose(const types::SkeletonResource& skeleton, types::Pose& pose)
     {
         const std::size_t boneCount = skeleton.bones.size();
 
@@ -173,7 +173,7 @@ namespace ddknd::animation
     }
 
     void AnimatorSystem::SampleAnimation(const types::SkeletonResource& skeleton,
-                                         const types::AnimationClipResource& clip, float time, Pose& pose)
+                                         const types::AnimationClipResource& clip, float time, types::Pose& pose)
     {
         const std::size_t boneCount = skeleton.bones.size();
 
@@ -233,7 +233,7 @@ namespace ddknd::animation
     }
 
     void AnimatorSystem::UpdateAnimator(const types::SkeletonResource& skeleton,
-                                        const types::AnimationClipResource& clip, AnimationState& state, Pose& pose,
+                                        const types::AnimationClipResource& clip, types::AnimationState& state, types::Pose& pose,
                                         float deltaTime)
     {
         if (clip.duration <= 0.0f)
