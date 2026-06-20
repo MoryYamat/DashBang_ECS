@@ -79,6 +79,7 @@ namespace ddknd::graphics
         virtual void SetUniformFloat(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const float v) = 0;
         virtual void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Mat4f& m) = 0;
         virtual void SetUniform(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Vec2f& v) = 0;
+        virtual void SetUniformVec3(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Vec3f& v) = 0;
         virtual void SetUniformVec4(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Vec4f& v) = 0;
         virtual void SetUniformMat4Array(GPUID<tag::ShaderProgramGPUTag> shader, const char* name,
                                          std::span<const math::Mat4f> matrices) = 0;
@@ -254,6 +255,9 @@ namespace ddknd::graphics
         std::vector<SkinnedDrawCommand> skinnedCmds_;
         FrameBeginDesc frameBegin_;
         FrameCameraDesc frameCamera_;
+
+        // simple light
+        types::RenderLighting lighting_{};
     };
 
     // ==================================== DEBUG RENDERER ====================================

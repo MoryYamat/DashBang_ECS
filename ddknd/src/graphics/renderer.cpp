@@ -19,14 +19,22 @@ namespace
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
         glFrontFace(GL_CCW);
+
+        glDisable(GL_SCISSOR_TEST);
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     }
 
     void BeginLinePass()
     {
         glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
         glDepthMask(GL_FALSE);
 
         glDisable(GL_BLEND);
+        glDisable(GL_CULL_FACE);
+
+        glDisable(GL_SCISSOR_TEST);
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     }
 
     void BeginOverlayPass()
@@ -34,8 +42,13 @@ namespace
         glDisable(GL_DEPTH_TEST);
         glDepthMask(GL_FALSE);
 
+        glDisable(GL_CULL_FACE);
+
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glDisable(GL_SCISSOR_TEST);
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     }
 
     void ResetDefaultRenderState()
@@ -95,12 +108,17 @@ namespace ddknd::graphics
 
             backend_.SetUniformVec4(cmd.shader, "uBaseColorFactor", mat.baseColorFactor);
             backend_.SetUniformBool(cmd.shader, "uHasBaseColorTexture", hasBaseColorTexture);
-
             if(hasBaseColorTexture)
             {
                 backend_.BindTexture2D(mat.baseColorTexture.texture, graphics::internal::binding::BaseColorTexture);
                 backend_.SetUniformInt(cmd.shader, "uBaseColorTexture", graphics::internal::binding::BaseColorTexture);
             }
+            // ********************************
+            // *********** LIGHTING ***********
+            const auto& light = lighting_.mainLight;
+            backend_.SetUniformVec3(cmd.shader, "uLightDirWorld", light.directionWolrd);
+            backend_.SetUniformVec3(cmd.shader, "uLightColor", light.color * light.intensity);
+            backend_.SetUniformFloat(cmd.shader, "uAmbientStrength", lighting_.ambientStrength);
             // ********************************
 
             backend_.SetUniformMat4Array(cmd.shader, "uSkinMatrices", cmd.skinMatrices);
@@ -109,8 +127,8 @@ namespace ddknd::graphics
             backend_.DrawIndexed(cmd.indexCount);
         }
         
-        // Debug Line Pass
-        BeginLinePass();
+        // overlay
+        BeginOverlayPass();
 
         for (const auto& cmd : debugTextCmds_)
         {
@@ -118,8 +136,9 @@ namespace ddknd::graphics
                                          frameBegin_.h);
         }
 
-        // overlay
-        BeginOverlayPass();
+        // Debug Line Pass
+        BeginLinePass();
+
         for (const auto& cmd : debugLineCmds_)
         {
             backend_.SetUniform(cmd.shader, "uView", frameCamera_.view);

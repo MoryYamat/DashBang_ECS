@@ -173,6 +173,19 @@ namespace ddknd::graphics::types
         SamplerDesc sampler;
         bool generateMipmap;
     };
+
+    // simple light
+    struct DirectionalLight
+    {
+        math::Vec3f directionWolrd{-0.3f, -1.0f, -0.4f};
+        math::Vec3f color {1.0f, 1.0f,1.0f};
+        float intensity = 1.0f;
+    };
+    struct RenderLighting
+    {
+        DirectionalLight mainLight{};
+        float ambientStrength = 0.45f;
+    };
 } // namespace ddknd::graphics::types
 
 // =============================runtime=============================

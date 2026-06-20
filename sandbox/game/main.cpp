@@ -49,6 +49,7 @@ int main()
 
 // ========= TODO: ========= 
 // HIGH
+// - ボタンによる簡易攻撃を一つだけ実装、animation再生と、hitobox生成を含む、そしてhitboxとその交差判定のデバッグ描画．debug表示として、character entityの状態やcomponent数などの表示
 // - implement animator_system: asset_manager and ecs orchestration
 // - implement A* algo
 // - add simple directional light and lambert diffuse
@@ -69,6 +70,7 @@ int main()
 // - It provides zero-cost abstractions and intuitive type generation and manipulation interfaces for all (semantic) types through logical operations.
 // - Editors: camera, asset, semantic validation layer
 // - Design and implementation of an IntentLayer that does not include game semantics.
+// - add render state manager
 
 // Folder
 // /include: 

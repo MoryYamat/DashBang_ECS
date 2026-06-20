@@ -529,11 +529,15 @@ namespace ddknd::graphics
         void BindTexture2D(GPUID<tag::TextureGPUTag> id, std::uint32_t slot) override
         {
             if (!id.Is_valid())
+            {
                 return;
+            }
 
             const auto idx = static_cast<std::size_t>(id.Value());
             if (idx >= textures_.size())
+            {
                 return;
+            }
 
             glActiveTexture(GL_TEXTURE0 + slot);
             glBindTexture(GL_TEXTURE_2D, textures_[idx].texture);
@@ -669,6 +673,35 @@ namespace ddknd::graphics
             glUniform2f(loc, v[0], v[1]);
         }
 
+        void SetUniformVec3(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Vec3f& v) override
+        {
+            if (!shader.Is_valid())
+            {
+                spdlog::error("SetUniformVec3: invalid shader id");
+                return;
+            }
+
+            if (name == nullptr)
+            {
+                spdlog::error("SetUniformVec3: uniform name is null");
+                return;
+            }
+
+            const GLuint prog = try_get_program_handle(shader);
+            if (prog == 0)
+            {
+                spdlog::error("SetUniformVec3: invalid shader");
+                return;
+            }
+
+            const GLint loc = glGetUniformLocation(prog, name);
+            if (loc < 0)
+                return;
+
+            glUseProgram(prog);
+            glUniform3f(loc, v.x(), v.y(), v.z());
+        }
+
         void SetUniformVec4(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Vec4f& v) override
         {
             if (!shader.Is_valid())
@@ -775,13 +808,18 @@ namespace ddknd::graphics
                                    std::span<const std::uint32_t> indices) override
         {
             if (!id.Is_valid())
+            {
                 return;
+            }
             const auto idx = static_cast<std::size_t>(id.Value());
             if (idx >= screenQuadBatches_.size())
+            {
                 return;
+            }
             if (vertices.empty() || indices.empty())
+            {
                 return;
-
+            }
             auto& batch = screenQuadBatches_[idx];
 
             glBindVertexArray(batch.vao);
@@ -803,11 +841,14 @@ namespace ddknd::graphics
                                  int screenHeight) override
         {
             if (!batchId.Is_valid() || !shader.Is_valid() || !texture.Is_valid())
+            {
                 return;
-
+            }
             const auto batchIdx = static_cast<std::size_t>(batchId.Value());
             if (batchIdx >= screenQuadBatches_.size())
+            {
                 return;
+            }
 
             const GLuint prog = try_get_program_handle(shader);
             if (prog == 0)

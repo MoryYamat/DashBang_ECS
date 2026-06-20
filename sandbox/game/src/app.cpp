@@ -333,7 +333,6 @@ namespace app
 
             if(debugConfig.camera.overrideMode == ::ddknd::debug::CameraOverrideMode::DebugCamera)
             {
-                
                 // ************* DEBUG DRAW *************
                 debugSystemRunner.BeginFrame(debugCtx);
                 debugSystemRunner.Update(*world_, debugCtx);
