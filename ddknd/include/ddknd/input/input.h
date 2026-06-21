@@ -150,6 +150,7 @@ namespace ddknd::input
         LEFT_CLICK,
         RIGHT_CLICK,
         MIDDLE_CLICK,
+        COUNT
     };
 
     enum class MouseAxis : std::uint8_t
@@ -228,6 +229,11 @@ namespace ddknd::input
             return curr_[toIdx(k)];
         }
 
+        bool isPressingMouseButton(MouseButton button) const
+        {
+            return mouse_curr_[toIdx(button)];
+        }
+
         void Update()
         {
             backend_.Update(); // This utilizes the difference between the OS update frequency and the game loop update
@@ -236,6 +242,11 @@ namespace ddknd::input
             for (std::size_t i = 0; i < KeyCount(); i++)
             {
                 curr_[i] = backend_.IsDown(static_cast<Key>(i));
+            }
+
+            for(std::size_t i = 0; i < MouseButtonCount(); i++)
+            {
+                mouse_curr_[i] = backend_.IsMouseButtonDown(static_cast<MouseButton>(i));
             }
 
             mouse_ = backend_.Mouse();
@@ -251,15 +262,26 @@ namespace ddknd::input
             return static_cast<std::size_t>(Key::COUNT);
         }
 
+        static constexpr std::size_t MouseButtonCount()
+        {
+            return static_cast<std::size_t>(MouseButton::COUNT);
+        }
+
       private:
         IInputBackend& backend_;
         MouseState mouse_{};
 
         std::bitset<static_cast<std::size_t>(Key::COUNT)> curr_;
+        std::bitset<static_cast<std::size_t>(MouseButton::COUNT)> mouse_curr_;
 
         constexpr std::size_t toIdx(Key k) const
         {
             return static_cast<std::size_t>(k);
+        }
+
+        constexpr std::size_t toIdx(MouseButton button) const
+        {
+            return static_cast<std::size_t>(button);
         }
     };
 
@@ -283,17 +305,23 @@ namespace ddknd::input
     };
 
     // @TODO: 疎な値群に対して、unordered_map<Action>と自動で切り替える処理の実装
-    // @TODO: consider ways to limit the scope of registrations
-    // Support sparse action values using an internal unordered_map.
-    // Current implementation assumes action values can be used efficiently
-    // as dense indices after conversion to std::size_t.
-    // std::size_t に static_cast できる型なら Action として使える
-    // Any type that can be statically cast to std::size_t can be used as an Action
+    // TODO:
+    // Reconsider the Action API.
+    // Current template-based API accepts any type convertible to std::size_t,
+    // which is flexible but too permissive.
+    // For example, Key / MouseAxis can accidentally be passed as an Action.
+    // Consider introducing a stronger ActionID type or requiring user-defined
+    // action traits/concepts.
+    // Action API の設計を再検討する。
+    // 現在は std::size_t に static_cast できる型を Action として受け入れているため柔軟だが、
+    // Key / MouseAxis など Action ではない enum も誤って渡せてしまう。
+    // 将来的には ActionID 型の導入、または ActionTraits / concept による制約強化を検討する。
     class InputMapping
     {
       public:
         using id_type = std::uint32_t;
         using key_type = Key;
+        using mouse_button_type = MouseButton;
 
         static constexpr id_type InvalidID = std::numeric_limits<id_type>::max();
         static constexpr key_type InvalidKey = Key::COUNT;
@@ -385,6 +413,32 @@ namespace ddknd::input
             return true;
         }
 
+        template<ActionToIndexable Action>
+        bool RegisterMouseButtonMap(const mouse_button_type mouseButton, const Action action)
+        {
+            auto action_to_index = ActionToIndex(action);
+            if (action_to_index >= action_to_id_.size())
+            {
+                action_to_id_.resize(action_to_index + 1, InvalidID);
+            }
+
+            id_type id = action_to_id_[action_to_index];
+
+            if (id == InvalidID)
+            {
+                id = static_cast<id_type>(id_to_source_.size());
+                action_to_id_[action_to_index] = id;
+                id_to_source_.push_back(InvalidKey);
+            }
+
+            const auto mouseButtonIdx = static_cast<std::size_t>(mouseButton);
+            if (mouseButtonIdx >= mouse_button_to_action_.size())
+                mouse_button_to_action_.resize(mouseButtonIdx + 1, InvalidID);
+            mouse_button_to_action_[mouseButtonIdx] = id;
+
+            return true;
+        }
+
         template <ActionToIndexable Action>
         id_type GetActionID(Action action) const
         {
@@ -426,15 +480,26 @@ namespace ddknd::input
             return mouse_axis_to_action_[idx];
         }
 
+        id_type GetActionFromMouseButton(MouseButton button) const
+        {
+            const auto idx = static_cast<std::size_t>(button);
+            if(idx >= mouse_button_to_action_.size())
+                return InvalidID;
+            return mouse_button_to_action_[idx];
+        }
+
       private:
         std::vector<id_type>
             action_to_id_; //  action -> inetrnal action id        (idx: action_value, value: internal action id)
+
+        // @TODO: The design needs to be changed to maintain support for types other than `key_type`.
         std::vector<key_type>
             id_to_source_; // internal action id -> key            (idx: internal action id          , value: key)
+
         std::vector<id_type>
             key_to_action_; // key -> internal action id            (idx: key         , value: internal action id)
-
         std::vector<id_type> mouse_axis_to_action_;
+        std::vector<id_type> mouse_button_to_action_;
     };
 
     // system (update state)

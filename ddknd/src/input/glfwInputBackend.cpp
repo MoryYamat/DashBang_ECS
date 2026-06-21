@@ -162,6 +162,17 @@ namespace ddknd::input
             glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
 
+        ~GlfwInputBackend() override
+        {
+            if(window_)
+            {
+                glfwSetKeyCallback(window_, nullptr);
+                glfwSetCursorPosCallback(window_, nullptr);
+                glfwSetScrollCallback(window_, nullptr);
+                glfwSetMouseButtonCallback(window_, nullptr);
+            }
+        }
+
         void Update() override
         {
             glfwPollEvents();

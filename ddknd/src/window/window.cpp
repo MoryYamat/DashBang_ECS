@@ -52,6 +52,7 @@ namespace ddknd::window
     {
         if (impl_ && impl_->handle)
         {
+            glfwSetWindowUserPointer(impl_->handle, nullptr);
             glfwDestroyWindow(impl_->handle);
             impl_->handle = nullptr;
         }
@@ -103,7 +104,7 @@ namespace ddknd::window
             auto* window = static_cast<Window*>(user);
             detail::onFramebufferResize(*window, width, height);
         };
-        glfwSetWindowUserPointer(impl_->handle, &impl_->callbackState);
+        glfwSetWindowUserPointer(impl_->handle, &impl_->callbackState);// core
         glfwMakeContextCurrent(impl_->handle);
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))

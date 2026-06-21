@@ -104,6 +104,7 @@ namespace app
         //@TODO: make factory class
         using Key = ::ddknd::input::Key;
         using MouseAxis = ::ddknd::input::MouseAxis;
+        using MouseButton = ::ddknd::input::MouseButton;
         using Action = ::app::action::Action;
         inputMapping_->RegisterKeyMap(Key::W, Action::MoveFoward);
         inputMapping_->RegisterKeyMap(Key::A, Action::MoveLeft);
@@ -112,7 +113,7 @@ namespace app
         inputMapping_->RegisterMouseAxisMap(MouseAxis::DeltaX, Action::CameraLookX);
         inputMapping_->RegisterMouseAxisMap(MouseAxis::DeltaY, Action::CameraLookY);
         inputMapping_->RegisterMouseAxisMap(MouseAxis::WheelY, Action::CameraZoom);
-        
+        inputMapping_->RegisterMouseButtonMap(MouseButton::LEFT_CLICK,Action::Attack);
         
         // Debug Draw
         debugDraw_ = std::make_unique<ddknd::graphics::DebugDrawList>(*rendererBackend_);
@@ -300,7 +301,10 @@ namespace app
             // ************* Input *************
             deviceInput_->Update();
             inputSys_->Update(*deviceInput_.get());
-
+            if(inputSys_->IsDown(Action::Attack))
+            {
+                // std::cerr << "Attack is Clicked\n";
+            }
             // std::cerr << "delta x: " << inputSys_->GetValue(Action::CameraLookX) << "\n";
             // std::cerr << "delta y: " << inputSys_->GetValue(Action::CameraLookY) << "\n";
             // std::cerr << "wheel y:" << inputSys_->GetValue(Action::CameraZoom) << "\n";

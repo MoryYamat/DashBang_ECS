@@ -65,6 +65,27 @@ namespace ddknd::input
         }
 
         // =============================
+        //  MouseButton -> Action value
+        // =============================
+        for (std::size_t i = 0; i < input.MouseButtonCount(); i++)
+        {
+            auto button = static_cast<MouseButton>(i);
+
+            auto actionID = mappings_.GetActionFromMouseButton(button);
+            if (actionID == InvalidID)
+            {
+                continue;
+            }
+                
+            if (static_cast<std::size_t>(actionID) >= action_values_.size())
+                continue;
+            if (input.isPressingMouseButton(button))
+            {
+                action_values_[static_cast<std::size_t>(actionID)] = 1.0f;
+            }
+        }
+
+        // =============================
         // Final ActionState update
         // =============================
         for (std::size_t i = 0; i < actions_.size(); ++i)
