@@ -24,10 +24,17 @@ namespace app::player
 
         // ============== actor intent / resoloved intent ============== 
         reg.AddComponent<app::component::MovementIntentComponent>(e);
+        reg.AddComponent<app::component::AttackIntentComponent>(e);
 
         // ============== movement logic ==============
         reg.AddComponent<app::component::CharacterMoveStatsComponent>(e, app::component::CharacterMoveStatsComponent{.moveSpeed = desc.moveSpeed});
         reg.AddComponent<::ddknd::component::VelocityComponent>(e);
+
+        // =============== Action =============== 
+        // ******* attack logic  *******
+        reg.AddComponent<app::component::AttackStateComponent>(e);
+        reg.AddComponent<app::component::AttackDefComponent>(e);// transition definition;
+        reg.AddComponent<app::component::CharacterControlModifierComponent>(e);
 
         // ============== animation section ==============
         reg.AddComponent<app::component::PlayerAnimationClipsComponent>(e, 
@@ -41,6 +48,7 @@ namespace app::player
                 .runLeftFowardDiagonal = paladinAssets.runLeftForwardDiagonal,
                 .runRightBackDiagonal = paladinAssets.runRightBackDiagonal,
                 .runLeftBackDiagonal = paladinAssets.runLeftBackDiagonal,
+                .attack = paladinAssets.attack,
             });
 
         reg.AddComponent<app::component::PlayerLocomotionStateComponent>(e);

@@ -30,10 +30,11 @@ namespace app::assets::actor
 {
     struct PaladinAssets
     {
-        static inline constexpr const char* kModelPath = "res://Models/paladin/base_action_animation_diago.glb";
+        static inline constexpr const char* kModelPath = "res://Models/paladin/base_action_animation.glb";
+        // static inline constexpr const char* kModelPath = "res://Models/paladin/base_action_animation_diago.glb";
         static inline constexpr const char* kSkinnedShaderPath = "res://shaders/programs/skinned.shader";
-
-        // animation clip logical path
+        // static inline constexpr const char* kAttackDefaultAnimPath = "res://Models/paladin/attack_default.glb";// @TODO add import external animation file
+        // animation clip logical path (internal clip)
         static inline constexpr const char* kIdleClipName = "idle_default";
         static inline constexpr const char* kRunForwardClipName = "run_fwd_default";
         static inline constexpr const char* kRunBackwardClipName = "run_back_default";
@@ -43,7 +44,7 @@ namespace app::assets::actor
         static inline constexpr const char* kRunLeftForwardDiagonalClipName = "run_fwd_left_default";
         static inline constexpr const char* kRunRightBackDiagonalClipName = "run_back_right_default";
         static inline constexpr const char* kRunLeftBackDiagonalClipName = "run_back_left_default";
-
+        static inline constexpr const char* kAttackDefaultClipName = "attack_default";
     };
 
     struct PaladinAssetIDs
@@ -60,6 +61,8 @@ namespace app::assets::actor
         ::ddknd::asset::AssetID<::ddknd::asset::tag::AnimationClip> runLeftForwardDiagonal;
         ::ddknd::asset::AssetID<::ddknd::asset::tag::AnimationClip> runRightBackDiagonal;
         ::ddknd::asset::AssetID<::ddknd::asset::tag::AnimationClip> runLeftBackDiagonal;
+        ::ddknd::asset::AssetID<::ddknd::asset::tag::AnimationClip> attack;
+
     };
 
     PaladinAssetIDs RegisterPaladinAssets(::ddknd::asset::AssetManager& assetMgr);

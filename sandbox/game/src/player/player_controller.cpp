@@ -28,6 +28,9 @@ namespace app::player
             e, app::component::CameraControllerSettingsComponent{.lookSensitivityDeg = desc.cameraLookSensitivityDeg,
                                                                  .zoomSensitivity = desc.cameraZoomSensitivity,
                                                                  .invertY = desc.invertCameraY});
+
+        reg.AddComponent<app::component::RequestedAttackIntentComponent>(e);
+        
         return e;
     }
 } // namespace app::player

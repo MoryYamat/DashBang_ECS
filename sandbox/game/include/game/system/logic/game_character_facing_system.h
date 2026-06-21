@@ -9,6 +9,7 @@ namespace app::system
     struct CharacterFacingSystem
     {
         static void UpdateOne(::ddknd::component::TransformComponent& transform,
-                         const app::component::MovementIntentComponent& moveIntent);
+                         const app::component::MovementIntentComponent& moveIntent,
+                         const app::component::CharacterControlModifierComponent& modifier);
     };
 } // namespace app::system

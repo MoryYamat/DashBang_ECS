@@ -26,6 +26,7 @@ namespace app::assets::actor
             .runLeftForwardDiagonal = assetMgr.GetOrCreate<AnimationClip>(::ddknd::asset::MakeAnimationClipKey(PaladinAssets::kModelPath, PaladinAssets::kRunLeftForwardDiagonalClipName)),
             .runRightBackDiagonal = assetMgr.GetOrCreate<AnimationClip>(::ddknd::asset::MakeAnimationClipKey(PaladinAssets::kModelPath, PaladinAssets::kRunRightBackDiagonalClipName)),
             .runLeftBackDiagonal = assetMgr.GetOrCreate<AnimationClip>(::ddknd::asset::MakeAnimationClipKey(PaladinAssets::kModelPath, PaladinAssets::kRunLeftBackDiagonalClipName)),
+            .attack = assetMgr.GetOrCreate<AnimationClip>(::ddknd::asset::MakeAnimationClipKey(PaladinAssets::kModelPath, PaladinAssets::kAttackDefaultClipName)),
         };
     }
 

@@ -301,10 +301,7 @@ namespace app
             // ************* Input *************
             deviceInput_->Update();
             inputSys_->Update(*deviceInput_.get());
-            if(inputSys_->IsDown(Action::Attack))
-            {
-                // std::cerr << "Attack is Clicked\n";
-            }
+            
             // std::cerr << "delta x: " << inputSys_->GetValue(Action::CameraLookX) << "\n";
             // std::cerr << "delta y: " << inputSys_->GetValue(Action::CameraLookY) << "\n";
             // std::cerr << "wheel y:" << inputSys_->GetValue(Action::CameraZoom) << "\n";
@@ -335,14 +332,15 @@ namespace app
             gameSystemRunner_->UpdatePostEngine(*world_, gameCtx);
             engineSystemRunner_->UpdateRenderPrepare(*world_, frameCtx);
             
+            
+            // ************* DEBUG DRAW *************
+            debugSystemRunner.BeginFrame(debugCtx);
+            debugSystemRunner.Update(*world_, debugCtx);
+            debugSystemRunner.EndFrame(debugCtx);
+            debugSystemRunner.Submit(debugCtx);
 
             if(debugConfig.camera.overrideMode == ::ddknd::debug::CameraOverrideMode::DebugCamera)
             {
-                // ************* DEBUG DRAW *************
-                debugSystemRunner.BeginFrame(debugCtx);
-                debugSystemRunner.Update(*world_, debugCtx);
-                debugSystemRunner.EndFrame(debugCtx);
-                debugSystemRunner.Submit(debugCtx);
 
                 // ************* DEBUG CAMERA *************
                 frameCamera.view = debugCam_->matrices.view;

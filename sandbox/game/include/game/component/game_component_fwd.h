@@ -11,13 +11,20 @@ namespace app::component
     struct CameraControllerSettingsComponent;
 
     // instanced data
-    struct CharacterMoveStatsComponent;
     struct PlayerControllerComponent; 
+
+    // Requested Intent and Intent
+    struct CharacterMoveStatsComponent;
     struct MovementIntentComponent;
+    
+    struct AttackDefComponent;
+    struct RequestedAttackIntentComponent;
+    struct AttackIntentComponent;
+    struct CharacterControlModifierComponent;
 
     // state
     struct PlayerLocomotionStateComponent;
-
+    struct AttackStateComponent;
     // animation 
     struct PlayerAnimationClipsComponent;
 }

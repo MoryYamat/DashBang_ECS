@@ -1,10 +1,11 @@
 #include "game/system/request/game_input_system.h"
 
-#include "game/component/controller_component.h"
 #include "game/component/IntentComponent.h"
+#include "game/component/controller_component.h"
 #include <ddknd/component/gfx_component.h>
 #include <ddknd/input/input.h>
 #include <ddknd/math/math.h>
+
 
 #include "game/action/action.h"
 
@@ -53,12 +54,12 @@ namespace app::system
     }
 
     void PlayerCameraIntentSystem::UpdateOne(app::component::RequestedCameraIntentComponent& out,
-                                            const app::component::CameraControllerSettingsComponent& settings,
+                                             const app::component::CameraControllerSettingsComponent& settings,
                                              const ::ddknd::input::ActionInputSystem& input)
     {
         using namespace ::app::action;
 
-        if(!out.enabled)
+        if (!out.enabled)
         {
             out.active = false;
             out.yawDeltaDeg = 0.0f;
@@ -77,6 +78,21 @@ namespace app::system
 
         out.zoomDelta = -zoom * settings.zoomSensitivity;
 
-        out.active = std::abs(out.yawDeltaDeg) > 0.0001f || std::abs(out.pitchDeltaDeg) > 0.0001f || std::abs(out.zoomDelta) > 0.0001f;
+        out.active = std::abs(out.yawDeltaDeg) > 0.0001f || std::abs(out.pitchDeltaDeg) > 0.0001f ||
+                     std::abs(out.zoomDelta) > 0.0001f;
+    }
+
+    void PlayerAttackIntentSystem::UpdateOne(app::component::RequestedAttackIntentComponent& out,
+                                             const ::ddknd::input::ActionInputSystem& input)
+    {
+        using namespace app::action;
+
+        if(!out.enabled)
+        {
+            out.active = false;
+            return;
+        }
+
+        out.active = input.IsPressed(Action::Attack);
     }
 } // namespace app::system

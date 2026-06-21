@@ -28,12 +28,19 @@ namespace app::system
 
             void RunPlayerInput(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunPlayerLocomotionAnimation(::ddknd::ecs::World& world, GameFrameContext& ctx);
+            void RunPlayerAttackAnimation(::ddknd::ecs::World& world, GameFrameContext& ctx);
 
             void RunMovementIntentResolve(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunPlayerCameraInput(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunMovement(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunCharacterFacing(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunPlayerLocomotionState(::ddknd::ecs::World& world, GameFrameContext& ctx);
+
+            void RunPlayerAttackIntent(::ddknd::ecs::World& world, GameFrameContext& ctx);
+            void RunPlayerAttackIntentResolve(::ddknd::ecs::World& world, GameFrameContext& ctx);
+            void RunPlayerAttackState(::ddknd::ecs::World& world, GameFrameContext& ctx);
+            void RunAttack(::ddknd::ecs::World& world, GameFrameContext& ctx);
+            void RunCharacterModfier(::ddknd::ecs::World& world, GameFrameContext& ctx);
 
             void RunCameraDesiredPose(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunCameraApply(::ddknd::ecs::World& world, GameFrameContext& ctx);

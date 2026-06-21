@@ -10,49 +10,60 @@ namespace app::system
     // Decide which clip to play
     void PlayerAnimationSystem::UpdateOne(::ddknd::component::AnimationPlaybackComponent& playback,
                                           const component::PlayerLocomotionStateComponent& playerState,
+                                          const component::AttackStateComponent& attackState,
                                           const component::PlayerAnimationClipsComponent& clips)
     {
-        using State = app::component::PlayerLocomotionState;
-
+        using MoveState = app::component::PlayerLocomotionState;
+        using AttackState = app::component::AttackState;
         auto nextClip = clips.idle;
         bool loop = true;
         float speed = 1.0f;
 
-        switch (playerState.current)
+        if (attackState.current != AttackState::None)
         {
-        case State::Idle:
-            nextClip = clips.idle;
-            break;
-        case State::Run_Forward:
-            nextClip = clips.runForward;
-            break;
-        case State::Run_Backward:
-            nextClip = clips.runBackward;
-            break;
-        case State::Run_Left:
-            nextClip = clips.runLeft;
-            break;
-        case State::Run_Right:
-            nextClip = clips.runRight;
-            break;
-        case State::Run_Right_Foward_Diagonal:
-            nextClip = clips.runRightFowardDiagonal;
-            break;
-        case State::Run_Left_Foward_Diagonal:
-            nextClip = clips.runLeftFowardDiagonal;
-            break;
-        case State::Run_Right_Back_Diagonal:
-            nextClip = clips.runRightBackDiagonal;
-            break;
-        case State::Run_Left_Back_Diagonal:
-            nextClip = clips.runLeftBackDiagonal;
-            break;
+            nextClip = clips.attack;
+            loop = false;
+            speed = 1.0f;
+            // std::cerr << "clip =" << nextClip.Value() << "\n";
         }
+        else
+        {
+            switch (playerState.current)
+            {
+            case MoveState::Idle:
+                nextClip = clips.idle;
+                break;
+            case MoveState::Run_Forward:
+                nextClip = clips.runForward;
+                break;
+            case MoveState::Run_Backward:
+                nextClip = clips.runBackward;
+                break;
+            case MoveState::Run_Left:
+                nextClip = clips.runLeft;
+                break;
+            case MoveState::Run_Right:
+                nextClip = clips.runRight;
+                break;
+            case MoveState::Run_Right_Foward_Diagonal:
+                nextClip = clips.runRightFowardDiagonal;
+                break;
+            case MoveState::Run_Left_Foward_Diagonal:
+                nextClip = clips.runLeftFowardDiagonal;
+                break;
+            case MoveState::Run_Right_Back_Diagonal:
+                nextClip = clips.runRightBackDiagonal;
+                break;
+            case MoveState::Run_Left_Back_Diagonal:
+                nextClip = clips.runLeftBackDiagonal;
+                break;
+            }
+        }
+
         if (playback.state.clip == nextClip)
         {
             return;
         }
-
         playback.state.clip = nextClip;
         playback.state.time = 0.0f;
         playback.state.speed = speed;

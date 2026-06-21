@@ -32,4 +32,16 @@ namespace app::component
         float pitchDeltaDeg = 0.0f;
         float zoomDelta = 0.0f;
     };
+
+    struct RequestedAttackIntentComponent
+    {
+        bool enabled = true;
+        
+        bool active = false;
+    };
+
+    struct AttackIntentComponent
+    {
+        bool active = false;
+    };
 }// namespace app::component

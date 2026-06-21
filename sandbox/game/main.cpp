@@ -49,6 +49,7 @@ int main()
 
 // ========= TODO: ========= 
 // HIGH
+// - add external animation clip importer
 // - ボタンによる簡易攻撃を一つだけ実装、animation再生と、hitobox生成を含む、そしてhitboxとその交差判定のデバッグ描画．debug表示として、character entityの状態やcomponent数などの表示
 // - implement animator_system: asset_manager and ecs orchestration
 // - implement A* algo
@@ -60,7 +61,7 @@ int main()
 // - Creating a custom memory allocator
 // - Correct the design to be fundamentally correct.
 // - Improve the vertex data definition and import implementation of glTFImportData (-> Align the granularity with texture and image data) 
-
+// - Flag systems such as attack intent requests can potentially be optimized using tools like bitflag.
 
 // LOW
 // - fix cmake and dependencies

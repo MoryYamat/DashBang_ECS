@@ -19,7 +19,7 @@ namespace app::component
     enum class AttackState
     {
         None,
-        Start,
+        Startup,
         Active,
         Recovery
     };
@@ -31,16 +31,13 @@ namespace app::component
         bool changedThisFrame = false;
     };
 
-    struct AttacStateComponent
+    struct AttackStateComponent
     {
         AttackState current = AttackState::None;
         AttackState previous = AttackState::None;
 
         float elapsed = 0.0f;
-        float startupDuration = 0.15f;
-        float activeDuration = 0.3f;
-        float recoveryDuration = 0.15f;
 
-        bool  hitboxSpawned =false;
+        bool hitboxSpawned = false;
     };
-}
+} // namespace app::component

@@ -17,4 +17,10 @@ namespace app::system
                               const app::component::CameraControllerSettingsComponent& settings,
                               const ::ddknd::input::ActionInputSystem& input);
     };
+
+    struct PlayerAttackIntentSystem
+    {
+        static void UpdateOne(app::component::RequestedAttackIntentComponent& out,
+                            const ::ddknd::input::ActionInputSystem& input);
+    };
 } // namespace app::system

@@ -17,5 +17,6 @@ namespace app::component
         ::ddknd::asset::AssetID<::ddknd::asset::tag::AnimationClip> runLeftFowardDiagonal;
         ::ddknd::asset::AssetID<::ddknd::asset::tag::AnimationClip> runRightBackDiagonal;
         ::ddknd::asset::AssetID<::ddknd::asset::tag::AnimationClip> runLeftBackDiagonal;
+        ::ddknd::asset::AssetID<::ddknd::asset::tag::AnimationClip> attack;
     };
 }

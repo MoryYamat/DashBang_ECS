@@ -4,8 +4,9 @@
 #include "game/component/controller_component.h"
 #include <ddknd/component/gfx_component.h>
 
-#include <ddknd/math/math.h>
 #include <algorithm>
+#include <ddknd/math/math.h>
+
 
 namespace app::system
 {
@@ -54,7 +55,7 @@ namespace app::system
     void CameraIntentResolveSystem::UpdateOne(app::component::CameraOrbitComponent& orbit,
                                               const app::component::RequestedCameraIntentComponent& request)
     {
-        if(!request.active)
+        if (!request.active)
             return;
 
         orbit.yawDeg += request.yawDeltaDeg;
@@ -62,5 +63,18 @@ namespace app::system
 
         orbit.pitchDeg = std::clamp(orbit.pitchDeg, orbit.minPitchDeg, orbit.maxPitchDeg);
         orbit.distance = std::clamp(orbit.distance + request.zoomDelta, orbit.minDistance, orbit.maxDistance);
+    }
+
+    void AttackIntentResolveSystem::UpdateOne(app::component::AttackIntentComponent& out,
+                                              const app::component::RequestedAttackIntentComponent& request)
+    {
+        out.active = false;
+        
+        if(!request.active)
+        {
+            return;
+        }
+            
+        out.active = true;
     }
 } // namespace app::system

@@ -18,4 +18,10 @@ namespace app::system
         static void UpdateOne(app::component::CameraOrbitComponent& orbit,
                               const app::component::RequestedCameraIntentComponent& request);
     };
+
+    struct AttackIntentResolveSystem
+    {
+        static void UpdateOne(app::component::AttackIntentComponent& out,
+                             const app::component::RequestedAttackIntentComponent& request);
+    };
 } // namespace app::system
