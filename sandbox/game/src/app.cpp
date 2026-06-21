@@ -112,7 +112,8 @@ namespace app
         inputMapping_->RegisterMouseAxisMap(MouseAxis::DeltaX, Action::CameraLookX);
         inputMapping_->RegisterMouseAxisMap(MouseAxis::DeltaY, Action::CameraLookY);
         inputMapping_->RegisterMouseAxisMap(MouseAxis::WheelY, Action::CameraZoom);
-
+        
+        
         // Debug Draw
         debugDraw_ = std::make_unique<ddknd::graphics::DebugDrawList>(*rendererBackend_);
         debugDraw_->Init();

@@ -18,7 +18,10 @@ namespace app::action
         CameraLookX,
         CameraLookY,
 
-        CameraZoom
+        CameraZoom,
+
+        // action
+        Attack,
     };
 
     // struct ActionType

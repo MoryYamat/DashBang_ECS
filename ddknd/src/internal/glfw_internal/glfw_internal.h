@@ -15,6 +15,9 @@ namespace ddknd::internal::platform::glfw
         void* cursorUser = nullptr;
         void (*cursor)(void*, double, double) = nullptr;
 
+        void* mouseButtonUser = nullptr;
+        void (*mouseButton)(void*, int, int, int) = nullptr;
+
         void* scrollUser = nullptr;
         void (*scroll)(void*, double, double) = nullptr;
     };

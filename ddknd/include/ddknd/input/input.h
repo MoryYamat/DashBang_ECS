@@ -145,6 +145,13 @@ namespace ddknd::input
         COUNT
     };
 
+    enum class MouseButton : std::uint8_t
+    {
+        LEFT_CLICK,
+        RIGHT_CLICK,
+        MIDDLE_CLICK,
+    };
+
     enum class MouseAxis : std::uint8_t
     {
         DeltaX,
@@ -207,6 +214,7 @@ namespace ddknd::input
         virtual ~IInputBackend() = default;
         virtual void Update() = 0;
         virtual bool IsDown(Key k) const = 0;
+        virtual bool IsMouseButtonDown(MouseButton mouseButton) const = 0;
         virtual const MouseState& Mouse() const = 0;
     };
 

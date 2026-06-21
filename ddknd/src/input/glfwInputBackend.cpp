@@ -78,6 +78,23 @@ namespace ddknd::input
                 return GLFW_KEY_LAST;
             }
         }
+
+        int toGLFWMouseButton(MouseButton mouseButton)
+        {
+            using MB = MouseButton;
+
+            switch(mouseButton)
+            {
+                case MB::LEFT_CLICK:
+                    return GLFW_MOUSE_BUTTON_LEFT; 
+                case MB::RIGHT_CLICK:
+                    return GLFW_MOUSE_BUTTON_RIGHT;
+                case MB::MIDDLE_CLICK:
+                    return GLFW_MOUSE_BUTTON_MIDDLE;
+                default:
+                    return GLFW_MOUSE_BUTTON_LAST;
+            }
+        }
     } // namespace
 
     class GlfwInputBackend final : public IInputBackend
@@ -123,10 +140,18 @@ namespace ddknd::input
                 self->onScroll(xoffset, yoffset);
             };
 
+            callbacks.mouseButtonUser = this;
+            callbacks.mouseButton = [](void* user, int button, int action, int mods)
+            {
+                auto* self = static_cast<GlfwInputBackend*>(user);
+                self->onMouseButton(button, action, mods);
+            };
+
             // register callback to glfw
             glfwSetKeyCallback(window_, &GlfwInputBackend::key_callback);
             glfwSetCursorPosCallback(window_, GlfwInputBackend::cursor_position_callback);
             glfwSetScrollCallback(window_, GlfwInputBackend::scroll_callback);
+            glfwSetMouseButtonCallback(window_, GlfwInputBackend::mouse_button_callback);
 
             // settings
             if (glfwRawMouseMotionSupported()) // mouse acceleration
@@ -168,10 +193,23 @@ namespace ddknd::input
             return state == GLFW_PRESS || state == GLFW_REPEAT;
         }
 
+        bool IsMouseButtonDown(MouseButton mouseButton) const override
+        {
+            const int glfwMouseButton = toGLFWMouseButton(mouseButton);
+            if(glfwMouseButton < 0 || glfwMouseButton > GLFW_MOUSE_BUTTON_LAST)
+            {
+                return false;
+            }
+
+            const int state = mouseButtons_[static_cast<std::size_t>(mouseButton)];
+            return state == GLFW_PRESS || state == GLFW_REPEAT;
+        }
+
       private:
         GLFWwindow* window_;
 
         std::array<int, GLFW_KEY_LAST + 1> keys_{};
+        std::array<int, GLFW_MOUSE_BUTTON_LAST + 1> mouseButtons_{};
         MouseState mouseFrame_{};
         MouseInternal mouseAccum_{};
 
@@ -217,6 +255,16 @@ namespace ddknd::input
             mouseAccum_.wheelY += yoffset;
         }
 
+        void onMouseButton(int button, int action, int mods)
+        {
+            (void) mods;
+            if(button < 0 || button > GLFW_MOUSE_BUTTON_LAST)
+            {
+                return;
+            }
+            mouseButtons_[static_cast<std::size_t>(button)] = action;
+        }
+
         static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
         {
             using CallbackState = ddknd::internal::platform::glfw::CallbackState;
@@ -257,6 +305,20 @@ namespace ddknd::input
             }
 
             state->scroll(state->scrollUser, xoffset, yoffset);
+        }
+
+        static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+        {
+            using CallbackState = ddknd::internal::platform::glfw::CallbackState;
+
+            auto state = static_cast<CallbackState*>(glfwGetWindowUserPointer(window));
+
+            if(state == nullptr || state->mouseButton == nullptr)
+            {
+                return;
+            }
+
+            state->mouseButton(state->mouseButtonUser, button, action, mods);
         }
     };
 

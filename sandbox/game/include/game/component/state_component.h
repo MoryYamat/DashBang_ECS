@@ -16,10 +16,31 @@ namespace app::component
         Run_Left_Back_Diagonal,
     };
 
+    enum class AttackState
+    {
+        None,
+        Start,
+        Active,
+        Recovery
+    };
+
     struct PlayerLocomotionStateComponent
     {
         PlayerLocomotionState current = PlayerLocomotionState::Idle;
         PlayerLocomotionState previous = PlayerLocomotionState::Idle;
         bool changedThisFrame = false;
+    };
+
+    struct AttacStateComponent
+    {
+        AttackState current = AttackState::None;
+        AttackState previous = AttackState::None;
+
+        float elapsed = 0.0f;
+        float startupDuration = 0.15f;
+        float activeDuration = 0.3f;
+        float recoveryDuration = 0.15f;
+
+        bool  hitboxSpawned =false;
     };
 }

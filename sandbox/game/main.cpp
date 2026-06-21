@@ -57,14 +57,14 @@ int main()
 // MIDDLE
 // - implement match index -> dense index (it will improve view performance)
 // - implement storage version to the ECS::Storage for caching
+// - Creating a custom memory allocator
 // - Correct the design to be fundamentally correct.
 // - Improve the vertex data definition and import implementation of glTFImportData (-> Align the granularity with texture and image data) 
 
 
 // LOW
 // - fix cmake and dependencies
-// - Creating a custom memory allocator
-// - 
+// - extends rendering system (state manager/pipeline manager/ lightsystem/ ...)
 
 // Super LOW:
 // - It provides zero-cost abstractions and intuitive type generation and manipulation interfaces for all (semantic) types through logical operations.
