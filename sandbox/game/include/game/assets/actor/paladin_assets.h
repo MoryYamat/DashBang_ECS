@@ -30,7 +30,7 @@ namespace app::assets::actor
 {
     struct PaladinAssets
     {
-        static inline constexpr const char* kModelPath = "res://Models/paladin/base_action_animation.glb";
+        static inline constexpr const char* kModelPath = "res://Models/paladin/base_action_trimed.glb";
         // static inline constexpr const char* kModelPath = "res://Models/paladin/base_action_animation_diago.glb";
         static inline constexpr const char* kSkinnedShaderPath = "res://shaders/programs/skinned.shader";
         // static inline constexpr const char* kAttackDefaultAnimPath = "res://Models/paladin/attack_default.glb";// @TODO add import external animation file

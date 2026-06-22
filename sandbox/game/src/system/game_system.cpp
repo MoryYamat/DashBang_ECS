@@ -16,12 +16,11 @@
 #include "game/system/logic/game_animation_system.h"
 #include "game/system/logic/game_camera_system.h"
 #include "game/system/logic/game_character_facing_system.h"
+#include "game/system/logic/game_hitbox_logic_system.h"
 #include "game/system/logic/game_movement_system.h"
 #include "game/system/request/game_input_system.h"
 #include "game/system/resolve/game_movement_intent_resolve_system.h"
 #include "game/system/state/game_character_state_system.h"
-#include "game/system/logic/game_hitbox_logic_system.h"
-
 
 namespace app::system
 {
@@ -67,19 +66,18 @@ namespace app::system
         // state
         RunPlayerLocomotionState(world, ctx);
         RunPlayerAttackState(world, ctx);
-
     }
 
     void GameSystemRunner::RunLogicPreEngine(::ddknd::ecs::World& world, GameFrameContext& ctx)
     {
         RunCharacterModfier(world, ctx);
-        
+
         RunMovement(world, ctx);
         RunCharacterFacing(world, ctx);
-        
+
         // hitbox
         RunHitboxSpawnSystem(world, ctx);
-        RunHitboxLifeTimeSystem(world, ctx);
+        RunHitboxCollisionSystem(world, ctx);
 
         // chose animation
         RunPlayerLocomotionAnimation(world, ctx);
@@ -190,10 +188,11 @@ namespace app::system
 
         auto& reg = world.GetRegistry();
 
-        auto view = reg.view(
-            query()
-                .select<::ddknd::component::VelocityComponent>()
-                .require<app::component::MovementIntentComponent, app::component::CharacterMoveStatsComponent, app::component::CharacterControlModifierComponent>());
+        auto view =
+            reg.view(query()
+                         .select<::ddknd::component::VelocityComponent>()
+                         .require<app::component::MovementIntentComponent, app::component::CharacterMoveStatsComponent,
+                                  app::component::CharacterControlModifierComponent>());
         for (auto [velocity, intent, stats, modifier] : view)
         {
             MovementSystem::UpdateOne(velocity, intent, stats, modifier);
@@ -301,12 +300,13 @@ namespace app::system
         using namespace ddknd::ecs;
 
         auto& reg = world.GetRegistry();
-        auto view = reg.view(query().select<app::component::CharacterControlModifierComponent>()
-                                    .require<app::component::AttackStateComponent, app::component::AttackDefComponent>());
+        auto view = reg.view(query()
+                                 .select<app::component::CharacterControlModifierComponent>()
+                                 .require<app::component::AttackStateComponent, app::component::AttackDefComponent>());
 
-        for(auto [modifier, state, def] : view)
+        for (auto [modifier, state, def] : view)
         {
-            AttackControlModifierSystem::UpdateOne(modifier,state, def);
+            AttackControlModifierSystem::UpdateOne(modifier, state, def);
         }
     }
 
@@ -314,12 +314,6 @@ namespace app::system
     {
         (void)ctx;
         app::system::AttackHitboxSpawnSystem::Update(world);
-    }
-
-    void GameSystemRunner::RunHitboxLifeTimeSystem(::ddknd::ecs::World& world, GameFrameContext& ctx)
-    {
-        assert(ctx.frame);
-        app::system::HitboxLifetimeSystem::Update(world, ctx.frame->deltaTime);
     }
 
     void GameSystemRunner::RunCameraDesiredPose(::ddknd::ecs::World& world, GameFrameContext& ctx)
@@ -352,6 +346,12 @@ namespace app::system
 
             CameraDesiredPoseSystem::UpdateOne(desired, follow, orbit, *targetTransform);
         }
+    }
+
+    void GameSystemRunner::RunHitboxCollisionSystem(::ddknd::ecs::World& world, GameFrameContext& ctx) 
+    {
+        (void)ctx;
+        app::system::HitboxCollisionSystem::Update(world);
     }
 
     void GameSystemRunner::RunCameraApply(::ddknd::ecs::World& world, GameFrameContext& ctx)

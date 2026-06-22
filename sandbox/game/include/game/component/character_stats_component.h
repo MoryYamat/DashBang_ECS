@@ -6,7 +6,7 @@ namespace app::component
 {
     struct CharacterMoveStatsComponent
     {
-        float moveSpeed = 5.0f;
+        float moveSpeed = 1.0f;
     };
     
     struct CharacterControlModifierComponent

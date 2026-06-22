@@ -1,9 +1,12 @@
 #include "game/system/logic/game_hitbox_logic_system.h"
 
 #include "game/component/character_stats_component.h"
-#include "game/component/hitbox_component.h"
+
+#include <ddknd/component/general_component.h>
+
 #include "game/component/state_component.h"
 #include <ddknd/component/gfx_component.h>
+#include <ddknd/component/hitbox_component.h>
 #include <ddknd/ecs/ecs.h>
 
 namespace app::system
@@ -51,6 +54,9 @@ namespace app::system
             auto hitbox = reg.Create();
             std::cerr << "hibox entity " << hitbox.Value() << " created\n";
 
+            reg.AddComponent<ddknd::component::LifetimeComponent>(
+                hitbox, ddknd::component::LifetimeComponent{.lifetime = def->hitbox.lifetime, .elapsed = 0.0f});
+
             ddknd::component::TransformComponent hitboxTransform{};
             hitboxTransform.localTRS.translation =
                 ddknd::math::TransformPoint(transform->worldMatrix, def->hitbox.localOffset);
@@ -59,50 +65,42 @@ namespace app::system
             reg.AddComponent<ddknd::component::TransformComponent>(hitbox, hitboxTransform);
 
             // hitbox
-            reg.AddComponent<app::component::HitboxComponent>(
+            reg.AddComponent<ddknd::component::HitboxComponent>(
                 hitbox,
-                app::component::HitboxComponent{.owner = owner, .lifetime = def->hitbox.lifetime, .elapsed = 0.0f});
+                ddknd::component::HitboxComponent{.owner = owner});
 
-            reg.AddComponent<app::component::HemisphereHitboxComponent>(
-                hitbox, app::component::HemisphereHitboxComponent{
-                            .forward = ddknd::math::TransformDirection(transform->worldMatrix,
-                                                                       ddknd::math::Vec3f{0.0f, 0.0f, 1.0f}),
-                            .radius = def->hitbox.radius});
+            reg.AddComponent<ddknd::component::HemisphereHitboxComponent>(
+                hitbox, ddknd::component::HemisphereHitboxComponent{.radius = def->hitbox.radius});
             state->hitboxSpawned = true;
         }
     }
 
-    void HitboxLifetimeSystem::Update(ddknd::ecs::World& world, const float dt)
+    void HitboxCollisionSystem::Update(ddknd::ecs::World& world)
     {
         using namespace ddknd::ecs;
-
         auto& reg = world.GetRegistry();
 
-        auto view = reg.view(query().select<app::component::HitboxComponent>()).withEntity();
-
-        std::vector<Entity> dead;
-
-        for (auto [e, hitbox] : view)
+        auto hitboxes =
+            reg.view(query()
+                         .select<ddknd::component::HitboxComponent>()
+                         .require<ddknd::component::HemisphereHitboxComponent, ddknd::component::TransformComponent>())
+                .withEntity();
+        auto hurtboxes =
+            reg.view(query()
+                         .select<ddknd::component::HurtboxComponent>()
+                         .require<ddknd::component::SphereHurtboxComponent, ddknd::component::TransformComponent>())
+                .withEntity();
+        for (auto [hitboxEntity, hitbox, hemi, hitboxTransform] : hitboxes)
         {
-            hitbox.elapsed += dt;
-
-            if (hitbox.elapsed >= hitbox.lifetime)
+            for (auto [target, hurtbox, sphere, targetTransform] : hurtboxes)
             {
-                dead.push_back(e);
+                if (target == hitbox.owner)
+                {
+                    continue;
+                }
+                std::cerr << "here\n";
+                // detection
             }
-        }
-
-        for (auto e : dead)
-        {
-            // for debug
-            // ddknd::ecs::Entity old = e;
-            // std::cerr << "hitbox " << e.Value() << " destroyed\n";
-
-            reg.Destroy(e);
-
-            // for debug
-            // assert(!reg.IsAlive(old));
-            // assert(reg.TryGetComponent<app::component::HitboxComponent>(old) == nullptr);
         }
     }
 } // namespace app::system

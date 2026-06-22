@@ -9,12 +9,15 @@
 #include <ddknd/ecs/ecs.h>
 #include <ddknd/graphics/gfx_asset_loader.h>
 
+#include <ddknd/system/lifetime_system.h>
+
 #include <ddknd/system/animator_system.h>
 #include <ddknd/system/camera_system.h>
 #include <ddknd/system/kinematic_system.h>
 #include <ddknd/system/render_submit_system.h>
 #include <ddknd/system/transform_system.h>
 
+#include <ddknd/system/hitbox_system.h>
 
 // Argument Order Policy
 // System::UpdateOne(
@@ -32,6 +35,8 @@ namespace ddknd::system
     {
         RunKinematic(world,ctx);
         RunTransform(world,ctx);
+        
+        RunLifetimeSystem(world, ctx);
     }
     void EngineSystemRunner::UpdateRenderPrepare(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
     {
@@ -179,4 +184,9 @@ namespace ddknd::system
         assert(count <= 1 && "Multiple MainCameraTag components found");
         return;
     }
-} // namespace ddknd::system
+
+    void EngineSystemRunner::RunLifetimeSystem(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
+    {
+        ddknd::system::LifetimeSystem::Update(world, ctx.deltaTime);
+    }
+} // namespace ddknd::system9

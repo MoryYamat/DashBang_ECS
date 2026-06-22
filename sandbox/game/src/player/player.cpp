@@ -4,6 +4,7 @@
 #include <ddknd/component/movement_component.h>
 #include <ddknd/component/gfx_component.h>
 
+#include <ddknd/component/hitbox_component.h>
 #include "game/component/character_stats_component.h"
 #include "game/component/IntentComponent.h"
 #include "game/assets/actor/paladin_assets.h"
@@ -35,6 +36,10 @@ namespace app::player
         reg.AddComponent<app::component::AttackStateComponent>(e);
         reg.AddComponent<app::component::AttackDefComponent>(e);// transition definition;
         reg.AddComponent<app::component::CharacterControlModifierComponent>(e);
+
+        // =============== Heart box ===============
+        reg.AddComponent<ddknd::component::HurtboxComponent>(e);
+        reg.AddComponent<ddknd::component::SphereHurtboxComponent>(e);
 
         // ============== animation section ==============
         reg.AddComponent<app::component::PlayerAnimationClipsComponent>(e, 

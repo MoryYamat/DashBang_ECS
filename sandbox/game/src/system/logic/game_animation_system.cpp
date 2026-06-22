@@ -17,13 +17,13 @@ namespace app::system
         using AttackState = app::component::AttackState;
         auto nextClip = clips.idle;
         bool loop = true;
-        float speed = 1.0f;
+        float speed = 0.8f;                                         // @TODO fix hardcoding
 
         if (attackState.current != AttackState::None)
         {
             nextClip = clips.attack;
             loop = false;
-            speed = 1.0f;
+            speed = 1.2f;                                           // @TODO fix hardcoding
             // std::cerr << "clip =" << nextClip.Value() << "\n";
         }
         else

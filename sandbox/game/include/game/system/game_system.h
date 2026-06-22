@@ -43,7 +43,8 @@ namespace app::system
             void RunCharacterModfier(::ddknd::ecs::World& world, GameFrameContext& ctx);
 
             void RunHitboxSpawnSystem(::ddknd::ecs::World& world, GameFrameContext& ctx);
-            void RunHitboxLifeTimeSystem(::ddknd::ecs::World& world, GameFrameContext& ctx);
+
+            void RunHitboxCollisionSystem(::ddknd::ecs::World& world, GameFrameContext& ctx);
 
             void RunCameraDesiredPose(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunCameraApply(::ddknd::ecs::World& world, GameFrameContext& ctx);

@@ -9,8 +9,10 @@ namespace app::system
         static void Update(ddknd::ecs::World& world);
     };
 
-    struct HitboxLifetimeSystem
+
+
+    struct HitboxCollisionSystem
     {
-        static void Update(ddknd::ecs::World& world, const float dt);
+        static void Update(ddknd::ecs::World& world);
     };
-}
+} // namespace app::system
