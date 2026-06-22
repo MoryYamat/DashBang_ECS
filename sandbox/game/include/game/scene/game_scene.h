@@ -8,12 +8,16 @@
 
 #include "game/assets/actor/paladin_assets.h"
 
+#include <vector>
+
 namespace app::scene
 {
     struct GameSceneEntities
     {
         ::ddknd::ecs::Entity player;
         ::ddknd::ecs::Entity mainCamera;
+
+        std::vector<ddknd::ecs::Entity> npcs;
     };
 
     struct GameSceneAssets

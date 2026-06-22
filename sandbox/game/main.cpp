@@ -56,6 +56,7 @@ int main()
 // - add simple directional light and lambert diffuse
 
 // MIDDLE
+// - glTF node hierarchy と runtime bone hierarchy が 1:1 ではないことの対応
 // - implement match index -> dense index (it will improve view performance)
 // - implement storage version to the ECS::Storage for caching
 // - Creating a custom memory allocator

@@ -44,8 +44,6 @@ namespace app::system
 
             void RunHitboxSpawnSystem(::ddknd::ecs::World& world, GameFrameContext& ctx);
 
-            void RunHitboxCollisionSystem(::ddknd::ecs::World& world, GameFrameContext& ctx);
-
             void RunCameraDesiredPose(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunCameraApply(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunCameraIntentResolve(::ddknd::ecs::World& world, GameFrameContext& ctx);

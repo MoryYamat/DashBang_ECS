@@ -15,4 +15,9 @@ namespace ddknd::system
     {
         ::ddknd::animation::AnimatorSystem::UpdateAnimator(skeleton, clip, playback.state, pose.pose, dt);
     }
+
+    void AnimationPlaybackSystem::InitializePose(::ddknd::component::PoseComponent& pose, const ::ddknd::animation::types::SkeletonResource& skeleton)
+    {
+        ddknd::animation::AnimatorSystem::InitializePose(skeleton, pose.pose);
+    }
 } // namespace ddknd::system

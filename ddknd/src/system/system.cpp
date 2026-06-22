@@ -37,6 +37,7 @@ namespace ddknd::system
         RunTransform(world,ctx);
         
         RunLifetimeSystem(world, ctx);
+        RunHitboxCollisionSystem(world,ctx);
     }
     void EngineSystemRunner::UpdateRenderPrepare(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
     {
@@ -128,6 +129,10 @@ namespace ddknd::system
             const auto* clip = ctx.animationAssetStore->TryGet(playback.state.clip);
             if (!clip)
             {
+                if(pose.pose.skinMatrices.empty())
+                {
+                    ddknd::system::AnimationPlaybackSystem::InitializePose(pose, *model->skeleton);
+                }
                 continue;
             }
 
@@ -188,5 +193,11 @@ namespace ddknd::system
     void EngineSystemRunner::RunLifetimeSystem(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
     {
         ddknd::system::LifetimeSystem::Update(world, ctx.deltaTime);
+    }
+
+    void EngineSystemRunner::RunHitboxCollisionSystem(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx) 
+    {
+        (void)ctx;
+        ddknd::system::HitboxCollisionSystem::Update(world, ctx);
     }
 } // namespace ddknd::system9

@@ -10,6 +10,8 @@
 #include "game/player/player.h"
 #include "game/player/player_controller.h"
 
+#include "game/actor/character/npc.h"
+
 #include <cassert>
 
 namespace app::scene
@@ -34,8 +36,13 @@ namespace app::scene
         auto controller = app::player::CreateLocalPlayerController(
             world, ::app::player::PlayerControllerSpawnDesc{.actor = player, .cameraRig = cameraRig});
 
+        auto paladin_npc = app::actor::CreatePaladinNPC(world, paladinAssets, app::actor::NPCSpawnDesc{});
+        std::vector<ddknd::ecs::Entity> npcs;
+        npcs.push_back(paladin_npc);
+        
         GameSceneAssets assets{.paladin = paladinAssets};
-        GameSceneEntities entities{.player = player, .mainCamera = mainCamera};
+        
+        GameSceneEntities entities{.player = player, .mainCamera = mainCamera, .npcs = npcs};
 
         return GameScene{.assets = assets, .entities = entities};
     }

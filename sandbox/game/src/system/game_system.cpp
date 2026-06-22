@@ -77,7 +77,6 @@ namespace app::system
 
         // hitbox
         RunHitboxSpawnSystem(world, ctx);
-        RunHitboxCollisionSystem(world, ctx);
 
         // chose animation
         RunPlayerLocomotionAnimation(world, ctx);
@@ -346,12 +345,6 @@ namespace app::system
 
             CameraDesiredPoseSystem::UpdateOne(desired, follow, orbit, *targetTransform);
         }
-    }
-
-    void GameSystemRunner::RunHitboxCollisionSystem(::ddknd::ecs::World& world, GameFrameContext& ctx) 
-    {
-        (void)ctx;
-        app::system::HitboxCollisionSystem::Update(world);
     }
 
     void GameSystemRunner::RunCameraApply(::ddknd::ecs::World& world, GameFrameContext& ctx)

@@ -18,6 +18,7 @@ namespace ddknd::system
                        const ::ddknd::animation::types::SkeletonResource& skeleton,
                        const ::ddknd::animation::types::AnimationClipResource& clip, const float dt);
 
+        static void InitializePose(::ddknd::component::PoseComponent& pose, const ::ddknd::animation::types::SkeletonResource& skeleton);
       private:
     };
 } // namespace ddknd::system

@@ -74,33 +74,4 @@ namespace app::system
             state->hitboxSpawned = true;
         }
     }
-
-    void HitboxCollisionSystem::Update(ddknd::ecs::World& world)
-    {
-        using namespace ddknd::ecs;
-        auto& reg = world.GetRegistry();
-
-        auto hitboxes =
-            reg.view(query()
-                         .select<ddknd::component::HitboxComponent>()
-                         .require<ddknd::component::HemisphereHitboxComponent, ddknd::component::TransformComponent>())
-                .withEntity();
-        auto hurtboxes =
-            reg.view(query()
-                         .select<ddknd::component::HurtboxComponent>()
-                         .require<ddknd::component::SphereHurtboxComponent, ddknd::component::TransformComponent>())
-                .withEntity();
-        for (auto [hitboxEntity, hitbox, hemi, hitboxTransform] : hitboxes)
-        {
-            for (auto [target, hurtbox, sphere, targetTransform] : hurtboxes)
-            {
-                if (target == hitbox.owner)
-                {
-                    continue;
-                }
-                std::cerr << "here\n";
-                // detection
-            }
-        }
-    }
 } // namespace app::system

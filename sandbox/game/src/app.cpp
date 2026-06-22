@@ -23,6 +23,9 @@
 #include <ddknd/debug/debug_system.h>
 #include <ddknd/system/system.h>
 
+// event
+#include <ddknd/event/hit_event.h>
+
 // test
 #include <ddknd/component/test_component.h>
 #include <ddknd/ecs/entity/entity.h>
@@ -141,6 +144,9 @@ namespace app
             return false;
         }
 
+        // events
+        hitboxHitEvents_ = std::make_unique<ddknd::event::HitboxHitEventBuffer>();
+
         // system
         engineSystemRunner_ = std::make_unique<::ddknd::system::EngineSystemRunner>();
 
@@ -250,36 +256,6 @@ namespace app
         using Timer = ::ddknd::clock::FrameTimer;
         Timer timer{};
 
-        // *********** Animation Test ***********
-        // ::ddknd::component::TransformComponent test_transform_comp;
-        // ::ddknd::component::AnimatorComponent test_animator_comp;
-        // ::ddknd::animation::debug::TestAnimatorSystemInit(*model_res->skeleton, test_animator_comp.pose);
-        // for (std::size_t i = 0; i < std::min<std::size_t>(model_res->skeleton->bones.size(), 10); ++i)
-        // {
-        //     const auto& skin = test_animator_comp.pose.skinMatrices[i];
-        //     const auto t = ::ddknd::math::ExtractTranslation(skin);
-
-        //     std::cerr << "skin[" << i << "] translation = " << t[0] << ", " << t[1] << ", " << t[2] << "\n";
-        // }
-        // for (std::size_t i = 0; i < std::min<std::size_t>(model_res->skeleton->bones.size(), 10); ++i)
-        // {
-        //     std::cerr << "skin[" << i
-        //               << "] identity diff = " << MaxAbsDiffFromIdentity(test_animator_comp.pose.skinMatrices[i])
-        //               << "\n";
-        // }
-
-        // if (model_res->clips.empty())
-        // {
-        //     std::cerr << "model has no animation clips\n";
-        // }
-        // else
-        // {
-        //     test_animator_comp.state.clip = model_res->clips[0];
-        //     test_animator_comp.state.time = 0.0f;
-        //     test_animator_comp.state.speed = 1.0f;
-        //     test_animator_comp.state.loop = true;
-        // }
-
         // ::ddknd::math::TRS modelTRS;
         // modelTRS.translation = {0.0f, 0.0f, 0.0f};
         // modelTRS.rotation = ::ddknd::math::Quatf::Identity();
@@ -294,6 +270,9 @@ namespace app
         // debugDraw_->Axis({0.0f, 0.0f, 0.0f}, 1000.0f);
         while (isRunning_ && !window_->ShouldClose())
         {
+            // ************ RESET ************
+            hitboxHitEvents_->Clear();
+
             // ************* TIMER **************
             timer.Tick();
             const float fps = timer.FPS();
@@ -316,7 +295,8 @@ namespace app
                                                    .graphicsAssetStore = graphicsAssetStore_.get(),
                                                    .animationAssetStore = animationAssetStore_.get(),
                                                    .renderer = renderSys_.get(),
-                                                   .renderCamera = &frameCamera};
+                                                   .renderCamera = &frameCamera,
+                                                   .hitboxHitEvents = hitboxHitEvents_.get()};
 
             ::app::system::GameFrameContext gameCtx{.frame = &frameCtx, .input = inputSys_.get(), .paused = false};
 

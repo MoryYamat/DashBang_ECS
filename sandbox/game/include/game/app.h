@@ -9,6 +9,7 @@
 #include <ddknd/asset/asset_fwd.h>
 #include <ddknd/ecs/ecs_fwd.h>
 #include <ddknd/system/system_fwd.h>
+#include <ddknd/event/event_fwd.h>
 
 #include "game/system/game_system_fwd.h"
 #include "game/scene/game_scene_fwd.h"
@@ -67,6 +68,9 @@ namespace app
             std::unique_ptr<::ddknd::ecs::World> world_;
 
             std::unique_ptr<::app::scene::GameScene> scene_;
+
+            // @TODO: temporary owner of per-frame event buffers. these should eventually live in a generic EventManager / ResourceStorage
+            std::unique_ptr<ddknd::event::HitboxHitEventBuffer> hitboxHitEvents_;
 
             std::unique_ptr<::ddknd::system::EngineSystemRunner> engineSystemRunner_;
             std::unique_ptr<::app::system::GameSystemRunner> gameSystemRunner_;

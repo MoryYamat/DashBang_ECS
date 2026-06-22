@@ -1,14 +1,12 @@
 #pragma once
 
+#include <ddknd/ecs/ecs_fwd.h>
 #include <ddknd/input/input_fwd.h>
 #include <ddknd/graphics/graphics_fwd.h>
+#include <ddknd/event/event_fwd.h>
+
 
 // ================================ Forward Declarations ================================
-namespace ddknd::ecs
-{
-    class World;
-}// namespace ddknd::ecs
-
 namespace ddknd::graphics
 {
     class GraphicsAssetStore;
@@ -40,6 +38,10 @@ namespace ddknd::system
         // renderer
         ::ddknd::graphics::RendererSystem* renderer = nullptr;
         ::ddknd::graphics::RenderCamera* renderCamera = nullptr;
+
+        // temporary per-frame event bufers
+        // @TODO: replace with generic EvenetManager / EvenetQueue / ResourceStorage
+        ddknd::event::HitboxHitEventBuffer* hitboxHitEvents = nullptr;
     };
 
     // Scheduler
@@ -65,6 +67,9 @@ namespace ddknd::system
         void RunMainCameraExport(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
 
         void RunLifetimeSystem(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
+
+        
+        void RunHitboxCollisionSystem(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
     };
 } // namespace ddknd::system
 

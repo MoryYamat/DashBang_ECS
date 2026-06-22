@@ -6,11 +6,10 @@
 #include <cmath>
 #include <cstddef>
 
-
 namespace
 {
-    void ComputeBoneGlobal(const ddknd::animation::types::SkeletonResource& skeleton, ddknd::animation::types::Pose& pose,
-                           std::size_t boneIndex, std::vector<bool>& computed)
+    void ComputeBoneGlobal(const ddknd::animation::types::SkeletonResource& skeleton,
+                           ddknd::animation::types::Pose& pose, std::size_t boneIndex, std::vector<bool>& computed)
     {
         if (computed[boneIndex])
             return;
@@ -131,12 +130,38 @@ namespace
 
         return Slerp(values[i], values[i + 1], alpha);
     }
+
+    ddknd::math::Mat4f MakeLocalMatrixForBone(const ddknd::animation::types::SkeletonResource& skeleton, std::size_t boneIndex,
+                                       const ddknd::math::TRS& trs)
+    {
+        auto local = trs.ToMatrix();
+
+        if (skeleton.bones[boneIndex].parent < 0)
+        {
+            return skeleton.skeletonRootTransform * local;
+        }
+
+        return local;
+    }
 } // namespace
 
 namespace ddknd::animation
 {
     void AnimatorSystem::InitializePose(const types::SkeletonResource& skeleton, types::Pose& pose)
     {
+        // const std::size_t boneCount = skeleton.bones.size();
+
+        // pose.localTRS.resize(boneCount);
+        // pose.localMatrices.resize(boneCount);
+
+        // for (std::size_t i = 0; i < boneCount; ++i)
+        // {
+        //     pose.localTRS[i] = skeleton.bones[i].bindLocalTRS;
+        //     pose.localMatrices[i] = skeleton.bones[i].bindLocalMatrix;
+        // }
+
+        // UpdateGlobalPose(skeleton, pose);
+
         const std::size_t boneCount = skeleton.bones.size();
 
         pose.localTRS.resize(boneCount);
@@ -145,7 +170,17 @@ namespace ddknd::animation
         for (std::size_t i = 0; i < boneCount; ++i)
         {
             pose.localTRS[i] = skeleton.bones[i].bindLocalTRS;
-            pose.localMatrices[i] = skeleton.bones[i].bindLocalMatrix;
+
+            const auto local = pose.localTRS[i].ToMatrix();
+
+            if (skeleton.bones[i].parent < 0)
+            {
+                pose.localMatrices[i] = MakeLocalMatrixForBone(skeleton, i, pose.localTRS[i]);
+            }
+            else
+            {
+                pose.localMatrices[i] = local;
+            }
         }
 
         UpdateGlobalPose(skeleton, pose);
@@ -220,9 +255,13 @@ namespace ddknd::animation
         {
             math::Mat4f local = pose.localTRS[i].ToMatrix();
 
+            //@@@@@TODO:   
+            // Consider a cleaner way to handle the transform of a root/armature node that exists 
+            // in the glTF node hierarchy but is not included in the skeleton's bone array.
+            // 根本原因: glTF node hierarchy と runtime bone hierarchy が 1:1 ではないこと
             if (skeleton.bones[i].parent < 0)
             {
-                pose.localMatrices[i] = skeleton.skeletonRootTransform * local;
+                pose.localMatrices[i] = MakeLocalMatrixForBone(skeleton, i, pose.localTRS[i]);
             }
             else
             {
@@ -233,8 +272,8 @@ namespace ddknd::animation
     }
 
     void AnimatorSystem::UpdateAnimator(const types::SkeletonResource& skeleton,
-                                        const types::AnimationClipResource& clip, types::AnimationState& state, types::Pose& pose,
-                                        float deltaTime)
+                                        const types::AnimationClipResource& clip, types::AnimationState& state,
+                                        types::Pose& pose, float deltaTime)
     {
         if (clip.duration <= 0.0f)
             return;
