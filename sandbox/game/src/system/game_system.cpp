@@ -20,6 +20,7 @@
 #include "game/system/request/game_input_system.h"
 #include "game/system/resolve/game_movement_intent_resolve_system.h"
 #include "game/system/state/game_character_state_system.h"
+#include "game/system/logic/game_hitbox_logic_system.h"
 
 
 namespace app::system
@@ -76,6 +77,10 @@ namespace app::system
         RunMovement(world, ctx);
         RunCharacterFacing(world, ctx);
         
+        // hitbox
+        RunHitboxSpawnSystem(world, ctx);
+        RunHitboxLifeTimeSystem(world, ctx);
+
         // chose animation
         RunPlayerLocomotionAnimation(world, ctx);
     }
@@ -303,6 +308,18 @@ namespace app::system
         {
             AttackControlModifierSystem::UpdateOne(modifier,state, def);
         }
+    }
+
+    void GameSystemRunner::RunHitboxSpawnSystem(::ddknd::ecs::World& world, GameFrameContext& ctx)
+    {
+        (void)ctx;
+        app::system::AttackHitboxSpawnSystem::Update(world);
+    }
+
+    void GameSystemRunner::RunHitboxLifeTimeSystem(::ddknd::ecs::World& world, GameFrameContext& ctx)
+    {
+        assert(ctx.frame);
+        app::system::HitboxLifetimeSystem::Update(world, ctx.frame->deltaTime);
     }
 
     void GameSystemRunner::RunCameraDesiredPose(::ddknd::ecs::World& world, GameFrameContext& ctx)

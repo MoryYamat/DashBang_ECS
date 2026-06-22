@@ -169,6 +169,24 @@ namespace ddknd::math
         return r;
     }
 
+    Vec3f TransformPoint(const Mat4f& m, const Vec3f& p)
+    {
+        Vec4f v = m * Vec4f{p.x(), p.y(), p.z(), 1.0f};
+        return Vec3f{v.x(), v.y(), v.z()};
+    }
+    Vec3f TransformDirection(const Mat4f& m, const Vec3f& d)
+    {
+        Vec4f v = m * Vec4f{d.x(), d.y(), d.z(), 0.0f};
+        Vec3f out{v.x(), v.y(), v.z()};
+
+        if(lengthSquared(out) <= kEpsilonSq<float>)
+        {
+            return Vec3f{0.0f, 0.0f, 1.0f};
+        }
+
+        return normalize(out);
+    }
+
     // @brief LookAt / OpenGL / Right-Handed
     Mat4f LookAtOpenGLRH(const Vec3f& eye, const Vec3f& target, const Vec3f& up)
     {

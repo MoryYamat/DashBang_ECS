@@ -480,6 +480,9 @@ namespace ddknd::math
     Mat4f Inverse(const Mat4f& m);
 
     Mat4f ExtractRotationOnly(const ddknd::math::Mat4f& m);
+
+    Vec3f TransformPoint(const Mat4f& m, const Vec3f& p);
+    Vec3f TransformDirection(const Mat4f& m, const Vec3f& d);
 }
 
 // camera

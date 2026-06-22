@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ddknd/math/math.h>
+
 namespace app::component
 {
     struct CharacterMoveStatsComponent
@@ -26,9 +28,20 @@ namespace app::component
         bool lockFacing = true;
     };
 
+    struct AttackHitboxDef
+    {
+        float radius = 1.0f;
+        float lifetime =0.1f;
+
+        ddknd::math::Vec3f localOffset;
+
+        bool useforwardHemisphere = true;
+    };
+
     struct AttackDefComponent
     {
         AttackTimingDef timing{};
         AttackControlDef control;
+        AttackHitboxDef hitbox;
     };
 } // namespace app::component

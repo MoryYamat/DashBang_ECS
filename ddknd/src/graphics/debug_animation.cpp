@@ -8,16 +8,6 @@
 #include <ddknd/component/gfx_component.h>
 #include <ddknd/graphics/gfx_asset_loader.h>
 
-// helper
-namespace
-{
-    ::ddknd::math::Vec3f TransformPoint(const ::ddknd::math::Mat4f& m, const ::ddknd::math::Vec3f& p)
-    {
-        const auto v = m * ::ddknd::math::Vec4f{p.x(), p.y(), p.z(), 1.0f};
-
-        return ::ddknd::math::Vec3f{v.x(),v.y(),v.z()};
-    }
-}
 
 namespace ddknd::animation::debug
 {
@@ -92,10 +82,10 @@ namespace ddknd::animation::debug
                     ::ddknd::math::ExtractTranslation(pose.globalMatrices[parentIndex]);
 
             const auto childWorld =
-                    TransformPoint(modelMatrix, childLocal);
+                    ddknd::math::TransformPoint(modelMatrix, childLocal);
 
             const auto parentWorld =
-                    TransformPoint(modelMatrix, parentLocal);
+                    ddknd::math::TransformPoint(modelMatrix, parentLocal);
 
             debugDraw.Line(
                 parentWorld,

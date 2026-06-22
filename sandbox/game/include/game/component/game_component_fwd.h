@@ -27,4 +27,11 @@ namespace app::component
     struct AttackStateComponent;
     // animation 
     struct PlayerAnimationClipsComponent;
+
+    // hitbox
+    struct HemisphereHitboxComponent;
+    struct SphereHitboxComponent;
+    struct HitboxComponent;
+    struct HitboxSpawnRequestBuffer;
+    struct AttackHitboxDef;
 }

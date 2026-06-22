@@ -42,6 +42,9 @@ namespace app::system
             void RunAttack(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunCharacterModfier(::ddknd::ecs::World& world, GameFrameContext& ctx);
 
+            void RunHitboxSpawnSystem(::ddknd::ecs::World& world, GameFrameContext& ctx);
+            void RunHitboxLifeTimeSystem(::ddknd::ecs::World& world, GameFrameContext& ctx);
+
             void RunCameraDesiredPose(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunCameraApply(::ddknd::ecs::World& world, GameFrameContext& ctx);
             void RunCameraIntentResolve(::ddknd::ecs::World& world, GameFrameContext& ctx);
