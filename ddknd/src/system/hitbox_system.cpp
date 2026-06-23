@@ -14,6 +14,10 @@
 namespace ddknd::system
 {
     // ### TEMPORARY ### 
+    // TODO:
+    // HitboxHitEvent is currently emitted every frame while overlapping.
+    // For gameplay damage, add hitbox-target history or separate
+    // HitEnter / HitStay events.
     void HitboxCollisionSystem::Update(ddknd::ecs::World& world, const ddknd::system::FrameContext& ctx)
     {
         assert(ctx.hitboxHitEvents && "HitboxCollisionSystem requires hitboxHitboxEvents.");
@@ -43,7 +47,6 @@ namespace ddknd::system
                 {
                     continue;
                 }
-                // std::cerr << "coll detect phase\n";
 
                 // detection
                 // ##################### TEMPORARY ##################### 
@@ -55,18 +58,15 @@ namespace ddknd::system
 
                 if(distSq > combinedRadius * combinedRadius)
                 {
-                    std::cerr << "dist: not collide \n";
                     continue;
                 }
                 const float front = ddknd::math::dot(toTarget, forward);
 
                 if(front < -sphere.radius)
                 {
-                    std::cerr << "dir: not collide\n";
                     continue;
                 }
 
-                std::cerr << "collide\n";
                 ctx.hitboxHitEvents->Push({.hitbox = hitboxEntity, .owner = hitbox.owner, .target = target});
             }
         }

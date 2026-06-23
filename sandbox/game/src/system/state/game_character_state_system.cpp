@@ -35,7 +35,6 @@ namespace app::system
         state.previous = state.current;
         if(attackIntent.active && state.current == State::None)
         {
-            std::cerr << "state startup\n";
             state.current = State::Startup;
             state.elapsed = 0.0f;
             state.hitboxSpawned = false;
@@ -68,7 +67,6 @@ namespace app::system
             case State::Recovery:
                 if(state.elapsed >= def.timing.recoveryDuration)
                 {
-                    std::cerr << "recovered\n";
                     state.current = State::None;
                     state.elapsed = 0.0f;
                     state.hitboxSpawned = false;

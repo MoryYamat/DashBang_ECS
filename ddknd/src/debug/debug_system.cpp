@@ -9,6 +9,8 @@
 #include <ddknd/graphics/debug_animation.h>
 #include <ddknd/graphics/gfx_asset_loader.h>
 
+#include <ddknd/event/hit_event.h>
+
 namespace ddknd::debug
 {
 
@@ -16,8 +18,6 @@ namespace ddknd::debug
     {
         assert(ctx.debugDraw);
         ctx.debugDraw->BeginFrame();
-
-        
     }
     void DebugSystemRunner::EndFrame(const DebugContext& ctx)
     {
@@ -48,14 +48,19 @@ namespace ddknd::debug
             RunAxisDebug(ctx);
         }
 
-        if(ctx.config->drawHitboxes)
+        if (ctx.config->drawHitboxes)
         {
-            RunHitboxDebug(world,ctx);
+            RunHitboxDebug(world, ctx);
         }
 
-        if(ctx.config->drawHurtboxes)
+        if (ctx.config->drawHurtboxes)
         {
             RunHurtboxDebug(world, ctx);
+        }
+
+        if (ctx.config->drawHitEvents)
+        {
+            RunHitEventDebug(ctx);
         }
     }
 
@@ -133,15 +138,18 @@ namespace ddknd::debug
         using namespace ddknd::ecs;
         auto& reg = world.GetRegistry();
 
-        auto view = reg.view(query().select<ddknd::component::HitboxComponent>()
-                                    .require<ddknd::component::HemisphereHitboxComponent,
-                                            ddknd::component::TransformComponent>());
+        auto view =
+            reg.view(query()
+                         .select<ddknd::component::HitboxComponent>()
+                         .require<ddknd::component::HemisphereHitboxComponent, ddknd::component::TransformComponent>());
 
         const auto color = ctx.config->hitboxStyle.hitboxColor;
-        for(auto [hitbox, hemi, transform]: view)
+        for (auto [hitbox, hemi, transform] : view)
         {
-            const auto center = ddknd::math::TransformPoint(transform.worldMatrix, ddknd::math::Vec3f{0.0f, 0.0f,0.0f});
-            const auto forward = ddknd::math::normalize(ddknd::math::TransformDirection(transform.worldMatrix, ddknd::math::Vec3f{0.0f,0.0f,1.0f}));
+            const auto center =
+                ddknd::math::TransformPoint(transform.worldMatrix, ddknd::math::Vec3f{0.0f, 0.0f, 0.0f});
+            const auto forward = ddknd::math::normalize(
+                ddknd::math::TransformDirection(transform.worldMatrix, ddknd::math::Vec3f{0.0f, 0.0f, 1.0f}));
 
             ctx.debugDraw->WireHemisphere(center, forward, hemi.radius, color);
         }
@@ -154,19 +162,19 @@ namespace ddknd::debug
         using namespace ddknd::ecs;
         auto& reg = world.GetRegistry();
 
-        auto view = reg.view(query().select<ddknd::component::HurtboxComponent>()
-                                    .require<ddknd::component::SphereHurtboxComponent,
-                                            ddknd::component::TransformComponent>());
+        auto view =
+            reg.view(query()
+                         .select<ddknd::component::HurtboxComponent>()
+                         .require<ddknd::component::SphereHurtboxComponent, ddknd::component::TransformComponent>());
 
         const auto color = ctx.config->hitboxStyle.hurtboxColor;
-        for(auto[hurtbox, sphere, transform] : view)
+        for (auto [hurtbox, sphere, transform] : view)
         {
             const auto center = ddknd::math::TransformPoint(transform.worldMatrix, sphere.localOffset);
 
             ctx.debugDraw->WireSphere(center, sphere.radius, color);
         }
     }
-
 
     bool DebugSystemRunner::PrepareTextDebug(const DebugContext& ctx)
     {
@@ -184,5 +192,63 @@ namespace ddknd::debug
 
         ctx.debugDraw->SetFont(font);
         return true;
+    }
+
+    void DebugSystemRunner::RunHitEventDebug(const DebugContext& ctx)
+    {
+        assert(ctx.frame);
+        assert(ctx.debugDraw);
+        assert(ctx.config);
+        assert(ctx.frame->hitboxHitEvents);
+
+        constexpr float displayDuration = 2.0f;
+
+        if (ctx.frame->hitboxHitEvents)
+        {
+            for (const auto& e : ctx.frame->hitboxHitEvents->events)
+            {
+                const auto exists =
+                    std::find_if(hitEventLines_.begin(), hitEventLines_.end(),
+                                 [&](const DebugHitEventLine& line)
+                                 {
+                                     return line.owner == e.owner && line.hitbox == e.hitbox && line.target == e.target;
+                                 }) != hitEventLines_.end();
+
+                if (!exists)
+                {
+                    hitEventLines_.push_back(DebugHitEventLine{
+                        .owner = e.owner,
+                        .hitbox = e.hitbox,
+                        .target = e.target,
+                        .remaining = displayDuration,
+                    });
+                }
+            }
+        }
+
+        const float dt = ctx.frame->deltaTime;
+
+        for (auto& line : hitEventLines_)
+        {
+            line.remaining -= dt;
+        }
+
+        hitEventLines_.erase(std::remove_if(hitEventLines_.begin(), hitEventLines_.end(),
+                                            [](const DebugHitEventLine& line) { return line.remaining <= 0.0f; }),
+                             hitEventLines_.end());
+
+        float y = 45.0f;
+
+        for (const auto& line : hitEventLines_)
+        {
+            // const float alpha = std::clamp(line.remaining / displayDuration, 0.0f, 1.0f);// fade out
+            const float alpha = 1.0f;
+            ctx.debugDraw->Text(10.0f, y,
+                                std::format("HIT owner={} hitbox={} target={}", line.owner.Index(), line.hitbox.Index(),
+                                            line.target.Index()),
+                                ddknd::math::Vec4f{1.0f, 0.2f, 0.2f, alpha});
+
+            y += 18.0f;
+        }
     }
 } // namespace ddknd::debug

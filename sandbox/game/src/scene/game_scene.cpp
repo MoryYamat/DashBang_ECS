@@ -21,7 +21,7 @@ namespace app::scene
         auto paladinAssets = ::app::assets::actor::RegisterPaladinAssets(assetMgr);
 
         auto player = ::app::player::CreatePaladinPlayer(
-            world, paladinAssets, ::app::player::PlayerSpawnDesc{.position = {0.0f, 0.0f, 0.0f}, .moveSpeed = 5.0f});
+            world, paladinAssets, ::app::player::PlayerSpawnDesc{.position = {0.0f, 0.0f, 0.0f}, .moveSpeed = 2.0f});
 
         auto mainCamera = ::app::camera::CreateCameraEntity(world, ::app::camera::CameraEntityDesc{});
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ddknd/ecs/ecs_fwd.h>
+#include <ddknd/ecs/entity/entity.h>
 #include <ddknd/graphics/graphics_fwd.h>
 #include <ddknd/system/system_fwd.h>
 
@@ -54,6 +55,14 @@ namespace ddknd::debug
       ddknd::math::Vec4f hurtboxColor{0.0f, 1.0f, 0.0f, 1.0f};
     };
 
+    struct DebugHitEventLine
+    {
+      ddknd::ecs::Entity owner;
+      ddknd::ecs::Entity hitbox;
+      ddknd::ecs::Entity target;
+      float remaining = 0.5f;
+    };
+
     enum class CameraOverrideMode
     {
         None,       // Use normal app/game camera for rendering
@@ -76,6 +85,7 @@ namespace ddknd::debug
         bool drawSkeletons = true;
         bool drawHitboxes = true;
         bool drawHurtboxes = true;
+        bool drawHitEvents = true;
 
         DebugAxisStyle axisStyle{};
         DebugSkeletonStyle skeletonStyle{};
@@ -113,5 +123,9 @@ namespace ddknd::debug
         void RunHurtboxDebug(ddknd::ecs::World& world, const DebugContext& ctx);
 
         bool PrepareTextDebug(const DebugContext& ctx);
+
+        void RunHitEventDebug(const DebugContext& ctx);
+
+        std::vector<DebugHitEventLine> hitEventLines_;
     };
 } // namespace ddknd::debug
