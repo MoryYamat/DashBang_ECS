@@ -43,7 +43,7 @@ namespace ddknd::system
                 {
                     continue;
                 }
-                std::cerr << "here\n";
+                // std::cerr << "coll detect phase\n";
 
                 // detection
                 // ##################### TEMPORARY ##################### 
@@ -55,15 +55,18 @@ namespace ddknd::system
 
                 if(distSq > combinedRadius * combinedRadius)
                 {
+                    std::cerr << "dist: not collide \n";
                     continue;
                 }
                 const float front = ddknd::math::dot(toTarget, forward);
 
                 if(front < -sphere.radius)
                 {
+                    std::cerr << "dir: not collide\n";
                     continue;
                 }
 
+                std::cerr << "collide\n";
                 ctx.hitboxHitEvents->Push({.hitbox = hitboxEntity, .owner = hitbox.owner, .target = target});
             }
         }

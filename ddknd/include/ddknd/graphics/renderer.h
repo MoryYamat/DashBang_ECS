@@ -315,14 +315,24 @@ namespace ddknd::graphics
         types::GPUID<tag::TextureGPUTag> FontAtlas() const;
 
         // Line
-        void Axis(const math::Vec3f& origin, float length = 1.0f);
+        void Axis(const Vec3f& origin, float length = 1.0f);
         types::GPUID<tag::LineBatchTag> LineBatch() const;
         std::uint32_t LineVertexCount() const;
-        void Axis(const math::Vec3f& origin, const DebugAxisColors& colors, float length = 1.0f);
+        void Axis(const Vec3f& origin, const DebugAxisColors& colors, float length = 1.0f);
 
         // Skeleton
         void Skeleton(const animation::types::SkeletonResource& skeleton, const animation::types::Pose& pose,
                       Color color);
+
+        // WireSphere
+        void WireSphere(Vec3f center, float radius, Color color, int segments = 24);
+        // Hemishpere
+        void WireHemisphere(Vec3f center, Vec3f forward, float radius, Color color, int segments = 24);
+        
+        // WireCircle
+        void WireCircle(Vec3f center, Vec3f axisA, Vec3f axisB, float radius, Color color, int segments);
+        // WireArc
+        void WireArc(Vec3f center, Vec3f axisA, Vec3f axisB, float radius, float start, float end, Color color, int segments);
 
       private:
         // Text

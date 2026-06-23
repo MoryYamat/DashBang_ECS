@@ -17,9 +17,9 @@ namespace app::component
 
     struct AttackTimingDef
     {
-        float startupDuration = 0.80f;  // 50f
-        float activeDuration = 0.30f;   // 20f
-        float recoveryDuration = 0.45f; // 30f
+        float startupDuration = 0.70f;  
+        float activeDuration = 0.35f;   
+        float recoveryDuration = 0.45f; 
     };
 
     struct AttackControlDef

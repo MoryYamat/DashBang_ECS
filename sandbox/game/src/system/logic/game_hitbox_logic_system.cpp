@@ -52,14 +52,18 @@ namespace app::system
                 continue;
 
             auto hitbox = reg.Create();
-            std::cerr << "hibox entity " << hitbox.Value() << " created\n";
+            // std::cerr << "hibox entity " << hitbox.Value() << ", gen=" << hitbox.Gen() << ", index=" << hitbox.Index() << " created\n";
 
             reg.AddComponent<ddknd::component::LifetimeComponent>(
                 hitbox, ddknd::component::LifetimeComponent{.lifetime = def->hitbox.lifetime, .elapsed = 0.0f});
 
+            // copy position
             ddknd::component::TransformComponent hitboxTransform{};
             hitboxTransform.localTRS.translation =
                 ddknd::math::TransformPoint(transform->worldMatrix, def->hitbox.localOffset);
+            // copy direction
+            hitboxTransform.localTRS.rotation = transform->localTRS.rotation;
+            
             hitboxTransform.worldMatrix = hitboxTransform.localTRS.ToMatrix();
             hitboxTransform.dirty = false;
             reg.AddComponent<ddknd::component::TransformComponent>(hitbox, hitboxTransform);

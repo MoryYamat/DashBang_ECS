@@ -20,6 +20,8 @@ namespace app::actor
         transform.dirty = true;
 
         reg.AddComponent<ddknd::component::HurtboxComponent>(e);
+        reg.AddComponent<ddknd::component::SphereHurtboxComponent>(e, ddknd::component::SphereHurtboxComponent{.localOffset = {0.0f, 0.75f, 0.0f}});
+
 
         return e;
     }

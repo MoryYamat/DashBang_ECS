@@ -48,6 +48,12 @@ namespace ddknd::debug
         ::ddknd::asset::AssetID<::ddknd::asset::tag::Font> font;
     };
 
+    struct DebugHitboxStyle
+    {
+      ddknd::math::Vec4f hitboxColor{1.0f, 0.0f, 0.0f, 1.0f};
+      ddknd::math::Vec4f hurtboxColor{0.0f, 1.0f, 0.0f, 1.0f};
+    };
+
     enum class CameraOverrideMode
     {
         None,       // Use normal app/game camera for rendering
@@ -68,10 +74,13 @@ namespace ddknd::debug
         bool drawAxis = true;
         bool drawFps = true;
         bool drawSkeletons = true;
+        bool drawHitboxes = true;
+        bool drawHurtboxes = true;
 
         DebugAxisStyle axisStyle{};
         DebugSkeletonStyle skeletonStyle{};
         DebugFPSTextStyle fpsStyle{};
+        DebugHitboxStyle hitboxStyle{};
 
         DebugCameraConfig camera{};
     };
@@ -99,6 +108,9 @@ namespace ddknd::debug
         void RunSkeletonDebug(::ddknd::ecs::World& world, const DebugContext& ctx);
         void RunFpsDebug(const DebugContext& ctx);
         void RunAxisDebug(const DebugContext& ctx);
+
+        void RunHitboxDebug(ddknd::ecs::World& world, const DebugContext& ctx);
+        void RunHurtboxDebug(ddknd::ecs::World& world, const DebugContext& ctx);
 
         bool PrepareTextDebug(const DebugContext& ctx);
     };

@@ -2,9 +2,10 @@
 
 #include "internal/graphics/renderer_binding.h"
 
-// TODO: need to remove
 #include "ddknd/math/math.h"
 #include <glad/glad.h>
+
+#include <numbers>
 
 namespace 
 {
@@ -290,23 +291,23 @@ namespace ddknd::graphics
         backend_.UpdateLineBatch(lineBatch_, lineVertices_);
     }
 
-    void DebugDrawList::Axis(const math::Vec3f& origin, float length)
+    void DebugDrawList::Axis(const Vec3f& origin, float length)
     {
-        const auto x = origin + math::Vec3f{length, 0.0f, 0.0f};
-        const auto y = origin + math::Vec3f{0.0f, length, 0.0f};
-        const auto z = origin + math::Vec3f{0.0f, 0.0f, length};
+        const auto x = origin + Vec3f{length, 0.0f, 0.0f};
+        const auto y = origin + Vec3f{0.0f, length, 0.0f};
+        const auto z = origin + Vec3f{0.0f, 0.0f, length};
 
         Line(origin, x, {1, 0, 0, 1}); // x red
         Line(origin, y, {0, 1, 0, 1}); // y green
         Line(origin, z, {0, 0, 1, 1}); // z blue
     }
 
-    void DebugDrawList::Axis(const math::Vec3f& origin, const DebugAxisColors& colors, float length)
+    void DebugDrawList::Axis(const Vec3f& origin, const DebugAxisColors& colors, float length)
     {
 
-        const auto x = origin + math::Vec3f{length, 0.0f, 0.0f};
-        const auto y = origin + math::Vec3f{0.0f, length, 0.0f};
-        const auto z = origin + math::Vec3f{0.0f, 0.0f, length};
+        const auto x = origin + Vec3f{length, 0.0f, 0.0f};
+        const auto y = origin + Vec3f{0.0f, length, 0.0f};
+        const auto z = origin + Vec3f{0.0f, 0.0f, length};
 
         Line(origin, x, colors.x); // x red
         Line(origin, y, colors.y); // y green
@@ -335,6 +336,65 @@ namespace ddknd::graphics
             Vec3f parentPos = ExtractTranslation(pose.globalMatrices[parent]);
 
             Line(parentPos, childPos, color);
+        }
+    }
+
+    // WireSphere
+    void DebugDrawList::WireSphere(Vec3f center, float radius, Color color, int segments)
+    {
+        WireCircle(center, Vec3f{1, 0, 0}, Vec3f{0, 1, 0}, radius, color, segments);
+        WireCircle(center, Vec3f{0, 1, 0}, Vec3f{0, 0, 1}, radius, color, segments);
+        WireCircle(center, Vec3f{0, 0, 1}, Vec3f{1, 0, 0}, radius, color, segments);
+    }
+
+    // Hemishpere
+    void DebugDrawList::WireHemisphere(Vec3f center, Vec3f forward, float radius, Color color, int segments)
+    {
+        constexpr float pi = std::numbers::pi_v<float>;
+        const Vec3f f = math::normalize(forward);
+
+        const Vec3f tmp = std::abs(f.y()) < 0.99f ? Vec3f{0.0f, 1.0f, 0.0f} : Vec3f{1.0f, 0.0f, 0.0f};
+
+        const Vec3f right = math::normalize(math::cross(tmp, f));
+        const Vec3f up = math::normalize(math::cross(f, right));
+
+        // flat cut circle
+        WireCircle(center, right, up, radius, color, segments);
+
+        // two forward arcs
+        WireArc(center, right, f, radius, 0.0f, pi, color, segments / 2);
+        WireArc(center, up, f, radius, 0.0f, pi, color, segments / 2);
+
+        Line(center, center + f * radius, color);
+    }
+    
+    void DebugDrawList::WireCircle(Vec3f center, Vec3f axisA, Vec3f axisB, float radius, Color color, int segments)
+    {
+        constexpr float pi = std::numbers::pi_v<float>;
+
+        for(int i = 0; i < segments; ++i)
+        {
+            const float t0 = (2.0f * pi * i) / segments;
+            const float t1 = (2.0f * pi * (i + 1)) / segments;
+
+            const auto p0 = center + axisA * (std::cos(t0) * radius) + axisB * (std::sin(t0) * radius);
+            const auto p1 = center + axisA * (std::cos(t1) * radius) + axisB * (std::sin(t1) * radius);
+
+            Line(p0, p1, color);
+        }
+    }
+
+    void DebugDrawList::WireArc(Vec3f center, Vec3f axisA, Vec3f axisB, float radius, float start, float end, Color color, int segments)
+    {
+        for(int i = 0; i < segments; i++)
+        {
+            const float t0 = start + (end - start) * (static_cast<float>(i) / segments);
+            const float t1 = start + (end - start) * (static_cast<float>(i + 1) / segments);
+
+            const auto p0 = center + axisA * (std::cos(t0) * radius) + axisB * (std::sin(t0) * radius);
+            const auto p1 = center + axisA * (std::cos(t1) * radius) + axisB * (std::sin(t1) * radius);
+
+            Line(p0, p1, color);
         }
     }
 

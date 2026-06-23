@@ -4,6 +4,8 @@
 #include <ddknd/system/system.h>
 
 #include <ddknd/component/gfx_component.h>
+#include <ddknd/component/hitbox_component.h>
+
 #include <ddknd/graphics/debug_animation.h>
 #include <ddknd/graphics/gfx_asset_loader.h>
 
@@ -44,6 +46,16 @@ namespace ddknd::debug
         if (ctx.config->drawAxis)
         {
             RunAxisDebug(ctx);
+        }
+
+        if(ctx.config->drawHitboxes)
+        {
+            RunHitboxDebug(world,ctx);
+        }
+
+        if(ctx.config->drawHurtboxes)
+        {
+            RunHurtboxDebug(world, ctx);
         }
     }
 
@@ -112,6 +124,49 @@ namespace ddknd::debug
         ctx.debugDraw->Axis(style.origin, graphics::DebugAxisColors{style.axisX, style.axisY, style.axisZ},
                             style.length);
     }
+
+    void DebugSystemRunner::RunHitboxDebug(ddknd::ecs::World& world, const DebugContext& ctx)
+    {
+        assert(ctx.debugDraw);
+        assert(ctx.config);
+
+        using namespace ddknd::ecs;
+        auto& reg = world.GetRegistry();
+
+        auto view = reg.view(query().select<ddknd::component::HitboxComponent>()
+                                    .require<ddknd::component::HemisphereHitboxComponent,
+                                            ddknd::component::TransformComponent>());
+
+        const auto color = ctx.config->hitboxStyle.hitboxColor;
+        for(auto [hitbox, hemi, transform]: view)
+        {
+            const auto center = ddknd::math::TransformPoint(transform.worldMatrix, ddknd::math::Vec3f{0.0f, 0.0f,0.0f});
+            const auto forward = ddknd::math::normalize(ddknd::math::TransformDirection(transform.worldMatrix, ddknd::math::Vec3f{0.0f,0.0f,1.0f}));
+
+            ctx.debugDraw->WireHemisphere(center, forward, hemi.radius, color);
+        }
+    }
+    void DebugSystemRunner::RunHurtboxDebug(ddknd::ecs::World& world, const DebugContext& ctx)
+    {
+        assert(ctx.debugDraw);
+        assert(ctx.config);
+
+        using namespace ddknd::ecs;
+        auto& reg = world.GetRegistry();
+
+        auto view = reg.view(query().select<ddknd::component::HurtboxComponent>()
+                                    .require<ddknd::component::SphereHurtboxComponent,
+                                            ddknd::component::TransformComponent>());
+
+        const auto color = ctx.config->hitboxStyle.hurtboxColor;
+        for(auto[hurtbox, sphere, transform] : view)
+        {
+            const auto center = ddknd::math::TransformPoint(transform.worldMatrix, sphere.localOffset);
+
+            ctx.debugDraw->WireSphere(center, sphere.radius, color);
+        }
+    }
+
 
     bool DebugSystemRunner::PrepareTextDebug(const DebugContext& ctx)
     {
