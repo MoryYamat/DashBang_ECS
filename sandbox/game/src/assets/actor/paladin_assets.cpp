@@ -8,6 +8,8 @@
 #include <ddknd/math/math.h>
 #include <ddknd/asset/sub_asset_key.h>
 
+#include "game/component/animation_component.h"
+
 namespace app::assets::actor
 {
     PaladinAssetIDs RegisterPaladinAssets(::ddknd::asset::AssetManager& assetMgr) 
@@ -50,6 +52,21 @@ namespace app::assets::actor
         // Runtime animation state
         registry.AddComponent<::ddknd::component::PoseComponent>(e);
         registry.AddComponent<::ddknd::component::AnimationPlaybackComponent>(e);
+
+        // ============== animation section ==============
+        registry.AddComponent<app::component::CharacterAnimationClipsComponent>(
+            e, app::component::CharacterAnimationClipsComponent{
+                   .idle = assets.idle,
+                   .runForward = assets.runForward,
+                   .runBackward = assets.runBackward,
+                   .runRight = assets.runRight,
+                   .runLeft = assets.runLeft,
+                   .runRightFowardDiagonal = assets.runRightForwardDiagonal,
+                   .runLeftFowardDiagonal = assets.runLeftForwardDiagonal,
+                   .runRightBackDiagonal = assets.runRightBackDiagonal,
+                   .runLeftBackDiagonal = assets.runLeftBackDiagonal,
+                   .attack = assets.attack,
+               });
 
         return e;
     }

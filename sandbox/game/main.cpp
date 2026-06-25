@@ -83,3 +83,19 @@ int main()
 // 1 全 TransformComponent を走査し、UpdateOne 内で dirty を見る
 // 2 View / Query で DirtyTransformComponent を持つ entity だけ走査する
 // 3 dirty entity list / changed list を持ち、変更された Transform だけ処理する
+
+
+// 作成する資料
+// - Readme
+// 
+
+// - overview: プロジェクトの目的/何が動くか/何を自作したか/全体アーキテクチャ図/debug mode のスクショ/demovideo のリンク/ 詳細docsへのリンク
+// - ECS : 現行設計/ 
+// - AssetManager: 
+// - import pipeline: 
+// - SystemPipeline(fsm-intent design)(input->request->state->resolver->Logic): 
+// - DebugTools
+// - appendix: FSMEngine(現行のものには未使用ですが以前のもの使用) 
+// 
+// - Demo 動画
+// 

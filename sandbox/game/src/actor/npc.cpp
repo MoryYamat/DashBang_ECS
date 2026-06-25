@@ -4,6 +4,7 @@
 #include <ddknd/component/gfx_component.h>
 
 #include "game/assets/actor/paladin_assets.h"
+#include "game/component/state_component.h"
 
 #include <ddknd/component/hitbox_component.h>
 
@@ -21,7 +22,8 @@ namespace app::actor
 
         reg.AddComponent<ddknd::component::HurtboxComponent>(e);
         reg.AddComponent<ddknd::component::SphereHurtboxComponent>(e, ddknd::component::SphereHurtboxComponent{.localOffset = {0.0f, 0.75f, 0.0f}});
-
+        reg.AddComponent<app::component::PlayerLocomotionStateComponent>(e);
+        reg.AddComponent<app::component::AttackStateComponent>(e);
 
         return e;
     }

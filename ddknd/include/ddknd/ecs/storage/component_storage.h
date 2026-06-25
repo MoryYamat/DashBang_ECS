@@ -2,6 +2,7 @@
 // sparse-set ecs
 #pragma once
 
+#include <span>
 #include <cstddef>
 #include <limits>
 #include <vector>
@@ -75,6 +76,9 @@ namespace ddknd::ecs
             sparse_[sparseIdx] = npos;
         }
 
+        // @note
+        // Returned pointer/reference is valid only until this Storage<T>
+        // is structurally modified by Emplace, Remove, reserve, resize, clear, etc.
         T* Get(Entity e)
         {
             if(!Has(e))
@@ -95,14 +99,19 @@ namespace ddknd::ecs
             return &components_[sparse_[static_cast<std::size_t>(e.Index())]];
         }
 
-        const std::vector<T>& Components() const
+        std::span<const T> Components() const
         {
-            return components_;
+            return std::span<const T>{components_};
         }
 
-        std::vector<T>& Components()
+        std::span<T> Components()
         {
-            return components_;
+            return std::span<T>{components_};
+        }
+
+        std::span<const Entity> Entities() const
+        {
+            return std::span<const Entity>{ents_};
         }
 
         bool Has(Entity e) const override
@@ -129,7 +138,7 @@ namespace ddknd::ecs
             return components_.size();
         }
 
-        Entity EntityAt(std::size_t i)
+        Entity EntityAt(std::size_t i) const
         {
             return ents_[i];
         }
@@ -154,6 +163,7 @@ namespace ddknd::ecs
         }
 
         private:
+            // @TODO: Pointer stability issues
             std::vector<T> components_;
             std::vector<Entity> ents_;
             std::vector<std::size_t> sparse_;

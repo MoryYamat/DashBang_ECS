@@ -11,7 +11,7 @@ namespace app::system
     void PlayerAnimationSystem::UpdateOne(::ddknd::component::AnimationPlaybackComponent& playback,
                                           const component::PlayerLocomotionStateComponent& playerState,
                                           const component::AttackStateComponent& attackState,
-                                          const component::PlayerAnimationClipsComponent& clips)
+                                          const component::CharacterAnimationClipsComponent& clips)
     {
         using MoveState = app::component::PlayerLocomotionState;
         using AttackState = app::component::AttackState;

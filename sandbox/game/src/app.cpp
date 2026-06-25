@@ -57,17 +57,17 @@ namespace
     using Action = ::app::action::Action;
     using Key = ::ddknd::input::Key;
 
-    float MaxAbsDiffFromIdentity(const ::ddknd::math::Mat4f& m)
-    {
-        const float* p = m.Data();
-        const float* id = ::ddknd::math::Mat4f::Identity().Data();
+    // float MaxAbsDiffFromIdentity(const ::ddknd::math::Mat4f& m)
+    // {
+    //     const float* p = m.Data();
+    //     const float* id = ::ddknd::math::Mat4f::Identity().Data();
 
-        float maxDiff = 0.0f;
-        for (int i = 0; i < 16; ++i)
-            maxDiff = std::max(maxDiff, std::abs(p[i] - id[i]));
+    //     float maxDiff = 0.0f;
+    //     for (int i = 0; i < 16; ++i)
+    //         maxDiff = std::max(maxDiff, std::abs(p[i] - id[i]));
 
-        return maxDiff;
-    }
+    //     return maxDiff;
+    // }
 } // namespace
 
 namespace app
@@ -203,44 +203,6 @@ namespace app
         assert(font_res);
         assert(debug_line_shader_res);
 
-        // auto asset_test_shader = asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/test.shader");
-        // auto asset_test_triangle_mesh = asset_mgr.GetOrCreate<MeshTag>("res://meshes/test_triangle.mesh");
-        // auto asset_skinned_shader = asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/skinned.shader");
-        // auto mod_1 = asset_mgr.GetOrCreate<ModelTag>("res://Models/paladin/base_action_animation_diago.glb");
-        // auto debug_font_shader =
-        // asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/debug_text.shader"); // debug text shader
-        // auto debug_line_shader =
-        // asset_mgr.GetOrCreate<ShaderTag>("res://shaders/programs/debug_line.shader"); // debug text shader
-        // auto font_res_1 = asset_mgr.GetOrCreate<FontTag>("res://fonts/NotoSans-VariableFont_wdth,wght.ttf"); // Font
-
-        // using GraphicsAssetStore = ::ddknd::graphics::GraphicsAssetStore;
-        // using AnimationAssetStore = ::ddknd::animation::AnimationAssetStore;
-        // GraphicsAssetStore gfx_asset_store;
-        // AnimationAssetStore gfx_anim_store;
-
-        // using GraphicsAssetLoader = ::ddknd::graphics::GraphicsAssetLoader;
-        // GraphicsAssetLoader gfx_loader(*vfs_, *rendererBackend_);
-
-        // auto load_res_gfx = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, asset_test_shader);
-        // auto load_res_shader_debug_txt = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, debug_font_shader);
-        // auto load_res_shader_debug_line = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, debug_line_shader);
-        // auto load_res_shader_skinned = gfx_loader.LoadShader(asset_mgr, gfx_asset_store, asset_skinned_shader);
-        // auto load_mod_gfx = gfx_loader.LoadModel(asset_mgr, gfx_asset_store, gfx_anim_store, mod_1);
-        // auto load_font_gfx = gfx_loader.LoadFont(asset_mgr, gfx_asset_store, font_res_1);
-
-        // const auto* shader_res = gfx_asset_store.TryGet(asset_test_shader);
-        // const auto* debug_text_shader_res = gfx_asset_store.TryGet(debug_font_shader);
-        // const auto* debug_line_shader_res = gfx_asset_store.TryGet(debug_line_shader);
-        // const auto* shader_skinned = gfx_asset_store.TryGet(asset_skinned_shader);
-        // const auto* model_res = gfx_asset_store.TryGet(mod_1);
-        // const auto* font_res = gfx_asset_store.TryGet(font_res_1);
-
-        // using DrawCommand = ::ddknd::graphics::DrawCommand;
-        // DrawCommand cmd{.shader=shader_res->program};
-
-        // INPUT
-        // using Action = ::app::action::Action;
-
         // DEBUG CAMERA
         using DebugCameraCtrl = ::ddknd::debug::DebugCameraController;
         ddknd::component::TransformComponent debug_camera_transform{};
@@ -313,14 +275,14 @@ namespace app
             engineSystemRunner_->UpdateRenderPrepare(*world_, frameCtx);
             
             
-            // ************* DEBUG DRAW *************
-            debugSystemRunner.BeginFrame(debugCtx);
-            debugSystemRunner.Update(*world_, debugCtx);
-            debugSystemRunner.EndFrame(debugCtx);
-            debugSystemRunner.Submit(debugCtx);
 
             if(debugConfig.camera.overrideMode == ::ddknd::debug::CameraOverrideMode::DebugCamera)
             {
+                // ************* DEBUG DRAW *************
+                debugSystemRunner.BeginFrame(debugCtx);
+                debugSystemRunner.Update(*world_, debugCtx);
+                debugSystemRunner.EndFrame(debugCtx);
+                debugSystemRunner.Submit(debugCtx);
 
                 // ************* DEBUG CAMERA *************
                 frameCamera.view = debugCam_->matrices.view;

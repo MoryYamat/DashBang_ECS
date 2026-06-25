@@ -26,7 +26,7 @@ namespace app::component
     struct PlayerLocomotionStateComponent;
     struct AttackStateComponent;
     // animation 
-    struct PlayerAnimationClipsComponent;
+    struct CharacterAnimationClipsComponent;
 
     // hitbox
     struct HemisphereHitboxComponent;

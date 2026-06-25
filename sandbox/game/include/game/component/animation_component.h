@@ -6,7 +6,7 @@
 
 namespace app::component
 {
-    struct PlayerAnimationClipsComponent
+    struct CharacterAnimationClipsComponent
     {
         ::ddknd::asset::AssetID<::ddknd::asset::tag::AnimationClip> idle;
         ::ddknd::asset::AssetID<::ddknd::asset::tag::AnimationClip> runForward;

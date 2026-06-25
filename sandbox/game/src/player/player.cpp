@@ -11,7 +11,6 @@
 #include <ddknd/component/hitbox_component.h>
 
 
-#include "game/component/animation_component.h"
 #include "game/component/state_component.h"
 
 namespace app::player
@@ -48,21 +47,6 @@ namespace app::player
         reg.AddComponent<ddknd::component::HurtboxComponent>(e);
         //@TODO: move actor-specific hurtbox settings to ActorDef / data asset.
         reg.AddComponent<ddknd::component::SphereHurtboxComponent>(e, ddknd::component::SphereHurtboxComponent{.localOffset = {0.0f, 0.75f, 0.0f}});
-
-        // ============== animation section ==============
-        reg.AddComponent<app::component::PlayerAnimationClipsComponent>(
-            e, app::component::PlayerAnimationClipsComponent{
-                   .idle = paladinAssets.idle,
-                   .runForward = paladinAssets.runForward,
-                   .runBackward = paladinAssets.runBackward,
-                   .runRight = paladinAssets.runRight,
-                   .runLeft = paladinAssets.runLeft,
-                   .runRightFowardDiagonal = paladinAssets.runRightForwardDiagonal,
-                   .runLeftFowardDiagonal = paladinAssets.runLeftForwardDiagonal,
-                   .runRightBackDiagonal = paladinAssets.runRightBackDiagonal,
-                   .runLeftBackDiagonal = paladinAssets.runLeftBackDiagonal,
-                   .attack = paladinAssets.attack,
-               });
 
         reg.AddComponent<app::component::PlayerLocomotionStateComponent>(e);
 

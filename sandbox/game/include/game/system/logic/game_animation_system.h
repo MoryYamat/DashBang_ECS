@@ -11,6 +11,6 @@ namespace app::system
         static void UpdateOne(::ddknd::component::AnimationPlaybackComponent& playback,
                               const component::PlayerLocomotionStateComponent& playerState,
                               const component::AttackStateComponent& attackState,
-                              const component::PlayerAnimationClipsComponent& clips);
+                              const component::CharacterAnimationClipsComponent& clips);
     };
 } // namespace app::system

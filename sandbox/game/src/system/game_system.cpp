@@ -117,10 +117,11 @@ namespace app::system
         auto view = reg.view(query()
                                  .select<::ddknd::component::AnimationPlaybackComponent>()
                                  .require<component::PlayerLocomotionStateComponent, component::AttackStateComponent,
-                                          component::PlayerAnimationClipsComponent>());
+                                          component::CharacterAnimationClipsComponent>());
 
-        for (auto [playback, moveState, attackState, clips] : view)
+        for (auto [e, playback, moveState, attackState, clips] : view.withEntity())
         {
+            // std::cerr << "entity = " << e.Value() << "\n";
             PlayerAnimationSystem::UpdateOne(playback, moveState, attackState, clips);
         }
     }
