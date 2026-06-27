@@ -46,12 +46,14 @@ namespace ddknd::ecs
             }
 
             const std::size_t idx = components_.size();
-            sparse_[e.Index()] = idx;
+            sparse_[static_cast<std::size_t>(e.Index())] = idx;
             ents_.push_back(e);
             components_.emplace_back(std::forward<Args>(args)...);
             return components_.back();
         }
 
+
+        // This is performed using "swap & pop_back" to maintain the continuity of `components_`.
         void Remove(Entity e) override
         {
             if(!Has(e))
@@ -71,6 +73,7 @@ namespace ddknd::ecs
                 sparse_[lastEntity.Index()] = idx;
             }
 
+            // swap & pop back
             components_.pop_back();
             ents_.pop_back();
             sparse_[sparseIdx] = npos;
