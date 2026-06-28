@@ -6,7 +6,7 @@
 #include <ddknd/io/io.h>
 
 #include "ddknd/camera/system_debug_camera.h"
-#include "game/Action/action.h"
+#include "game/action/action.h"
 #include <ddknd/camera/debug_camera.h>
 #include <ddknd/clock/clock.h>
 #include <ddknd/graphics/animation.h>

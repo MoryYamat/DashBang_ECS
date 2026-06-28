@@ -5,7 +5,8 @@
 ## 目的
 このプロジェクトは、ECSベースの game engine runtime architecture prototype  の作成を目的とした．
 
-ECSアーキテクチャをベースとして、Game Engineの runtime における基盤機能を提供するデータおよびデータフローの設計と実装を行った．  
+ECSアーキテクチャをベースとして、  
+Game Engineの runtime における基盤機能を提供するデータおよびデータフローの設計と実装を行った．  
 
 以下では、このプロジェクトの成果と全体構造、各詳細部の説明資料へのリンクを掲載する．
 
@@ -25,13 +26,14 @@ runtime 基盤として一連のゲームプレイ処理を動作確認した．
 
 ## 全体構造の概要
 ここでは、
+
 - ユーザ入力の処理パイプライン
 - Engine と App の 構成
 
-について説明する
+について説明する．
 
 
-### ユーザ入力の処理パイプライン
+### 1. ユーザ入力の処理パイプライン
 ユーザ入力はデバイス入力から Action Input として抽象化される．  
 Action Input は Intent (操作意図)として Actor などに 状態変化 をリクエストする入力として作用する．  
 Actorなどのゲーム状態はこれらの Intent を解決し GamePlayとして反映されたり、Renderingされたりする．  
@@ -51,8 +53,9 @@ GamePlay Logic
 Rendering / Debug Visualization
 ```
 
-### Engine と App の 構成
-Engine 側には複数ゲームで再利用できる runtime 機能を置き、App 側にはこのデモ固有の actor 定義・入力解釈・状態遷移・ゲームルールを置く．
+### 2. Engine と App の 構成
+Engine 側には複数ゲームで再利用できる runtime 機能を置き、  
+App 側にはこのデモ固有の actor 定義・入力解釈・状態遷移・ゲームルールを置く．
 
 ```
 Engine:

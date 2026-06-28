@@ -5,6 +5,8 @@
 #define STB_TRUETYPE_IMPLEMENTATION
 #include <stb_truetype.h>
 
+#include <iostream>
+
 namespace ddknd::graphics::internal
 {
     std::optional<ddknd::graphics::internal::types::FontImportData> ImportFont(const std::string& path, float pixelHeight)
@@ -42,6 +44,7 @@ namespace ddknd::graphics::internal
 
         if(result <= 0)
         {
+            std::cerr << "[ImportFont] stbtt_BakeFontBitmap failed: " << path << "\n";
             return std::nullopt;
         }
 

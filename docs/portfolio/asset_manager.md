@@ -2,6 +2,13 @@
 
 ここでは、現行実装における、Asset Pipeline の構造について説明する．
 
+## もくじ
+- [目的](#目的)
+- [実現したこと](#実現したこと)
+- [現行実装の全体構造](#現行実装の全体構造)
+- [主要要素](#主要要素)
+- [この構造にした理由](#この構造にした理由)
+- [現行実装の課題](#現行実装の課題)
 
 ## 目的
 Asset Pipeline は次のことを目的に設計した．
@@ -40,7 +47,7 @@ Runtime Systems     : AssetID から必要な Resource を取得して使用
 
 ここでは Asset Pipeline における、主な構成要素の責務を説明する．
 
-### Asset Manager
+### 1. Asset Manager
 **Assetの実データを持たず**、AssetID、vpath、load state などの管理情報を扱う．
 
 主な責務:
@@ -49,7 +56,7 @@ Runtime Systems     : AssetID から必要な Resource を取得して使用
 - Asset 種別ごとのAsset Table として Asset の load state を管理する
 
 
-### Asset Loader
+### 2. Asset Loader
 AssetID に対応する vpath を用いて実際の load を行う．
 
 主な責務:
@@ -58,7 +65,7 @@ AssetID に対応する vpath を用いて実際の load を行う．
 - Asset の load state を更新する
 
 
-### Asset Store
+### 3. Asset Store
 AssetStore は、 構成済み Runtime Resource を AssetID に対応させて保持する．
 
 主な責務:
@@ -67,7 +74,7 @@ AssetStore は、 構成済み Runtime Resource を AssetID に対応させて�
 - AssetManager から実データの保持責務を分離する
 
 
-### Runtime Resource
+### 4. Runtime Resource
 実ファイルデータからビルドされる、runtime 用のデータ．
 
 - runtime で参照するためのデータ
@@ -76,7 +83,7 @@ AssetStore は、 構成済み Runtime Resource を AssetID に対応させて�
 - Backend 固有 resource への ID を保持する場合がある
 
 
-### Backend
+### 5. Backend
 Backend は、OpenGL などの backend 固有 resource を保持する
 
 Texture や Shader などは、 runtime 側では直接 `GLuint`を扱わない．  
@@ -88,7 +95,7 @@ Texture や Shader などは、 runtime 側では直接 `GLuint`を扱わない�
 
 ## この構造にした理由
 
-### Asset の識別と実データ保持を分離するため
+### 1. Asset の識別と実データ保持を分離するため
 AssetManager にロード実行やリソース保持の責務を持たせると 責務が肥大化してしまう．  
 そこで、AssetManager は AssetID の発行を主として、メタ情報の管理を行うようにした．  
 
@@ -96,7 +103,7 @@ AssetLoader や AssetStore は AssetID を共通の参照単位として、ロ�
 これによって、Asset 識別、ロード状態、実データ保持の責務を分離しつつ、一貫したっ参照方法を維持できる．
 
 
-### Runtime では文字列ではなく、ID で参照解決するようにするため
+### 2. Runtime では文字列ではなく、ID で参照解決するようにするため
 パフォーマンスや保守性の観点から、runtime では可能な限り生の文字列を使わないようにしたい．  
 そこで、初期化時に AssetID を発行し、Runtime では AssetID を通して Resource を取得する構造にした．
 
@@ -104,24 +111,27 @@ AssetLoader や AssetStore は AssetID を共通の参照単位として、ロ�
 また、AssetID を使いまわすことで、同一Asset を簡単に再利用できるようになった．
 
 
-### 明示ロードと将来の非同期ロード対応を行いやすくするため
-ロード処理を AssetLoader に分離することで、同期ロード、遅延ロード、非同期ロードなどの実行方式変更をしやすくすることを目指した．
+### 3. 明示ロードと将来の非同期ロード対応を行いやすくするため
+ロード処理を AssetLoader に分離することで、  
+同期ロード、遅延ロード、非同期ロードなどの実行方式変更をしやすくすることを目指した．
 
 
 ## 現行実装の課題
 
-### 非同期ロードへの拡張
+### 1. 非同期ロードへの拡張
 現行実装は、同期ロードのみであり、非同期ロードは実装できていない．  
+
 構造的にはロードの実行方式を変更しやすいため、非同期ロードを実装していくなかで、  
 ロード完了通知などの仕組みを充実させていきたいと考えている．
 
 
-### Asset 定義のデータ駆動化 / Editor 化
+### 2. Asset 定義のデータ駆動化 / Editor 化
 現行実装では、使用する Asset path や sub asset key を C++ コード上で定義している．  
+
 Tool や Editor 機能を拡張していく中で、Asset 定義を data 側へ移し、  
 内部データ表現の形式も安定させていくことが重要だと考えている．
 
 
-### Resource 参照の寿命管理
+### 3. Resource 参照の寿命管理
 
 AssetStore が返す Resource ポインタ の寿命や、再ロード・アンロード時の仕組みや扱いは今後整備していく必要がある．

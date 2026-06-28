@@ -12,7 +12,13 @@
 #include <string>
 #include <string_view>
 
+#if defined(_WIN32)
 #include <windows.h>
+#elif defined(__linux__)
+#include <iterator>
+#include <unistd.h>
+
+#endif
 
 #include <spdlog/spdlog.h>
 
@@ -56,6 +62,7 @@ namespace
 
     std::optional<std::filesystem::path> getExeDir()
     {
+#if defined(_WIN32)
         std::vector<wchar_t> buffer(MAX_PATH);
         while (true)
         {
@@ -69,6 +76,31 @@ namespace
 
             buffer.resize(buffer.size() * 2);
         }
+#elif defined(__linux__)
+        std::vector<char> buffer(1024);
+        while (true)
+        {
+            const auto length = ::readlink("/proc/self/exe", buffer.data(), buffer.size());
+
+            if (length < 0)
+                return std::nullopt;
+
+            if (static_cast<std::size_t>(length) < buffer.size())
+            {
+                return std::filesystem::path(std::string_view(buffer.data(), static_cast<std::size_t>(length)))
+                    .parent_path();
+            }
+
+            buffer.resize(buffer.size() * 2);
+        }
+#else
+        std::error_code ec;
+        auto cwd = std::filesystem::current_path(ec);
+        if (ec)
+            return std::nullopt;
+        return cwd;
+
+#endif
     }
 
     std::optional<std::filesystem::path> FindMountRootUpward(const std::filesystem::path& startDir,
@@ -295,10 +327,7 @@ namespace ddknd::io
         std::vector<std::uint8_t> buffer(static_cast<std::size_t>(size));
 
         ifs.seekg(0, std::ios::beg);
-        if(!ifs.read(
-                reinterpret_cast<char*>(buffer.data()),
-                size
-        ))
+        if (!ifs.read(reinterpret_cast<char*>(buffer.data()), size))
         {
             spdlog::error("[ReadAllBytes]: failed to read file");
             return std::nullopt;

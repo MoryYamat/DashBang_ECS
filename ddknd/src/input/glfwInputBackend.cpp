@@ -159,7 +159,13 @@ namespace ddknd::input
                 glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
             }
 
+
+#if defined(_WIN32)
             glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+#else
+            // In a WSL environment, using this setting results in the expected behavior.
+            glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_NORMAL); 
+#endif
         }
 
         ~GlfwInputBackend() override
@@ -212,7 +218,7 @@ namespace ddknd::input
                 return false;
             }
 
-            const int state = mouseButtons_[static_cast<std::size_t>(mouseButton)];
+            const int state = mouseButtons_[static_cast<std::size_t>(glfwMouseButton)];
             return state == GLFW_PRESS || state == GLFW_REPEAT;
         }
 

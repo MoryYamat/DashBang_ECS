@@ -2,14 +2,25 @@
 
 ここでは、入力から Gameplay Logic、Rendering / Debug Visualization までの runtime 上の処理の流れを説明する．
 
+## もくじ
+- [目的](#目的)
+- [全体フロー](#全体フロー)
+- [各段階の役割](#各段階の役割)
+- [具体例](#具体例)
+- [この構造にした理由](#この構造にした理由)
+- [現行実装の課題](#現行実装の課題)
+
+
 
 ## 目的
 
-System Pipeline は、device input や AI などの入力を直接 Gameplay State に反映するのではなく、  
-Intent / State / Resolver / Logic の段階に分けて処理することを目的とする.
+System Pipeline の設計目的は、  
+device input や AI などの入力を直接 Gameplay State に反映するのではなく、  
+Intent / State / Resolver / Logic の段階に分けて処理することである.
 
-これによって、入力源の違いを吸収し、離散的状態の更新(state-machine)、componentの更新、animation / rendering  
-を独自に設計し、整理された順序で実行できるようにすることを目指す．
+これによって、入力源の違いを吸収し、  
+離散的状態の更新(state-machine)、componentの更新、animation / renderingを独自に設計し、  
+整理された順序で実行できるようにすることを目指した．
 
 ## 全体フロー
 
@@ -82,38 +93,45 @@ Rendering
 | Rendering | Transform / Animation pose をもとに描画する |
 
 この処理フローにより、入力処理、状態解決、移動ロジック、Animation Selection を分離しやすくなる．  
-そのため、入力方式を keyboard から AI / Network Input に変更しても、RequestedMovementIntent 以降の処理を再利用しやすい．
+
+そのため、入力方式を keyboard から AI / Network Input に変更しても、  
+RequestedMovementIntent 以降の処理を再利用しやすい．
 
 ## この構造にした理由
 この構造はECS Architecture を前提として、入力処理、状態解決、Gameplay Logic、Animation、Rendering を  
 できるだけ独立して設計・変更できるようにするために採用した．
 
-### 入力源の差異を吸収するため
-Gameplay Logic に対する入力は、ローカルユーザ入力だけでなく、AI や Network Input からも同じ Actor に対して操作要求が発生する可能性がある．  
+### 1. 入力源の差異を吸収するため
+Gameplay Logic に対する入力は、ローカルユーザ入力だけでなく、  
+AI や Network Input からも同じ Actor に対して操作要求が発生する可能性がある．  
 
 そのため、device input を直接 Gameplay Logic に反映するのではなく、  
 一度`RequestedIntent`として表現する構造にした．  
 
-これにより、入力源がによらず、以降の State / Resolver / Gameplay Logic  
-へ同じ形式で接続しやすくなる．
+これにより、入力源によらず、  
+以降の State / Resolver / Gameplay Logic へ同じ形式で接続しやすくなる．
 
-### 入力要求と状態制約を分離するため
+### 2. 入力要求と状態制約を分離するため
 入力が発生したとしても、その要求が常に実行できるとは限らない．  
+
 例えば、攻撃中、硬直中、移動不能状態などでは、同じ移動入力であっても実行できる動作が変化する．  
 
 そのため、入力要求を直接 movement や animation に反映するのではなく、 State / Resolver を通して解決する構造にした．
 
 これにより、状態遷移や制約判定を個別の処理コードに散逸させず、 State / Resolver 側に集約しやすくなると考えた．
 
-### State / Resolver を差し替え可能な設計にするため
+### 3. State / Resolver を差し替え可能な設計にするため
 State / Resolver は、入力に対する Gameplay 側の制約やルールを表す層として扱っている．  
+
 この層を Gameplay Logic から分離することで、同じ入力体系に対して異なる状態遷移や制約を適用しやすくなる．
 
-将来的には、 State 定義や遷移条件を Data / Authoring 側へ移すことで、挙動やルールの変更をC++の処理コードから切り離しやすくすることを目指している．
+将来的には、 State 定義や遷移条件を Data / Authoring 側へ移すことで、  
+挙動やルールの変更をC++の処理コードから切り離しやすくすることを目指している．
 
-### Gameplay Logic / Animation / Rendering を分離するため
+### 4. Gameplay Logic / Animation / Rendering を分離するため
 Gameplay Logic は、 Actor の移動、攻撃、hitbox spawn などのゲーム状態の更新を行う．  
-Animation Selection は、その結果として得られた状態や intent に基づいて再生する AnimationClip を選択する．  
+
+Animation Selection は、pipeline の過程で得られた状態や intent に基づいて再生する AnimationClip を選択する．  
 Rendering は、Transform や Pose などの runtime data をもとに RenderCommand を生成する．
 
 この分離によって、移動ロジックを変更しても描画処理などへ直接影響しにくくなり、  
@@ -121,21 +139,23 @@ Animation や Rendering を Gameplay Logic から独立して調整しやすく�
 
 ## 現行実装の課題
 
-### AI / Network input との統合は今後の検証が必要
+### 1. AI / Network input との統合は今後の検証が必要
 現行実装では、主にローカルユーザ入力を対象として pipeline を構成している．  
 今後は、AI や Network Input からも同じ Requested Intent の経路へ入力を流せるか検証する必要がある．
 
-### Resolver / State の複雑化や肥大化
+### 2. Resolver / State の複雑化や肥大化
 Intent / State / Resolver によって入力要求と状態制約を分離できる一方で、  
 扱う状態や制約が増えると Resolver が複雑化しやすい．  
 
 そのため、Resolver の責務範囲、State の粒度、複数状態間の優先順位を整理する手法を検討する必要がある．
 
-### Resolver / State 定義のデータ駆動化
+### 3. Resolver / State 定義のデータ駆動化
 現行実装では、State や Resolver の定義の多くを C++ コード上で記述している．  
-今後は、状態定義や遷移条件を Data / Authoring 側へ移すことで、挙動やルールの変更をより扱いやすくする余地がある．
 
-### System 実行順序の明示化
+今後は、状態定義や遷移条件を Data / Authoring 側へ移すことで、  
+挙動やルールの変更をより扱いやすくする余地がある．
 
+### 4. System 実行順序の明示化
 この pipeline は、 Input、Intent、State、Logic、Animation、Rendering の実行順序に依存している．
+
 今後は、system 間の依存関係や実行順序をより明示的にし、変更時に追いやすい構造にする必要がある．

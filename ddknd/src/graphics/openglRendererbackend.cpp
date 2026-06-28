@@ -282,6 +282,14 @@ namespace ddknd::graphics
                 if (batch.vao != 0)
                     glDeleteVertexArrays(1, &batch.vao);
             }
+
+            // To debug a memory leak
+            spdlog::info("[OpenGLRendererBackend] destructor begin");
+            spdlog::info("[OpenGLRendererBackend] programs={}", programs_.size());
+            spdlog::info("[OpenGLRendererBackend] prims={}", prims_.size());
+            spdlog::info("[OpenGLRendererBackend] textures={}", textures_.size());
+            // existing delete code...
+            spdlog::info("[OpenGLRendererBackend] destructor end");
         }
 
         types::GPUID<tag::ShaderProgramGPUTag> CreateShaderProgram(std::string_view vs_source,

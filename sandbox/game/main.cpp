@@ -6,7 +6,7 @@
 #include "game/app.h"
 // #include "Game/Game.h"
 
-#include <Windows.h>
+// #include <Windows.h>
 
 // main
 int main()
@@ -23,8 +23,8 @@ int main()
 	// game.Shutdown();
 
 	// pid get
-	auto pid = GetCurrentProcessId();
-	std::cout << "Current ProcessID: " << pid << std::endl;
+	// auto pid = GetCurrentProcessId();
+	// std::cout << "Current ProcessID: " << pid << std::endl;
 
 
 	std::cout<<"hello world\n";
@@ -63,6 +63,8 @@ int main()
 // - Correct the design to be fundamentally correct.
 // - Improve the vertex data definition and import implementation of glTFImportData (-> Align the granularity with texture and image data) 
 // - Flag systems such as attack intent requests can potentially be optimized using tools like bitflag.
+// - glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED); の Windowns / Linux 環境差の 調査
+
 
 // LOW
 // - fix cmake and dependencies

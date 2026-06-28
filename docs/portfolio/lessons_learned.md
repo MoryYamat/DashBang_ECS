@@ -1,22 +1,44 @@
 # Lessons Learned 
 
+ここでは、プロジェクトを通して学んだ教訓や初期実装の課題とその改善について示す．
+
+## もくじ
+- [ECS](#ecs)
+- [AssetManagerの実装](#assetmanagerの実装)
+- [glb importerの改善](#glb-importer-の改善)
+- [FSMEngine設計の改善](#fsmengine設計の改善)
+
+
 ## ECS
-### 初期実装
+
+### 0. 概要
+
+初期実装: 
+- `EntityManager`クラスにほとんどすべての責務が集中していた
+- Storage に `std::shared_ptr<T>` を 使用していた
+
+改善後:
+- `Registry` / `View` などのクラスに責務を分離した
+- Storage に `std::vector<T>`を使用し、局所性の向上や storage 戦略を差し替えやすい構造になった
+
+
+### 1. 初期実装
 
 初期実装では、ECSアーキテクチャを理解することを中心とした．  
 
-#### 初期実装でできたこと
+#### 2. 初期実装でできたこと
 - EntityのCRUD
 - EntityにComponentを付与(`Add`)する機能
 - Componentを条件として、該当EntityをフィルターするView機能
 
-#### 初期実装の課題
+#### 3. 初期実装の課題
 - `EntityManager`というクラスに、`ComponentStorage`・`EntityCRUD`・`View`などの主要機能をすべて持っていて、責務が肥大化していた
 - そのため、`Storage`クラスの変更によるStorage戦略の変更が難しかった
 - Storageでは `std::shared_ptr<T>` を使用しており、Component がヒープ上に分散するため、  
 ECS の利点である連続データアクセスを活かしにくかった
 
-以下の初期実装では、`EntityManager`に責務が集中し、Storageの実装によって、Componentがヒープに分散することでキャッシュの局所性を得られなくなっていた
+以下の初期実装では、`EntityManager`に責務が集中し、  
+Storageの実装によって、Componentがヒープに分散することでキャッシュの局所性を得られなくなっていた
 
 ```cpp
 class EntityMgr
@@ -36,7 +58,7 @@ class EntityMgr
 
 ```
 
-### 改善方針
+### 4. 改善方針
 ECSの基盤の責務分離を徹底し、Storage戦略を変更できるような実装にすることを目指した．  
 具体的には次のようにした．
 
@@ -45,7 +67,9 @@ ECSの基盤の責務分離を徹底し、Storage戦略を変更できるよう�
 - `component_storage`を`sparse_set`にして、キャッシュの局所性による利点を得られるようにする
 - `query`を`registry`や`storage`に依存させないようにする
 
-これにより、責務分離を明確にし、Storage 戦略を変更しやすくしつつ、Component の連続配置によってキャッシュ局所性を活かしやすい構造を目指した．
+これにより、責務分離を明確にし、Storage 戦略を変更しやすくしつつ、  
+Component の連続配置によってキャッシュ局所性を活かしやすい構造を目指した．
+
 ```cpp
 class Registry
 {
@@ -78,13 +102,13 @@ class View
 };
 ```
 
-### 改善結果
+### 5. 改善結果
 この実装により以下のことが可能になった
 - 責務分離が明確になったため、変更の影響を局所化できるようになった．
 - `component_storage`のstorage戦略も変更しやすくなった
 - `component`を`vector<T>`に連続配置できる構造になり、キャッシュ局所性を活かしやすい実装になった
 
-### 学び
+### 6. 学び
 - ManagerクラスにEntity管理、Component戦略、Storage、View生成を集約すると、  
 機能追加は簡単になる一方で、Storage戦略やQuery実装を変更しにくくなる
 - ECSで、外側の使いやすいAPIと、内部のStorage / Query / View の実装を分けることで、  
@@ -92,27 +116,47 @@ class View
 - `std::shared_ptr<T>`でComponentを個別に保持すると、Componentがヒープ上に分散し、  
 ECSの利点である連続データアクセスを活かしにくくなる
 
+
+
+
+
 ## AssetManagerの実装
 
-### 初期実装
+### 0. 概要
+
+初期実装:
+- AssetManagement の枠組み・システムが存在しなかった
+- 個別 Asset の導入用コードがコード内に散逸していた
+
+改善後:
+- Asset Manager および Pipeline を導入した
+- Assetの vpath の集約定義や再利用がやりやすくなった
+- Load タイミングの処理などを導入しやすくなった
+
+
+### 1. 初期実装
 初期実装では、`AssetManager`などのAsset管理やロード管理の層を考えていなかった．  
 初期の動作確認の段階ではほとんど問題にならなかった．
 
-しかし、導入するAssetの種類や量が増えるにしたがって、各種のアセットをRuntimeでも効率的にアクセスできるようにしたり、  
+しかし、導入するAssetの種類や量が増えるにしたがって、  
+各種のアセットをRuntimeでも効率的にアクセスできるようにしたり、  
 非同期・並列なロードをできるようにしたりする仕組みが必要であることが明確になった．
 
 #### 初期実装の課題
 - 3DModel/SFX/Shader などのAsset が コード内に散らばっており、管理が大変であった
-- 初期化時に全Assetを個別にImport/Loadする実装になっていて、ロードタイミングの総合的な制御が不可能であった
+- 初期化時に全Assetを個別にImport/Loadする実装になっていた．
+- このため、ロードタイミングの総合的な制御が不可能であった
 - 同一Assetデータの使いまわしなどの効率的な運用が難しい状態であった
 
-### 改善方針
+### 2. 改善方針
 Asset管理のパイプラインを設計し、効率的でスケーラブルなAsset管理、ロードタイミング制御を目指した．  
 具体的には以下のように考えた．
+
 - AssetLoaderを明示ロードのインターフェースとすることで、非同期ロードの拡張を行いやすくする
-- AssetManagerの責務を、AssetIDの発行とLoad状態の管理、vpathとIDの対応を保持  
-に限定することで、責務の肥大化、テンプレートによるヘッダの巨大化を防ぐ
-- AssetIDをAssetStorageのコンテナのIndexにすることで、Runtime解決のオーバーヘッドを対策する
+- AssetManagerの責務を、AssetIDの発行とLoad状態の管理、vpathとIDの対応を保持に限定する
+- これによって、責務の肥大化、テンプレートによるヘッダの巨大化を防ぐ
+- AssetIDをAssetStorageのコンテナのIndexにする
+- これによって、Runtime解決のオーバーヘッドを対策する
 
 ```
 AssetManager
@@ -171,8 +215,9 @@ class GraphicsAssetStore
 };
 ```
 
-### 改善結果
-この形にしたことで、SceneやActorの初期化コードはファイルロードそのものでなく、必要なAssetIDの登録と保持に集中できるようになった．
+### 3. 改善結果
+この形にしたことで、SceneやActorの初期化コードはファイルロードそのものでなく、  
+必要なAssetIDの登録と保持に集中できるようになった．
 
 ```cpp
 // PaladinActor の 関連アセットパスの集約定義
@@ -202,32 +247,48 @@ PaladinAssetIDs RegisterPaladinAssets(::ddknd::asset::AssetManager& assetMgr)
 }
 ```
 
-### 学び
-- Managerクラスは実リソースそのものを持つのではなく、ID、Index、状態、名前解決などの管理情報を扱う役割に限定することで、責務の肥大化を防ぎやすい
-- Loaderなどの「処理を実行する層」と、Storeのような「データを保持する層」を分けることで、ロード方式の変更、非同期処理への拡張、コンテナやアロケータの差し替えを行いやすくなる
-- Runtime で頻繁に参照されるデータは、ファイルパスや文字列ではなく、IDやIndexを通して解決できる形にしておくと、参照コストと依存関係を整理しやすい
+### 4. 学び
+- Managerクラスは実リソースそのものを持つのではなく、  
+ID、Index、状態、名前解決などの管理情報を扱う役割に限定することで、責務の肥大化を防ぎやすい
+- Loaderなどの「処理を実行する層」と、Storeのような「データを保持する層」を分けることで、  
+ロード方式の変更、非同期処理への拡張、コンテナやアロケータの差し替えを行いやすくなる
+- Runtime で頻繁に参照されるデータは、ファイルパスや文字列ではなく、  
+IDやIndexを通して解決できる形にしておくと、参照コストと依存関係を整理しやすい
+
+
+
 
 
 ## glb importer の改善
+
+### 0. 概要
+
 変更の核
 ```
 Before:
-.glb parser
+.glb parser                 (直接変換)
     -> Runtime ModelData
 
 After:
-.glb parser
+.glb parser                 (2段階に分ける)
     -> ModelImportData
     -> Runtime Model / Animation / GPU Resource
 ```
 
+初期実装の課題:
+- ファイルデータ読み取りと runtime データへの変換を同時に行っていた
+- runtime データ構造の変更がやりづらかった
 
-### 初期実装
+改善結果:
+- ファイルデータ読み取り (import) 段階と runtime データ への変換段階 の2つに分けた
+- runtime データ構造の変更がファイルデータ読み取り処理に影響を与えにくくなった
+
+### 1. 初期実装
 該当ファイル:  
 - glb_importer.h: 
 - model_import_types.h
 
-初期実装ではライブラリでパースした.glb形式のファイルを直接 Engine Runtime 用データ構造へ変換していた.  
+初期実装ではライブラリでパースした .glb 形式のファイルを直接 Engine Runtime 用データ構造へ変換していた.  
 この方式により、.glb形式をロードして OpenGL で作成したRendering Pipeline で描画できることを確認した．
 
 #### 初期実装でできたこと
@@ -276,7 +337,7 @@ ModelData CgltfImporter::Import(const std::string& path)
 }
 ```
 
-### 改善方針
+### 2. 改善方針
 
 初期実装では、`.glb` のパースと Runtime 用データ構造への変換が同じ関数内に存在していた．  
 そのため、改善後は Importer と Runtime Resource Builder の責務を分離した．
@@ -289,7 +350,9 @@ ModelData CgltfImporter::Import(const std::string& path)
 - Runtime Resource への変換は `GraphicsAssetLoader` / Builder 側で行う
 - `.glb` 内の AnimationClip は `AnimTag` Asset として登録する
 
-これにより、変更の影響波及を局所化し、描画バックエンド固有の変換処理を分離しやすい構造にすることを目指した
+これにより、変更の影響波及を局所化し、  
+描画バックエンド固有の変換処理を分離しやすい構造にすることを目指した．
+
 ```cpp
 // =============== model_import_types.h ===============
 struct ModelImportData
@@ -339,7 +402,7 @@ bool GraphicsAssetLoader::LoadModel(...)
 }
 ```
 
-### 改善結果
+### 3. 改善結果
 この分離により、以下が可能になった
 - Importer を ファイル形式の読み取りに限定できる
 - Runtime用データ構造の変更がImporterへ波及しにくくなる
@@ -347,26 +410,51 @@ bool GraphicsAssetLoader::LoadModel(...)
 - 将来的な非同期ロードや遅延変換の入り口を作れる
 - Importer の出力である `ModelImportData` を確認すれば、 glTF の読み取り段階と Runtime 変換段階 を分けてデバッグできる
 
-### 学び
+### 4. 学び
 - 中間表現を導入することで、責務分離とテスト境界を明確にできる
 - 拡張に耐える設計にするためには、責務分離を徹底する必要がある
 
+
+
 ## FSMEngine設計の改善
-以下2つのFSM基盤実装は現在のEngine本体に統合しているものではなく、過去の実装と設計実験から得た学びを整理したものである．
+以下2つのFSM基盤実装は現在の Engine 本体に統合しているものではなく、  
+過去の実装と設計実験から得た学びを整理したものである．
 
-初期実装では、MovementFSM の状態を`std::type_index`で識別し、Conditionをvirtual interface として実装していた．  
-この方式により、`Idle`/`Moving` の 状態遷移や、CCによる移動受付停止などの基本的な挙動の確認はできた．
+### 0. 概要
 
-#### 初期実装でできたこと
+初期実装の課題:
+- C++型継承を利用していた
+- 定義の拡張や、外部ファイルによる定義、デバッグなどが難しかった
+
+改善後:
+- Authoring -> CanonicalID というビルド変換方式にした
+- JSON ファイルなどの外部ファイルから定義を読み取るような拡張が可能な構造になった
+
+課題:
+- API 境界設計があまくとても使いづらい
+- FSM 階層化の拡張が課題
+
+### 1. 初期実装でできたこと
+
+初期実装では、MovementFSM の状態を`std::type_index`で識別し、  
+Conditionをvirtual interface として実装していた．  
+
+この方式により、`Idle`/`Moving` の 状態遷移や、  
+CCによる移動受付停止などの基本的な挙動の確認はできた．
+
+確認した動作:
 - 入力に基づくCharacterの状態遷移
 - CC(行動阻害)による移動状態遷移の停止
 
-#### 初期実装の課題
-- 状態識別がC++型に依存していたため、FSM定義と実装が密結合になった．(拡張性に乏しい)
-- C++型に依存するため、状態一覧の検証、デバッグ表示、データ駆動化、ツール化が難しくなった．(プログラマしか扱えない)
+### 2. 初期実装の課題
+- 拡張性に乏しい  
+(状態識別がC++型に依存していたため、FSM定義と実装が密結合になった．)
+- プログラマしか扱えない  
+(C++型に依存するため、状態一覧の検証、デバッグ表示、データ駆動化、ツール化が難しくなった．)
 - あとから状態や条件を追加するたびに依存関係が複雑になった
 
 以下の例では、状態・遷移要求・強制遷移がすべて`std::type_index`に依存している点が問題だった
+
 ```cpp
 // =============== StateDefinition ===============
 inline const std::type_index IDLE = typeid(MovementState::Idle);
@@ -394,7 +482,7 @@ struct MovementFSMLeaseComponent
 };
 ```
 
-### 改善の方針
+### 3. 改善の方針
 後のFSMEngineでは、FSM定義をC++型そのものではなく、Authoring用DTOとして記述するようにした．  
 
 具体的には以下のようにした.
@@ -403,7 +491,8 @@ struct MovementFSMLeaseComponent
 - 初期化(Build)時に検証したうえでRuntime用IDへ変換する
 - ComponentではRuntime用IDを保持する
 
-これにより、FSMの構造をC++型から切り離し、状態一覧の検証、デバッグ表示、データ駆動化、Profile差し替え  
+これにより、FSMの構造をC++型から切り離し、  
+状態一覧の検証、デバッグ表示、データ駆動化、Profile差し替え  
 を行いやすくすることを目指した．
 ```cpp
 // =============== FSM Axis Definition ===============
@@ -439,19 +528,23 @@ struct MovementStateComp
 Build時には、これらの文字列参照を検証し、RuntimeIDへ正規化する
 
 
-### 改善結果
+### 4. 改善結果
 この変更により以下のことが可能になった
 - `std::type_index`への依存を避けられるようになった
 - FSMの定義を、C++型を追加せずに文字列DTO上で拡張・変更しやすくなった
 - FSMBuild時に文字列の比較・参照の検証を行うことができるようになった
 
-また、TransitionRequestやLeaseによって状態遷移要求や外部干渉を表現する発想自体は有効だったため、  
+また、TransitionRequest や Lease によって状態遷移要求や外部干渉を表現する発想自体は有効だったため、  
 あとの設計でも「入力や外部要因を一度Requestとして集め、FSM が解決する」という方向に発展させた
 
 Condition、EffectHook、Axis / Profile による差し替えについては、別セクションで整理する．
 
-### 学び
+### 5. 学び
 - 動作確認を優先する初期段階では、C++型やvirtual interface による実装でも有効だった
-- virtual interface による条件定義は柔軟性はある程度あるが、条件一覧の検証・データ化・デバッグ表示が難しい
-- Runtimeの効率性と拡張性を両立するためには、Authoring用の表現と Runtime用の表現を分け、Build時に検証・正規化する構造が有効である
-- 入力や外部干渉を直接状態変更に結び付けるのではなく、Requestとして集めてからFSMが解決する構造にすると、制御の優先度や責務を整理しやすい
+- virtual interface による条件定義は柔軟性はある程度あるが、  
+条件一覧の検証・データ化・デバッグ表示が難しい
+- Runtimeの効率性と拡張性を両立するためには、  
+Authoring用の表現と Runtime用の表現を分け、  Build時に検証・正規化する構造が有効である
+- 入力や外部干渉を直接状態変更に結び付けるのではなく、  
+Request として集めてからFSMが解決する構造にすると、  
+制御の優先度や責務を整理しやすい
