@@ -18,7 +18,7 @@
 Import Pipeline は次のことを目的に設計した．
 
 - 外部ファイル形式の違いを ImportData / Runtime Resource への変換段階で吸収し、  
-runtime 側がファイル形式に直接依存しないようにすること．
+runtime 側がファイル形式に直接依存しないようにすること
 - 同一ファイルに含まれる SubAsset を 整合的に取り出し、識別子を付与して使えるようにすること
 - Importer と Runtime Resource Builder を分離して、  
 ファイル読み取りとruntime 用データ構築の責務を分けること
@@ -53,13 +53,14 @@ Runtime Resource / Backend Resource
 Asset Loader は Asset Pipeline 側から Import / Build するための入り口である．
 
 責務:
-- AsestID から 実Path を解決する．
+- AsestID から 実Path を解決する
 - Importer を呼び ImportData を構成する
 - Builder を呼び Runtime Resource を構成する
 - AssetStore への登録や load state の更新を行う
 
 ### 2. Importer
 ファイルデータを ImportData に変換する処理.  
+
 ファイル形式に対応した処理を実装する必要がある．
 
 主な責務:
@@ -80,8 +81,8 @@ glTF に近い形で保持する。
 
 ### 4. Runtime Resource Builder
 ImportData を Runtime Resource に変換する処理．  
-ファイル形式の違いによらず、  
-runtimeで効率的に使用することを目的として定義された、Runtime Resource へ変換する
+
+runtime で共通に使用することを目的として定義された、Runtime Resource へ変換する
 
 主な責務:
 - ImportData を Runtime Resource へ変換する
@@ -89,6 +90,7 @@ runtimeで効率的に使用することを目的として定義された、Runt
 
 ### 5. Runtime Resource
 ファイル形式による差異を吸収した runtime データ構造として定義．  
+
 Backend 固有のリソースへの識別子をIDで持つ場合がある．
 
 主な責務:
@@ -97,7 +99,7 @@ Backend 固有のリソースへの識別子をIDで持つ場合がある．
 
 
 ### 6. Backend Resource
-GPU 処理や 音声処理など各Assetのbackend 固有のリソース．
+GPU 処理や 音声処理など各Assetのbackend 固有のリソース．  
 `GLuint`など runtime コードに広範に露出したくないデータをBackend Resource として隠ぺいする.
 
 主な責務:
@@ -121,6 +123,7 @@ GPU 処理や 音声処理など各Assetのbackend 固有のリソース．
 ### 2. SubAsset に論理的識別子を付与して管理できていなかった
 
 同一ファイルに含まれるSubAssetを明示的に管理していなかった．  
+
 これによって次のような問題があった．
 
 - runtime で SubAsset の動的な差し替えが難しいこと  
@@ -134,8 +137,10 @@ GPU 処理や 音声処理など各Assetのbackend 固有のリソース．
 ### 1. Import / Build のフェーズ分離
 外部ファイルの変換を以下のようにフェーズ分離する．
 
-- Importer / ImportData フェーズ        : ファイルデータ形式固有のデータ構造をできるだけ保つ
-- ResourceBuilder/ Resource フェーズ    : ファイル形式の差異をなくし、runtime で扱いやすいデータ構造を保つ
+- Importer / ImportData フェーズ        :   
+    ファイルデータ形式固有のデータ構造をできるだけ保つ
+- ResourceBuilder/ Resource フェーズ    :  
+    ファイル形式の差異をなくし、runtime で扱いやすいデータ構造を保つ
 
 
 ### 2. SubAsset を Asset として識別できるようにする
@@ -183,7 +188,8 @@ ImportData / Runtime Resource への変換境界を保てるか検討が必要�
 
 ### 3. ImportData / Runtime Resource の検証とテスト
 
-ImportData と Runtime Resource の境界を分けたことで、各段階を検証しやすくなった一方で、変換結果の正しさを保証するテストは十分でない．  
+ImportData と Runtime Resource の境界を分けたことで、  
+各段階を検証しやすくなった一方で、変換結果の正しさを保証するテストは十分でない．  
 
 今後は、mesh / skeleton / animation / material などの変換結果を確認するテストや  
 debug output を整備する必要がある．

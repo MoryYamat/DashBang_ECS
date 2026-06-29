@@ -143,6 +143,7 @@ Storage 戦略、Loader、Rendering backend などの変更が他の層へ広が
 
 ### 1. 実行順序と依存関係の問題
 現行実装では、Engine / App の system を手動で組み合わせて Gameplay を構成している．  
+
 そのため、入力処理、状態更新、物理的な移動、Animation、Renderingなどの実行順序が重要になる．  
 
 今後は、system 実行順序や依存関係をより明示的に整理し、変更時に追いやすい構造にする必要がある．
