@@ -10,17 +10,18 @@
 #include <ddknd/ecs/ecs_fwd.h>
 #include <ddknd/system/system_fwd.h>
 #include <ddknd/event/event_fwd.h>
+#include <ddknd/component/component_fwd.h>
 
 #include "game/system/game_system_fwd.h"
 #include "game/scene/game_scene_fwd.h"
 
 #include <memory>
 
-// fwd
-namespace ddknd::component
-{
-    struct DebugCameraControllerComponent;
-} 
+// // fwd
+// namespace ddknd::component
+// {
+//     struct DebugCameraControllerComponent;
+// } 
 
 namespace app
 {

@@ -54,8 +54,8 @@ namespace app::camera
             world.GetRegistry().AddComponent<::ddknd::component::MainCameraTag>(e);
         }
 
-        std::cerr << "ent pos " << desc.position << "\n";
-        std::cerr << "ent look " << forward << "\n";
+        // std::cerr << "ent pos " << desc.position << "\n";
+        // std::cerr << "ent look " << forward << "\n";
         return e;
     }
 

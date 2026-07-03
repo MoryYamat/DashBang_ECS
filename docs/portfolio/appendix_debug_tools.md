@@ -17,4 +17,4 @@ Skinned Mesh Animation、glTF import、Hitbox / Hurtbox Collision など、
 ## 現行実装の課題
 - Debug 表示のカテゴリ化は未整理
 - Debug Menu / Editor との連携は未実装
-- HitEvent などの履歴表示は最低限の実
+- HitEvent などの履歴表示は最低限の実装

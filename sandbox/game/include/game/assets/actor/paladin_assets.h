@@ -63,6 +63,24 @@ namespace app::assets::actor
         ::ddknd::asset::AssetID<::ddknd::asset::tag::AnimationClip> runLeftBackDiagonal;
         ::ddknd::asset::AssetID<::ddknd::asset::tag::AnimationClip> attack;
 
+
+        [[nodiscard]]
+        bool IsValid() const noexcept
+        {
+            return  model.Is_valid() &&
+                    skinnedShader.Is_valid() &&
+                    idle.Is_valid() &&
+                    runForward.Is_valid() &&
+                    runBackward.Is_valid() &&
+                    runRight.Is_valid() &&
+                    runLeft.Is_valid() &&
+                    runRightForwardDiagonal.Is_valid() &&
+                    runLeftForwardDiagonal.Is_valid() &&
+                    runRightBackDiagonal.Is_valid() &&
+                    runLeftBackDiagonal.Is_valid() &&
+                    attack.Is_valid();
+        }
+
     };
 
     PaladinAssetIDs RegisterPaladinAssets(::ddknd::asset::AssetManager& assetMgr);

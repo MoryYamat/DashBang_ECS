@@ -27,7 +27,7 @@ int main()
 	// std::cout << "Current ProcessID: " << pid << std::endl;
 
 
-	std::cout<<"hello world\n";
+	// std::cout<<"hello world\n";
 
 	app::App app;
 

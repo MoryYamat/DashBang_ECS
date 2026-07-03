@@ -6,6 +6,8 @@
 #include <ddknd/graphics/gfx_asset_loader.h>
 
 #include "game/assets/actor/paladin_assets.h"
+#include "game/assets/actor/mutant_assets.h"
+
 #include "game/camera/game_camera.h"
 #include "game/player/player.h"
 #include "game/player/player_controller.h"
@@ -13,12 +15,14 @@
 #include "game/actor/character/npc.h"
 
 #include <cassert>
+#include <iostream>
 
 namespace app::scene
 {
     GameScene CreateMainScene(::ddknd::ecs::World& world, ::ddknd::asset::AssetManager& assetMgr)
     {
         auto paladinAssets = ::app::assets::actor::RegisterPaladinAssets(assetMgr);
+        auto mutantAssets = app::assets::actor::RegisterMutantAssets(assetMgr);
 
         auto player = ::app::player::CreatePaladinPlayer(
             world, paladinAssets, ::app::player::PlayerSpawnDesc{.position = {0.0f, 0.0f, 0.0f}, .moveSpeed = 2.0f});
@@ -36,11 +40,12 @@ namespace app::scene
         auto controller = app::player::CreateLocalPlayerController(
             world, ::app::player::PlayerControllerSpawnDesc{.actor = player, .cameraRig = cameraRig});
 
-        auto paladin_npc = app::actor::CreatePaladinNPC(world, paladinAssets, app::actor::NPCSpawnDesc{});
-        std::vector<ddknd::ecs::Entity> npcs;
-        npcs.push_back(paladin_npc);
+        auto mutant_npc = app::actor::CreateMutantNPC(world, mutantAssets, app::actor::NPCSpawnDesc{.position = {0.0f, 0.0f, 5.0f}});
         
-        GameSceneAssets assets{.paladin = paladinAssets};
+        std::vector<ddknd::ecs::Entity> npcs;
+        npcs.push_back(mutant_npc);
+        
+        GameSceneAssets assets{.paladin = paladinAssets, .mutant = mutantAssets};
         
         GameSceneEntities entities{.player = player, .mainCamera = mainCamera, .npcs = npcs};
 
@@ -56,10 +61,31 @@ namespace app::scene
 
         bool ok = true;
 
-        ok &= ctx.graphicsLoader->LoadShader(*ctx.assetManager, *ctx.graphicsStore, assets.paladin.skinnedShader);
-        ok &= ctx.graphicsLoader->LoadModel(*ctx.assetManager, *ctx.graphicsStore, *ctx.animationStore,
-                                            assets.paladin.model);
+        if(!assets.IsValid())
+        {
+            std::cerr << "Invalid GameSceneAssets\n";
+            return false;
+        }
 
-        return ok;
+        if(!ctx.graphicsLoader->LoadShader(*ctx.assetManager, *ctx.graphicsStore, assets.paladin.skinnedShader))
+        {
+            std::cerr << "Failed to load shader.\n";
+            return false;
+        }
+        if(!ctx.graphicsLoader->LoadModel(*ctx.assetManager, *ctx.graphicsStore, *ctx.animationStore,
+                                            assets.paladin.model))
+        {
+            std::cerr << "Failed to load Paladin Model\n";
+            return false;
+        }
+
+        if(!ctx.graphicsLoader->LoadModel(*ctx.assetManager, *ctx.graphicsStore, *ctx.animationStore,
+                                            assets.mutant.model))
+        {
+            std::cerr << "Failed to load Mutant Model\n";
+            return false;
+        }
+
+        return true;
     }
 } // namespace app::scene

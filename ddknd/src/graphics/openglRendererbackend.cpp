@@ -489,12 +489,21 @@ namespace ddknd::graphics
             GLuint tex = 0;
             glGenTextures(1, &tex);
 
+            GLenum err = glGetError();
+            if(err != GL_NO_ERROR)
+            {
+                std::cerr << "[CreateTexture2D]: OpenGL Error during texture generation: " << err << std::endl;
+            }
+
             if (tex == 0)
+            {
                 return GPUID<tag::TextureGPUTag>::Invalid();
+            }
             glBindTexture(GL_TEXTURE_2D, tex);
 
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
+            // 
             glTexImage2D(GL_TEXTURE_2D, 0, glfmt.internalFormat, static_cast<GLsizei>(desc.width),
                          static_cast<GLsizei>(desc.height), 0, glfmt.uploadFormat, glfmt.uploadType,
                          desc.pixels.data());
@@ -506,7 +515,7 @@ namespace ddknd::graphics
 
             if (desc.generateMipmap)
             {
-                glGenerateMipmap(GL_TEXTURE_2D);
+                // glGenerateMipmap(GL_TEXTURE_2D);
             }
 
             glBindTexture(GL_TEXTURE_2D, 0);

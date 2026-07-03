@@ -184,8 +184,11 @@ namespace ddknd::graphics
     {
         auto vpath = assets.TryPathOf<ModelID::tag_type>(id);
         if (!vpath)
+        {
+            std::cerr << "[LoadModel::TryPathOf] Failed to retrieve vpath.\n";
             return false;
-
+        }
+            
         auto path = resolver_.TryResolve(*vpath);
         if (!path)
         {

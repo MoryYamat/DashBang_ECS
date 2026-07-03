@@ -7,6 +7,7 @@
 #include <typeindex>
 #include <unordered_map>
 #include <vector>
+#include <iostream>
 
 #include "ddknd/core/StrongID.h"
 
@@ -67,8 +68,11 @@ namespace ddknd::asset
         const AssetMeta* TryGetMeta(ID id) const
         {
             if (!id.Is_valid())
+            {
+                std::cerr << "[AssetTable::TryGetMeta]Invalid ID\n";
                 return nullptr;
-
+            }
+                
             const auto idx = id.Index();
             if (idx >= metas_.size())
             {
@@ -77,15 +81,20 @@ namespace ddknd::asset
 
             const auto& meta = metas_[idx];
             if (meta.generation != id.Generation())
+            {
                 return nullptr;
-
+            }
+                
             return &metas_[idx];
         }
         AssetMeta* TryGetMeta(ID id)
         {
             if (!id.Is_valid())
+            {
+                std::cerr << "[AssetTable::TryGetMeta]Invalid ID\n";
                 return nullptr;
-
+            }
+                
             const auto idx = id.Index();
             if (idx >= metas_.size())
             {
@@ -94,8 +103,11 @@ namespace ddknd::asset
 
             const auto& meta = metas_[idx];
             if (meta.generation != id.Generation())
-                return nullptr;
+            {
 
+                return nullptr;
+            }
+                
             return &metas_[idx];
         }
 
@@ -125,7 +137,10 @@ namespace ddknd::asset
         {
             const auto* meta = TryGetMeta(id);
             if(!meta)
+            {
+                std::cerr << "[AssetTable::TryPathOf] Failed to get meta information.\n";
                 return std::nullopt;
+            }
 
             return std::string_view{meta->vpath};
         }

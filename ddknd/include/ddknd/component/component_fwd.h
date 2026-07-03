@@ -16,4 +16,6 @@ namespace ddknd::component
     struct MaterialComponent;
     struct AnimationPlaybackComponent;
     struct PoseComponent;
+
+    struct DebugCameraControllerComponent;
 }

@@ -137,10 +137,11 @@ namespace app
                                              .graphicsLoader = graphicsAssetLoader_.get(),
                                              .graphicsStore = graphicsAssetStore_.get(),
                                              .animationStore = animationAssetStore_.get()};
-
+        // load all main scene assets
         const bool loaded = app::scene::LoadMainSceneAssets(scene_->assets, loadCtx);
         if (!loaded)
         {
+            std::cerr << "Failed to load MainSceneAssets. \n";
             return false;
         }
 
@@ -268,7 +269,8 @@ namespace app
                                              .w = window_->GetWidth()};
 
             renderSys_->BeginFrame(frameBegin);
-
+            
+            // Do not change the order.
             gameSystemRunner_->UpdatePreEngine(*world_, gameCtx);
             engineSystemRunner_->UpdateSimulation(*world_, frameCtx);
             gameSystemRunner_->UpdatePostEngine(*world_, gameCtx);

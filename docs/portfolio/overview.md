@@ -101,3 +101,5 @@ DebugDraw, DebugCamera, Skeleton, Hitbox/HurtBox, HitEvent 表示を説明
 現行実装には使用していない、独自実装した FSM-Engine の設計と実装を説明
 - [ECS-System Template Scheduler](./appendix_ecs_template_scheduler.md)  
 独自実装した ECS の System 実行順序をCompile時に解決する非侵襲的なライブラリの説明
+- [Quality Checks and Improvements](./appendix_quality.md)  
+ポートフォリオに対して行ったテスト、静的解析、メモリリーク確認、改善方針を説明

@@ -1,5 +1,34 @@
 # 
 
+## Portfolio Documents
+
+このプロジェクトの設計意図や実装内容は、以下の資料にまとめています．
+
+- [Engine Architecture](docs/portfolio/engine_architecture.md)  
+runtime のレイヤー構造と Engine / App の分離を説明
+- [System Pipeline](docs/portfolio/system_pipeline.md)  
+input->intent->state->logic->rendering の流れを説明
+- [ECS](docs/portfolio/ecs.md)  
+Entity / Registry / Storage / View / Query の設計を説明
+- [Asset Manager](docs/portfolio/asset_manager.md)  
+AssetManager / AssetStorage / AssetStore / Loader の分離を説明
+- [Import Pipeline](docs/portfolio/import_pipeline.md)  
+Importer / ImportData / RuntimeResource の分離を説明する
+- [Lessons Learned](docs/portfolio/lessons_learned.md)  
+初期実装の課題と、現行実装への改善内容を説明
+- [Roadmap](docs/portfolio/roadmap.md)  
+現行実装の制限・課題と将来の拡張を整理
+
+### Appendix
+- [Debug Tools](docs/portfolio/appendix_debug_tools.md)  
+DebugDraw, DebugCamera, Skeleton, Hitbox/HurtBox, HitEvent 表示を説明
+- [FSM Engine](docs/portfolio/appendix_fsm_engine.md)  
+現行実装には使用していない、独自実装した FSM-Engine の設計と実装を説明
+- [ECS-System Template Scheduler](docs/portfolio/appendix_ecs_template_scheduler.md)  
+独自実装した ECS の System 実行順序をCompile時に解決する非侵襲的なライブラリの説明
+- [Quality Checks and Improvements](docs/portfolio/appendix_quality.md)  
+ポートフォリオに対して行ったテスト、静的解析、メモリリーク確認、改善方針を説明
+
 ## 基本構造
 raw input -> Requested intent -> Resolver(FSM) -> ResolvedIntent -> UpdateLogic -> UpdateRendering
 
@@ -43,29 +72,3 @@ Transform/CameraLook/CameraMatrices
 - `TryGet()`で取得したアドレスは不安定であるため、取得したら即座に使用することによって一時対策を行う
 - 非同期ロード・大量のロードが発生するような場合別の構造的対策が必要
 
-## Portfolio Documents
-
-このプロジェクトの設計意図や実装内容は、以下の資料にまとめています．
-
-- [Engine Architecture](docs/portfolio/engine_architecture.md)  
-runtime のレイヤー構造と Engine / App の分離を説明
-- [System Pipeline](docs/portfolio/system_pipeline.md)  
-input->intent->state->logic->rendering の流れを説明
-- [ECS](docs/portfolio/ecs.md)  
-Entity / Registry / Storage / View / Query の設計を説明
-- [Asset Manager](docs/portfolio/asset_manager.md)  
-AssetManager / AssetStorage / AssetStore / Loader の分離を説明
-- [Import Pipeline](docs/portfolio/import_pipeline.md)  
-Importer / ImportData / RuntimeResource の分離を説明する
-- [Lessons Learned](docs/portfolio/lessons_learned.md)  
-初期実装の課題と、現行実装への改善内容を説明
-- [Roadmap](docs/portfolio/roadmap.md)  
-現行実装の制限・課題と将来の拡張を整理
-
-### Appendix
-- [Debug Tools](docs/portfolio/appendix_debug_tools.md)  
-DebugDraw, DebugCamera, Skeleton, Hitbox/HurtBox, HitEvent 表示を説明
-- [FSM Engine](docs/portfolio/appendix_fsm_engine.md)  
-現行実装には使用していない、独自実装した FSM-Engine の設計と実装を説明
-- [ECS-System Template Scheduler](docs/portfolio/appendix_ecs_template_scheduler.md)  
-独自実装した ECS の System 実行順序をCompile時に解決する非侵襲的なライブラリの説明

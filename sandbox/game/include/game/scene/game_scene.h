@@ -7,6 +7,7 @@
 #include <ddknd/graphics/graphics_fwd.h>
 
 #include "game/assets/actor/paladin_assets.h"
+#include "game/assets/actor/mutant_assets.h"
 
 #include <vector>
 
@@ -23,6 +24,22 @@ namespace app::scene
     struct GameSceneAssets
     {
         app::assets::actor::PaladinAssetIDs paladin;
+        app::assets::actor::MutantAssetIDs mutant;
+
+        [[nodiscard]]
+        bool IsValid() const noexcept
+        {
+            if(!paladin.IsValid())
+            {
+                std::cerr << "[GameSceneAssets::IsValid] An InvalidID exists in the Paladin Asset ID.\n";
+            }
+
+            if(!mutant.IsValid())
+            {
+                std::cerr << "[GameSceneAssets::IsValid] An InvalidID exists in the Mutant Asset ID.\n";
+            }
+            return paladin.IsValid() && mutant.IsValid();
+        }
     };
 
     struct GameScene
