@@ -515,7 +515,7 @@ namespace ddknd::graphics
 
             if (desc.generateMipmap)
             {
-                // glGenerateMipmap(GL_TEXTURE_2D);
+                glGenerateMipmap(GL_TEXTURE_2D);
             }
 
             glBindTexture(GL_TEXTURE_2D, 0);

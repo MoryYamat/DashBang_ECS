@@ -24,7 +24,7 @@ ipch/
 *.log
 
 .vscode/
-
+*.diagsession
 
 # ========================
 # OS�E�G�f�B�^����

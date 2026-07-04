@@ -75,13 +75,15 @@
 
 ## Cppcheck による静的解析
 
+## RenderDoc の導入
+
 ## テスト状況
 
 ### 不足しているテスト
 
 - Cppcheck による 静的解析
 - `std::chrono` による 簡易的なパフォーマンス計測
-- 
+- RenderDoc の導入
 
 ### テスト履歴
 | Date | Category | 内容 | Status |

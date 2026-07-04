@@ -34,6 +34,7 @@ target_link_libraries(game
         # game should use gamekit as its entry layer, not ddknd directly.
 )
 
+# COPY assets directory
 set(assets_src_dir "${CMAKE_SOURCE_DIR}/assets")
 
 add_custom_command(TARGET game POST_BUILD
