@@ -27,7 +27,7 @@ ipch/
 *.diagsession
 
 # ========================
-# OS�E�G�f�B�^����
+# os
 # ========================
 .DS_Store
 Thumbs.db
@@ -35,7 +35,7 @@ Thumbs.db
 *.swo
 
 # ========================
-# �o�C�i����ꎞ�t�@�C��
+# binary
 # ========================
 *.exe
 *.dll
@@ -47,18 +47,29 @@ Thumbs.db
 *.bak
 *.old
 
+# ========================
 # Mixamo / model / texture / sound assets
+# ========================
 Assets/**/*.glb
 Assets/**/*.fbx
 Assets/**/*.png
 Assets/**/*.jpg
 Assets/**/*.wav
 
+# ========================
+# Assets required to verify operation
+# ========================
+!Assets/**/base_action_trimed.glb
+!Assets/**/musicholder-sword-sound-260274.wav
+
+!Assets/**/mutant_idle.glb
+
+
+# ========================
+# Others
+# ========================
 settings.json
-compile_commands.json
-
-
-.clang-format
-
 lesson/
 docs/drafts/
+compile_commands.json
+.clang-format

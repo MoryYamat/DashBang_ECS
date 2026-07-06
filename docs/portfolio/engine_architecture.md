@@ -12,13 +12,13 @@
 - [現行実装の課題](#現行実装の課題)
 
 ## 目的
-この Engine Architecture は、runtime 基盤 と App の責務を分離する．
+この Engine Architecture は、runtime 基盤 と App の責務を分離するを目的とした．
 
 Engine 側には、複数ゲームで再利用できる runtime 基盤を置く．  
 App 側には、actor 定義や入力解釈など、 game 固有の処理を置く．
 
 これによって、Engine 側は、 ECS、AssetManager、Rendering などの汎用機能を提供し、  
-App 側はそれらを組み合わせて個別の Gameplay を記述できる構造にすることを目指す．
+App 側はそれらを組み合わせて個別の Gameplay を記述できる構造にすることを目指した．
 
 ## 設計方針
 主な設計方針は以下の通りである．

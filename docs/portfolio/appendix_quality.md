@@ -1,5 +1,7 @@
 # Appendix: Quality Checks and Improvements
 
+!このページは執筆中です．
+
 以下では、本ポートフォリオに対して行ったテスト、静的解析、メモリリーク確認、改善方針を記録する．
 
 ## もくじ

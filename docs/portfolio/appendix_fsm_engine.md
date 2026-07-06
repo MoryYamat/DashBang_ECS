@@ -71,7 +71,7 @@ static void makeFSM_Movement(FSMRegistry& reg)
 	f.states = { "Idle", "Moving" };
 	f.profiles = { "Default" };
 
-	// Profile 定義
+	// Profile 定義 (同一 遷移構造 に対する 遷移条件 の差し替え)
 	f.profile_defs.push_back(
         ProfileDefDTO{
 		.name = "Default",
@@ -145,19 +145,21 @@ Axis は FSM が **何を制御するFSMか** のラベルである．
 例えば、 Movement Axis であれば、移動に関する状態遷移を扱う．  
 Attack Axis であれば、攻撃に関する状態遷移を扱う．
 
-Profile は **同じ Axis 上での構造的違いを表す** ラベル である．
+Profile は **同じ 遷移構造上で、遷移条件の差し替えを行うための** ラベル である．
 
-例えば、Player と Enemy がどちらも地上を移動する場合、  
-Movement という制御対象には共通性がある．
+例えば、Skill FSM において、ほとんどのスキルは以下のような状態遷移を経ると仮定する．
 
-一方で、ある Enemy だけが飛行状態を持つ場合、  
-その Actor は Movement Axis 上で異なる状態構造を持つ．
+```
+予備動作(詠唱)->攻撃判定発生->硬直時間->最初へ戻る
+```
+
+このとき、スキル毎に異なるのは、予備動作や攻撃判定の時間などの**遷移条件**であると考えられる．
 
 このような違いを Profile として扱うことで、同じ制御ドメインに対して共通ルールを適用しつつ、  
 Actor ごとの構造的な違いを表現することを目指した．
 
 - Axis      : 制御対象を表す
-- Profile   : 同じ Axis 上での構造的差異を表す
+- Profile   : 同じ FSM 上 での遷移条件の差し替えを行う
 - Parameter : speed や attack power などの値的差異を表す
 
 
@@ -252,10 +254,11 @@ DFA は、状態集合、入力、遷移関数、開始状態、受理状態 に
 
 そのため、FSM-Engine では以下を分離して扱うことを目指した．
 
-- State
-- Condition
-- Effect / Event
-- Axis
-- Profile
-- Instance
+- State: 状態
+- Condition: 遷移条件 と その値
+- Effect / Event: 遷移時／状態中／遷移後のイベント処理
+- Axis: FSMが制御する対象の名前(例: Movement_State、Attack_Stateなど)(FSMの集合の集合)
+- FSM: Axis の部分集合としてのFSMの名前・ラベル
+- Profile: 同一遷移構造に対して条件を差し替えるための仕組み
+- Instance: 実際に Actor などが Runtime で持つ現在状態
 

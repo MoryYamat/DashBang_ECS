@@ -10,7 +10,7 @@ https://github.com/MoryYamat/TemplateScheduler
 - [設計背景](#設計背景)
 - [目的](#目的)
 - [実現したこと](#実現したこと)
-- [全体の構造](#全体の構造)
+- [全体の構造と使用イメージ](#全体の構造と使用イメージ)
 - [課題](#課題)
 
 ## 設計背景
@@ -51,7 +51,7 @@ RunPlayerAttackState(world, ctx);
 - 既存 System に専用の基底クラス継承を要求しない、非侵襲的な設計を試した
 
 
-## 全体の構造
+## 全体の構造と使用イメージ
 
 実装は、System 間の依存関係を直接実行順として書くのではなく、  
 まず型レベルの Graph として表現し、それを Runtime 実行のための Plan へ変換する構造を目指した．
@@ -71,6 +71,8 @@ Executor        : Plan を runtime で実行する層
 
 ### 使用イメージ
 
+
+#### 1. 概要
 例えば、 System 間の依存関係を次のように型として記述する
 
 ```cpp
@@ -95,6 +97,44 @@ using Plan = BuildPlan<SystemGraph>;
 
 ```cpp
 Executor<Plan>::Run(world, ctx);
+```
+
+#### 2. 並列実行計画の作成
+また、以下のように、型レベルの Access Effect System のようなものを記述することで、  
+並列実行計画をコンパイル時に作成することができる。
+
+まずは、ユーザが定義した、System について、reads / writes する型を以下のように列挙する
+
+```cpp
+// Movement_System は ユーザ定義のSystem型
+// Effects<>は TemplateScheduler の型で、ユーザ定義型を用いて明示特殊化する
+template<>
+struct Effects<Movement_System>
+{
+    using reads = ResourcePack<IntentComponent, VelocityComponent>;
+    using writes = ResourcePack<PositionComponent>;
+};
+
+template<>
+struct Effects<CollisionDetection_System>
+{
+    using reads = ResourcePack<PositionComponent, CollisionComponent>;
+    using writes = Resource<CollisionResult>;
+};
+```
+
+次に、ExecutionSet として以下のように登録する
+
+```cpp
+using EXECUTION_SET = ExecutionSet<Movement_System, CollisionDetection_System>;
+```
+
+最後に、以下のように並列実行計画を作成し、実行することができる。
+```cpp
+using SAFE_LAYERED_PLAN = typename MakeSafeLayeredPlan<EXECUTION_SET>::type;
+
+// 並列実行可能なシステムは非同期実行される (内部で std::async を使用)
+ExecutePlanAsync<SAFE_LAYERED_PLAN>::Run(ctx);
 ```
 
 

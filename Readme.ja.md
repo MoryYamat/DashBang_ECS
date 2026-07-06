@@ -1,12 +1,20 @@
 # DDKND: ECS-based Game Engine Runtime Prototype
 
-[English](Readme.md) \| [日本語](Readme.ja.md)\|
+Readme.md の 言語  
+| [English](Readme.md) | [日本語](Readme.ja.md) |
 
 
 ## Portfolio Documents
 
 このプロジェクトの設計意図や実装内容は、以下の資料にまとめています．
 
+これらの資料はすべて日本語です．
+
+**関心のある技術領域に応じた閲覧順は、[リーディングガイド](/docs/guides/reading_guide.md)を参照してください!**
+
+
+- [Overview](docs/portfolio/overview.md)  
+プロジェクトの設計と構造の概要を説明
 - [Engine Architecture](docs/portfolio/engine_architecture.md)  
 runtime のレイヤー構造と Engine / App の分離を説明
 - [System Pipeline](docs/portfolio/system_pipeline.md)  
@@ -26,11 +34,18 @@ Importer / ImportData / RuntimeResource の分離を説明する
 - [Debug Tools](docs/portfolio/appendix_debug_tools.md)  
 DebugDraw, DebugCamera, Skeleton, Hitbox/HurtBox, HitEvent 表示を説明
 - [FSM Engine](docs/portfolio/appendix_fsm_engine.md)  
-現行実装には使用していない、独自実装した FSM-Engine の設計と実装を説明
+過去に独自実装した FSM-Engineについて、設計背景、データ駆動構造、ECSとの統合方法、現行実装へ採用しなかった理由を説明
 - [ECS-System Template Scheduler](docs/portfolio/appendix_ecs_template_scheduler.md)  
 独自実装した ECS の System 実行順序をCompile時に解決する非侵襲的なライブラリの説明
 - [Quality Checks and Improvements](docs/portfolio/appendix_quality.md)  
 ポートフォリオに対して行ったテスト、静的解析、メモリリーク確認、改善方針を説明
+
+## 動作環境
+- OS: Windows11
+- 
+
+## 使用ライブラリ
+- 
 
 ## 基本構造
 raw input -> Requested intent -> Resolver(FSM) -> ResolvedIntent -> UpdateLogic -> UpdateRendering

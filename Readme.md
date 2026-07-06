@@ -1,11 +1,19 @@
 # DDKND: ECS-based Game Engine Runtime Prototype
 
-[English](Readme.md) \| [日本語](Readme.ja.md)\|
+Readme.md languages  
+| [English](Readme.md) | [日本語](Readme.ja.md) |
 
 ## Portfolio Documents
 
 The design intent and implementation details of this project are summarized in the following documents:
 
+(All of these documents are in Japanese.)
+
+**!!!You can use this [reading guide](/docs/guides/reading_guide.md) to read these documents based on your own interests.!!!**
+
+
+- [Overview](docs/portfolio/overview.md)  
+Outline the project's design and structure.
 - [Engine Architecture](docs/portfolio/engine_architecture.md)  
 Explains the runtime layer structure and the separation of Engine and App.
 - [System Pipeline](docs/portfolio/system_pipeline.md)  
@@ -30,6 +38,9 @@ Explains the design and implementation of a custom FSM engine (not used in the c
 Explains a custom, non-intrusive library that resolves ECS system execution order at compile time.
 - [Quality Checks and Improvements](docs/portfolio/appendix_quality.md)  
 Describes the testing, static analysis, memory leak checks, and improvement strategies applied to the portfolio.
+
+## Operating environment
+- OS: Windows11
 
 ## structure
 raw input -> Requested intent -> Resolver(FSM) -> ResolvedIntent -> UpdateLogic -> UpdateRendering

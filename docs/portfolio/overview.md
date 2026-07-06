@@ -98,7 +98,7 @@ Importer / ImportData / RuntimeResource の分離を説明する
 - [Debug Tools](./appendix_debug_tools.md)  
 DebugDraw, DebugCamera, Skeleton, Hitbox/HurtBox, HitEvent 表示を説明
 - [FSM Engine](./appendix_fsm_engine.md)  
-現行実装には使用していない、独自実装した FSM-Engine の設計と実装を説明
+現行実装には使用していない、独自実装した FSM-Engine の設計背景と設計意図を説明
 - [ECS-System Template Scheduler](./appendix_ecs_template_scheduler.md)  
 独自実装した ECS の System 実行順序をCompile時に解決する非侵襲的なライブラリの説明
 - [Quality Checks and Improvements](./appendix_quality.md)  

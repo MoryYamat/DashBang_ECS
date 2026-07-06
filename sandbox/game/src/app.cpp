@@ -57,17 +57,6 @@ namespace
     using Action = ::app::action::Action;
     using Key = ::ddknd::input::Key;
 
-    // float MaxAbsDiffFromIdentity(const ::ddknd::math::Mat4f& m)
-    // {
-    //     const float* p = m.Data();
-    //     const float* id = ::ddknd::math::Mat4f::Identity().Data();
-
-    //     float maxDiff = 0.0f;
-    //     for (int i = 0; i < 16; ++i)
-    //         maxDiff = std::max(maxDiff, std::abs(p[i] - id[i]));
-
-    //     return maxDiff;
-    // }
 } // namespace
 
 namespace app
@@ -219,10 +208,7 @@ namespace app
         using Timer = ::ddknd::clock::FrameTimer;
         Timer timer{};
 
-        // ::ddknd::math::TRS modelTRS;
-        // modelTRS.translation = {0.0f, 0.0f, 0.0f};
-        // modelTRS.rotation = ::ddknd::math::Quatf::Identity();
-        // modelTRS.scale = {0.01f, 0.01f, 0.01f};
+
         ::ddknd::graphics::RenderCamera frameCamera{};
         // ********* Debug Config ************
         ::ddknd::debug::DebugSystemRunner debugSystemRunner{};
@@ -247,6 +233,7 @@ namespace app
             // std::cerr << "delta x: " << inputSys_->GetValue(Action::CameraLookX) << "\n";
             // std::cerr << "delta y: " << inputSys_->GetValue(Action::CameraLookY) << "\n";
             // std::cerr << "wheel y:" << inputSys_->GetValue(Action::CameraZoom) << "\n";
+            
             // ************* CAMERA *************
             deug_cam.Update(timer.DeltaTime());
             ddknd::system::DebugCameraSystem::UpdateDebugCamera(debug_camera_transform, *debugCam_);
