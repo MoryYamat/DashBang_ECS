@@ -77,9 +77,57 @@
 
 ## Cppcheck による静的解析
 
+## 簡易的な1000体分のアニメーション更新のパフォーマンス計測
+
+- date: 2026/07/08
+- Release Build
+- 1,000 Animated Characters
+- 約14 ms/frame
+- P90 約15 ms
+
+### specs
+```txt
+OS: Windows11
+cpu: INTEL core i7 9700
+gpu: NVIDIA RTX 2070 Super
+```
+
 ## RenderDoc の導入
 
-## テスト状況
+## VisualStudio Profiler によるホットパス分析
+- date: 2026/07/08
+- Release Build
+- 1,000 Animated Characters
+```
+void AnimatorSystem::UpdateGlobalPose(skeleton, pose)
+{
+    // ...
+    // 12.73 %
+    std::vector<bool> computed(boneCount, false);
+
+    // 5.56 %
+    for (std::size_t i = 0; i < boneCount; ++i)
+    {
+    ComputeBoneGlobal(skeleton, pose, i, computed);
+    }
+
+    for (std::size_t i = 0; i < boneCount; ++i)
+    {
+        // 2.67 %
+        pose.skinMatrices[i] = pose.globalMatrices[i] * skeleton.bones[i].inverseBindMatrix;
+    }
+}
+```
+
+`std::vector<bool> computed(boneCount, false);` が大きな割合を持っていることを確認できた．  
+これは、`SkeletonResource::bones` が `jointIndex > parentJointIndex` となっていないので、  
+Runtime 計算時に、チェックしながら計算しているため、必要なものである．
+
+`std::vector<std::uint8_t>` と代替しても変化がなかったので、  
+ここでは、 `jointIndex > parentJointIndex` を保証することで、  
+このチェックを廃止することを目指す．
+
+
 
 ### 不足しているテスト
 

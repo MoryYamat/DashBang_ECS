@@ -359,9 +359,11 @@ namespace ddknd::math
             float magnitude = std::sqrt(w * w + x * x + y * y + z * z);
 
             // Prevent division by zero
-            if (magnitude > 0.00001f)
+            if (magnitude > kEpsilon<float>)
             {
                 float invMag = 1.0f / magnitude;
+
+                // @note SIMD
                 w *= invMag;
                 x *= invMag;
                 y *= invMag;

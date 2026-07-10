@@ -1,5 +1,6 @@
 #include "ddknd/graphics/gfx_asset_loader.h"
 
+#include <unordered_set>
 #include <cstddef>
 #include <cstdint>
 
@@ -356,6 +357,11 @@ namespace
     ModelBuildResult BuildModelRenderResource(const ImportModelData& import, int sceneIndex, RendererBackned& backend,
                                               std::span<const TextureID> textureMap,const std::string& vpath /*vpath: Model_Asset_Key*/)
     {
+        /*
+        * @ warn: The glTF specification does not guarantee that nodeIndex > parentNodeIndex.
+        * 
+        */
+
         // ====================== build these resource ======================
         // struct PrimitiveResource
         // struct ModelRenderResource
@@ -416,6 +422,16 @@ namespace
         std::vector<bool> visited(nodes.size(), false);
         std::vector<int> nodeInScene;
 
+        /*
+        * @ note:
+            The source glTF node array is not guaranteed to be stored in hierarchical order.
+            This traversal produces an order where each parent node is appended before its descendants.
+            Skeleton bones are built separately from skin.jointNodes,
+            whose order is not guaranteed to be parent-before-child.
+            If runtime pose evaluation depends on parentBone < childBone,
+            BuildModelSkeletonResource must validate or explicitly construct
+            a topological bone order.
+        */ 
         // to each node
         while (!roots.empty())
         {
@@ -474,15 +490,16 @@ namespace
             }
         }
 
-        // for(const auto& prim: out.primitives)
+        // print for debugging
+        // for(const auto& prim: out.model.primitives)
         // {
         //     std::cerr << "prim_gpu_res_id=" << prim.prim.Value() << "\n";
         // }
-        // if(out.skeleton)
+        // if(out.model.skeleton)
         // {
-        //     for(int i = 0; i < out.skeleton->bones.size(); i++)
+        //     for(int i = 0; i < out.model.skeleton->bones.size(); i++)
         //     {
-        //         std::cerr << "bone_parent_index= " << out.skeleton->bones[i].parent << "\n";
+        //         std::cerr << "bone_index=" << i <<", bone_parent_index= " << out.model.skeleton->bones[i].parent << "\n";
         //     }
         // }
 
@@ -539,22 +556,25 @@ namespace
         return -1;
     }
 
+    // Convert a node to a bone (runtime).
+    // 
     SkeletonResource BuildModelSkeletonResource(const ImportModelData& import, int skinIndex,
                                                 std::unordered_map<int, int>& nodeToBone)
     {
         const auto& skin = import.skins[skinIndex];
-
         SkeletonResource out;
         out.bones.resize(skin.jointNodes.size());
 
         for (std::size_t i = 0; i < skin.jointNodes.size(); ++i)
         {
+            // * @note this is not parent-first-order
             const int nodeIndex = skin.jointNodes[i];
             nodeToBone[nodeIndex] = static_cast<int>(i);
         }
 
         for (std::size_t i = 0; i < skin.jointNodes.size(); ++i)
         {
+            // * @note this is not parent-first-order
             const int nodeIndex = skin.jointNodes[i];
             const auto& node = import.nodes[nodeIndex];
 
@@ -599,6 +619,12 @@ namespace
 
         return out;
     }
+    /* 
+    * @TODO 
+        A node is not necessarily a bone (or joint). 
+        However, it is necessary to account for the rotation and scaling of nodes that do not correspond to joints.
+        This is not currently implemented; a solution is required.
+    */
     // parentNode = import.nodes[nodeIndex].parent
     // skin.jointNodes[i]: The index number of the node that has that skin
     // i: 親 node の skin 番号 (親 bone)

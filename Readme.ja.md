@@ -8,6 +8,8 @@ Readme.md の 言語
 
 このプロジェクトの設計意図や実装内容は、以下の資料にまとめています．
 
+[デモ動画(Youtube)](https://youtu.be/XLh3T2ZbSMs)
+
 これらの資料はすべて日本語です．
 
 **関心のある技術領域に応じた閲覧順は、[リーディングガイド](/docs/guides/reading_guide.md)を参照してください!**

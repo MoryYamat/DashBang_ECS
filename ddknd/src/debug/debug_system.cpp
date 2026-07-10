@@ -38,9 +38,9 @@ namespace ddknd::debug
             RunSkeletonDebug(world, ctx);
         }
 
-        if (ctx.config->drawFps && textReady)
+        if (ctx.config->drawFrameTimeInfo && textReady)
         {
-            RunFpsDebug(ctx);
+            RunFramePerfDebug(ctx);
         }
 
         if (ctx.config->drawAxis)
@@ -111,12 +111,29 @@ namespace ddknd::debug
         }
     }
 
-    void DebugSystemRunner::RunFpsDebug(const DebugContext& ctx)
+    void DebugSystemRunner::RunFramePerfDebug(const DebugContext& ctx)
     {
         assert(ctx.debugDraw);
         assert(ctx.config);
 
-        ctx.debugDraw->Text(10.0f, 20.0f, std::format("FPS: {:.1f}", ctx.fps), ctx.config->fpsStyle.color);
+        const auto& perf = ctx.framePerformance;
+        const auto& color = ctx.config->framePerformanceStyle.color;
+
+        constexpr float x = 10.0f;
+        constexpr float firstLineY = 20.0f;
+        constexpr float lineHeight = 20.0f;
+
+        ctx.debugDraw->Text(x, firstLineY, std::format("FPS: {:.1f}", perf.fps), color);
+
+        ctx.debugDraw->Text(x, firstLineY + lineHeight, std::format("Current: {:.2f} ms", perf.currentMs),
+                            color);
+
+        ctx.debugDraw->Text(x, firstLineY + lineHeight * 2.0f, std::format("P90: {:.2f} ms", perf.p90Ms),
+                            color);
+
+        ctx.debugDraw->Text(x, firstLineY + lineHeight * 3.0f, std::format("P99: {:.2f} ms", perf.p99Ms),
+                            color);
+
     }
 
     void DebugSystemRunner::RunAxisDebug(const DebugContext& ctx)
@@ -237,7 +254,7 @@ namespace ddknd::debug
                                             [](const DebugHitEventLine& line) { return line.remaining <= 0.0f; }),
                              hitEventLines_.end());
 
-        float y = 45.0f;
+        float y = 100.0f;
 
         for (const auto& line : hitEventLines_)
         {

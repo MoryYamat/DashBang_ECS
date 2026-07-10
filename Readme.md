@@ -7,6 +7,8 @@ Readme.md languages
 
 The design intent and implementation details of this project are summarized in the following documents:
 
+[Demo video (YouTube)](https://youtu.be/XLh3T2ZbSMs)
+
 (All of these documents are in Japanese.)
 
 **!!!You can use this [reading guide](/docs/guides/reading_guide.md) to read these documents based on your own interests.!!!**

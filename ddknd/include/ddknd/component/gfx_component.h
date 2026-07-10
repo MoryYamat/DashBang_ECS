@@ -6,14 +6,12 @@
 #include "ddknd/graphics/gfx_type.h"
 #include "ddknd/math/math.h"
 
+
+/*
+* @brief: Runtime Data for object rendering
+*/
 namespace ddknd::component
 {
-    struct ModelRendererComponent
-    {
-        // AssetHandle<ModelAssetTag> model;
-        // AssetHandle<ShaderAssetTag> shader;
-    };
-
     struct TransformComponent
     {
       private:
@@ -37,15 +35,12 @@ namespace ddknd::component
     {
         ::ddknd::animation::types::Pose pose;
     };
-
-    // delete
-    struct AnimatorComponent
-    {
-        ::ddknd::animation::types::AnimationState state;
-        ::ddknd::animation::types::Pose pose;
-    };
 } // namespace ddknd::component
 
+
+/*
+* @ brief: Camera Data
+*/
 namespace ddknd::component
 {
     enum class ProjectionType
@@ -85,7 +80,9 @@ namespace ddknd::component
 } // namespace ddknd::component
 
 
-// assets
+/*
+* @ brief: AssetID
+*/
 namespace ddknd::component
 {
     struct SkinnedModelComponent

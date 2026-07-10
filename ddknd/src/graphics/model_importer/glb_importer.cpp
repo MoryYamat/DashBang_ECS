@@ -828,6 +828,7 @@ namespace
     {
         out.nodes.resize(static_cast<std::size_t>(g->nodes_count));
 
+        // set skin and mesh Index, Matrix, TRS
         for (cgltf_size ni = 0; ni < g->nodes_count; ni++)
         {
             const cgltf_node* src = &g->nodes[ni];
@@ -848,6 +849,7 @@ namespace
             // std::cerr << " ======== local matrix ======= \n" << dst.localMatrix << "\n";
         }
 
+        // Set node index 
         for (cgltf_size ni = 0; ni < g->nodes_count; ni++)
         {
             const cgltf_node* src = &g->nodes[ni];
@@ -855,20 +857,20 @@ namespace
 
             dst.children.reserve(src->children_count);
 
+            // std::cerr << "parent index=" << ni << "\n";
             for (cgltf_size ci = 0; ci < src->children_count; ci++)
             {
                 const cgltf_node* child = src->children[ci];
 
                 int childIndex = IndexOf(g->nodes, g->nodes_count, child);
+                // std::cerr << "parent index=" << ni << ", child index=" << childIndex << "\n";
                 if (childIndex < 0)
                 {
                     continue;
                 }
 
-                dst.children.push_back(childIndex);
                 out.nodes[childIndex].parent = static_cast<int>(ni);
-
-                // std::cerr << "child index=" << childIndex << "\n";
+                dst.children.push_back(childIndex);
             }
         }
     }
@@ -887,6 +889,7 @@ namespace
             dst.rootNodes.reserve(src->nodes_count);
             for (cgltf_size ni = 0; ni < src->nodes_count; ni++)
             {
+                // root node
                 const cgltf_node* root = src->nodes[ni];
 
                 int nodeIndex = IndexOf(g->nodes, g->nodes_count, root);
@@ -987,6 +990,8 @@ namespace
         else
         {
             dst.indices.resize(vcount);
+
+            // @note SIMD
             for (std::uint32_t i = 0; i < vcount; i++)
             {
                 dst.indices[i] = i;

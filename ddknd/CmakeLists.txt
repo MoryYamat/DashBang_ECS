@@ -31,3 +31,18 @@ target_link_libraries(ddknd
     PUBLIC
         spdlog::spdlog
 )
+
+# commands Qvec-report:2
+if(MSVC)
+#    target_compile_options(ddknd PRIVATE 
+#            $<$<CONFIG:Release>:/Qvec-report:2>)
+
+    # to display debug symbol
+    target_compile_options(ddknd PRIVATE
+        "$<$<CONFIG:Release>:/Zi>"
+    )
+
+    target_link_options(ddknd PRIVATE
+        "$<$<CONFIG:Release>:/DEBUG>"
+    )
+endif()

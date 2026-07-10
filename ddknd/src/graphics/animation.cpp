@@ -9,13 +9,12 @@
 namespace
 {
     void ComputeBoneGlobal(const ddknd::animation::types::SkeletonResource& skeleton,
-                           ddknd::animation::types::Pose& pose, std::size_t boneIndex, std::vector<bool>& computed)
+                           ddknd::animation::types::Pose& pose, std::size_t boneIndex, std::vector<std::uint8_t>& computed/*std::vector<bool>& computed*/)
     {
-        if (computed[boneIndex])
+        if(computed[boneIndex] == 1)
             return;
 
         const int parent = skeleton.bones[boneIndex].parent;
-
         if (parent < 0)
         {
             pose.globalMatrices[boneIndex] = pose.localMatrices[boneIndex];
@@ -27,7 +26,7 @@ namespace
             pose.globalMatrices[boneIndex] = pose.globalMatrices[parent] * pose.localMatrices[boneIndex];
         }
 
-        computed[boneIndex] = true;
+        computed[boneIndex] = 1;
     }
 
     int FindKeyFrame(const std::vector<float>& times, float t)
@@ -46,6 +45,7 @@ namespace
         return static_cast<int>(it - times.begin()) - 1;
     }
 
+    // interpolation coefficient
     float ComputeAlpha(const std::vector<float>& times, int index, float t)
     {
         if (times.size() <= 1)
@@ -72,6 +72,7 @@ namespace
 
         if (cosTheta < 0.0f)
         {
+            // @note SIMD
             b.w = -b.w;
             b.x = -b.x;
             b.y = -b.y;
@@ -192,7 +193,8 @@ namespace ddknd::animation
         pose.globalMatrices.resize(boneCount);
         pose.skinMatrices.resize(boneCount);
 
-        std::vector<bool> computed(boneCount, false);
+        // @ TODO: optimization
+        std::vector<std::uint8_t> computed(boneCount, 0);
 
         for (std::size_t i = 0; i < boneCount; ++i)
         {
@@ -201,8 +203,7 @@ namespace ddknd::animation
 
         for (std::size_t i = 0; i < boneCount; ++i)
         {
-            // The initial pose's Model space → the current pose's Model space
-            // are being combined.
+            // The initial pose's Model space → the current pose's Model space are being combined.
             pose.skinMatrices[i] = pose.globalMatrices[i] * skeleton.bones[i].inverseBindMatrix;
         }
     }

@@ -67,7 +67,6 @@ namespace app
             std::unique_ptr<::ddknd::animation::AnimationAssetStore> animationAssetStore_;
 
             std::unique_ptr<::ddknd::ecs::World> world_;
-
             std::unique_ptr<::app::scene::GameScene> scene_;
 
             // @TODO: temporary owner of per-frame event buffers. these should eventually live in a generic EventManager / ResourceStorage

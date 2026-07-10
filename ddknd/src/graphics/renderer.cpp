@@ -191,6 +191,12 @@ namespace ddknd::graphics
     {
         texts_.clear();
         lines_.clear();
+
+        textVertices_.clear();
+        textIndices_.clear();
+
+        lineVertices_.clear();
+        lineIndices_.clear();
     }
 
     void DebugDrawList::Text(float x, float y, std::string text, Color color)

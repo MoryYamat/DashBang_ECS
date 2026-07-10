@@ -3,9 +3,7 @@
 
 namespace ddknd::component
 {
-    struct ModelRendererComponent;
     struct TransformComponent;
-    struct AnimatorComponent;// delete
     struct VelocityComponent;
     struct MainCameraTag;
     struct CameraLookComponent;

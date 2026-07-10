@@ -11,7 +11,7 @@
 
 namespace ddknd::debug
 {
-    struct DebugFPSTextStyle
+    struct DebugFramePerformanceInfoTextStyle
     {
       private:
         using Color = ::ddknd::math::Vec4f;
@@ -63,6 +63,14 @@ namespace ddknd::debug
       float remaining = 0.5f;
     };
 
+    struct FramePerformanceInfo
+    {
+      float currentMs = 0.0f;
+      float p90Ms = 0.0f;
+      float p99Ms = 0.0f;
+      float fps = 0.0f;         // per 0.5s
+    };
+
     enum class CameraOverrideMode
     {
         None,       // Use normal app/game camera for rendering
@@ -81,7 +89,7 @@ namespace ddknd::debug
     struct DebugConfig
     {
         bool drawAxis = true;
-        bool drawFps = true;
+        bool drawFrameTimeInfo = true;
         bool drawSkeletons = true;
         bool drawHitboxes = true;
         bool drawHurtboxes = true;
@@ -89,7 +97,7 @@ namespace ddknd::debug
 
         DebugAxisStyle axisStyle{};
         DebugSkeletonStyle skeletonStyle{};
-        DebugFPSTextStyle fpsStyle{};
+        DebugFramePerformanceInfoTextStyle framePerformanceStyle{};
         DebugHitboxStyle hitboxStyle{};
 
         DebugCameraConfig camera{};
@@ -102,7 +110,8 @@ namespace ddknd::debug
         const DebugConfig* config = nullptr;
         const DebugDrawResources* resources = nullptr;
 
-        float fps = 0.0f;
+        //float fps = 0.0f;
+        FramePerformanceInfo framePerformance{};
     };
 
     class DebugSystemRunner
@@ -116,7 +125,7 @@ namespace ddknd::debug
 
       private:
         void RunSkeletonDebug(::ddknd::ecs::World& world, const DebugContext& ctx);
-        void RunFpsDebug(const DebugContext& ctx);
+        void RunFramePerfDebug(const DebugContext& ctx);
         void RunAxisDebug(const DebugContext& ctx);
 
         void RunHitboxDebug(ddknd::ecs::World& world, const DebugContext& ctx);

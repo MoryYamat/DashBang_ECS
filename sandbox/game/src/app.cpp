@@ -206,17 +206,26 @@ namespace app
 
         // ************* TIMER *************
         using Timer = ::ddknd::clock::FrameTimer;
-        Timer timer{};
+        using FrameTimeStatistics = ::ddknd::clock::FrameTimeStatistics;
 
+        Timer timer{};
+        FrameTimeStatistics frameTimeStatistics{};
 
         ::ddknd::graphics::RenderCamera frameCamera{};
         // ********* Debug Config ************
         ::ddknd::debug::DebugSystemRunner debugSystemRunner{};
         ::ddknd::debug::DebugCameraConfig debugCameraConfig{.overrideMode = ::ddknd::debug::CameraOverrideMode::None};
-        ::ddknd::debug::DebugConfig debugConfig{.drawAxis = true, .drawFps = true, .drawSkeletons = true, .camera = debugCameraConfig};
+        ::ddknd::debug::DebugConfig debugConfig{.drawAxis = false,
+                                                .drawFrameTimeInfo = true,
+                                                .drawSkeletons = false,
+                                                .drawHitboxes = false,
+                                                .drawHurtboxes = false,
+                                                .drawHitEvents = false,
+                                                .camera = debugCameraConfig};
+
         ::ddknd::debug::DebugDrawResources debugDrawResouces{.textShader = debug_font_shader_id, .lineShader = debug_line_shader_id, .font = font_res_id};
-        // debugDraw_->SetFont(font_res);
-        // debugDraw_->Axis({0.0f, 0.0f, 0.0f}, 1000.0f);
+
+        // game loop
         while (isRunning_ && !window_->ShouldClose())
         {
             // ************ RESET ************
@@ -224,7 +233,20 @@ namespace app
 
             // ************* TIMER **************
             timer.Tick();
+            const float deltaTime = timer.DeltaTime();          // this is in seconds, not milliseconds
+            // std::cerr << "deltatime" << deltaTime << "\n";
+            if(deltaTime > 0)
+            {
+                frameTimeStatistics.PushFrame(deltaTime);
+            }
+
             const float fps = timer.FPS();
+            ddknd::debug::FramePerformanceInfo perf{.currentMs = frameTimeStatistics.CurrentFrameTimeMs(), 
+                                               .p90Ms = frameTimeStatistics.P90FrameTimeMs(),
+                                               .p99Ms = frameTimeStatistics.P99FrameTimeMs(),
+                                               .fps = fps
+                                            };
+
 
             // ************* Input *************
             deviceInput_->Update();
@@ -239,7 +261,7 @@ namespace app
             ddknd::system::DebugCameraSystem::UpdateDebugCamera(debug_camera_transform, *debugCam_);
 
             // ************* FRAME CONTEXT *************
-            ::ddknd::system::FrameContext frameCtx{.deltaTime = timer.DeltaTime(),
+            ::ddknd::system::FrameContext frameCtx{.deltaTime = deltaTime,
                                                    .actionInput = inputSys_.get(),
                                                    .aspect = window_->aspectRatio(),
                                                    .graphicsAssetStore = graphicsAssetStore_.get(),
@@ -250,7 +272,7 @@ namespace app
 
             ::app::system::GameFrameContext gameCtx{.frame = &frameCtx, .input = inputSys_.get(), .paused = false};
 
-            ::ddknd::debug::DebugContext debugCtx{.frame = &frameCtx, .debugDraw = debugDraw_.get(), .config = &debugConfig, .resources = &debugDrawResouces, .fps=timer.FPS()};
+            ::ddknd::debug::DebugContext debugCtx{.frame = &frameCtx, .debugDraw = debugDraw_.get(), .config = &debugConfig, .resources = &debugDrawResouces, .framePerformance=perf};
             // ************* BEGIN FRAME *************
             ddknd::graphics::FrameBeginDesc frameBegin{.h = window_->GetHeight(),
                                              .w = window_->GetWidth()};
@@ -264,14 +286,14 @@ namespace app
             engineSystemRunner_->UpdateRenderPrepare(*world_, frameCtx);
             
             
+            // ************* DEBUG DRAW *************
+            debugSystemRunner.BeginFrame(debugCtx);
+            debugSystemRunner.Update(*world_, debugCtx);
+            debugSystemRunner.EndFrame(debugCtx);
+            debugSystemRunner.Submit(debugCtx);
 
             if(debugConfig.camera.overrideMode == ::ddknd::debug::CameraOverrideMode::DebugCamera)
             {
-                // ************* DEBUG DRAW *************
-                debugSystemRunner.BeginFrame(debugCtx);
-                debugSystemRunner.Update(*world_, debugCtx);
-                debugSystemRunner.EndFrame(debugCtx);
-                debugSystemRunner.Submit(debugCtx);
 
                 // ************* DEBUG CAMERA *************
                 frameCamera.view = debugCam_->matrices.view;

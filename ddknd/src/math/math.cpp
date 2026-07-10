@@ -98,6 +98,7 @@ namespace ddknd::math
 
         const float invDet = 1.0f / det;
 
+        // @note SIMD
         for (float& x : inv.v)
         {
             x *= invDet;

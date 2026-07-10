@@ -1,4 +1,4 @@
-﻿// entry point
+// entry point
 
 // memo
 
@@ -31,7 +31,10 @@ int main()
 
 	app::App app;
 
-	if(!app.Init(720,480))
+	int width = 1920;
+	int height = 1080;
+
+	if(!app.Init(width,height))
 	{
 		std::cerr << "app init failed \n"; 
 	}
