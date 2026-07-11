@@ -24,7 +24,7 @@ namespace app::system
 
         ::ddknd::math::Vec2f dir{0.0f, 0.0f};
 
-        if (input.IsDown(Action::MoveFoward))
+        if (input.IsDown(Action::MoveForward))
         {
             dir.y() += 1.0f;
         }

@@ -10,7 +10,7 @@ namespace app::action
     enum class Action : std::uint32_t
     {
         // move
-        MoveFoward = 0,
+        MoveForward = 0,
         MoveBackward,
         MoveLeft,
         MoveRight,

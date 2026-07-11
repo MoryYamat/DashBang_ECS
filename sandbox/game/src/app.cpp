@@ -46,7 +46,6 @@
 #include "game/scene/game_scene.h"
 #include "game/system/game_system.h"
 
-// test font
 
 // temporaly
 namespace
@@ -98,7 +97,7 @@ namespace app
         using MouseAxis = ::ddknd::input::MouseAxis;
         using MouseButton = ::ddknd::input::MouseButton;
         using Action = ::app::action::Action;
-        inputMapping_->RegisterKeyMap(Key::W, Action::MoveFoward);
+        inputMapping_->RegisterKeyMap(Key::W, Action::MoveForward);
         inputMapping_->RegisterKeyMap(Key::A, Action::MoveLeft);
         inputMapping_->RegisterKeyMap(Key::S, Action::MoveBackward);
         inputMapping_->RegisterKeyMap(Key::D, Action::MoveRight);
@@ -177,7 +176,6 @@ namespace app
         //   - 長期保持するのは AssetID
         //   - Resource* は短命な参照として扱う
         // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        // const auto font_res = graphicsAssetStore_->TryGet(font_res_id);
 
         // debug axis
         auto debug_line_shader_id = assetMgr_->GetOrCreate<ShaderTag>("res://shaders/programs/debug_line.shader");
@@ -214,7 +212,7 @@ namespace app
         ::ddknd::graphics::RenderCamera frameCamera{};
         // ********* Debug Config ************
         ::ddknd::debug::DebugSystemRunner debugSystemRunner{};
-        ::ddknd::debug::DebugCameraConfig debugCameraConfig{.overrideMode = ::ddknd::debug::CameraOverrideMode::None};
+        ::ddknd::debug::DebugCameraConfig debugCameraConfig{.overrideMode = ::ddknd::debug::CameraOverrideMode::DebugCamera};
         ::ddknd::debug::DebugConfig debugConfig{.drawAxis = false,
                                                 .drawFrameTimeInfo = true,
                                                 .drawSkeletons = false,
@@ -273,6 +271,7 @@ namespace app
             ::app::system::GameFrameContext gameCtx{.frame = &frameCtx, .input = inputSys_.get(), .paused = false};
 
             ::ddknd::debug::DebugContext debugCtx{.frame = &frameCtx, .debugDraw = debugDraw_.get(), .config = &debugConfig, .resources = &debugDrawResouces, .framePerformance=perf};
+
             // ************* BEGIN FRAME *************
             ddknd::graphics::FrameBeginDesc frameBegin{.h = window_->GetHeight(),
                                              .w = window_->GetWidth()};
@@ -294,7 +293,6 @@ namespace app
 
             if(debugConfig.camera.overrideMode == ::ddknd::debug::CameraOverrideMode::DebugCamera)
             {
-
                 // ************* DEBUG CAMERA *************
                 frameCamera.view = debugCam_->matrices.view;
                 frameCamera.proj = debugCam_->matrices.proj;
@@ -316,203 +314,5 @@ namespace app
 
     void App::Shutdown()
     {
-        ::ddknd::ecs::Entity test{};
-
-        ::ddknd::ecs::World wd{};
-
-        // ======================= test for ecs systems =======================
-        // auto ent0_0 = wd.Create();
-        // auto ent0_1 = wd.Create();
-        // auto ent0_2 = wd.Create();
-        // auto ent0_3 = wd.Create();
-        // auto ent0_4 = wd.Create();
-        // auto ent0_5 = wd.Create();
-        // auto ent0_6 = wd.Create();
-        // auto ent0_7 = wd.Create();
-        // auto ent0_8 = wd.Create();
-        // auto ent0_9 = wd.Create();
-        // auto ent0_10 = wd.Create();
-        // auto ent0_11 = wd.Create();
-        // auto ent0_12 = wd.Create();
-        // auto ent0_13 = wd.Create();
-        // auto ent0_14 = wd.Create();
-
-        // wd.Destroy(ent0_0);
-        // std::cerr << "3:" << wd.IsAlive(ent0_3) << "\n";
-        // wd.Destroy(ent0_3);
-        // std::cerr << "3:" << wd.IsAlive(ent0_3) << "\n";
-        // wd.Destroy(ent0_14);
-        // wd.Destroy(ent0_11);
-
-        // auto ent1_1 = wd.Create();
-        // auto ent1_3 = wd.Create();
-        // auto ent1_14 = wd.Create();
-        // auto ent1_11 = wd.Create();
-
-        // std::cerr << "3:" << wd.IsAlive(ent0_3) << "\n";
-        // std::cerr << "3:" << wd.IsAlive(ent1_3) << "\n";
-
-        // // for test
-        // using namespace ::ddknd::component;
-
-        // Pos pos = wd.GetRegistry().AddComponent<Pos>(ent1_1, 1.0f, 1.0f, 1.0f);
-        // wd.GetRegistry().AddComponent<Vel>(ent1_1, 1.0f, 1.0f, 1.0f);
-        // Pos pos1_3 = wd.GetRegistry().AddComponent<Pos>(ent1_3, 1.0f, 1.0f, 1.0f);
-        // wd.GetRegistry().AddComponent<Vel>(ent1_3, 1.0f, 1.0f, 1.0f);
-
-        // Pos pos1_11 = wd.GetRegistry().AddComponent<Pos>(ent1_11, 1.0f, 1.0f, 1.0f);
-        // wd.GetRegistry().AddComponent<Vel>(ent1_11, 1.0f, 1.0f, 1.0f);
-        // wd.GetRegistry().AddComponent<Acc>(ent1_11, 1.0f, 1.0f, 1.0f);
-
-        // std::cerr << "pos " << pos.x << " " << pos.y << " " << pos.z << "\n";
-        // pos = wd.GetRegistry().AddComponent<Pos>(ent1_1, 2.0f, 2.0f, 2.0f);
-        // std::cerr << "pos " << pos.x << " " << pos.y << " " << pos.z << "\n";
-        // auto get1_1 = wd.GetRegistry().TryGetComponent<Pos>(ent1_1);
-        // auto get1_3 = wd.GetRegistry().TryGetComponent<Pos>(ent1_3);
-        // if (!get1_1)
-        // {
-        //     std::cerr << "null\n";
-        // }
-        // else
-        // {
-        //     std::cerr << "exists\n";
-        // }
-
-        // if (!get1_3)
-        // {
-        //     std::cerr << "null\n";
-        // }
-        // else
-        // {
-        //     std::cerr << "exists\n";
-        // }
-
-        // if (!wd.GetRegistry().HasComponent<Pos>(ent1_1))
-        // {
-        //     std::cerr << "not have component\n";
-        // }
-        // else
-        // {
-        //     wd.GetRegistry().RemoveComponent<Pos>(ent1_1);
-        //     if (!wd.GetRegistry().HasComponent<Pos>(ent1_1))
-        //         std::cerr << "not have component\n";
-        // }
-        // std::cerr << "=================== test for normal registry behavior ===================\n\n";
-
-        // using namespace ::ddknd::query;
-
-        // auto q_1 = query().select<Pos>().require<Vel>().exclude<Acc>(); // copy ctor
-        // auto q_2 = query().select<Vel>().require<Pos>().exclude<Acc>(); // copy ctor
-
-        // auto view_1 = wd.GetRegistry().view(q_1); // copy ctor
-        // auto view_2 = wd.GetRegistry().view(q_2); // copy ctor
-
-        // std::cerr << "view type=" << typeid(view_1).name() << "\n";
-        // std::cerr << "view type=" << typeid(view_2).name() << "\n";
-
-        // for (auto i = view_1.begin(); i != view_1.end(); ++i)
-        // {
-        //     std::cerr << "i " << i.idx << "\n";
-        // }
-
-        // std::cerr << "ent1_3 before compute " << pos1_3.x << " " << pos1_3.y << " " << pos1_3.z << "\n";
-
-        // for (auto [pos, vel] : view_1)
-        // {
-        //     pos.x += vel.x;
-        // }
-
-        // auto pos1_3_ = wd.GetRegistry().GetComponent<Pos>(ent1_3);
-        // std::cerr << "ent1_3 after compute " << pos1_3_.x << " " << pos1_3_.y << " " << pos1_3_.z << "\n";
-
-        // auto view_3 = wd.GetRegistry().view(q_1).withEntity();
-
-        // for (auto [e, pos, vel] : view_3)
-        // {
-        //     auto res = wd.GetRegistry().TryGetComponent<Pos>(e);
-        //     if (res)
-        //     {
-        //         std::cerr << "get it\n";
-        //     }
-        // }
-        // ======================= test for ecs systems =======================
-
-        // ======================= test for input action systems =======================
-        // using Key = ::ddknd::input::Key;
-        // using Action = ::app::action::Action;
-        // using InputMapping = ::ddknd::input::InputMapping;
-        // using ActionInputSystem = ::ddknd::input::ActionInputSystem;
-
-        // auto move_forward = inputMapping_->GetActionID(Action::MoveFoward);
-        // auto move_left = inputMapping_->GetActionID(Action::MoveLeft);
-        // auto move_backward = inputMapping_->GetActionID(Action::MoveBackward);
-        // auto move_right = inputMapping_->GetActionID(Action::MoveRight);
-
-        // assert(move_forward != InputMapping::InvalidID);
-        // assert(move_left != InputMapping::InvalidID);
-        // assert(move_backward != InputMapping::InvalidID);
-        // assert(move_right != InputMapping::InvalidID);
-
-        // assert(inputMapping_->GetActionFromKey(Key::W) == move_forward);
-        // assert(inputMapping_->GetActionFromKey(Key::A) == move_left);
-        // assert(inputMapping_->GetActionFromKey(Key::S) == move_backward);
-        // assert(inputMapping_->GetActionFromKey(Key::D) == move_right);
-
-        // assert(inputMapping_->GetKey(move_forward) == Key::W);
-        // assert(inputMapping_->GetKey(move_left) == Key::A);
-        // assert(inputMapping_->GetKey(move_backward) == Key::S);
-        // assert(inputMapping_->GetKey(move_right) == Key::D);
-
-        // // 未登録
-        // assert(inputMapping_->GetActionID(static_cast<Action>(999)) == InputMapping::InvalidID);
-        // assert(inputMapping_->GetActionFromKey(Key::F20) == InputMapping::InvalidID);
-        // assert(inputMapping_->GetKey(InputMapping::InvalidID) == InputMapping::InvalidKey);
-        // ======================= test for input action systems =======================
     }
 } // namespace app
-
-namespace
-{
-    // Mat4f LookAt(Vec3f eye, Vec3f target, Vec3f up)
-    // {
-    //     Vec3f f = normalize(target - eye);
-    //     Vec3f s = normalize(cross(f, up)); // create fallback to avoid devide by 0
-    //     Vec3f u = cross(s, f);
-
-    //     Mat4f m{};
-
-    //     m(0, 0) = s[0];
-    //     m(0, 1) = s[1];
-    //     m(0, 2) = s[2];
-    //     m(0, 3) = -dot(s, eye);
-    //     m(1, 0) = u[0];
-    //     m(1, 1) = u[1];
-    //     m(1, 2) = u[2];
-    //     m(1, 3) = -dot(u, eye);
-    //     m(2, 0) = -f[0];
-    //     m(2, 1) = -f[1];
-    //     m(2, 2) = -f[2];
-    //     m(2, 3) = dot(f, eye);
-    //     m(3, 0) = 0;
-    //     m(3, 1) = 0;
-    //     m(3, 2) = 0;
-    //     m(3, 3) = 1;
-
-    //     return m;
-    // }
-
-    // Mat4f Perspective(float fovY, float aspect, float near, float far)
-    // {
-    //     float f = 1.0f / std::tan(fovY * 0.5f);
-
-    //     Mat4f m{};
-
-    //     m(0, 0) = f / aspect;
-    //     m(1, 1) = f;
-    //     m(2, 2) = (far + near) / (near - far);
-    //     m(2, 3) = (2 * far * near) / (near - far);
-    //     m(3, 2) = -1.0f;
-
-    //     return m;
-    // }
-} // namespace
