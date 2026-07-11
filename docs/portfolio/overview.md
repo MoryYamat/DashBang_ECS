@@ -16,7 +16,7 @@ Game Engineの runtime における基盤機能を提供するデータおよび
 プレイヤー操作、カメラ制御、スキンメッシュアニメーション、攻撃 hitbox / hurtbox 判定、Debug 描画までを接続し、  
 runtime 基盤として一連のゲームプレイ処理を動作確認した．
 
-[デモ動画](youtube link)
+[デモ動画 (Youtube)](https://youtu.be/XLh3T2ZbSMs)
 
 具体的には、以下のようなことが実現できている
 - インポートした3Dモデルの スキンメッシュアニメーション の再生
@@ -59,6 +59,7 @@ App 側にはこのデモ固有の actor 定義・入力解釈・状態遷移・
 
 ```
 Engine:
+    Window / RawInput
     ECS
     Asset Management
     Import Piepline
