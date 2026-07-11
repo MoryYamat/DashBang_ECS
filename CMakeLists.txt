@@ -24,7 +24,14 @@ endif()
 
 include(cmake/Dependencies.cmake)
 
-enable_testing()# gtest
 
+# The engine is always built.
 add_subdirectory("ddknd")# engine runtime
+
 add_subdirectory("sandbox/game")# game
+
+include(CTest)
+
+if(BUILD_TESTING)
+    add_subdirectory("tests")
+endif()

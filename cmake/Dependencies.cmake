@@ -12,15 +12,15 @@ find_package(spdlog CONFIG REQUIRED)
 # -----------------------
 # Google Test
 # -----------------------
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
-)
+# include(FetchContent)
+# FetchContent_Declare(
+#   googletest
+#   URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+# )
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+# set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+# FetchContent_MakeAvailable(googletest)
 
 # -----------------------
 # cgltf
@@ -28,7 +28,7 @@ FetchContent_MakeAvailable(googletest)
 FetchContent_Declare(
     cgltf
     GIT_REPOSITORY https://github.com/jkuhlmann/cgltf.git
-    GIT_TAG        master
+    GIT_TAG        v1.15
 )
 FetchContent_MakeAvailable(cgltf)
 
@@ -48,7 +48,7 @@ endif()
 FetchContent_Declare(
   stb
   GIT_REPOSITORY  https://github.com/nothings/stb.git
-  GIT_TAG         master
+  GIT_TAG         e6cd9561ea6dae43d41633797745789d142b691e
 )
 FetchContent_MakeAvailable(stb)
 
