@@ -13,6 +13,7 @@
 
 namespace app::scene
 {
+    // Set of entities in GameScene
     struct GameSceneEntities
     {
         ::ddknd::ecs::Entity player;
@@ -21,6 +22,7 @@ namespace app::scene
         std::vector<ddknd::ecs::Entity> npcs;
     };
 
+    // Set the AssetIDs of the Actors used for the Entity
     struct GameSceneAssets
     {
         app::assets::actor::PaladinAssetIDs paladin;

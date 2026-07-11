@@ -45,17 +45,20 @@ namespace app::scene
         constexpr float spacing = 1.5f;
 
         std::vector<ddknd::ecs::Entity> npcs;
-        // auto mutant_npc = app::actor::CreateMutantNPC(world, mutantAssets, app::actor::NPCSpawnDesc{.position = {0.0f, 0.0f, 5.0f}});
-        // npcs.push_back(mutant_npc);
-        for(int i = 0; i < spawnAmount; i++)
-        {
-            const int xIndex = i % columns;
-            const int zIndex = i / columns;
-            const float x = (static_cast<float>(xIndex) - static_cast<float>(columns - 1) * 0.5f) * spacing;
-            const float z = static_cast<float>(zIndex) * spacing + 5.0f;
-            auto mutant_npc = app::actor::CreateMutantNPC(world, mutantAssets, app::actor::NPCSpawnDesc{.position = {x, 0.0f, z}});
-            npcs.push_back(mutant_npc);
-        }
+        auto mutant_npc = app::actor::CreateMutantNPC(world, mutantAssets, app::actor::NPCSpawnDesc{.position = {0.0f, 0.0f, 5.0f}});
+        npcs.push_back(mutant_npc);
+
+        // **************** for character spawn test ****************
+        // for(int i = 0; i < spawnAmount; i++)
+        // {
+        //     const int xIndex = i % columns;
+        //     const int zIndex = i / columns;
+        //     const float x = (static_cast<float>(xIndex) - static_cast<float>(columns - 1) * 0.5f) * spacing;
+        //     const float z = static_cast<float>(zIndex) * spacing + 5.0f;
+        //     auto mutant_npc = app::actor::CreateMutantNPC(world, mutantAssets, app::actor::NPCSpawnDesc{.position = {x, 0.0f, z}});
+        //     npcs.push_back(mutant_npc);
+        // }
+        // **********************************************************
         
 
         GameSceneAssets assets{.paladin = paladinAssets, .mutant = mutantAssets};
