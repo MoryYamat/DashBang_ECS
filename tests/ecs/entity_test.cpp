@@ -20,15 +20,17 @@ int main()
 
     ddknd::ecs::World world;
 
+    // A newly created entity is alive.
     const auto entityA = world.Create();
     TEST_CHECK(world.IsAlive(entityA));
 
+    // Adestroyed entity is no longer alive.
     world.Destroy(entityA);
     TEST_CHECK(!world.IsAlive(entityA));
 
+    // Reusing an index must not revive the old handle.
     const auto entityB = world.Create();
 
-    // Creating another entity must not revive the old handle.
     TEST_CHECK(world.IsAlive(entityB));
     TEST_CHECK(!world.IsAlive(entityA));
     TEST_CHECK(entityA.Index() == entityB.Index());
@@ -42,6 +44,16 @@ int main()
 
     TEST_CHECK(!world.IsAlive(entityB));
     TEST_CHECK(world.IsAlive(entityC));
+
+    // A default-constructed entity is invalid.
+    ddknd::ecs::Entity entityD{};
+
+    TEST_CHECK(!entityD.IsValid());
+
+    entityD = world.Create();
+
+    TEST_CHECK(entityD.IsValid());
+    TEST_CHECK(world.IsAlive(entityD));
 
     return failures;
 }
