@@ -1,5 +1,5 @@
 #include "ddknd/ecs/query/query.h"
 
-namespace ddknd::query
+namespace ddknd::ecs
 {
-}// namespace ddknd::query
+} // namespace ddknd::ecs

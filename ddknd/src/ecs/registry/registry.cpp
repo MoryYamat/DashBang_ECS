@@ -1,9 +1,7 @@
 #include "ddknd/ecs/registry/registry.h"
 
-
-
-namespace ddknd::registry
+namespace ddknd::ecs
 {
     // Entity
 
-} // namespace ddknd::registry
+} // namespace ddknd::ecs

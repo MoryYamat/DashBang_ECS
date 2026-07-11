@@ -12,16 +12,9 @@ namespace ddknd::ecs
         Registry regs;
     };
 
-    World::World()
-        : impl_(std::make_unique<Impl>())
-    {
-        
-    }
+    World::World() : impl_(std::make_unique<Impl>()) {}
 
-    World::~World()
-    {
-
-    }
+    World::~World() {}
 
     Entity World::Create()
     {
@@ -47,4 +40,4 @@ namespace ddknd::ecs
     {
         return impl_->regs;
     }
-}// namespace ddknd::world
+} // namespace ddknd::ecs
