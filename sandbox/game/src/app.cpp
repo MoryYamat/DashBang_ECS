@@ -212,7 +212,7 @@ namespace app
         ::ddknd::graphics::RenderCamera frameCamera{};
         // ********* Debug Config ************
         ::ddknd::debug::DebugSystemRunner debugSystemRunner{};
-        ::ddknd::debug::DebugCameraConfig debugCameraConfig{.overrideMode = ::ddknd::debug::CameraOverrideMode::DebugCamera};
+        ::ddknd::debug::DebugCameraConfig debugCameraConfig{.overrideMode = ::ddknd::debug::CameraOverrideMode::None};
         ::ddknd::debug::DebugConfig debugConfig{.drawAxis = false,
                                                 .drawFrameTimeInfo = true,
                                                 .drawSkeletons = false,

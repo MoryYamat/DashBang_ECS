@@ -3,19 +3,63 @@
 Readme.md languages  
 | [English](Readme.md) | [日本語](Readme.ja.md) |
 
+## Demo
+[Demo video (YouTube)](https://youtu.be/XLh3T2ZbSMs)
+
+### Features
+- Rendering 100 or 1,000 animated characters
+- Player character movement and attacks
+- GPU skinning animation
+- Visualization of hitboxes and debug information
+
+## Build
+This project can be configured and built using CMake Presets.
+
+Debug build of the game application
+```
+cmake --preset x64-debug-game
+cmake --build --preset x64-debug-game
+```
+
+Release build of the game application
+```
+cmake --preset x64-release-game
+cmake --build --preset x64-release-game
+```
+
+Build and run ddknd engine tests
+```
+cmake --preset x64-debug-ddknd-tests
+cmake --build --preset x64-debug-ddknd-tests
+ctest --preset x64-debug-ddknd-tests
+```
+
+## Libraries Used
+- fmt
+- spdlog
+- GLFW
+- GLAD
+- cgltf
+- stb
+
+## Tested environment
+- Windows11
+- C++20
+- MSVC (cl.exe)
+- CMake 3.25
+
 ## Portfolio Documents
 
 The design intent and implementation details of this project are summarized in the following documents:
 
-[Demo video (YouTube)](https://youtu.be/XLh3T2ZbSMs)
 
 (All of these documents are in Japanese.)
 
-**!!!You can use this [reading guide](/docs/guides/reading_guide.md) to read these documents based on your own interests.!!!**
+**You can use this [reading guide](/docs/guides/reading_guide.md) to read these documents based on your own interests.**
 
 
 - [Overview](docs/portfolio/overview.md)  
-Outline the project's design and structure.
+Provides an overview of the project's design and structure.
 - [Engine Architecture](docs/portfolio/engine_architecture.md)  
 Explains the runtime layer structure and the separation of Engine and App.
 - [System Pipeline](docs/portfolio/system_pipeline.md)  
@@ -41,37 +85,8 @@ Explains a custom, non-intrusive library that resolves ECS system execution orde
 - [Quality Checks and Improvements](docs/portfolio/appendix_quality.md)  
 Describes the testing, static analysis, memory leak checks, and improvement strategies applied to the portfolio.
 
-## Operating environment
-- OS: Windows11
-
-## structure
-raw input -> Requested intent -> Resolver(FSM) -> ResolvedIntent -> UpdateLogic -> UpdateRendering
-
-### IntentRequest
-Creates a RequestedIntent from inputs, AI, Network, etc.
-
-### State
-Updates ActorState/FSM from RequestedIntent/Environment/Current State
-
-### IntentResolve
-Creates an Accepted Intent from RequestedIntent + State
-
-### Logic
-Updates Velocity/Gameplay state from Accepted Intent + Stats
-
-
-
-
-## Problems
-
-
-### Issues related to address instability caused by dynamic reallocation of AssetStorage::vector<T>, the container for AssetStore.
-- The problem is that the address of the `Resource*`(T*) obtained with `AssetStore::TryGet(AssetID<T>)` depends on an internal container (such as `vector<T>`).
-- Since addresses obtained with `TryGet()` are unstable, use them immediately after obtaining them as a temporary measure.
-- In cases involving asynchronous loading or large-scale loading, a different structural solution is necessary.
-
 ## Old Implementation
 
-The following repository contains an older implementation of this repository.
+The following repository contains the previous implementation of this project.
 
 - https://github.com/MoryYamat/Dashbang_ECS_OLD

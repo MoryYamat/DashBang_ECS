@@ -76,6 +76,7 @@
 この結果から自作コード側の明確な解放漏れである可能性は低いと判断し、現時点での対応は保留とすることにした．
 
 ## Cppcheck による静的解析
+未実施
 
 ## 簡易的な1000体分のアニメーション更新のパフォーマンス計測
 
@@ -93,6 +94,7 @@ gpu: NVIDIA RTX 2070 Super
 ```
 
 ## RenderDoc の導入
+未実施
 
 ## VisualStudio Profiler によるホットパス分析
 - date: 2026/07/08
@@ -127,13 +129,17 @@ Runtime 計算時に、チェックしながら計算しているため、必要
 ここでは、 `jointIndex > parentJointIndex` を保証することで、  
 このチェックを廃止することを目指す．
 
+## 単体テスト
 
+- tests/ecs に CTest による `ddknd::ecs`実装の単体テスト追加
+- 
 
 ### 不足しているテスト
 
 - Cppcheck による 静的解析
 - `std::chrono` による 簡易的なパフォーマンス計測
 - RenderDoc の導入
+
 
 ### テスト履歴
 | Date | Category | 内容 | Status |

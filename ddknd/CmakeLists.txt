@@ -23,7 +23,6 @@ target_include_directories(ddknd
 target_link_libraries(ddknd 
     PRIVATE
         glfw
-        glm::glm
         fmt::fmt
         glad::glad
         cgltf::cgltf
