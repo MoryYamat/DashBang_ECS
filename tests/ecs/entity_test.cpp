@@ -1,18 +1,6 @@
 #include <ddknd/ecs/ecs.h>
 
-#include <iostream>
-
-#define TEST_CHECK(condition)                                               \
-    do                                                                      \
-    {                                                                       \
-        if(!(condition))                                                    \
-        {                                                                   \
-            std::cerr   << "FAILED: " #condition                            \
-                        << " at " << __FILE__ << ":" << __LINE__            \
-                        << '\n';                                            \
-            ++failures;                                                     \
-        }                                                                   \
-    } while (false)                                                         
+#include "support/test_check.h"
 
 int main()
 {
@@ -55,5 +43,5 @@ int main()
     TEST_CHECK(entityD.IsValid());
     TEST_CHECK(world.IsAlive(entityD));
 
-    return failures;
+    return failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }

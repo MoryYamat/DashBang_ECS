@@ -155,6 +155,7 @@ namespace ddknd::ecs
         {
             return components_[i];
         }
+        
         private:
         void EnsureSparseSize(Entity entity)
         {

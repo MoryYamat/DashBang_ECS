@@ -20,6 +20,7 @@ namespace ddknd::ecs
             Entity Create();
             void Destroy(Entity e);
             bool IsAlive(Entity e) const;
+            
             // ==== ComponentCRUD ==== 
             // AddComponent
             // GetComponent
