@@ -75,10 +75,8 @@ namespace app::system
         RunMovement(world, ctx);
         RunCharacterFacing(world, ctx);
 
-        // hitbox
         RunHitboxSpawnSystem(world, ctx);
 
-        // chose animation
         RunPlayerLocomotionAnimation(world, ctx);
     }
     void GameSystemRunner::RunLogicPostEngine(::ddknd::ecs::World& world, GameFrameContext& ctx)
@@ -121,7 +119,6 @@ namespace app::system
 
         for (auto [e, playback, moveState, attackState, clips] : view.withEntity())
         {
-            // std::cerr << "entity = " << e.Value() << "\n";
             PlayerAnimationSystem::UpdateOne(playback, moveState, attackState, clips);
         }
     }
@@ -365,10 +362,10 @@ namespace app::system
                 continue;
             }
 
-            // @TODO lifetime management
+            // @TODO pointer's lifetime management 
             auto* cameraTransform = reg.TryGetComponent<::ddknd::component::TransformComponent>(output.camera);
 
-            // @TODO lifetime management
+            // @TODO pointer's lifetime management
             auto* cameraLook = reg.TryGetComponent<::ddknd::component::CameraLookComponent>(output.camera);
 
             if (!cameraTransform || !cameraLook)

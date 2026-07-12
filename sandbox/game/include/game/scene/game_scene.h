@@ -1,19 +1,20 @@
 #pragma once
 
-
-#include <ddknd/ecs/ecs_fwd.h>
-#include <ddknd/ecs/entity/entity.h>// required for ::ddknd::ecs::Entity
 #include <ddknd/asset/asset_fwd.h>
+#include <ddknd/ecs/ecs_fwd.h>
+#include <ddknd/ecs/entity/entity.h> // required for ::ddknd::ecs::Entity
 #include <ddknd/graphics/graphics_fwd.h>
 
-#include "game/assets/actor/paladin_assets.h"
+
 #include "game/assets/actor/mutant_assets.h"
+#include "game/assets/actor/paladin_assets.h"
+
 
 #include <vector>
 
 namespace app::scene
 {
-    // Set of entities in GameScene
+    // @brief Set of entities in GameScene.
     struct GameSceneEntities
     {
         ::ddknd::ecs::Entity player;
@@ -22,7 +23,7 @@ namespace app::scene
         std::vector<ddknd::ecs::Entity> npcs;
     };
 
-    // Set the AssetIDs of the Actors used for the Entity
+    // @brief Set the AssetIDs of the Actors used for the Entity.
     struct GameSceneAssets
     {
         app::assets::actor::PaladinAssetIDs paladin;
@@ -31,12 +32,12 @@ namespace app::scene
         [[nodiscard]]
         bool IsValid() const noexcept
         {
-            if(!paladin.IsValid())
+            if (!paladin.IsValid())
             {
                 std::cerr << "[GameSceneAssets::IsValid] An InvalidID exists in the Paladin Asset ID.\n";
             }
 
-            if(!mutant.IsValid())
+            if (!mutant.IsValid())
             {
                 std::cerr << "[GameSceneAssets::IsValid] An InvalidID exists in the Mutant Asset ID.\n";
             }
@@ -50,11 +51,7 @@ namespace app::scene
         GameSceneEntities entities;
     };
 
-    GameScene CreateMainScene
-    (
-        ::ddknd::ecs::World& world,
-        ::ddknd::asset::AssetManager& assetMgr
-    );
+    GameScene CreateMainScene(::ddknd::ecs::World& world, ::ddknd::asset::AssetManager& assetMgr);
 
     struct SceneLoadContext
     {
@@ -64,8 +61,5 @@ namespace app::scene
         ::ddknd::animation::AnimationAssetStore* animationStore = nullptr;
     };
 
-    bool LoadMainSceneAssets(
-        const GameSceneAssets& assets,
-        SceneLoadContext& ctx
-    );
-}
+    bool LoadMainSceneAssets(const GameSceneAssets& assets, SceneLoadContext& ctx);
+} // namespace app::scene

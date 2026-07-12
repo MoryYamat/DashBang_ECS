@@ -40,16 +40,18 @@ namespace app::player
         reg.AddComponent<app::component::AttackStateComponent>(e);
         
         app::component::AttackHitboxDef attackDef{.radius = 1.2f, .lifetime = 0.32f, .localOffset = ddknd::math::Vec3f{0.0f, 0.75f, 0.3f}, .useforwardHemisphere = true};
-        reg.AddComponent<app::component::AttackDefComponent>(e, app::component::AttackDefComponent{.hitbox = attackDef}); // transition definition;
+
+        // transition definition
+        reg.AddComponent<app::component::AttackDefComponent>(e, app::component::AttackDefComponent{.hitbox = attackDef});
         reg.AddComponent<app::component::CharacterControlModifierComponent>(e);
 
-        // =============== Heart box ===============
+        reg.AddComponent<app::component::PlayerLocomotionStateComponent>(e);
+
         reg.AddComponent<ddknd::component::HurtboxComponent>(e);
         //@TODO: move actor-specific hurtbox settings to ActorDef / data asset.
         reg.AddComponent<ddknd::component::SphereHurtboxComponent>(e, ddknd::component::SphereHurtboxComponent{.localOffset = {0.0f, 0.75f, 0.0f}});
 
-        reg.AddComponent<app::component::PlayerLocomotionStateComponent>(e);
-
+        
         return e;
     }
 } // namespace app::player

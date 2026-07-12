@@ -5,7 +5,6 @@
 #include <ddknd/asset/asset_manager.h>
 #include <ddknd/asset/asset_tag.h>
 
-
 namespace app::assets::actor
 {
     struct MutantAssets
@@ -26,13 +25,11 @@ namespace app::assets::actor
         [[nodiscard]]
         bool IsValid() const noexcept
         {
-            return  model.Is_valid() &&
-                    skinnedShader.Is_valid() &&
-                    idle.Is_valid();
+            return model.Is_valid() && skinnedShader.Is_valid() && idle.Is_valid();
         }
     };
 
+    // factory
     MutantAssetIDs RegisterMutantAssets(::ddknd::asset::AssetManager& assetMgr);
-
     ::ddknd::ecs::Entity CreateMutant(::ddknd::ecs::World& world, const MutantAssetIDs& assets);
-}
+} // namespace app::assets::actor

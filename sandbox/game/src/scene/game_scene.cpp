@@ -27,8 +27,8 @@ namespace app::scene
         auto player = ::app::player::CreatePaladinPlayer(
             world, paladinAssets, ::app::player::PlayerSpawnDesc{.position = {0.0f, 0.0f, 0.0f}, .moveSpeed = 2.0f});
 
+        // Register the player entity with the Main Camera and the Player Character Controller.
         auto mainCamera = ::app::camera::CreateCameraEntity(world, ::app::camera::CameraEntityDesc{});
-
         auto cameraRig = ::app::camera::CreatePlayerCameraRig(
             world, ::app::camera::PlayerCameraRigSpawnDesc{.target = player,
                                                            .camera = mainCamera,
@@ -36,19 +36,18 @@ namespace app::scene
                                                            .yawDeg = -90.0f,
                                                            .pitchDeg = 25.0f,
                                                            .distance = 5.0f});
-
         auto controller = app::player::CreateLocalPlayerController(
             world, ::app::player::PlayerControllerSpawnDesc{.actor = player, .cameraRig = cameraRig});
         
-        constexpr int spawnAmount = 1000;
-        constexpr int columns = 40;
-        constexpr float spacing = 1.5f;
 
         std::vector<ddknd::ecs::Entity> npcs;
         auto mutant_npc = app::actor::CreateMutantNPC(world, mutantAssets, app::actor::NPCSpawnDesc{.position = {0.0f, 0.0f, 5.0f}});
         npcs.push_back(mutant_npc);
 
         // **************** for character spawn test ****************
+        // constexpr const int spawnAmount = 1000;
+        // constexpr const int columns = 40;
+        // constexpr const float spacing = 1.5f;
         // for(int i = 0; i < spawnAmount; i++)
         // {
         //     const int xIndex = i % columns;

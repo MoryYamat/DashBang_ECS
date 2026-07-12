@@ -15,8 +15,15 @@ namespace app::component
         bool lockFacing = false;
     };
 
+
+    // ==================================================
+    // Until the FSM-Engine is implemented, a `Def`
+    //  is defined here as a temporary implementation.
+
+    // @TODO Fix hardcoded values.
     struct AttackTimingDef
     {
+
         float startupDuration = 0.70f;  
         float activeDuration = 0.35f;   
         float recoveryDuration = 0.45f; 
@@ -27,7 +34,7 @@ namespace app::component
         float moveSpeedMultiplier = 0.0f;
         bool lockFacing = true;
     };
-
+    
     struct AttackHitboxDef
     {
         float radius = 1.0f;

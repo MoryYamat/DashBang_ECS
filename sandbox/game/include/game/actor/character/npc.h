@@ -13,9 +13,9 @@ namespace app::actor
         ddknd::math::Vec3f position{};
     };
 
+
     ddknd::ecs::Entity CreatePaladinNPC(ddknd::ecs::World& world, const app::assets::actor::PaladinAssetIDs& paladinAssets,
                           const NPCSpawnDesc& desc);
-
     ddknd::ecs::Entity CreateMutantNPC(ddknd::ecs::World& world, const app::assets::actor::MutantAssetIDs& mutantAssets,
                           const NPCSpawnDesc& desc);
 } // namespace app::actor

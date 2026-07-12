@@ -5,12 +5,13 @@
 #include <ddknd/asset/asset_tag.h>
 
 // @TODO need to reduce dependency
-#include <ddknd/graphics/gfx_type.h>
+// #include <ddknd/graphics/gfx_type.h>
 
 /*
 animation clip の 名前についての契約
 
 キャラクターロコモーションanimationの名前は(blenderでの作成時の段階で)以下のように統一する
+The names for character locomotion animations must be standardized as follows (at the stage of creation in Blender):
 
 - idle_default
 - rolling_fwd_default
@@ -24,6 +25,9 @@ animation clip の 名前についての契約
 - run_right_default
 
 これらの編集などは(GameEngineRuntimeではなく)Editor機能として考えられる
+
+These editing operations and the like can be considered Editor functions 
+(rather than GameEngineRuntime functions).
 */
 
 namespace app::assets::actor
@@ -83,7 +87,7 @@ namespace app::assets::actor
 
     };
 
+    // factory
     PaladinAssetIDs RegisterPaladinAssets(::ddknd::asset::AssetManager& assetMgr);
-
     ::ddknd::ecs::Entity CreatePaladin(::ddknd::ecs::World& world, const PaladinAssetIDs& assets);
 } // namespace app::assets::actor

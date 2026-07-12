@@ -7,4 +7,4 @@ namespace app::assets::actor
 
     struct MutantAssets;
     struct MutantAssetIDs;
-}
+} // namespace app::assets::actor

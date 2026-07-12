@@ -34,11 +34,12 @@ namespace app::camera
         ::ddknd::component::TransformComponent transform{};
         transform.localTRS.translation = desc.position;
 
+        // Spatial state
         world.GetRegistry().AddComponent<::ddknd::component::TransformComponent>(e, transform);
 
+        // Camera State Components
         world.GetRegistry().AddComponent<::ddknd::component::CameraProjectionComponent>(
-            e, ::ddknd::component::CameraProjectionComponent{.projectionType =
-                                                                 ddknd::component::ProjectionType::Perspective,
+            e, ::ddknd::component::CameraProjectionComponent{.projectionType = ddknd::component::ProjectionType::Perspective,
                                                              .nearZ = desc.nearZ,
                                                              .farZ = desc.farZ});
 
@@ -54,8 +55,6 @@ namespace app::camera
             world.GetRegistry().AddComponent<::ddknd::component::MainCameraTag>(e);
         }
 
-        // std::cerr << "ent pos " << desc.position << "\n";
-        // std::cerr << "ent look " << forward << "\n";
         return e;
     }
 

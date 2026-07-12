@@ -22,6 +22,7 @@ namespace app::system
             return;
         }
 
+        // movement in the xz-plane
         ::ddknd::math::Vec2f dir{0.0f, 0.0f};
 
         if (input.IsDown(Action::MoveForward))

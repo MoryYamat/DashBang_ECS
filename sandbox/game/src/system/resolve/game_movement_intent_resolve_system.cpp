@@ -23,7 +23,7 @@ namespace app::system
 
         auto forward = cameraLook.forward;
 
-        // xz
+        // xz-plane
         forward.y() = 0.0f;
 
         if (::ddknd::math::lengthSquared(forward) <= ::ddknd::math::kEpsilonSq<float>)

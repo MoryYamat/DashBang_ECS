@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ddknd/graphics/renderer.h>
-#include <ddknd/input/input.h>
 #include <ddknd/window/window_fwd.h>
 #include <ddknd/input/input_fwd.h>
 #include <ddknd/graphics/graphics_fwd.h>
@@ -44,17 +43,19 @@ namespace app
 
         private:
             bool isRunning_ = false;
+            // Do not change the order of declarations.(Because disposal is carried out in the reverse order of declaration)
+            // Core
             std::unique_ptr<ddknd::window::Window> window_;
             std::unique_ptr<ddknd::window::GlfwContext> glfwCtx_;
             std::unique_ptr<ddknd::graphics::IRendererBackend> rendererBackend_;
             std::unique_ptr<ddknd::io::IPathResolver> vfs_;
             std::unique_ptr<ddknd::input::IInputBackend> inputBackend_;
             std::unique_ptr<ddknd::input::DeviceInput> deviceInput_;
-
             std::unique_ptr<ddknd::graphics::RendererSystem> renderSys_;
 
             std::unique_ptr<::ddknd::component::DebugCameraControllerComponent> debugCam_;
 
+            // INPUT
             std::unique_ptr<::ddknd::input::InputMapping> inputMapping_;
             std::unique_ptr<::ddknd::input::ActionInputSystem> inputSys_;
 
@@ -66,12 +67,14 @@ namespace app
             std::unique_ptr<::ddknd::graphics::GraphicsAssetStore> graphicsAssetStore_;
             std::unique_ptr<::ddknd::animation::AnimationAssetStore> animationAssetStore_;
 
+            // GAME Entity
             std::unique_ptr<::ddknd::ecs::World> world_;
             std::unique_ptr<::app::scene::GameScene> scene_;
 
             // @TODO: temporary owner of per-frame event buffers. these should eventually live in a generic EventManager / ResourceStorage
             std::unique_ptr<ddknd::event::HitboxHitEventBuffer> hitboxHitEvents_;
 
+            // Systems
             std::unique_ptr<::ddknd::system::EngineSystemRunner> engineSystemRunner_;
             std::unique_ptr<::app::system::GameSystemRunner> gameSystemRunner_;
     };

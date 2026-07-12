@@ -1,48 +1,47 @@
 #include "game/app.h"
 
-#include <cmath>
+
+
 #include <iostream>
 
+// ************ engine ************
+#include <ddknd/input/input.h>
+#include <ddknd/window/window.h>
 #include <ddknd/io/io.h>
-
-#include "ddknd/camera/system_debug_camera.h"
-#include "game/action/action.h"
-#include <ddknd/camera/debug_camera.h>
 #include <ddknd/clock/clock.h>
+#include <ddknd/math/math.h>
+
 #include <ddknd/graphics/animation.h>
 #include <ddknd/graphics/gfx_type.h>
 #include <ddknd/graphics/renderer.h>
-#include <ddknd/input/input.h>
-#include <ddknd/window/window.h>
 
+#include <ddknd/camera/system_debug_camera.h>
+#include <ddknd/camera/debug_camera.h>
+
+#include <ddknd/asset/asset_tag.h>
 #include <ddknd/asset/asset_manager.h>
-#include <ddknd/ecs/ecs.h>
+
 #include <ddknd/graphics/gfx_asset_loader.h>
 
-#include "game/system/game_system.h"
+#include <ddknd/ecs/ecs.h>
+
 #include <ddknd/debug/debug_system.h>
 #include <ddknd/system/system.h>
 
 // event
 #include <ddknd/event/hit_event.h>
 
-// test
-#include <ddknd/component/test_component.h>
-#include <ddknd/ecs/entity/entity.h>
-#include <ddknd/ecs/query/query.h>
-#include <ddknd/ecs/registry/registry.h>
-#include <ddknd/ecs/view/view.h>
-#include <ddknd/ecs/world/world.h>
 
-#include <ddknd/asset/asset_tag.h>
-
-#include <ddknd/math/math.h>
-
+// component
 #include <ddknd/component/gfx_component.h>
 #include <ddknd/graphics/debug_animation.h>
+#include <ddknd/component/test_component.h>
 
-#include <spdlog/spdlog.h>
+// ************ game ************ 
+// Action Input
+#include "game/action/action.h"
 
+// system
 #include "game/scene/game_scene.h"
 #include "game/system/game_system.h"
 
@@ -209,7 +208,6 @@ namespace app
         Timer timer{};
         FrameTimeStatistics frameTimeStatistics{};
 
-        ::ddknd::graphics::RenderCamera frameCamera{};
         // ********* Debug Config ************
         ::ddknd::debug::DebugSystemRunner debugSystemRunner{};
         ::ddknd::debug::DebugCameraConfig debugCameraConfig{.overrideMode = ::ddknd::debug::CameraOverrideMode::None};
@@ -220,8 +218,10 @@ namespace app
                                                 .drawHurtboxes = false,
                                                 .drawHitEvents = false,
                                                 .camera = debugCameraConfig};
-
         ::ddknd::debug::DebugDrawResources debugDrawResouces{.textShader = debug_font_shader_id, .lineShader = debug_line_shader_id, .font = font_res_id};
+
+        //  frame camera
+        ::ddknd::graphics::RenderCamera frameCamera{};
 
         // game loop
         while (isRunning_ && !window_->ShouldClose())

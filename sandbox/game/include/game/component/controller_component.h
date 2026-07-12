@@ -25,7 +25,7 @@ namespace app::component
     {
         ::ddknd::ecs::Entity target{};
 
-        // From the player's starting point, how much should the target of their gaze be shifted?
+        // Represents how much to offset the line of sight from the player's starting position.
         ::ddknd::math::Vec3f lookOffset{0.0f, 1.2f, 0.0f};// Camera's point of focus
     };
 

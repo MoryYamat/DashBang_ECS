@@ -21,14 +21,14 @@ namespace app::player
         reg.AddComponent<app::component::ControlledCameraRigComponent>(
             e, app::component::ControlledCameraRigComponent{.cameraRig = desc.cameraRig});
 
-        // *********** Requested Intent Components ***********
-        reg.AddComponent<app::component::RequestedMovementIntentComponent>(e);
-        reg.AddComponent<app::component::RequestedCameraIntentComponent>(e);
         reg.AddComponent<app::component::CameraControllerSettingsComponent>(
             e, app::component::CameraControllerSettingsComponent{.lookSensitivityDeg = desc.cameraLookSensitivityDeg,
                                                                  .zoomSensitivity = desc.cameraZoomSensitivity,
                                                                  .invertY = desc.invertCameraY});
-
+        
+        // Charecter state control intent Components
+        reg.AddComponent<app::component::RequestedMovementIntentComponent>(e);
+        reg.AddComponent<app::component::RequestedCameraIntentComponent>(e);
         reg.AddComponent<app::component::RequestedAttackIntentComponent>(e);
         
         return e;

@@ -16,6 +16,8 @@ namespace app::assets::actor
         return MutantAssetIDs{
             .model = assetMgr.GetOrCreate<::ddknd::asset::tag::Model>(MutantAssets::kModelPath),
             .skinnedShader = assetMgr.GetOrCreate<::ddknd::asset::tag::Shader>(MutantAssets::kSkinnedShaderPath),
+            // Animation sub-assets must use the same key format as the loader
+            // so both sides resolve to the same AssetID.
             .idle = assetMgr.GetOrCreate<AnimationClip>(::ddknd::asset::MakeAnimationClipKey(MutantAssets::kModelPath, MutantAssets::kIdleClipName)),
         };
     }
@@ -25,23 +27,21 @@ namespace app::assets::actor
         auto e = world.Create();
         auto& registry = world.GetRegistry();
 
-        // Transform
+        // Spatial state
         auto& transform = registry.AddComponent<::ddknd::component::TransformComponent>(e);
         transform.localTRS.translation = {0.0f, 0.0f, 0.0f};
         transform.localTRS.rotation = ::ddknd::math::Quatf::Identity();
         transform.dirty = true;
 
-        // Model
+        // Rendering resources
         registry.AddComponent<::ddknd::component::SkinnedModelComponent>(e, ::ddknd::component::SkinnedModelComponent{.model = assets.model});
-
-        // Render Reference
         registry.AddComponent<::ddknd::component::MaterialComponent>(e, ::ddknd::component::MaterialComponent{.shader = assets.skinnedShader});
 
         // Runtime animation state
         registry.AddComponent<::ddknd::component::PoseComponent>(e);
         registry.AddComponent<::ddknd::component::AnimationPlaybackComponent>(e);
 
-        // ============== animation section ==============
+        // Character-specific animation clips
         registry.AddComponent<app::component::CharacterAnimationClipsComponent>(
             e, app::component::CharacterAnimationClipsComponent{
                    .idle = assets.idle,

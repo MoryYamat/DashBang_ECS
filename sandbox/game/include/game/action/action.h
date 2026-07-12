@@ -24,6 +24,7 @@ namespace app::action
         Attack,
     };
 
+    // Examples of other action definition methods
     // struct ActionType
     // {
     //     std::size_t v;

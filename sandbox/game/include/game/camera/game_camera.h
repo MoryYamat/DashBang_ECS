@@ -20,8 +20,6 @@ namespace app::camera
         bool mainCamera = true;
     };
 
-    ::ddknd::ecs::Entity CreateCameraEntity(::ddknd::ecs::World& world, const CameraEntityDesc& desc);
-
     struct PlayerCameraRigSpawnDesc
     {
         ::ddknd::ecs::Entity target{};
@@ -33,5 +31,9 @@ namespace app::camera
         float pitchDeg = 25.0f;
         float distance = 6.0f;
     };
+
+    // factory
+    ::ddknd::ecs::Entity CreateCameraEntity(::ddknd::ecs::World& world, const CameraEntityDesc& desc);
     ::ddknd::ecs::Entity CreatePlayerCameraRig(::ddknd::ecs::World& world, const PlayerCameraRigSpawnDesc& desc);
+
 } // namespace app::camera

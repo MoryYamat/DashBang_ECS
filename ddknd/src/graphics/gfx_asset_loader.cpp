@@ -642,29 +642,6 @@ namespace
         return -1;
     }
 
-    // delete
-    // std::string MakeAnimationClipKey(std::string_view modelPath, std::size_t animIndex)
-    // {
-    //     return std::string(modelPath) + "#anim=" + std::to_string(animIndex);
-    // }
-
-    // delete
-    // std::vector<AssetID<AnimationClipTag>> RegisterAnimationClips(AssetManager& assets, const ImportModelData&
-    // imported,
-    //                                                               const std::string& vpath /*vpath:
-    //                                                               Model_Asset_Key*/)
-    // {
-    //     std::vector<AssetID<AnimationClipTag>> out;
-    //     for (std::size_t i = 0; i < imported.animations.size(); i++)
-    //     {
-    //         auto key = MakeAnimationClipKey(vpath, i);
-    //         auto clipId = assets.GetOrCreate<AnimationClipTag>(key);
-    //         out.push_back(clipId);
-    //     }
-
-    //     return out;
-    // }
-
     //
     std::vector<AssetID<::ddknd::asset::tag::AnimationClip>> RegisterAnimationClips(
         AssetManager& assets, const ImportModelData& imported, const std::string& vpath /*vpath: Model_Asset_Key*/)
@@ -907,50 +884,6 @@ namespace
 
         return out;
     }
-
-    // struct TextureResource
-    // {
-    //     GPUID<tag::TextureGPUTag> gpuTexture;
-    //     std::uint32_t width = 0;
-    //     std::uint32_t height = 0;
-    //     std::uint32_t channels = 0;
-    //     graphics::types::TextureFormat format = graphics::types::TextureFormat::RGBA8;
-    // };
-
-    // std::vector<math::Mat4f> BuildImportNodeGlobalMatrices(const ImportModelData& import)
-    // {
-    //     std::vector<math::Mat4f> globals(import.nodes.size(), math::Mat4f::Identity());
-
-    //     std::vector<bool> computed(import.nodes.size(), false);
-
-    //     std::function<void(int)> compute = [&](int nodeIndex)
-    //     {
-    //         if (computed[nodeIndex])
-    //             return;
-
-    //         const auto& node = import.nodes[nodeIndex];
-
-    //         if (node.parent < 0)
-    //         {
-    //             globals[nodeIndex] = node.localMatrix;
-    //         }
-    //         else
-    //         {
-    //             compute(node.parent);
-    //             globals[nodeIndex] = globals[node.parent] * node.localMatrix;
-    //         }
-
-    //         computed[nodeIndex] = true;
-    //     };
-
-    //     for (std::size_t i = 0; i < import.nodes.size(); ++i)
-    //     {
-    //         compute(static_cast<int>(i));
-    //     }
-
-    //     return globals;
-    // }
-
 } // namespace
 
 // TODO:
