@@ -31,7 +31,7 @@ enum class Action
 int main()
 {
 
-        // ======================= test for input action systems =======================
+    // ======================= test for input action systems =======================
     using Key = ::ddknd::input::Key;
     using InputMapping = ::ddknd::input::InputMapping;
     using ActionInputSystem = ::ddknd::input::ActionInputSystem;
@@ -69,5 +69,5 @@ int main()
     TEST_CHECK(inputMapping_.GetKey(InputMapping::InvalidID) == InputMapping::InvalidKey);
     // ======================= test for input action systems =======================
 
-    return failures;
+    return failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }
