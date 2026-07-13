@@ -15,7 +15,6 @@
 namespace ddknd::graphics::internal::types
 {
     
-    /*size 80byte*/
     // for loading
     struct Vertex
     {

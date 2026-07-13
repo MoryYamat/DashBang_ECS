@@ -7,7 +7,6 @@
 #include <string_view>
 #include <vector>
 
-#include "internal/graphics/builder/backend_create_descriptor.h"
 #include "internal/graphics/model_importer/model_import_types.h"
 
 #include <glad/glad.h>
@@ -284,12 +283,12 @@ namespace ddknd::graphics
             }
 
             // To debug a memory leak
-            spdlog::info("[OpenGLRendererBackend] destructor begin");
-            spdlog::info("[OpenGLRendererBackend] programs={}", programs_.size());
-            spdlog::info("[OpenGLRendererBackend] prims={}", prims_.size());
-            spdlog::info("[OpenGLRendererBackend] textures={}", textures_.size());
+            // spdlog::info("[OpenGLRendererBackend] destructor begin");
+            // spdlog::info("[OpenGLRendererBackend] programs={}", programs_.size());
+            // spdlog::info("[OpenGLRendererBackend] prims={}", prims_.size());
+            // spdlog::info("[OpenGLRendererBackend] textures={}", textures_.size());
             // existing delete code...
-            spdlog::info("[OpenGLRendererBackend] destructor end");
+            // spdlog::info("[OpenGLRendererBackend] destructor end");
         }
 
         types::GPUID<tag::ShaderProgramGPUTag> CreateShaderProgram(std::string_view vs_source,
@@ -1130,6 +1129,7 @@ namespace ddknd::graphics
         static_assert(std::is_standard_layout_v<V>, "Vertex must be standard layout");
         static_assert(std::is_trivially_copyable_v<V>);
         GLsizei stride = sizeof(V);
+
         // setup vao
         // position (location = 0)
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(0));
@@ -1162,7 +1162,7 @@ namespace ddknd::graphics
         return id;
     }
 
-    // =========================================== factory ===========================================
+    // factory
     std::unique_ptr<IRendererBackend> CreateOpenGLBackend(const OpenGLBackendDesc& desc)
     {
         return std::make_unique<OpenGLRendererBackend>();

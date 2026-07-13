@@ -15,23 +15,25 @@ namespace ddknd::graphics
     class GraphicsAssetStore;
     class GraphicsAssetLoader;
 
-    namespace asset
-    {
-        struct ShaderResource;
-        struct ModelFileResource;
-        struct PrimitiveResource;
-        struct ModelRenderResource;
-        struct FontResource;
-    } // namespace asset
-
 } // namespace ddknd::graphics
+
+namespace ddknd::graphics::asset
+{
+    struct ShaderResource;
+    struct ModelFileResource;
+    struct PrimitiveResource;
+    struct ModelRenderResource;
+    struct FontResource;
+}// namespace ddknd::graphics::asset
 
 namespace ddknd::animation
 {
     class AnimationAssetStore;
-    namespace types
-    {
-        struct SkeletonResource;
-        struct AnimationClipResource;
-    } // namespace animation::types
-}
+}// namespace ddknd::animation
+
+namespace ddknd::animation::types
+{
+    struct AnimationClipResource;
+    struct SkeletonResource;
+    struct Pose;
+}// namespace ddknd::animation::types

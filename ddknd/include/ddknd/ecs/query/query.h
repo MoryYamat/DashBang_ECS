@@ -1,5 +1,4 @@
 #pragma once
-// #include "registry/registry.h"
 
 namespace ddknd::ecs
 {

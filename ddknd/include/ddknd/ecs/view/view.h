@@ -179,11 +179,6 @@ namespace ddknd::ecs
 
             auto operator*() const
             {
-                // return detail::DerefTuple<
-                //     selected,
-                //     requiredList,
-                //     IncludeEntity
-                // >::make(regs_, *selected_, idx);
                 return detail::DerefTuple<
                         selected,
                         requiredList,

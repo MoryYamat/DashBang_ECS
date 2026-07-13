@@ -16,6 +16,7 @@ namespace ddknd::asset
     }
 
     
+    // Issue a logical path to the Texture data included as a SubAsset within the Model data
     std::string MakeTextureKey(std::string_view modelPath, std::size_t textureIndex)
     {
         constexpr std::string_view sep = "#texture/";

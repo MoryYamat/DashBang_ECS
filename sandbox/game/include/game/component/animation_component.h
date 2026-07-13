@@ -1,8 +1,7 @@
 #pragma once
 
 #include <ddknd/asset/asset_tag.h>
-#include <ddknd/asset/asset_manager.h>// required for AssetID
-// #include <ddknd/graphics/gfx_type.h>
+#include <ddknd/asset/asset_id.h>
 
 namespace app::component
 {

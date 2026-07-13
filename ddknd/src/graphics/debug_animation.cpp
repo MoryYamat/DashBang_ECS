@@ -11,12 +11,12 @@
 
 namespace ddknd::animation::debug
 {
-    void SkeletonDebugDrawSystem::UpdateOne(const ::ddknd::component::SkinnedModelComponent& modelComp,
+    void SkeletonDebugDrawSystem::UpdateOne(::ddknd::graphics::DebugDrawList& debugDraw,
+                                            const ::ddknd::component::SkinnedModelComponent& modelComp,
                                             const ::ddknd::component::PoseComponent& poseComp,
                                             const ::ddknd::component::TransformComponent& transformComp,
-                                            const ::ddknd::graphics::GraphicsAssetStore& graphicsStore,
-                                            const ::ddknd::math::Vec4f& color,
-                                            ::ddknd::graphics::DebugDrawList& debugDraw)
+                                            const ::ddknd::graphics::GraphicsAssetStore& graphicsStore,                                            
+                                            const ::ddknd::math::Vec4f& color)
     {
         const auto* model = graphicsStore.TryGet(modelComp.model);
         if (!model || !model->skeleton)
@@ -24,12 +24,12 @@ namespace ddknd::animation::debug
             return;
         }
 
-        ::ddknd::animation::debug::DrawSkeleton(*model->skeleton, poseComp.pose, transformComp.worldMatrix, color, debugDraw);
+        ::ddknd::animation::debug::DrawSkeleton(debugDraw, *model->skeleton, poseComp.pose, transformComp.worldMatrix, color);
     }
 
     void TestAnimatorSystemInit(const types::SkeletonResource& skeleton, animation::types::Pose& pose)
     {
-        ::ddknd::animation::AnimatorSystem::InitializePose(skeleton, pose);
+        ::ddknd::animation::AnimatorSystem::InitializePose(pose, skeleton);
     }
 
     void TestAnimatorSystemUpdate(const animation::types::SkeletonResource& skeleton, animation::types::Pose& pose,
@@ -49,8 +49,11 @@ namespace ddknd::animation::debug
         }
     }
 
-    void DrawSkeleton(const ::ddknd::animation::types::SkeletonResource& skeleton, const ::ddknd::animation::types::Pose& pose,
-                      const ::ddknd::math::Mat4f& modelMatrix, const ::ddknd::math::Vec4f& color, ::ddknd::graphics::DebugDrawList& debugDraw)
+    void DrawSkeleton(::ddknd::graphics::DebugDrawList& debugDraw, 
+                      const ::ddknd::animation::types::SkeletonResource& skeleton, 
+                      const ::ddknd::animation::types::Pose& pose,
+                      const ::ddknd::math::Mat4f& modelMatrix, 
+                      const ::ddknd::math::Vec4f& color)
     {
         const auto boneCount = skeleton.bones.size();
 

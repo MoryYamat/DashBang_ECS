@@ -7,7 +7,7 @@
 #include "ddknd/math/math.h"
 
 
-/*
+/**
 * @brief: Runtime Data for object rendering
 */
 namespace ddknd::component
@@ -38,8 +38,8 @@ namespace ddknd::component
 } // namespace ddknd::component
 
 
-/*
-* @ brief: Camera Data
+/**
+* @brief: Camera Data
 */
 namespace ddknd::component
 {
@@ -80,8 +80,8 @@ namespace ddknd::component
 } // namespace ddknd::component
 
 
-/*
-* @ brief: AssetID
+/**
+* @brief: AssetID
 */
 namespace ddknd::component
 {

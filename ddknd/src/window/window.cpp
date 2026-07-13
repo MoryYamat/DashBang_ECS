@@ -97,14 +97,15 @@ namespace ddknd::window
             std::terminate();
         }
 
-        //
+        // Register CallbackState as GLFW's single user pointer so callbacks
+        // can be routed to their corresponding Window handlers.
         impl_->callbackState.framebufferUser = this;
         impl_->callbackState.framebufferSize = [](void* user, int width, int height)
         {
             auto* window = static_cast<Window*>(user);
             detail::onFramebufferResize(*window, width, height);
         };
-        glfwSetWindowUserPointer(impl_->handle, &impl_->callbackState);// core
+        glfwSetWindowUserPointer(impl_->handle, &impl_->callbackState);
         glfwMakeContextCurrent(impl_->handle);
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -160,6 +161,7 @@ namespace
             return;
         }
 
+        // Route the GLFW callback to the registered cursor handler.
         state->framebufferSize(state->framebufferUser, width, height);
     }
 } // namespace

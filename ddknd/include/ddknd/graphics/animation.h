@@ -6,7 +6,7 @@ namespace ddknd::animation
     {
         struct SkeletonResource;
         struct AnimationClipResource;
-        
+
         struct Pose;
         struct AnimationState;
     } // namespace types
@@ -14,12 +14,23 @@ namespace ddknd::animation
     class AnimatorSystem
     {
       public:
-        static void InitializePose(const types::SkeletonResource& skeleton, types::Pose& pose);
-        static void UpdateGlobalPose(const types::SkeletonResource& skeleton, types::Pose& pose);
-        static void SampleAnimation(const types::SkeletonResource& skeleton, const types::AnimationClipResource& clip,
-                                    float time, types::Pose& pose);
-        static void UpdateAnimator(const types::SkeletonResource& skeleton, const types::AnimationClipResource& clip,
-                                   types::AnimationState& state, types::Pose& pose, float deltaTime);
+        static void InitializePose(types::Pose& pose, const types::SkeletonResource& skeleton);
+
+        static void UpdateAnimationState(types::AnimationState& state, 
+                                         const types::AnimationClipResource& clip,
+                                         const float deltaTime);
+        static void UpdatePose(types::Pose& pose, 
+                               const types::AnimationState& state,
+                               const types::SkeletonResource& skeleton, 
+                               const types::AnimationClipResource& clip
+                               );
+
+      private:
+        static void UpdateGlobalPose(types::Pose& pose, const types::SkeletonResource& skeleton);
+        static void SampleAnimation(types::Pose& pose, 
+                                    const types::SkeletonResource& skeleton,
+                                    const types::AnimationClipResource& clip,
+                                    const float time);
     };
 
 } // namespace ddknd::animation

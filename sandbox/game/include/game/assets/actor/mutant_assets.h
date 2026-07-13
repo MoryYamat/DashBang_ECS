@@ -2,7 +2,8 @@
 
 #include <ddknd/ecs/ecs_fwd.h>
 
-#include <ddknd/asset/asset_manager.h>
+#include <ddknd/asset/asset_fwd.h>
+#include <ddknd/asset/asset_id.h>
 #include <ddknd/asset/asset_tag.h>
 
 namespace app::assets::actor

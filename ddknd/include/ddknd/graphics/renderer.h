@@ -21,6 +21,7 @@ namespace ddknd::graphics::types
     struct PrimitiveKey;
 }
 
+// Interface
 namespace ddknd::graphics
 {
     class IRendererBackend
@@ -53,7 +54,6 @@ namespace ddknd::graphics
         virtual void DestroyTexture(GPUID<tag::TextureGPUTag> id) = 0;
         virtual void BindTexture2D(GPUID<tag::TextureGPUTag> id, std::uint32_t slot) = 0;
 
-        //
         virtual GPUID<tag::ScreenQuadBatchTag> CreateScreenQuadBatch() = 0;
         virtual void DestroyScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag>) = 0;
         virtual void UpdateScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag>, std::span<const types::ScreenQuadVertex>,
@@ -62,14 +62,12 @@ namespace ddknd::graphics
                                          GPUID<tag::TextureGPUTag> texture, std::uint32_t indexCount, int screenWidth,
                                          int screenHeight) = 0;
 
-        //
         virtual GPUID<tag::LineBatchTag> CreateLineBatch() = 0;
         virtual void UpdateLineBatch(GPUID<tag::LineBatchTag> id, std::span<const types::LineVertex> vertices) = 0;
         virtual void DrawLineBatch(GPUID<tag::LineBatchTag> id, GPUID<tag::ShaderProgramGPUTag> shader,
                                    std::uint32_t vertexCount) = 0;
         virtual void DestroyLineBatch(GPUID<tag::LineBatchTag> id) = 0;
 
-        // Texture
         virtual GPUID<tag::TextureGPUTag> CreateTexture2D(
             const ::ddknd::graphics::types::Texture2DCreateDesc& desc) = 0;
 
@@ -324,14 +322,11 @@ namespace ddknd::graphics
         void Skeleton(const animation::types::SkeletonResource& skeleton, const animation::types::Pose& pose,
                       Color color);
 
-        // WireSphere
+        // Wire
         void WireSphere(Vec3f center, float radius, Color color, int segments = 24);
-        // Hemishpere
         void WireHemisphere(Vec3f center, Vec3f forward, float radius, Color color, int segments = 24);
         
-        // WireCircle
         void WireCircle(Vec3f center, Vec3f axisA, Vec3f axisB, float radius, Color color, int segments);
-        // WireArc
         void WireArc(Vec3f center, Vec3f axisA, Vec3f axisB, float radius, float start, float end, Color color, int segments);
 
       private:

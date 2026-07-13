@@ -7,7 +7,7 @@
 
 namespace app::system
 {
-    /*
+    /**
      * @brief pre-frame context shared by game systems;
      *
      * Holds non-owning references to engine frame data and input state,

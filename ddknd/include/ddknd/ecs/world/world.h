@@ -7,7 +7,9 @@
 
 namespace ddknd::ecs
 {
-    // orchestrator
+    /**
+    * @brief Owns the ECS registry and exposes the world-level entity API.
+    */
     class World
     {
         public:
@@ -16,17 +18,14 @@ namespace ddknd::ecs
             World();
             ~World();
             
-            // Entity CRUD
+            // Entity lifetime
             Entity Create();
             void Destroy(Entity e);
             bool IsAlive(Entity e) const;
             
-            // ==== ComponentCRUD ==== 
-            // AddComponent
-            // GetComponent
-            // RemoveComponent
-            // ==== Query/View ==== 
-            // 条件に合うEntity/Component群を走査する
+            /**
+            * @brief Returns the underlying registry for component and query operations.
+            */
             Registry& GetRegistry();
             const Registry& GetRegistry() const;
 

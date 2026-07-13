@@ -6,17 +6,17 @@ asset のデータを runtime で 保管する 形式 (各種パース済みデ�
 
 #include <optional>
 
-#include "ddknd/asset/asset_manager.h"
+#include "ddknd/graphics/animation_type.h"
+#include "ddknd/asset/asset_id.h"
 #include "ddknd/asset/asset_tag.h"
 #include "ddknd/math/math.h"
 
 namespace ddknd::graphics::tag
 {
-    // ========== static ==========
     struct ShaderProgramGPUTag
     {
     };
-    struct PrimitiveTag // mesh: vec<primitives>
+    struct PrimitiveTag
     {
     };
     struct TextureGPUTag
@@ -28,7 +28,6 @@ namespace ddknd::graphics::tag
     struct LineBatchTag
     {
     };
-    // ========== (runtime) =========
     struct ModelTag
     {
     };
@@ -73,18 +72,6 @@ namespace ddknd::graphics::types
         Vec2f size;   // glyph bitmap size
         Vec2f offset; // xoff, yoff
         float advance = 0.0f;
-
-        // float u0;
-        // float v0;
-        // float u1;
-        // float v1;
-
-        // float width;
-        // float height;
-
-        // float xoff;
-        // float yoff;
-        // float advance;
     };
 
     // for drawing fonts
@@ -188,94 +175,10 @@ namespace ddknd::graphics::types
     };
 } // namespace ddknd::graphics::types
 
-// =============================runtime=============================
-namespace ddknd::animation::types
-{
-    template <typename Tag>
-    using AssetID = ::ddknd::asset::AssetID<Tag>;
-
-    struct Pose
-    {
-        using TRS = ::ddknd::math::TRS;
-        using Mat4f = ::ddknd::math::Mat4f;
-
-        std::vector<TRS> localTRS;
-        std::vector<Mat4f> localMatrices;
-        std::vector<Mat4f> globalMatrices;
-        std::vector<Mat4f> skinMatrices; // lbs?
-    };
-
-    struct AnimationState // AssetID<AnimClip> clips
-    {
-        AssetID<::ddknd::asset::tag::AnimationClip> clip;
-        float time = 0.0f;
-        float speed = 1.0f;
-        bool loop = true;
-    };
-
-    struct Bone
-    {
-        using Mat4f = ::ddknd::math::Mat4f;
-        using TRS = ::ddknd::math::TRS;
-
-        int parent = -1;
-        Mat4f inverseBindMatrix = Mat4f::Identity();
-        Mat4f parentCorrection = Mat4f::Identity(); //
-        Mat4f bindLocalMatrix = Mat4f::Identity();
-        TRS bindLocalTRS{};
-    };
-
-    struct SkeletonResource
-    {
-        using Mat4f = ::ddknd::math::Mat4f;
-        std::vector<Bone> bones;
-
-        Mat4f skeletonRootTransform = Mat4f::Identity();
-    };
-
-    enum class ChannelTarget
-    {
-        Translation,
-        Rotation,
-        Scale,
-    };
-
-    enum class Interpolation
-    {
-        Linear
-    };
-
-    struct AnimationChannel
-    {
-        using Vec3f = ::ddknd::math::Vec3f;
-        using Quatf = ::ddknd::math::Quatf;
-
-        int bone = -1;
-        ChannelTarget target;
-
-        std::vector<float> times;
-        std::vector<Vec3f> vec3Values;
-        std::vector<Quatf> quatValues;
-
-        Interpolation interpolation = Interpolation::Linear;
-    };
-
-    struct AnimationClipResource
-    {
-        std::string name;
-        float duration = 0.0f;
-        std::vector<AnimationChannel> channels;
-    };
-} // namespace ddknd::animation::types
-
-namespace ddknd::animation::types
-{
-} // namespace ddknd::animation::types
 
 // =============================static=============================(it may be internal)
 namespace ddknd::graphics::types
 {
-
     template <typename Tag>
     using AssetID = ::ddknd::asset::AssetID<Tag>;
 
@@ -392,45 +295,3 @@ namespace ddknd::graphics::types
     };
 } // namespace ddknd::graphics::types
 // ===================================================================
-
-// @TODO: 3Dmodel実行時データ構造の設計とIR->Runtime変換の実装
-
-// GPUID<PrimTag>
-
-// static
-// struct ModelResource
-// {
-//     std::vector<GPU<PrimTag>> meshes;
-//     Skeleton skeleton;
-//     std::vector<AnimationClip> clips;
-// };
-
-// 問題:
-// - ModelResource{}自体を保持するStoreを作るか．それとも各リソースを保持するストアにするか
-// - ModelResource{}を保持するStoreを作る場合:
-//          - 各ResourceとModelResourceの対応関係が必要
-//          - 使用側はload(model_id)で簡単
-// - ModelResource{}を保持しない場合
-//          - 使用側がload(each_id) が必要で大変
-//          - ModelResourceの対応関係は不要
-// 結論: Resourceを保持するStoreが必要だと思われる
-// 懸念点: 例えば、実行時のメッシュやprimitives・pose関係の動的な変化をどう扱うか
-// 例 - キャラクターA が Prob_B を 持つ
-// というようなものをどうデータの論理で表現するか．ModelResource_Storeを導入するとその管理が大変になるのではないか 予測:
-// ModelResource_Storeを導入しなくても、その管理は大変．むしろ論理的には導入したほうが正しい上に扱いやすいと予想される(Instance層で、Model単位の階層関係(もしくは所有関係)を論理的に構築できる)
-
-// 問題2:
-// PrimitivesをまとめるMesh層は必要か
-//
-
-// runtime
-// struct ModelInstance
-// {
-//     ModelID model;
-//     Pose pose;
-//     AnimationState animState;
-// };
-
-// @TODO
-// LOW:
-// - Editor 機能: glTF->Scene(Model分割)->sceneIndex を 表示

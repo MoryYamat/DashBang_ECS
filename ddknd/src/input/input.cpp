@@ -41,7 +41,7 @@ namespace ddknd::input
 
             if (static_cast<std::size_t>(actionID) >= action_values_.size())
                 continue;
-            if (input.isPressing(key))
+            if (input.IsKeyDown(key))
             {
                 action_values_[static_cast<std::size_t>(actionID)] = 1.0f;
             }
@@ -79,7 +79,7 @@ namespace ddknd::input
                 
             if (static_cast<std::size_t>(actionID) >= action_values_.size())
                 continue;
-            if (input.isPressingMouseButton(button))
+            if (input.IsMouseButtonDown(button))
             {
                 action_values_[static_cast<std::size_t>(actionID)] = 1.0f;
             }

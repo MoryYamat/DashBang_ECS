@@ -11,7 +11,6 @@
 #include "ddknd/graphics/model_data.h"
 #include "ddknd/graphics/renderer.h"
 #include "internal/asset/shader_descriptor_parser.h"
-#include "internal/graphics/builder/backend_create_descriptor.h"
 #include "internal/graphics/model_importer/model_import_types.h"
 #include "internal/graphics/model_importer/stb_image_decoder.h"
 #include "internal/io/io.h"

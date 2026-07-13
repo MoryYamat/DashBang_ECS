@@ -8,17 +8,19 @@ namespace ddknd::system
     class AnimationPlaybackSystem
     {
       public:
-        // writes:  AnimationPlaybackComponent 
-        //          PoseComponent
-        // reads:   SkinnedModelComponent
-        //          GraphicsAssetStore
-        //          AnimationClipResource
         static void UpdateOne(::ddknd::component::AnimationPlaybackComponent& playback,
-                       ::ddknd::component::PoseComponent& pose,
-                       const ::ddknd::animation::types::SkeletonResource& skeleton,
-                       const ::ddknd::animation::types::AnimationClipResource& clip, const float dt);
+                              const ::ddknd::animation::types::AnimationClipResource& clip, const float dt);
+    };
 
-        static void InitializePose(::ddknd::component::PoseComponent& pose, const ::ddknd::animation::types::SkeletonResource& skeleton);
-      private:
+    class AnimationPoseSamplingSystem
+    {
+      public:
+        static void UpdateOne(::ddknd::component::PoseComponent& pose,
+                              const ::ddknd::component::AnimationPlaybackComponent& playback,
+                              const ::ddknd::animation::types::SkeletonResource& skeleton,
+                              const ::ddknd::animation::types::AnimationClipResource& clip);
+
+        static void InitializePose(::ddknd::component::PoseComponent& pose,
+                                   const ::ddknd::animation::types::SkeletonResource& skeleton);
     };
 } // namespace ddknd::system

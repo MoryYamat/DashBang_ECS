@@ -1,10 +1,6 @@
 #pragma once
 #include <ddknd/component/component_fwd.h>
 
-namespace ddknd::component
-{
-    struct DebugCameraControllerComponent;
-}
 
 namespace ddknd::system
 {

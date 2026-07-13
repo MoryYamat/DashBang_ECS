@@ -114,13 +114,12 @@ namespace ddknd::graphics
                 backend_.BindTexture2D(mat.baseColorTexture.texture, graphics::internal::binding::BaseColorTexture);
                 backend_.SetUniformInt(cmd.shader, "uBaseColorTexture", graphics::internal::binding::BaseColorTexture);
             }
-            // ********************************
+
             // *********** LIGHTING ***********
             const auto& light = lighting_.mainLight;
             backend_.SetUniformVec3(cmd.shader, "uLightDirWorld", light.directionWolrd);
             backend_.SetUniformVec3(cmd.shader, "uLightColor", light.color * light.intensity);
             backend_.SetUniformFloat(cmd.shader, "uAmbientStrength", lighting_.ambientStrength);
-            // ********************************
 
             backend_.SetUniformMat4Array(cmd.shader, "uSkinMatrices", cmd.skinMatrices);
 

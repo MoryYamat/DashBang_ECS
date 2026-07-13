@@ -6,24 +6,11 @@
 #include <ddknd/event/event_fwd.h>
 
 
-// ================================ Forward Declarations ================================
-namespace ddknd::graphics
-{
-    class GraphicsAssetStore;
-}// namespace ddknd::graphics
-
-namespace ddknd::animation
-{
-    class AnimationAssetStore;
-}
-// ======================================================================================
-
 namespace ddknd::system
 {
     // Execution environment in that frame
     struct FrameContext
     {
-        // time
         float deltaTime;
 
         ::ddknd::input::ActionInputSystem* actionInput = nullptr;
@@ -44,10 +31,9 @@ namespace ddknd::system
         ddknd::event::HitboxHitEventBuffer* hitboxHitEvents = nullptr;
     };
 
-    // Scheduler
-    // topological sort
-    // parallelism
-    //
+    /*
+    * 
+    */
     class EngineSystemRunner
     {
       public:
@@ -60,19 +46,18 @@ namespace ddknd::system
         void RunKinematic(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
         void RunCameraMatrices(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
         void RunCameraProjection(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
-        void RunAnimator(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
+        void RunAnimationPlayback(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
+        void RunAnimationPoseSampling(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
+
 
         // rendering
         void RunSkinnedRenderSubmit(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
         void RunMainCameraExport(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
 
+        // entity lifetime
         void RunLifetimeSystem(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
 
         
         void RunHitboxCollisionSystem(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
     };
 } // namespace ddknd::system
-
-// API Image
-// auto view = registry.view(.query().select<AComp>().require<BComp>());
-// view.each([](Acomp& a, Bcomp& b){ABSystem::Updateone(a,b);});

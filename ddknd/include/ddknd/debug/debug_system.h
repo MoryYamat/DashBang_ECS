@@ -5,7 +5,7 @@
 #include <ddknd/graphics/graphics_fwd.h>
 #include <ddknd/system/system_fwd.h>
 
-#include <ddknd/asset/asset_manager.h>
+#include <ddknd/asset/asset_id.h>
 #include <ddknd/asset/asset_tag.h>
 #include <ddknd/math/math.h>
 

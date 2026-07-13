@@ -2,6 +2,8 @@
 
 
 #include <ddknd/ecs/ecs.h>
+
+#include <ddknd/asset/asset_manager.h>
 #include <ddknd/asset/sub_asset_key.h>
 
 #include <ddknd/component/gfx_component.h>

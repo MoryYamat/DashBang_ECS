@@ -5,19 +5,26 @@
 #include <ddknd/component/gfx_component.h>
 #include <ddknd/graphics/animation.h>
 
-
 namespace ddknd::system
 {
     void AnimationPlaybackSystem::UpdateOne(::ddknd::component::AnimationPlaybackComponent& playback,
-                       ::ddknd::component::PoseComponent& pose,
-                       const ::ddknd::animation::types::SkeletonResource& skeleton,
-                       const ::ddknd::animation::types::AnimationClipResource& clip, const float dt)
+                                            const ::ddknd::animation::types::AnimationClipResource& clip,
+                                            const float dt)
     {
-        ::ddknd::animation::AnimatorSystem::UpdateAnimator(skeleton, clip, playback.state, pose.pose, dt);
+        ::ddknd::animation::AnimatorSystem::UpdateAnimationState(playback.state, clip, dt);
     }
 
-    void AnimationPlaybackSystem::InitializePose(::ddknd::component::PoseComponent& pose, const ::ddknd::animation::types::SkeletonResource& skeleton)
+    void AnimationPoseSamplingSystem::UpdateOne(::ddknd::component::PoseComponent& pose,
+                                                const ::ddknd::component::AnimationPlaybackComponent& playback,
+                                                const ::ddknd::animation::types::SkeletonResource& skeleton,
+                                                const ::ddknd::animation::types::AnimationClipResource& clip)
     {
-        ddknd::animation::AnimatorSystem::InitializePose(skeleton, pose.pose);
+        ddknd::animation::AnimatorSystem::UpdatePose(pose.pose, playback.state, skeleton, clip);
+    }
+
+    void AnimationPoseSamplingSystem::InitializePose(::ddknd::component::PoseComponent& pose,
+                                                     const ::ddknd::animation::types::SkeletonResource& skeleton)
+    {
+        ddknd::animation::AnimatorSystem::InitializePose(pose.pose, skeleton);
     }
 } // namespace ddknd::system

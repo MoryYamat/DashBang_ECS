@@ -4,7 +4,7 @@
 #include "ddknd/asset/asset_manager.h"
 #include "ddknd/asset/asset_tag.h"
 #include "ddknd/graphics/graphics_fwd.h"
-#include "ddknd/graphics/model_data.h"
+// #include "ddknd/graphics/model_data.h"
 #include "ddknd/graphics/renderer.h"
 #include "ddknd/io/io.h"
 #include "ddknd/io/io_fwd.h"
@@ -14,11 +14,12 @@ namespace ddknd::animation
 {
     class AnimationAssetStore
     {
-      public:
+      private:
         using AnimationClipTag = ::ddknd::asset::tag::AnimationClip;
         using AnimationID = ::ddknd::asset::AssetID<AnimationClipTag>;
         using AnimationClipResource = ::ddknd::animation::types::AnimationClipResource;
 
+      public:
         const AnimationClipResource* TryGet(AnimationID id) const
         {
             return anims_.TryGet(id);
@@ -41,7 +42,7 @@ namespace ddknd::graphics
 {
     class GraphicsAssetStore
     {
-      public:
+      private:
         template <typename Tag>
         using AssetID = ::ddknd::asset::AssetID<Tag>;
 
@@ -60,6 +61,7 @@ namespace ddknd::graphics
         using FontResource = ::ddknd::graphics::types::FontResource;
         using TextureResource = ::ddknd::graphics::types::TextureResource;
 
+      public:
         const ShaderResource* TryGet(ShaderID id) const
         {
             return shaders_.TryGet(id);
@@ -106,6 +108,7 @@ namespace ddknd::graphics
 
     class GraphicsAssetLoader
     {
+      private:
         using AssetManager = ::ddknd::asset::AssetManager;
         template <typename Tag>
         using AssetID = ::ddknd::asset::AssetID<Tag>;

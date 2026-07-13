@@ -20,7 +20,7 @@ namespace ddknd::asset::parser
         int line = -1;
     };
 
-    // TODO: Create IParser to provide diverse parsing capabilities.
+    // TODO Create IParser to provide diverse parsing capabilities.
     std::optional<KeyValueDoc>
         ParseKeyValueText(std::string_view text, ParseError* err);
 

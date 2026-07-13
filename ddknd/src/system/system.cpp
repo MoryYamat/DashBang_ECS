@@ -47,7 +47,8 @@ namespace ddknd::system
         RunMainCameraExport(world, ctx);
 
         // rendering
-        RunAnimator(world, ctx);
+        RunAnimationPlayback(world, ctx);
+        RunAnimationPoseSampling(world, ctx);
         RunSkinnedRenderSubmit(world, ctx);
     }
         
@@ -107,7 +108,7 @@ namespace ddknd::system
         }
     }
 
-    void EngineSystemRunner::RunAnimator(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
+    void EngineSystemRunner::RunAnimationPlayback(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
     {
         assert(ctx.graphicsAssetStore);
         assert(ctx.animationAssetStore);
@@ -115,10 +116,10 @@ namespace ddknd::system
         using namespace ecs;
         auto view = world.GetRegistry().view(
             query()
-                .select<component::PoseComponent>()
-                .require<component::AnimationPlaybackComponent, component::SkinnedModelComponent>());
+                .select<component::AnimationPlaybackComponent>()
+                .require<component::SkinnedModelComponent>());
 
-        for (auto [pose, playback, skinnedModel] : view)
+        for (auto [playback, skinnedModel] : view)
         {
             const auto* model = ctx.graphicsAssetStore->TryGet(skinnedModel.model);
             if (!model || !model->skeleton)
@@ -129,15 +130,49 @@ namespace ddknd::system
             const auto* clip = ctx.animationAssetStore->TryGet(playback.state.clip);
             if (!clip)
             {
+                continue;
+            }
+
+            ::ddknd::system::AnimationPlaybackSystem::UpdateOne(playback, *clip, ctx.deltaTime);
+        }
+    }
+
+    void EngineSystemRunner::RunAnimationPoseSampling(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
+    {
+        assert(ctx.graphicsAssetStore);
+        assert(ctx.animationAssetStore);
+
+        using namespace ecs;
+        auto view = world.GetRegistry().view(
+            query()
+                .select<component::PoseComponent>()
+                .require<component::AnimationPlaybackComponent, component::SkinnedModelComponent>());
+
+        for(auto [pose, playback, skinnedModel] : view)
+        {
+            const auto* model = ctx.graphicsAssetStore->TryGet(skinnedModel.model);
+            if (!model || !model->skeleton)
+            {
+                continue;
+            }
+
+            const auto* clip = ctx.animationAssetStore->TryGet(playback.state.clip);
+            if (!clip)
+            {
+                /*
+                * Without a valid clip, initialize the skeleton pose once instead of
+                * leaving the skinning matrices empty.
+                */
                 if(pose.pose.skinMatrices.empty())
                 {
-                    ddknd::system::AnimationPlaybackSystem::InitializePose(pose, *model->skeleton);
+                    ddknd::system::AnimationPoseSamplingSystem::InitializePose(pose, *model->skeleton);
                 }
                 continue;
             }
 
-            ::ddknd::system::AnimationPlaybackSystem::UpdateOne(playback, pose, *model->skeleton, *clip, ctx.deltaTime);
+            ddknd::system::AnimationPoseSamplingSystem::UpdateOne(pose,playback, *model->skeleton, *clip);
         }
+
     }
 
     void EngineSystemRunner::RunSkinnedRenderSubmit(::ddknd::ecs::World& world,

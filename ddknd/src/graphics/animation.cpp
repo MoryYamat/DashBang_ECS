@@ -8,10 +8,11 @@
 
 namespace
 {
-    void ComputeBoneGlobal(const ddknd::animation::types::SkeletonResource& skeleton,
-                           ddknd::animation::types::Pose& pose, std::size_t boneIndex, std::vector<std::uint8_t>& computed/*std::vector<bool>& computed*/)
+    void ComputeBoneGlobal(ddknd::animation::types::Pose& pose, std::size_t boneIndex,
+                           std::vector<std::uint8_t>& computed,
+                           const ddknd::animation::types::SkeletonResource& skeleton)
     {
-        if(computed[boneIndex] == 1)
+        if (computed[boneIndex] == 1)
             return;
 
         const int parent = skeleton.bones[boneIndex].parent;
@@ -21,7 +22,7 @@ namespace
         }
         else
         {
-            ComputeBoneGlobal(skeleton, pose, static_cast<std::size_t>(parent), computed);
+            ComputeBoneGlobal(pose, static_cast<std::size_t>(parent), computed, skeleton);
 
             pose.globalMatrices[boneIndex] = pose.globalMatrices[parent] * pose.localMatrices[boneIndex];
         }
@@ -72,7 +73,6 @@ namespace
 
         if (cosTheta < 0.0f)
         {
-            // @note SIMD
             b.w = -b.w;
             b.x = -b.x;
             b.y = -b.y;
@@ -132,8 +132,8 @@ namespace
         return Slerp(values[i], values[i + 1], alpha);
     }
 
-    ddknd::math::Mat4f MakeLocalMatrixForBone(const ddknd::animation::types::SkeletonResource& skeleton, std::size_t boneIndex,
-                                       const ddknd::math::TRS& trs)
+    ddknd::math::Mat4f MakeLocalMatrixForBone(const ddknd::animation::types::SkeletonResource& skeleton,
+                                              std::size_t boneIndex, const ddknd::math::TRS& trs)
     {
         auto local = trs.ToMatrix();
 
@@ -148,20 +148,8 @@ namespace
 
 namespace ddknd::animation
 {
-    void AnimatorSystem::InitializePose(const types::SkeletonResource& skeleton, types::Pose& pose)
+    void AnimatorSystem::InitializePose(types::Pose& pose, const types::SkeletonResource& skeleton)
     {
-        // const std::size_t boneCount = skeleton.bones.size();
-
-        // pose.localTRS.resize(boneCount);
-        // pose.localMatrices.resize(boneCount);
-
-        // for (std::size_t i = 0; i < boneCount; ++i)
-        // {
-        //     pose.localTRS[i] = skeleton.bones[i].bindLocalTRS;
-        //     pose.localMatrices[i] = skeleton.bones[i].bindLocalMatrix;
-        // }
-
-        // UpdateGlobalPose(skeleton, pose);
 
         const std::size_t boneCount = skeleton.bones.size();
 
@@ -184,9 +172,45 @@ namespace ddknd::animation
             }
         }
 
-        UpdateGlobalPose(skeleton, pose);
+        UpdateGlobalPose(pose, skeleton);
     }
-    void AnimatorSystem::UpdateGlobalPose(const types::SkeletonResource& skeleton, types::Pose& pose)
+    
+    void AnimatorSystem::UpdateAnimationState(types::AnimationState& state, const types::AnimationClipResource& clip,
+                                              float deltaTime)
+    {
+        if (clip.duration <= 0.0f)
+            return;
+
+        state.time += deltaTime * state.speed;
+
+        if (state.loop)
+        {
+            state.time = std::fmod(state.time, clip.duration);
+
+            if (state.time < 0.0f)
+                state.time += clip.duration;
+        }
+        else
+        {
+            if (state.time < 0.0f)
+                state.time = 0.0f;
+
+            if (state.time > clip.duration)
+                state.time = clip.duration;
+        }
+    }
+
+    void AnimatorSystem::UpdatePose(types::Pose& pose, 
+                               const types::AnimationState& state,
+                               const types::SkeletonResource& skeleton, 
+                               const types::AnimationClipResource& clip
+                               )
+    {
+        SampleAnimation(pose, skeleton, clip, state.time);
+    }
+
+
+    void AnimatorSystem::UpdateGlobalPose(types::Pose& pose, const types::SkeletonResource& skeleton)
     {
         const std::size_t boneCount = skeleton.bones.size();
 
@@ -198,7 +222,7 @@ namespace ddknd::animation
 
         for (std::size_t i = 0; i < boneCount; ++i)
         {
-            ComputeBoneGlobal(skeleton, pose, i, computed);
+            ComputeBoneGlobal(pose, i, computed, skeleton);
         }
 
         for (std::size_t i = 0; i < boneCount; ++i)
@@ -208,21 +232,23 @@ namespace ddknd::animation
         }
     }
 
-    void AnimatorSystem::SampleAnimation(const types::SkeletonResource& skeleton,
-                                         const types::AnimationClipResource& clip, float time, types::Pose& pose)
+    void AnimatorSystem::SampleAnimation(types::Pose& pose, 
+                                         const types::SkeletonResource& skeleton,
+                                         const types::AnimationClipResource& clip,
+                                         const float time)
     {
         const std::size_t boneCount = skeleton.bones.size();
 
         pose.localTRS.resize(boneCount);
         pose.localMatrices.resize(boneCount);
 
-        // 1. bind pose の TRS で初期化
+        // 1. Initialize with the bind pose TRS.
         for (std::size_t i = 0; i < boneCount; ++i)
         {
             pose.localTRS[i] = skeleton.bones[i].bindLocalTRS;
         }
 
-        // 2. animation channel を適用
+        // 2. Apply the animation channel.
         for (const auto& ch : clip.channels)
         {
             if (ch.bone < 0 || ch.bone >= static_cast<int>(boneCount))
@@ -246,18 +272,13 @@ namespace ddknd::animation
             }
         }
 
-        // // 3. TRS -> Matrix
-        // for (std::size_t i = 0; i < boneCount; ++i)
-        // {
-        //     pose.localMatrices[i] = pose.localTRS[i].ToMatrix();
-        // }
         // 3. TRS -> Matrix
         for (std::size_t i = 0; i < boneCount; ++i)
         {
             math::Mat4f local = pose.localTRS[i].ToMatrix();
 
-            //@@@@@TODO:   
-            // Consider a cleaner way to handle the transform of a root/armature node that exists 
+            // @TODO:
+            // Consider a cleaner way to handle the transform of a root/armature node that exists
             // in the glTF node hierarchy but is not included in the skeleton's bone array.
             // 根本原因: glTF node hierarchy と runtime bone hierarchy が 1:1 ではないこと
             if (skeleton.bones[i].parent < 0)
@@ -269,35 +290,6 @@ namespace ddknd::animation
                 pose.localMatrices[i] = local;
             }
         }
-        UpdateGlobalPose(skeleton, pose);
+        UpdateGlobalPose(pose, skeleton);
     }
-
-    void AnimatorSystem::UpdateAnimator(const types::SkeletonResource& skeleton,
-                                        const types::AnimationClipResource& clip, types::AnimationState& state,
-                                        types::Pose& pose, float deltaTime)
-    {
-        if (clip.duration <= 0.0f)
-            return;
-
-        state.time += deltaTime * state.speed;
-
-        if (state.loop)
-        {
-            state.time = std::fmod(state.time, clip.duration);
-
-            if (state.time < 0.0f)
-                state.time += clip.duration;
-        }
-        else
-        {
-            if (state.time < 0.0f)
-                state.time = 0.0f;
-
-            if (state.time > clip.duration)
-                state.time = clip.duration;
-        }
-
-        SampleAnimation(skeleton, clip, state.time, pose);
-    }
-
 } // namespace ddknd::animation

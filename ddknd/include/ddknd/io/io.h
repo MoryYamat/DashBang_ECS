@@ -19,8 +19,10 @@ namespace ddknd::io
 
     struct VfsMount
     {
-        std::string scheme;    // "res"
-        std::filesystem::path root;      // "assets/" etc.
+        std::string scheme;                         // e.g. "res"
+
+        // absolute or executable-relative
+        std::filesystem::path mountRoot;//e.g. "assets/..." etc.
     };
 
 

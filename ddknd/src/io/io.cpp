@@ -12,17 +12,17 @@
 #include <string>
 #include <string_view>
 
+// Resolve the executable directory using the platform-specific API.
 #if defined(_WIN32)
 #include <windows.h>
 #elif defined(__linux__)
 #include <iterator>
 #include <unistd.h>
-
 #endif
 
 #include <spdlog/spdlog.h>
 
-// utils
+// helpers
 namespace
 {
     std::optional<std::pair<std::string_view, std::string_view>> SplitScheme(std::string_view vpath)
@@ -60,6 +60,7 @@ namespace
         return &it->second;
     }
 
+    // Resolve the executable directory independently of the current working directory
     std::optional<std::filesystem::path> getExeDir()
     {
 #if defined(_WIN32)
@@ -103,6 +104,12 @@ namespace
 #endif
     }
 
+    /**
+     * @brief seraches upward from startDir for relativeRoot.
+     *
+     * The search stops after maxParentDepth parent levels and returns
+     * the canonical path of the first matching directory.
+     */
     std::optional<std::filesystem::path> FindMountRootUpward(const std::filesystem::path& startDir,
                                                              const std::filesystem::path& relativeRoot,
                                                              int maxDepth = 6)
@@ -114,7 +121,9 @@ namespace
 
         for (int depth = 0; depth <= maxDepth; ++depth)
         {
+            // Combine paths
             auto candidate = dir / relativeRoot;
+
             std::error_code ec;
             if (std::filesystem::exists(candidate) && std::filesystem::is_directory(candidate))
             {
@@ -153,6 +162,9 @@ namespace
 // private type
 namespace
 {
+    /**
+     *
+     */
     class MountTable
     {
       public:
@@ -189,7 +201,7 @@ namespace
       public:
         explicit VfsResolver(const MountTable mounts) : mounts_(std::move(mounts)) {}
 
-        // if vpath is abs path then return it
+        // if vpath is abs-path then return it
         std::optional<std::filesystem::path> TryResolve(std::string_view vpath) const override
         {
             const auto parts = SplitScheme(vpath);
@@ -236,7 +248,7 @@ namespace ddknd::io
             return std::nullopt;
         }
 
-        // ファイルサイズ取得
+        // Get file size
         ifs.seekg(0, std::ios::end);              // move streaming buffer's reading pos to ios::end
         const std::streamsize size = ifs.tellg(); // get current reading pos
         if (size < 0)
@@ -245,7 +257,7 @@ namespace ddknd::io
             return std::nullopt;
         }
 
-        // TODO: try catch ?
+        // TODO: try catch
 
         std::string buffer;
         buffer.resize(static_cast<std::size_t>(size));
@@ -260,6 +272,15 @@ namespace ddknd::io
         return buffer;
     }
 
+    /**
+     * @brief Builds a VFS resolver from the supplied mount definitions.
+     *
+     * Absolute mount roots are canonicalized directly.
+     * Relative mount roots are resolved by searching upward from the
+     * executable directory, then stored as canonical absolute paths.
+     *
+     * Mounts that cannot be resolved are skipped.
+     */
     std::unique_ptr<IPathResolver> CreateVfsResolver(std::span<const VfsMount> mounts)
     {
         MountTable table;
@@ -271,21 +292,46 @@ namespace ddknd::io
             return std::make_unique<VfsResolver>(std::move(table));
         }
 
+        // Resolve every mount root to a canonical absolute path.
         for (const auto& m : mounts)
         {
             if (m.scheme.empty())
                 continue;
 
-            std::filesystem::path rootPath(m.root);
+            std::filesystem::path rootPath(m.mountRoot);
             std::optional<std::filesystem::path> resolvedRoot;
 
             if (rootPath.is_absolute())
             {
                 std::error_code ec;
-                if (std::filesystem::exists(rootPath))
-                    resolvedRoot = std::filesystem::weakly_canonical(rootPath, ec);
+                const bool exists = std::filesystem::exists(rootPath, ec);
+                if (!exists || ec)
+                {
+                    spdlog::warn("[CreateVfsResolver] invalid absolute mount root: scheme={}, root={}, error={}",
+                                 m.scheme, m.mountRoot.string(), ec.message());
+
+                    continue;
+                }
+
+                ec.clear();
+                const bool isDirectory = std::filesystem::is_directory(rootPath, ec);
+                if (ec || !isDirectory)
+                {
+                    spdlog::warn(
+                        "[CreateVfsResolver] absolute mount root is not a directory: scheme={}, root={}, error={}",
+                        m.scheme, m.mountRoot.string(), ec.message());
+
+                    continue;
+                }
+
+                ec.clear();
+                resolvedRoot = std::filesystem::weakly_canonical(rootPath, ec);
                 if (ec)
-                    return nullptr;
+                {
+                    spdlog::warn("[CreateVfsResolver] failed to canonicalize mount root: scheme={}, root={}, error={}",
+                                 m.scheme, m.mountRoot.string(), ec.message());
+                    continue;
+                }
             }
             else
             {
@@ -294,7 +340,7 @@ namespace ddknd::io
 
             if (!resolvedRoot)
             {
-                spdlog::warn("[CreateVfsResolver] mount root not found: scheme={}, root={}", m.scheme, m.root.string());
+                spdlog::warn("[CreateVfsResolver] mount root not found: scheme={}, root={}", m.scheme, m.mountRoot.string());
                 continue;
             }
 

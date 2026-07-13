@@ -167,3 +167,7 @@ namespace ddknd::ecs
 // - CreateEntity: 無効Indexの空きを埋める-> 最小の無効Indexを検出
 //      - 無効Index-> currentGen != prevGen or nextGen == currentGen
 //      - 最小Index( )
+
+// usecase
+// auto view = registry.view(.query().select<AComp>().require<BComp>());
+// view.each([](Acomp& a, Bcomp& b){ABSystem::Updateone(a,b);});

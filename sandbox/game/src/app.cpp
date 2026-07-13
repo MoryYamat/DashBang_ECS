@@ -34,8 +34,8 @@
 
 // component
 #include <ddknd/component/gfx_component.h>
+#include <ddknd/component/debug_camera_component.h>
 #include <ddknd/graphics/debug_animation.h>
-#include <ddknd/component/test_component.h>
 
 // ************ game ************ 
 // Action Input
@@ -72,7 +72,7 @@ namespace app
         window_ = std::make_unique<ddknd::window::Window>(*glfwCtx_, w, h, "app");
 
         std::vector<::ddknd::io::VfsMount> mounts;
-        mounts.push_back(ddknd::io::VfsMount{.scheme = "res", .root = "assets"});
+        mounts.push_back(ddknd::io::VfsMount{.scheme = "res", .mountRoot = "assets"});
 
         vfs_ = ddknd::io::CreateVfsResolver(mounts);
 
@@ -89,7 +89,7 @@ namespace app
 
         // user definition input
         inputMapping_ = std::make_unique<::ddknd::input::InputMapping>();
-        inputSys_ = std::make_unique<::ddknd::input::ActionInputSystem>(inputMapping_.get());
+        inputSys_ = std::make_unique<::ddknd::input::ActionInputSystem>(*inputMapping_.get());
 
         //@TODO: make factory class
         using Key = ::ddknd::input::Key;
@@ -146,14 +146,8 @@ namespace app
         isRunning_ = true;
 
         // ============= for test ==============
-        // ========== AssetManager ==========
-        using AssetManager = ::ddknd::asset::AssetManager;
         using ShaderTag = ::ddknd::asset::tag::Shader;
-        using MeshTag = ::ddknd::asset::tag::Mesh;
-        using ModelTag = ::ddknd::asset::tag::Model;
         using FontTag = ::ddknd::asset::tag::Font;
-
-        // AssetManager asset_mgr;
 
         // debug font
         // shader
@@ -231,11 +225,11 @@ namespace app
 
             // ************* TIMER **************
             timer.Tick();
-            const float deltaTime = timer.DeltaTime();          // this is in seconds, not milliseconds
+            const float deltaSeconds = timer.DeltaSeconds();          // this is in seconds, not milliseconds
             // std::cerr << "deltatime" << deltaTime << "\n";
-            if(deltaTime > 0)
+            if(deltaSeconds > 0)
             {
-                frameTimeStatistics.PushFrame(deltaTime);
+                frameTimeStatistics.PushFrame(deltaSeconds);
             }
 
             const float fps = timer.FPS();
@@ -250,16 +244,13 @@ namespace app
             deviceInput_->Update();
             inputSys_->Update(*deviceInput_.get());
             
-            // std::cerr << "delta x: " << inputSys_->GetValue(Action::CameraLookX) << "\n";
-            // std::cerr << "delta y: " << inputSys_->GetValue(Action::CameraLookY) << "\n";
-            // std::cerr << "wheel y:" << inputSys_->GetValue(Action::CameraZoom) << "\n";
             
             // ************* CAMERA *************
-            deug_cam.Update(timer.DeltaTime());
+            deug_cam.Update(deltaSeconds);
             ddknd::system::DebugCameraSystem::UpdateDebugCamera(debug_camera_transform, *debugCam_);
 
             // ************* FRAME CONTEXT *************
-            ::ddknd::system::FrameContext frameCtx{.deltaTime = deltaTime,
+            ::ddknd::system::FrameContext frameCtx{.deltaTime = deltaSeconds,
                                                    .actionInput = inputSys_.get(),
                                                    .aspect = window_->aspectRatio(),
                                                    .graphicsAssetStore = graphicsAssetStore_.get(),
@@ -305,7 +296,7 @@ namespace app
 
             // window_->PollEvents(); // moved to InputBackend
             window_->SwapBuffers();
-            if (deviceInput_->isPressing(ddknd::input::Key::ESCAPE))
+            if (deviceInput_->IsKeyDown(ddknd::input::Key::ESCAPE))
             {
                 isRunning_ = false;
             }

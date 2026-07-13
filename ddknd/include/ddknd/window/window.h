@@ -43,7 +43,6 @@ namespace ddknd::window
       private:
     };
 
-    // Window(const GlfwContext& glfw, int width, int height, std::string name)
     class Window
     {
       public:
@@ -68,7 +67,6 @@ namespace ddknd::window
                 return 1.0f;
             }
 
-            // std::cerr << "framebuffer resized: {}"<<  width_ << "x" <<  height_ << "\n";
             return static_cast<float>(width_) / static_cast<float>(height_);
         }
 

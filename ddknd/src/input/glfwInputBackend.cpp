@@ -293,6 +293,7 @@ namespace ddknd::input
                 return;
             }
 
+            // Route the GLFW callback to the registered cursor handler.
             state->key(state->keyUser, key, scancode, action, mods);
         }
 
@@ -307,6 +308,7 @@ namespace ddknd::input
                 return;
             }
 
+            // Route the GLFW callback to the registered cursor handler.
             state->cursor(state->cursorUser, x, y);
         }
 
@@ -321,6 +323,7 @@ namespace ddknd::input
                 return;
             }
 
+            // Route the GLFW callback to the registered cursor handler.
             state->scroll(state->scrollUser, xoffset, yoffset);
         }
 
@@ -335,6 +338,7 @@ namespace ddknd::input
                 return;
             }
 
+            // Route the GLFW callback to the registered cursor handler.
             state->mouseButton(state->mouseButtonUser, button, action, mods);
         }
     };

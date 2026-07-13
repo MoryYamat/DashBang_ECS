@@ -12,7 +12,7 @@
 
 namespace ddknd::math
 {
-    // =================================== CONSTANTS ===================================
+    // CONSTANTS
     template<typename T = float>
     inline constexpr T kEpsilon = T(1e-6);
     template<>
@@ -20,7 +20,7 @@ namespace ddknd::math
     template<typename T>
     inline constexpr T kEpsilonSq = kEpsilon<T> * kEpsilon<T>;
 
-    // =================================== Linear Algebra =================================== 
+    // Linear Algebra
     template <typename T, std::size_t N>
     struct Vec
     {
@@ -226,6 +226,7 @@ namespace ddknd::math
         return Vec<T, 3>{a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]};
     }
 
+    // raw-major
     template <typename T, std::size_t R, std::size_t C>
     struct Mat
     {
@@ -363,7 +364,6 @@ namespace ddknd::math
             {
                 float invMag = 1.0f / magnitude;
 
-                // @note SIMD
                 w *= invMag;
                 x *= invMag;
                 y *= invMag;

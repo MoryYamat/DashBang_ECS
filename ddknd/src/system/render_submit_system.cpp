@@ -1,6 +1,5 @@
 #include <ddknd/system/render_submit_system.h>
 
-#include <ddknd/asset/asset_manager.h>
 
 #include <ddknd/graphics/gfx_asset_loader.h>
 #include <ddknd/graphics/gfx_type.h>

@@ -72,7 +72,7 @@ namespace ddknd::graphics::type
     struct MeshGeometry
     {
         std::vector<Vertex> vertices;
-        std::vector<std::uint64_t> indices;//
+        std::vector<std::uint64_t> indices;
     };
 
     // Discarded after loading
@@ -82,7 +82,6 @@ namespace ddknd::graphics::type
 
         std::vector<MeshGeometry> meshes;
 
-        // 補助データ
         Mat4f meshBindGlobal = Mat4f::Identity();
         Mat4f skeletonRootBindGlobal = Mat4f::Identity();
 
@@ -94,16 +93,6 @@ namespace ddknd::graphics::type
 
 namespace ddknd::animation::asset
 {
-    // struct SkeletonResource
-    // {
-    //     ::ddknd::graphics::type::Skeleton skeleton;
-    // };
-
-    // struct AnimationClipResource
-    // {
-    //     ::ddknd::graphics::type::AnimationClip clip;
-    // };
-
     struct ModelAnimationResource
     {
         ::ddknd::graphics::type::Skeleton skeleton;

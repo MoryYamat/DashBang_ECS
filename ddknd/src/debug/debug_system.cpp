@@ -106,8 +106,7 @@ namespace ddknd::debug
         for (auto [model, pose, transform] : view)
         {
             ::ddknd::animation::debug::SkeletonDebugDrawSystem::UpdateOne(
-                model, pose, transform, *ctx.frame->graphicsAssetStore, ctx.config->skeletonStyle.color,
-                *ctx.debugDraw);
+                *ctx.debugDraw, model, pose, transform, *ctx.frame->graphicsAssetStore, ctx.config->skeletonStyle.color);
         }
     }
 

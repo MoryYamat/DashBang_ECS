@@ -3,15 +3,10 @@
 #include <algorithm>
 
 #include "ddknd/component/gfx_component.h"
-#include "ddknd/component/test_component.h"
+#include "ddknd/component/debug_camera_component.h"
 #include "ddknd/input/input.h"
 #include "ddknd/math/math.h"
 
-// helpers
-namespace
-{
-
-}
 
 namespace ddknd::debug
 {
@@ -37,19 +32,19 @@ namespace ddknd::debug
 
         const float step = debug_.moveSpeed * dt;
 
-        if (input_.isPressing(Key::W))
+        if (input_.IsKeyDown(Key::W))
         {
             pos += forward * step;
         }
-        if (input_.isPressing(Key::S))
+        if (input_.IsKeyDown(Key::S))
         {
             pos -= forward * step;
         }
-        if (input_.isPressing(Key::A))
+        if (input_.IsKeyDown(Key::A))
         {
             pos -= right * step;
         }
-        if (input_.isPressing(Key::D))
+        if (input_.IsKeyDown(Key::D))
         {
             pos += right * step;
         }

@@ -11,10 +11,11 @@
 
 
 #include <vector>
+#include <iostream>
 
 namespace app::scene
 {
-    // @brief Set of entities in GameScene.
+    // Set of entities in GameScene.
     struct GameSceneEntities
     {
         ::ddknd::ecs::Entity player;
@@ -23,7 +24,7 @@ namespace app::scene
         std::vector<ddknd::ecs::Entity> npcs;
     };
 
-    // @brief Set the AssetIDs of the Actors used for the Entity.
+    // Set the AssetIDs of the Actors used for the Entity.
     struct GameSceneAssets
     {
         app::assets::actor::PaladinAssetIDs paladin;

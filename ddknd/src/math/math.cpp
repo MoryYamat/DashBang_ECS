@@ -98,7 +98,6 @@ namespace ddknd::math
 
         const float invDet = 1.0f / det;
 
-        // @note SIMD
         for (float& x : inv.v)
         {
             x *= invDet;
@@ -188,7 +187,7 @@ namespace ddknd::math
         return normalize(out);
     }
 
-    // @brief LookAt / OpenGL / Right-Handed
+    // LookAt / OpenGL / Right-Handed
     Mat4f LookAtOpenGLRH(const Vec3f& eye, const Vec3f& target, const Vec3f& up)
     {
         Vec3f fRaw = target - eye;
@@ -245,6 +244,7 @@ namespace ddknd::math
         return m;
     }
 
+    // Perspective / OpenGL / Right-Handed
     Mat4f OrthographicOpenGLRH(float left, float right, float bottom, float top, float nearZ, float farZ) 
     {
         assert(std::abs(right - left) > kEpsilon<float>);

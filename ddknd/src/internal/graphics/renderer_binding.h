@@ -4,6 +4,7 @@
 
 namespace ddknd::graphics::internal::binding
 {
+    // Fixed texture-unit bindings used by shader samplers.
     constexpr std::uint32_t BaseColorTexture = 0;
     constexpr std::uint32_t MetallicRoughnessTexture = 1;
     constexpr std::uint32_t NormalTexture = 2;

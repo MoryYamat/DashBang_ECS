@@ -4,8 +4,6 @@
 
 namespace ddknd::ecs
 {
+    template <typename S, typename R, typename E>
     struct Query;
-
-    template<typename Query>
-    class View;
 }// namespace ddknd::query

@@ -4,23 +4,19 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
-#include <iostream>
 #include <limits>
-#include <type_traits>
 #include <vector>
+#include <concepts>
 
 
 namespace ddknd::input
 {
-    template <class>
-    inline constexpr bool always_false_v = false;
-
     template <typename Action>
     concept ActionToIndexable = requires(Action action) {
         { static_cast<std::size_t>(action) } -> std::convertible_to<std::size_t>;
     };
 
-    // TODO: add all keys of glfws
+    // Contains the GLFW-compatible keys currently used by the engine.
     enum class Key : std::uint16_t
     {
         NONE,
@@ -190,14 +186,6 @@ namespace ddknd::input
         }
     };
 
-    struct InputState
-    {
-        float value = 0.0f;
-        bool down = false;
-        bool pressed = false;
-        bool released = false;
-    };
-
     struct MouseState
     {
         bool first = true;
@@ -209,6 +197,9 @@ namespace ddknd::input
         double wheelY = 0.0;
     };
 
+    /**
+    * Provides platform-specific device input to the engine input layer.
+    */
     class IInputBackend
     {
       public:
@@ -219,25 +210,28 @@ namespace ddknd::input
         virtual const MouseState& Mouse() const = 0;
     };
 
+    /**
+    * Caches the current keyboard, mouse-button, and mouse state for one frame.
+    */
     class DeviceInput
     {
       public:
-        DeviceInput(IInputBackend& bc) : backend_(bc) {}
+        explicit DeviceInput(IInputBackend& bc) : backend_(bc) {}
 
-        bool isPressing(Key k) const
+        bool IsKeyDown(Key k) const
         {
-            return curr_[toIdx(k)];
+            return curr_[ToIndex(k)];
         }
 
-        bool isPressingMouseButton(MouseButton button) const
+        bool IsMouseButtonDown(MouseButton button) const
         {
-            return mouse_curr_[toIdx(button)];
+            return mouse_curr_[ToIndex(button)];
         }
 
         void Update()
         {
-            backend_.Update(); // This utilizes the difference between the OS update frequency and the game loop update
-                               // frequency
+            // Poll the backend once per game frame before caching device state.
+            backend_.Update();
 
             for (std::size_t i = 0; i < KeyCount(); i++)
             {
@@ -274,12 +268,12 @@ namespace ddknd::input
         std::bitset<static_cast<std::size_t>(Key::COUNT)> curr_;
         std::bitset<static_cast<std::size_t>(MouseButton::COUNT)> mouse_curr_;
 
-        constexpr std::size_t toIdx(Key k) const
+        constexpr std::size_t ToIndex(Key k) const
         {
             return static_cast<std::size_t>(k);
         }
 
-        constexpr std::size_t toIdx(MouseButton button) const
+        constexpr std::size_t ToIndex(MouseButton button) const
         {
             return static_cast<std::size_t>(button);
         }
@@ -304,18 +298,13 @@ namespace ddknd::input
         }
     };
 
-    // @TODO: 疎な値群に対して、unordered_map<Action>と自動で切り替える処理の実装
-    // TODO:
-    // Reconsider the Action API.
-    // Current template-based API accepts any type convertible to std::size_t,
-    // which is flexible but too permissive.
-    // For example, Key / MouseAxis can accidentally be passed as an Action.
-    // Consider introducing a stronger ActionID type or requiring user-defined
-    // action traits/concepts.
-    // Action API の設計を再検討する。
-    // 現在は std::size_t に static_cast できる型を Action として受け入れているため柔軟だが、
-    // Key / MouseAxis など Action ではない enum も誤って渡せてしまう。
-    // 将来的には ActionID 型の導入、または ActionTraits / concept による制約強化を検討する。
+
+    /**
+    * Maps device inputs to compact internal action IDs.
+    *
+    * Gameplay action values are used as vector indices and should therefore
+    * be dense, non-negative enum values.
+    */
     class InputMapping
     {
       public:
@@ -327,12 +316,6 @@ namespace ddknd::input
         static constexpr key_type InvalidKey = Key::COUNT;
 
       private:
-        template <typename Action>
-        id_type ActionToValue(Action action) const
-        {
-            return static_cast<id_type>(action);
-        }
-
         std::size_t KeyToIndex(key_type k) const
         {
             return static_cast<std::size_t>(k);
@@ -344,13 +327,6 @@ namespace ddknd::input
             return static_cast<std::size_t>(action);
         }
 
-        template <typename Action>
-        bool IsValidActionID(Action action) const
-        {
-            auto idx = ActionToIndex(action);
-            return idx < action_to_id_.size();
-        }
-
         bool IsValidKey(key_type key) const
         {
             auto idx = KeyToIndex(key);
@@ -360,11 +336,11 @@ namespace ddknd::input
       public:
         InputMapping() : key_to_action_(static_cast<std::size_t>(key_type::COUNT), InvalidID) {}
 
-        // @NOTE
-        // Actions should be arranged as densely as possible.
-        // Using unnecessarily large values ​​increases the internal data size and impairs cache locality.
-        // Actions passed to RegisterKeyMap are considered valid Actions.
-        // The caller is responsible for handling cases where values ​​outside the enum range are passed.
+        /**
+        * Registers a key for a gameplay action.
+        * Action values are used as vector indices and should therefore be dense,
+        * non-negative enum values.
+        */
         template <ActionToIndexable Action>
         bool RegisterKeyMap(const key_type key, const Action action)
         {
@@ -376,13 +352,13 @@ namespace ddknd::input
 
             if (id == InvalidID)
             {
-                id = static_cast<id_type>(id_to_source_.size());
+                id = static_cast<id_type>(id_to_key_.size());
                 action_to_id_[action_to_index] = id;
-                id_to_source_.push_back(InvalidKey);
+                id_to_key_.push_back(InvalidKey);
             }
 
             key_to_action_[KeyToIndex(key)] = id;
-            id_to_source_[id] = key;
+            id_to_key_[id] = key;
 
             return true;
         }
@@ -400,9 +376,9 @@ namespace ddknd::input
 
             if (id == InvalidID)
             {
-                id = static_cast<id_type>(id_to_source_.size());
+                id = static_cast<id_type>(id_to_key_.size());
                 action_to_id_[action_to_index] = id;
-                id_to_source_.push_back(InvalidKey);
+                id_to_key_.push_back(InvalidKey);
             }
 
             const auto axisIdx = static_cast<std::size_t>(axis);
@@ -426,9 +402,9 @@ namespace ddknd::input
 
             if (id == InvalidID)
             {
-                id = static_cast<id_type>(id_to_source_.size());
+                id = static_cast<id_type>(id_to_key_.size());
                 action_to_id_[action_to_index] = id;
-                id_to_source_.push_back(InvalidKey);
+                id_to_key_.push_back(InvalidKey);
             }
 
             const auto mouseButtonIdx = static_cast<std::size_t>(mouseButton);
@@ -452,10 +428,10 @@ namespace ddknd::input
 
         key_type GetKey(id_type id) const
         {
-            if (static_cast<std::size_t>(id) >= id_to_source_.size())
+            if (static_cast<std::size_t>(id) >= id_to_key_.size())
                 return InvalidKey;
 
-            return id_to_source_[id];
+            return id_to_key_[id];
         }
 
         id_type GetActionFromKey(key_type key) const
@@ -468,7 +444,7 @@ namespace ddknd::input
 
         std::size_t GetActionCount() const
         {
-            return id_to_source_.size();
+            return id_to_key_.size();
         }
 
         id_type GetActionFromMouseAxis(MouseAxis axis) const
@@ -489,31 +465,26 @@ namespace ddknd::input
         }
 
       private:
-        std::vector<id_type>
-            action_to_id_; //  action -> inetrnal action id        (idx: action_value, value: internal action id)
+        // Indexed by gameplay action value; stores the internal action ID.
+        std::vector<id_type> action_to_id_; 
 
-        // @TODO: The design needs to be changed to maintain support for types other than `key_type`.
-        std::vector<key_type>
-            id_to_source_; // internal action id -> key            (idx: internal action id          , value: key)
+        // Indexed by internal action ID; stores the keyboard binding, if any.
+        std::vector<key_type> id_to_key_; 
 
-        std::vector<id_type>
-            key_to_action_; // key -> internal action id            (idx: key         , value: internal action id)
+        // Indexed by key; stores the internal action ID.
+        std::vector<id_type> key_to_action_; 
+
         std::vector<id_type> mouse_axis_to_action_;
         std::vector<id_type> mouse_button_to_action_;
     };
 
-    // system (update state)
+    /**
+    * Resolve mapped device inputs into per-frame gameplay action states.
+    * 
+    * Produces value, down, pressed, and released states for registered actions.
+    */
     class ActionInputSystem
     {
-        // responsibility
-        // dead zone
-        // sensitivity
-        // invert Y
-        // hold / pressed / released
-        // composite input
-        // 複数デバイス統合
-        // context切り替えa
-
         using Mapping = InputMapping;
         using id_type = Mapping::id_type;
         using key_type = Mapping::key_type;
@@ -538,7 +509,7 @@ namespace ddknd::input
         }
 
       public:
-        ActionInputSystem(Mapping* mapping) : mappings_(*mapping) {}
+        ActionInputSystem(Mapping& mapping) : mappings_(mapping) {}
 
         void Update(const DeviceInput& input);
 
@@ -566,11 +537,11 @@ namespace ddknd::input
             return actions_[idx].released;
         }
 
-        // @NOTE: 
-        // GetValue expects a gameplay Action enum, not an input source.
-        // Example: 
-        //   GetValue(app::action::Action::CameraLookX)
-        // Do not pass MouseAxis::DeltaX directly.
+        /**
+        * Returns the current value of a registered gameplay action.
+        * 
+        * The argument must be a gameplay action, not key or MouseAxis.
+        */
         template <ActionToIndexable Action>
         float GetValue(Action action) const
         {
@@ -585,62 +556,5 @@ namespace ddknd::input
         std::vector<float> action_values_;
     };
 
-    // std::unique_ptr<ddknd::input::IInputBackend>
-    // CreateGlfwInputBackend(const ddknd::window::Window& w);
+
 } // namespace ddknd::input
-
-// 普通
-// 1. Register 方式
-// auto id = reg.Register("move_foward");
-// メリット:
-// - IDが一意
-// - 内部は整数で高速
-// - Engine主導で管理
-// デメリット:
-// - 初期化が必要(Register呼び出し)
-// - IDをどこかで保持する必要がある
-// - 所有者問題が発生
-
-// 2. 文字列方式
-// input.Pressed("move_forward");
-// - シンプル
-// - 初期化不要・所有者不要・柔軟
-// デメリット
-// - 比較コストが高い
-// - typo / コンパイルチェックが効かない
-
-// 3. ハッシュ方式
-// ActionID("move_foward")// -> hash  // struct ActionID{ std::uint32_t v; explicit ActionID(std::string_view name):
-// v(hash(name)){}}; メリット
-// - register不要
-// - 所有者不要・比較は高速・ユーザ文字列で定義できる
-// デメリット:
-// (理論上)衝突の可能性
-// デバッグしづらい
-// typo検出不可
-
-// 案 (DI)
-// User -> Actionの意味とID変換規則を持つ
-// Engine -> その規則だけを呼ぶ
-// API契約: typename UserAction -> std::uint32_t
-// 例:
-// USER:
-//      enum class Action : std::uint32_t { move_fwd, move_back, ...}; or struct Action{ std::uint32_t v;} inline
-//      constexpr Action MoveFoward{0};... if(input.Pressed(Action::move_fwd)){...} or
-//      if(input.Pressed(MoveForward)){...}
-// ENGINE:
-//      template<typename Action>
-//      std::uint32_t ToActionID(Action Action)
-//      { return static_cast<std::uitn32_t>(action.value);  }// API契約: 変換可能であること(UserAction -> std::uint32_t)
-// メリット:
-// - **所有者不要**
-// - Register()不要
-// - **型安全**
-// - **高速(整数比較)**
-// - **ユーザ定義が自由(API契約を守れば)**
-// - **Engineが意味を知らない**
-// - 拡張可能
-// デメリット
-// - ID管理がユーザ責任
-// - 名前情報がない(デバッグ性)
-// - 動的追加が難しい(enum では 不可)
