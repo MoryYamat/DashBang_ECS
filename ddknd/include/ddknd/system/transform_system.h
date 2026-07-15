@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ddknd/component/component_fwd.h"
+#include <ddknd/component/component_fwd.h>
 
 namespace ddknd::system
 {

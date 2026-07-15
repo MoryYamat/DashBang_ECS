@@ -2,9 +2,8 @@
 
 
 #include <ddknd/component/gfx_component.h>
-/**
-* 
-*/
+
+
 namespace ddknd::component
 {
     struct DebugCameraControllerComponent

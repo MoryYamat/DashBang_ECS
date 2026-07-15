@@ -12,8 +12,10 @@
 #include <ddknd/math/math.h>
 
 #include <ddknd/graphics/animation.h>
-#include <ddknd/graphics/gfx_type.h>
+#include <ddknd/graphics/renderer_backend.h>
 #include <ddknd/graphics/renderer.h>
+#include <ddknd/graphics/debug_draw.h>
+
 
 #include <ddknd/camera/system_debug_camera.h>
 #include <ddknd/camera/debug_camera.h>
@@ -106,8 +108,7 @@ namespace app
         inputMapping_->RegisterMouseButtonMap(MouseButton::LEFT_CLICK,Action::Attack);
         
         // Debug Draw
-        debugDraw_ = std::make_unique<ddknd::graphics::DebugDrawList>(*rendererBackend_);
-        debugDraw_->Init();
+        debugDraw_ = std::make_unique<ddknd::graphics::debug::DebugDrawList>(*rendererBackend_);
 
         // assets
         assetMgr_ = std::make_unique<::ddknd::asset::AssetManager>();
@@ -264,8 +265,7 @@ namespace app
             ::ddknd::debug::DebugContext debugCtx{.frame = &frameCtx, .debugDraw = debugDraw_.get(), .config = &debugConfig, .resources = &debugDrawResouces, .framePerformance=perf};
 
             // ************* BEGIN FRAME *************
-            ddknd::graphics::FrameBeginDesc frameBegin{.h = window_->GetHeight(),
-                                             .w = window_->GetWidth()};
+            ddknd::graphics::FrameBeginDesc frameBegin{.w = window_->GetWidth(), .h = window_->GetHeight()};
 
             renderSys_->BeginFrame(frameBegin);
             

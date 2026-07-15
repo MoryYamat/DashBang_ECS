@@ -2,17 +2,17 @@
 
 #include <cstdint>
 
-#include "ddknd/core/StrongID.h"
+#include <ddknd/core/StrongID.h>
 
 namespace ddknd::ecs
 {
     struct Entity
     {
       private:
-        struct Entity_ID
+        struct EntityTag
         {
         };
-        using id_type = ::ddknd::core::HandleID<Entity_ID>;
+        using id_type = ::ddknd::core::HandleID<EntityTag>;
 
       public:
         constexpr Entity() noexcept = default;
@@ -35,21 +35,20 @@ namespace ddknd::ecs
             return id.Generation();
         }
 
-        constexpr bool IsValid() const
+        constexpr bool IsValid() const noexcept
         {
-            return id.Is_valid();
+            return id.IsValid();
         }
 
-        // ops
-        friend constexpr bool operator==(Entity a, Entity b)
+        friend constexpr bool operator==(Entity a, Entity b) noexcept
         {
             return a.id == b.id;
         }
-        friend constexpr bool operator!=(Entity a, Entity b)
+        friend constexpr bool operator!=(Entity a, Entity b) noexcept
         {
             return !(a == b);
         }
-        friend constexpr bool operator<(Entity a, Entity b)
+        friend constexpr bool operator<(Entity a, Entity b) noexcept
         {
             return a.id < b.id;
         }

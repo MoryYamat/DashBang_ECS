@@ -7,7 +7,7 @@
 #include <typeindex>
 #include <unordered_map>
 #include <vector>
-#include "ddknd/asset/asset_id.h"
+#include <ddknd/asset/asset_id.h>
 
 namespace ddknd::asset
 {
@@ -65,7 +65,7 @@ namespace ddknd::asset
         }
         const AssetMeta* TryGetMeta(ID id) const
         {
-            if (!id.Is_valid())
+            if (!id.IsValid())
             {
                 return nullptr;
             }
@@ -86,7 +86,7 @@ namespace ddknd::asset
         }
         AssetMeta* TryGetMeta(ID id)
         {
-            if (!id.Is_valid())
+            if (!id.IsValid())
             {
                 return nullptr;
             }
@@ -147,7 +147,9 @@ namespace ddknd::asset
         {
             const auto* meta = TryGetMeta(id);
             if(!meta)
+            {
                 return std::nullopt;
+            }
 
             return meta->state;
         }
@@ -157,7 +159,10 @@ namespace ddknd::asset
         {
             auto* meta = TryGetMeta(id);
             if(!meta)
+            {
                 return false;
+            }
+
             meta->state = state;
             return true;
         }
@@ -167,7 +172,9 @@ namespace ddknd::asset
         {
             const auto* table = TryGetTable<Tag>();
             if(!table)
+            {
                 return nullptr;
+            }
             return table->TryGetMeta(id);
         }
 
@@ -176,7 +183,9 @@ namespace ddknd::asset
         {
             auto* table = TryGetTable<Tag>();
             if(!table)
+            {
                 return nullptr;
+            }
             return table->TryGetMeta(id);
         }
 
@@ -190,7 +199,9 @@ namespace ddknd::asset
 
             auto it = tables_.find(key);
             if (it == tables_.end())
+            {
                 return nullptr;
+            }
 
             return static_cast<AssetTable<Tag>*>(it->second.get());
         }
@@ -202,7 +213,9 @@ namespace ddknd::asset
 
             auto it = tables_.find(key);
             if (it == tables_.end())
+            {
                 return nullptr;
+            }
 
             return static_cast<AssetTable<Tag>*>(it->second.get());
         }
@@ -211,7 +224,9 @@ namespace ddknd::asset
         AssetTable<Tag>& Table()
         {
             if (auto* table = TryGetTable<Tag>())
+            {
                 return *table;
+            }
 
             const std::type_index key{typeid(Tag)};
 
@@ -240,7 +255,10 @@ namespace ddknd::asset
         {
             const auto idx = id.Index();
             if (idx >= data_.size())
+            {
                 return nullptr;
+            }
+
             return &data_[idx];
         }
 
@@ -248,7 +266,9 @@ namespace ddknd::asset
         {
             const auto idx = id.Index();
             if (idx >= data_.size())
+            {
                 return nullptr;
+            }
             return &data_[idx];
         }
 

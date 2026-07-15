@@ -1,7 +1,6 @@
 #include "internal/graphics/model_importer/glb_importer_debug.h"
 
 #include "internal/graphics/model_importer/model_import_types.h"
-#include "ddknd/graphics/gfx_type.h"
 
 
 #include <cgltf.h>
@@ -11,9 +10,10 @@ namespace glType = ::ddknd::graphics::internal::types;
 using ModelImportData = glType::ModelImportData;
 using ImportNode = glType::ImportNode;
 using ImportPrimitive = glType::ImportPrimitive;
-using Vertex = glType::Vertex;
 using ImportChannel = glType::ImportChannel;
 using ChannelType = glType::ChannelType;
+
+using Vertex = ddknd::graphics::types::Vertex;
 
 namespace ddknd::graphics::internal::debug
 {

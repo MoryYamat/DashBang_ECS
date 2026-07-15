@@ -1,27 +1,25 @@
 #pragma once
 
-#include <iostream>
 #include <tuple>
 
-#include "ddknd/ecs/entity/entity.h"
+#include <ddknd/ecs/entity/entity.h>
 
-#include "ddknd/ecs/query/query.h"
-#include "ddknd/ecs/registry/registry.h"
-#include "ddknd/ecs/storage/storage_fwd.h"
+#include <ddknd/ecs/query/query.h>
+#include <ddknd/ecs/registry/registry.h>
+#include <ddknd/ecs/storage/storage_fwd.h>
 
-// helper
 namespace ddknd::ecs::detail
 {
-    template<typename List>
+    template <typename List>
     struct StoragePointerTuple;
 
-    template<typename... R>
+    template <typename... R>
     struct StoragePointerTuple<TypeList<R...>>
     {
         using Registry = ecs::Registry;
         using type = std::tuple<ecs::Storage<R>*...>;
 
-        template<typename Registry>
+        template <typename Registry>
         static type make(Registry* regs)
         {
             return type{&regs->template AssureStorage<R>()...};
@@ -36,16 +34,10 @@ namespace ddknd::ecs::detail
     {
         using Registry = ecs::Registry;
         using Entity = ecs::Entity;
-        template<typename Tuple>
+        template <typename Tuple>
         static bool check(const Tuple& storages, Entity e)
         {
-            return std::apply(
-                [&](auto*... st)
-                {
-                    return(st->Has(e) && ...);
-                },
-                storages
-            );
+            return std::apply([&](auto*... st) { return (st->Has(e) && ...); }, storages);
         }
     };
 
@@ -57,16 +49,10 @@ namespace ddknd::ecs::detail
     {
         using Registry = ecs::Registry;
         using Entity = ecs::Entity;
-        template<typename Tuple>
+        template <typename Tuple>
         static bool check(const Tuple& storages, Entity e)
         {
-            return std::apply(
-                [&](auto*... st)
-                {
-                    return(!st->Has(e) && ...);
-                },
-                storages
-            );
+            return std::apply([&](auto*... st) { return (!st->Has(e) && ...); }, storages);
         }
     };
 
@@ -78,24 +64,13 @@ namespace ddknd::ecs::detail
     {
         using type = std::tuple<S&, R&...>;
 
-        // template <typename Registry, typename Storage>
-        // static type make(Registry* regs, Storage& selectedStorage, std::size_t idx)
-        // {
-        //     auto e = selectedStorage.EntityAt(idx);
-
-        //     return type{selectedStorage.ComponentAt(idx), regs->template GetComponent<R>(e)...};
-        // }
-
-        template<typename Storage, typename RequiredStorages>
+        template <typename Storage, typename RequiredStorages>
         static type make(Storage& selectedStorage, const RequiredStorages& requiredStorages, std::size_t idx)
         {
             auto e = selectedStorage.EntityAt(idx);
-            return std::apply(
-                [&](auto*... requiredStorage) -> type{
-                    return type{selectedStorage.ComponentAt(idx), *requiredStorage->Get(e)...};
-                },
-                requiredStorages
-            );
+            return std::apply([&](auto*... requiredStorage) -> type
+                              { return type{selectedStorage.ComponentAt(idx), *requiredStorage->Get(e)...}; },
+                              requiredStorages);
         }
     };
 
@@ -105,25 +80,22 @@ namespace ddknd::ecs::detail
         using Entity = ecs::Entity;
         using type = std::tuple<Entity, S&, R&...>;
 
-        template<typename Storage, typename RequiredStorages>
+        template <typename Storage, typename RequiredStorages>
         static type make(Storage& selectedStorage, const RequiredStorages& requiredStorages, std::size_t idx)
         {
             auto e = selectedStorage.EntityAt(idx);
-            return std::apply(
-                [&](auto*... requiredStorage) -> type{
-                    return type{e, selectedStorage.ComponentAt(idx), *requiredStorage->Get(e)...};
-                },
-                requiredStorages
-            );
+            return std::apply([&](auto*... requiredStorage) -> type
+                              { return type{e, selectedStorage.ComponentAt(idx), *requiredStorage->Get(e)...}; },
+                              requiredStorages);
         }
     };
 
-    
-
-} // namespace ddknd::view::detail
+} // namespace ddknd::ecs::detail
 
 namespace ddknd::ecs
 {
+    // Iterates over the selected component storage and yields references
+    // to entities matching the required and excluded component sets.
     template <typename Query, bool IncludeEntity = false>
     class View
     {
@@ -134,16 +106,8 @@ namespace ddknd::ecs
         using requiredList = Query::requiredList;
         using excludedList = Query::excludedList;
 
-        View(Query q, Registry* regs) : q(q), regs_(regs) {};
+        View(Query q, Registry* regs) : q(q), regs_(regs) {}
 
-        void Print()
-        {
-            std::cerr << "selected=" << typeid(selected).name() << "\n";
-            std::cerr << "required=" << typeid(requiredList).name() << "\n";
-            std::cerr << "excluded=" << typeid(excludedList).name() << "\n";
-        }
-
-        // lazy view
         struct Iterator
         {
             using Registry = ::ddknd::ecs::Registry;
@@ -151,7 +115,7 @@ namespace ddknd::ecs
             using SelectedStorage = typename ::ddknd::ecs::Storage<selected>;
             using RequiredStorage = typename detail::StoragePointerTuple<requiredList>::type;
             using ExcludedStorage = typename detail::StoragePointerTuple<excludedList>::type;
-            
+
             Registry* regs_ = nullptr;
             SelectedStorage* selected_ = nullptr;
             RequiredStorage required_{};
@@ -160,11 +124,11 @@ namespace ddknd::ecs
             std::size_t idx;
 
             Iterator(Registry* regs, std::size_t idx)
-                : regs_(regs), 
-                selected_(&regs->template AssureStorage<selected>()), 
-                required_(detail::StoragePointerTuple<requiredList>::make(regs)),
-                excluded_(detail::StoragePointerTuple<excludedList>::make(regs)),
-                idx(idx) {}
+                : regs_(regs), selected_(&regs->template AssureStorage<selected>()),
+                  required_(detail::StoragePointerTuple<requiredList>::make(regs)),
+                  excluded_(detail::StoragePointerTuple<excludedList>::make(regs)), idx(idx)
+            {
+            }
 
             bool operator!=(const Iterator& o) const
             {
@@ -179,11 +143,7 @@ namespace ddknd::ecs
 
             auto operator*() const
             {
-                return detail::DerefTuple<
-                        selected,
-                        requiredList,
-                        IncludeEntity
-                        >::make(*selected_, required_, idx);
+                return detail::DerefTuple<selected, requiredList, IncludeEntity>::make(*selected_, required_, idx);
             }
 
             void advance_to_valid()
@@ -191,7 +151,7 @@ namespace ddknd::ecs
 
                 while (idx < selected_->Size())
                 {
-                    auto e = selected_->EntityAt(idx);
+                    const auto e = selected_->EntityAt(idx);
 
                     if (satisfies(e))
                     {
@@ -205,7 +165,8 @@ namespace ddknd::ecs
           private:
             bool satisfies(Entity e) const
             {
-                return detail::HasAll<requiredList>::check(required_, e) && detail::HasNone<excludedList>::check(excluded_, e);
+                return detail::HasAll<requiredList>::check(required_, e) &&
+                       detail::HasNone<excludedList>::check(excluded_, e);
             }
         };
 
@@ -219,7 +180,7 @@ namespace ddknd::ecs
             Iterator it{regs_, 0};
             it.advance_to_valid();
             return it;
-        };
+        }
         Iterator end()
         {
             return Iterator{regs_, selected_size()};
@@ -235,9 +196,8 @@ namespace ddknd::ecs
         }
     };
 
-} // namespace ddknd::view
+} // namespace ddknd::ecs
 
-// to define
 namespace ddknd::ecs
 {
     template <typename Query>
@@ -245,4 +205,4 @@ namespace ddknd::ecs
     {
         return ecs::View<Query>{q, this};
     }
-} // namespace ddknd::registry
+} // namespace ddknd::ecs

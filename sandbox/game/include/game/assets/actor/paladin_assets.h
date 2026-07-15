@@ -73,18 +73,18 @@ namespace app::assets::actor
         [[nodiscard]]
         bool IsValid() const noexcept
         {
-            return  model.Is_valid() &&
-                    skinnedShader.Is_valid() &&
-                    idle.Is_valid() &&
-                    runForward.Is_valid() &&
-                    runBackward.Is_valid() &&
-                    runRight.Is_valid() &&
-                    runLeft.Is_valid() &&
-                    runRightForwardDiagonal.Is_valid() &&
-                    runLeftForwardDiagonal.Is_valid() &&
-                    runRightBackDiagonal.Is_valid() &&
-                    runLeftBackDiagonal.Is_valid() &&
-                    attack.Is_valid();
+            return  model.IsValid() &&
+                    skinnedShader.IsValid() &&
+                    idle.IsValid() &&
+                    runForward.IsValid() &&
+                    runBackward.IsValid() &&
+                    runRight.IsValid() &&
+                    runLeft.IsValid() &&
+                    runRightForwardDiagonal.IsValid() &&
+                    runLeftForwardDiagonal.IsValid() &&
+                    runRightBackDiagonal.IsValid() &&
+                    runLeftBackDiagonal.IsValid() &&
+                    attack.IsValid();
         }
 
     };

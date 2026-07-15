@@ -1,7 +1,6 @@
 #include "internal/graphics/model_importer/glb_importer.h"
 #include "internal/graphics/model_importer/model_import_types.h"
 
-#include "ddknd/graphics/gfx_type.h"
 
 #include <algorithm>
 #include <cstddef>
@@ -22,9 +21,10 @@ namespace glType = ::ddknd::graphics::internal::types;
 using ModelImportData = glType::ModelImportData;
 using ImportNode = glType::ImportNode;
 using ImportPrimitive = glType::ImportPrimitive;
-using Vertex = glType::Vertex;
 using ImportChannel = glType::ImportChannel;
 using ChannelType = glType::ChannelType;
+
+using Vertex = ddknd::graphics::types::Vertex;
 
 namespace math = ::ddknd::math;
 using Vec2f = math::Vec2f;
@@ -137,13 +137,19 @@ namespace
         math::TRS trs{};
 
         if (n->has_translation)
+        {
             trs.translation = {n->translation[0], n->translation[1], n->translation[2]};
+        }
 
         if (n->has_rotation)
+        {
             trs.rotation = {n->rotation[3], n->rotation[0], n->rotation[1], n->rotation[2]};
+        }
 
         if (n->has_scale)
+        {
             trs.scale = {n->scale[0], n->scale[1], n->scale[2]};
+        }
 
         return trs;
     }
@@ -152,15 +158,19 @@ namespace
     template <class T>
     int IndexOf(const T* base, std::size_t count, const T* ptr)
     {
-        if (!ptr)
+        if (!ptr) 
+        {
             return -1;
+        }
 
         for (std::size_t i = 0; i < count; ++i)
         {
             if (&base[i] == ptr)
             {
                 if (i > static_cast<std::size_t>(std::numeric_limits<int>::max()))
+                {
                     return -1;
+                }
 
                 return static_cast<int>(i);
             }
@@ -177,12 +187,16 @@ namespace
         size = 0;
 
         if (!img || !img->buffer_view)
+        {
             return false;
+        }
 
         const cgltf_buffer_view* bv = img->buffer_view;
 
         if (!bv->buffer || !bv->buffer->data)
+        {
             return false;
+        }
 
         // validate the buffer-view range before exposing a pointer into cgltf-owned memory.
         const std::size_t bufferSize = static_cast<std::size_t>(bv->buffer->size);
@@ -190,9 +204,13 @@ namespace
         const std::size_t length = static_cast<std::size_t>(bv->size);
 
         if (offset > bufferSize)
+        {
             return false;
+        }
         if (length > bufferSize - offset)
+        {
             return false;
+        }
 
         const unsigned char* base = static_cast<const unsigned char*>(bv->buffer->data);
 
@@ -205,7 +223,9 @@ namespace
     std::optional<glType::ImportIndex> ToImportIndex(int index)
     {
         if (index < 0)
+        {
             return std::nullopt;
+        }
 
         return static_cast<glType::ImportIndex>(index);
     }
@@ -302,11 +322,11 @@ namespace
             {
                 if (static_cast<std::string>(src.mime_type) == "image/jpeg")
                 {
-                    dst.mimeType = ddknd::graphics::types::MimeType::jpeg;
+                    dst.mimeType = ddknd::graphics::internal::types::MimeType::jpeg;
                 }
                 else if (static_cast<std::string>(src.mime_type) == "image/png")
                 {
-                    dst.mimeType = ddknd::graphics::types::MimeType::png;
+                    dst.mimeType = ddknd::graphics::internal::types::MimeType::png;
                 }
             }
             else
@@ -433,10 +453,14 @@ namespace
 
             dst.parent = -1;
             if (src->mesh)
+            {
                 dst.mesh = IndexOf(g->meshes, g->meshes_count, src->mesh);
+            }
 
             if (src->skin)
+            {
                 dst.skin = IndexOf(g->skins, g->skins_count, src->skin);
+            }
 
             dst.localMatrix = ReadNodeLocalMatrix(src);
             dst.localTRS = ReadNodeLocalTRS(src);
@@ -483,7 +507,9 @@ namespace
 
                 int nodeIndex = IndexOf(g->nodes, g->nodes_count, root);
                 if (nodeIndex < 0)
+                {
                     continue;
+                }
 
                 dst.rootNodes.push_back(nodeIndex);
             }
@@ -541,7 +567,10 @@ namespace
         }
 
         if (!acc_pos)
+        {
             return -1;
+        }
+        
         auto positions = ReadVec3(acc_pos);
         auto normals = acc_normal ? ReadVec3(acc_normal) : std::vector<Vec3f>{};
         auto uvs = acc_uv ? ReadVec2(acc_uv) : std::vector<Vec2f>{};
@@ -558,15 +587,25 @@ namespace
             v.pos = positions[i];
 
             if (!normals.empty())
+            {
                 v.normal = normals[i];
+            }
             if (!uvs.empty())
+            {
                 v.texCoords = uvs[i];
+            }
             if (!tangents.empty())
+            {
                 v.tangent = tangents[i];
+            }
             if (!joints.empty())
+            {
                 v.joints = joints[i];
+            }
             if (!weights.empty())
+            {
                 v.weights = weights[i];
+            }
 
             dst.vertices[i] = v;
         }
@@ -662,7 +701,9 @@ namespace
                 // read: srcPrim.attributes / srcPrim.indices / srcPrim.material
                 int primitiveIndex = ReadPrimitives(g, srcPrim, out);
                 if (primitiveIndex >= 0)
+                {
                     dstMesh.primitives.push_back(primitiveIndex);
+                }
             }
         }
     }
@@ -684,13 +725,17 @@ namespace
                 const cgltf_animation_channel& srcCh = srcAnim->channels[ci];
 
                 if (!srcCh.target_node || !srcCh.sampler)
+                {
                     continue;
+                }
 
                 ImportChannel ch{};
                 ch.targetNode = IndexOf(g->nodes, g->nodes_count, srcCh.target_node); // nodeIdx
 
                 if (ch.targetNode < 0)
+                {
                     continue;
+                }
 
                 switch (srcCh.target_path)
                 {
@@ -710,7 +755,9 @@ namespace
                 const cgltf_animation_sampler& sampler = *srcCh.sampler;
 
                 if (!sampler.input || !sampler.output)
+                {
                     continue;
+                }
 
                 ch.times.resize(sampler.input->count);
                 for (cgltf_size i = 0; i < sampler.input->count; i++)
@@ -760,20 +807,20 @@ namespace ddknd::graphics::internal
         spdlog::debug("model path={}", path);
         if (cgltf_parse_file(&options, path.c_str(), &g) != cgltf_result_success || !g)
         {
-            spdlog::warn("[CgltfImporter]: Parse information creation failure\n");
+            spdlog::error("[CgltfImporter]: Parse information creation failure\n");
             return std::nullopt;
         }
 
         if (cgltf_load_buffers(&options, g, path.c_str()) != cgltf_result_success)
         {
-            spdlog::warn("[CgltfImporter]: Failed to read data from file\n");
+            spdlog::error("[CgltfImporter]: Failed to read data from file\n");
             cgltf_free(g);
             return std::nullopt;
         }
 
         if (cgltf_validate(g) != cgltf_result_success)
         {
-            spdlog::warn("[CgltfImporter]: Invalid glTF");
+            spdlog::error("[CgltfImporter]: Invalid glTF");
             cgltf_free(g);
             return std::nullopt;
         }

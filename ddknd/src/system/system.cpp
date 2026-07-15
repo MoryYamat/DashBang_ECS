@@ -8,6 +8,7 @@
 
 #include <ddknd/ecs/ecs.h>
 #include <ddknd/graphics/gfx_asset_loader.h>
+#include <ddknd/graphics/renderer.h>
 
 #include <ddknd/system/lifetime_system.h>
 

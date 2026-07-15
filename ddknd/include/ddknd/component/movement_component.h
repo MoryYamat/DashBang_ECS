@@ -11,4 +11,4 @@ namespace ddknd::component
         Vec3f linear{0.0f, 0.0f, 0.0f};
         Vec3f angular{0.0f, 0.0f, 0.0f};
     };
-}
+} // namespace ddknd::component

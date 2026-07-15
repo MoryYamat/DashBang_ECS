@@ -106,7 +106,7 @@ namespace ddknd::debug
     struct DebugContext
     {
         const ::ddknd::system::FrameContext* frame = nullptr;
-        ::ddknd::graphics::DebugDrawList* debugDraw = nullptr;
+        graphics::debug::DebugDrawList* debugDraw = nullptr;
         const DebugConfig* config = nullptr;
         const DebugDrawResources* resources = nullptr;
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <ddknd/graphics/renderer.h>
 #include <ddknd/window/window_fwd.h>
 #include <ddknd/input/input_fwd.h>
 #include <ddknd/graphics/graphics_fwd.h>
@@ -16,11 +15,6 @@
 
 #include <memory>
 
-// // fwd
-// namespace ddknd::component
-// {
-//     struct DebugCameraControllerComponent;
-// } 
 
 namespace app
 {
@@ -31,7 +25,7 @@ namespace app
             ~App();
 
             App(const App&) = delete;
-            App& operator=(App&) = delete;
+            App& operator=(const App&) = delete;
 
             App(App&&) = delete;
             App& operator=(App&&) = delete;
@@ -59,7 +53,7 @@ namespace app
             std::unique_ptr<::ddknd::input::InputMapping> inputMapping_;
             std::unique_ptr<::ddknd::input::ActionInputSystem> inputSys_;
 
-            std::unique_ptr<::ddknd::graphics::DebugDrawList> debugDraw_;
+            std::unique_ptr<::ddknd::graphics::debug::DebugDrawList> debugDraw_;
 
             // assets
             std::unique_ptr<::ddknd::asset::AssetManager> assetMgr_;
@@ -71,7 +65,8 @@ namespace app
             std::unique_ptr<::ddknd::ecs::World> world_;
             std::unique_ptr<::app::scene::GameScene> scene_;
 
-            // @TODO: temporary owner of per-frame event buffers. these should eventually live in a generic EventManager / ResourceStorage
+            // TODO: temporary owner of per-frame event buffers. 
+            // these should eventually live in a generic EventManager / ResourceStorage
             std::unique_ptr<ddknd::event::HitboxHitEventBuffer> hitboxHitEvents_;
 
             // Systems

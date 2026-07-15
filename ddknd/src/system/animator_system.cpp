@@ -1,6 +1,5 @@
 #include <ddknd/system/animator_system.h>
 
-#include <ddknd/graphics/gfx_type.h>
 
 #include <ddknd/component/gfx_component.h>
 #include <ddknd/graphics/animation.h>

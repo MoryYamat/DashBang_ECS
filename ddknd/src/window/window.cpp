@@ -57,7 +57,7 @@ namespace ddknd::window
             impl_->handle = nullptr;
         }
 
-        spdlog::info("window destructed");
+        spdlog::debug("window destructed");
     }
 
     Window::Window(Window&& o) noexcept
@@ -123,7 +123,7 @@ namespace ddknd::window
 
         glfwSetFramebufferSizeCallback(impl_->handle, framebuffer_size_callback);
 
-        spdlog::info("success init");
+        spdlog::debug("success init");
         impl_->initialized = true;
     }
 

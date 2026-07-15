@@ -2,7 +2,6 @@
 
 
 #include <ddknd/graphics/gfx_asset_loader.h>
-#include <ddknd/graphics/gfx_type.h>
 #include <ddknd/graphics/renderer.h>
 
 #include <ddknd/component/gfx_component.h>
@@ -125,7 +124,7 @@ namespace ddknd::system
 
             const auto materialDrawData = BuildMaterialDrawData(materialResource, graphicsStore);
 
-            renderer.Submit(::ddknd::graphics::SkinnedDrawCommand{  .mesh = prim.prim,
+            renderer.Submit(::ddknd::graphics::SkinnedDrawCommand{  .mesh = prim.primitive,
                                                                     .shader = shader->program,
                                                                     .modelMatrix = transformComp.worldMatrix,
                                                                     .skinMatrices = poseComp.pose.skinMatrices,

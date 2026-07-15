@@ -1,15 +1,8 @@
 #pragma once
 
-#include "ddknd/asset/asset_fwd.h"
-#include <cstdint>
-
-#include "ddknd/graphics/gfx_type.h"
+#include "ddknd/graphics/type/animation_types.h"
 #include "ddknd/math/math.h"
 
-
-/**
-* @brief: Runtime Data for object rendering
-*/
 namespace ddknd::component
 {
     struct TransformComponent
@@ -35,21 +28,16 @@ namespace ddknd::component
     {
         ::ddknd::animation::types::Pose pose;
     };
-} // namespace ddknd::component
 
-
-/**
-* @brief: Camera Data
-*/
-namespace ddknd::component
-{
     enum class ProjectionType
     {
         Perspective,
         Orthographic
     };
 
-    struct MainCameraTag{};
+    struct MainCameraTag
+    {
+    };
 
     struct CameraLookComponent
     {
@@ -77,14 +65,7 @@ namespace ddknd::component
         math::Mat4f proj;
         math::Mat4f viewProj;
     };
-} // namespace ddknd::component
 
-
-/**
-* @brief: AssetID
-*/
-namespace ddknd::component
-{
     struct SkinnedModelComponent
     {
         asset::AssetID<asset::tag::Model> model;
@@ -94,4 +75,5 @@ namespace ddknd::component
     {
         asset::AssetID<asset::tag::Shader> shader;
     };
-}
+
+} // namespace ddknd::component

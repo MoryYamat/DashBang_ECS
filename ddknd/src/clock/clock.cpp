@@ -1,8 +1,7 @@
 #include "ddknd/clock/clock.h"
 
 #include <algorithm>
-#include <cstdint>
-
+#include <cstddef>
 
 namespace ddknd::clock
 {
@@ -54,7 +53,6 @@ namespace ddknd::clock
         const float position = percentile * static_cast<float>(count - 1);
         const std::size_t index = static_cast<std::size_t>(std::ceil(position));
 
-        // deref
         return *(first + index);
     }
 

@@ -3,7 +3,7 @@
 #include <algorithm>
 
 #include "ddknd/component/gfx_component.h"
-#include "ddknd/component/debug_camera_component.h"
+#include "ddknd/component/debug_camera_component.h"     // required for debug_ member
 #include "ddknd/input/input.h"
 #include "ddknd/math/math.h"
 

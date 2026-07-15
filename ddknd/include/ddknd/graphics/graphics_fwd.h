@@ -9,13 +9,28 @@ namespace ddknd::graphics
     std::unique_ptr<IRendererBackend> CreateOpenGLBackend(const OpenGLBackendDesc& desc);
 
     class RendererSystem;
-    class DebugDrawList;
     struct RenderCamera;
 
     class GraphicsAssetStore;
     class GraphicsAssetLoader;
 
 } // namespace ddknd::graphics
+
+namespace ddknd::graphics::types
+{
+    struct PrimitiveKey;
+    struct PrimitiveCreateData;
+}
+
+namespace ddknd::graphics::debug
+{
+    struct DebugTextDrawCommand;
+    struct DebugLineDrawCommand;
+    struct DebugTextCommand;
+    struct DebugLineCommand;
+    struct DebugAxisColors;
+    class DebugDrawList;
+} // namespace ddknd::graphics::debug
 
 namespace ddknd::graphics::asset
 {
@@ -24,16 +39,16 @@ namespace ddknd::graphics::asset
     struct PrimitiveResource;
     struct ModelRenderResource;
     struct FontResource;
-}// namespace ddknd::graphics::asset
+} // namespace ddknd::graphics::asset
 
 namespace ddknd::animation
 {
     class AnimationAssetStore;
-}// namespace ddknd::animation
+} // namespace ddknd::animation
 
 namespace ddknd::animation::types
 {
     struct AnimationClipResource;
     struct SkeletonResource;
     struct Pose;
-}// namespace ddknd::animation::types
+} // namespace ddknd::animation::types

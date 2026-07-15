@@ -1,8 +1,7 @@
 #include "ddknd/graphics/debug_animation.h"
 #include "ddknd/graphics/animation.h"
-#include "ddknd/graphics/gfx_type.h"
 
-#include "ddknd/graphics/renderer.h"
+#include "ddknd/graphics/debug_draw.h"
 #include "ddknd/math/math.h"
 
 #include <ddknd/component/gfx_component.h>
@@ -11,7 +10,7 @@
 
 namespace ddknd::animation::debug
 {
-    void SkeletonDebugDrawSystem::UpdateOne(::ddknd::graphics::DebugDrawList& debugDraw,
+    void SkeletonDebugDrawSystem::UpdateOne(::ddknd::graphics::debug::DebugDrawList& debugDraw,
                                             const ::ddknd::component::SkinnedModelComponent& modelComp,
                                             const ::ddknd::component::PoseComponent& poseComp,
                                             const ::ddknd::component::TransformComponent& transformComp,
@@ -33,7 +32,7 @@ namespace ddknd::animation::debug
     }
 
     void TestAnimatorSystemUpdate(const animation::types::SkeletonResource& skeleton, animation::types::Pose& pose,
-                                  graphics::DebugDrawList& draw)
+                                  graphics::debug::DebugDrawList& draw)
     {
         using namespace math;
         for (std::size_t i = 0; i < skeleton.bones.size(); i++)
@@ -49,7 +48,7 @@ namespace ddknd::animation::debug
         }
     }
 
-    void DrawSkeleton(::ddknd::graphics::DebugDrawList& debugDraw, 
+    void DrawSkeleton(::ddknd::graphics::debug::DebugDrawList& debugDraw, 
                       const ::ddknd::animation::types::SkeletonResource& skeleton, 
                       const ::ddknd::animation::types::Pose& pose,
                       const ::ddknd::math::Mat4f& modelMatrix, 

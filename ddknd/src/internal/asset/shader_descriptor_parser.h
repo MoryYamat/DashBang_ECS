@@ -37,7 +37,6 @@ namespace ddknd::asset::parser
     // trim space / return / carrage return 
 	std::string_view Trim(std::string_view s);
 
-	// find values
 	const std::vector<std::string>* find_values(const KeyValueDoc& doc, std::string_view key);
 
 }// namespace ddknd::graphics

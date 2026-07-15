@@ -30,4 +30,4 @@ namespace ddknd::component
         float radius = 0.5f;
         ddknd::math::Vec3f localOffset{0.0f, 0.0f, 0.0f};
     };
-}
+} // namespace ddknd::component

@@ -1,6 +1,5 @@
 #pragma once
 
-
 namespace ddknd::component
 {
     struct TransformComponent;
@@ -16,4 +15,4 @@ namespace ddknd::component
     struct PoseComponent;
 
     struct DebugCameraControllerComponent;
-}
+} // namespace ddknd::component

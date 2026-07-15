@@ -346,7 +346,9 @@ namespace ddknd::input
         {
             auto action_to_index = ActionToIndex(action);
             if (action_to_index >= action_to_id_.size())
+            {
                 action_to_id_.resize(action_to_index + 1, InvalidID);
+            }
 
             id_type id = action_to_id_[action_to_index];
 
@@ -383,7 +385,9 @@ namespace ddknd::input
 
             const auto axisIdx = static_cast<std::size_t>(axis);
             if (axisIdx >= mouse_axis_to_action_.size())
+            {
                 mouse_axis_to_action_.resize(axisIdx + 1, InvalidID);
+            }
             mouse_axis_to_action_[axisIdx] = id;
 
             return true;
@@ -409,7 +413,9 @@ namespace ddknd::input
 
             const auto mouseButtonIdx = static_cast<std::size_t>(mouseButton);
             if (mouseButtonIdx >= mouse_button_to_action_.size())
+            {
                 mouse_button_to_action_.resize(mouseButtonIdx + 1, InvalidID);
+            }
             mouse_button_to_action_[mouseButtonIdx] = id;
 
             return true;
@@ -421,7 +427,9 @@ namespace ddknd::input
             const auto actionValue = ActionToIndex(action);
 
             if (actionValue >= action_to_id_.size())
+            {
                 return InvalidID;
+            }
 
             return action_to_id_[actionValue];
         }
@@ -429,7 +437,9 @@ namespace ddknd::input
         key_type GetKey(id_type id) const
         {
             if (static_cast<std::size_t>(id) >= id_to_key_.size())
+            {
                 return InvalidKey;
+            }
 
             return id_to_key_[id];
         }
@@ -437,7 +447,9 @@ namespace ddknd::input
         id_type GetActionFromKey(key_type key) const
         {
             if (!IsValidKey(key))
+            {
                 return InvalidID;
+            }
 
             return key_to_action_[KeyToIndex(key)];
         }
@@ -451,7 +463,9 @@ namespace ddknd::input
         {
             const auto idx = static_cast<std::size_t>(axis);
             if (idx >= mouse_axis_to_action_.size())
+            {
                 return InvalidID;
+            }
 
             return mouse_axis_to_action_[idx];
         }
@@ -460,7 +474,9 @@ namespace ddknd::input
         {
             const auto idx = static_cast<std::size_t>(button);
             if(idx >= mouse_button_to_action_.size())
+            {
                 return InvalidID;
+            }
             return mouse_button_to_action_[idx];
         }
 

@@ -15,10 +15,6 @@ namespace ddknd::system
         const auto& pos = transform.localTRS.translation;
         const auto target = pos + look.forward;
 
-        // for debugging
-        // std::cerr << "pos " << pos << "\n";
-        // std::cerr << "target " << target << "\n";
-
         matrices.view = math::LookAtOpenGLRH(pos, target, look.up);
 
         if (projection.projectionType == component::ProjectionType::Perspective)

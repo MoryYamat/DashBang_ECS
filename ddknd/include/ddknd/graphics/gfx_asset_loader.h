@@ -1,14 +1,12 @@
 #pragma once
 
-#include "ddknd/asset/asset_fwd.h"
-#include "ddknd/asset/asset_manager.h"
-#include "ddknd/asset/asset_tag.h"
-#include "ddknd/graphics/graphics_fwd.h"
-// #include "ddknd/graphics/model_data.h"
-#include "ddknd/graphics/renderer.h"
-#include "ddknd/io/io.h"
-#include "ddknd/io/io_fwd.h"
-#include "gfx_type.h"
+#include <ddknd/asset/asset_fwd.h>
+#include <ddknd/asset/asset_manager.h>
+#include <ddknd/asset/asset_tag.h>
+#include <ddknd/graphics/graphics_fwd.h>
+#include <ddknd/graphics/type/gfx_resource_types.h>
+#include <ddknd/io/io.h>
+#include <ddknd/io/io_fwd.h>
 
 namespace ddknd::animation
 {

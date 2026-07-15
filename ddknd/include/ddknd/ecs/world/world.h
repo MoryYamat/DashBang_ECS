@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include "ddknd/ecs/entity/entity_fwd.h"
-#include "ddknd/ecs/registry/registry_fwd.h"
+#include <ddknd/ecs/entity/entity_fwd.h>
+#include <ddknd/ecs/registry/registry_fwd.h>
 
 namespace ddknd::ecs
 {

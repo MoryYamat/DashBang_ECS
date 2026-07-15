@@ -9,11 +9,11 @@
 namespace ddknd::animation::debug
 {
     void TestAnimatorSystemInit(animation::types::Pose& pose, const animation::types::SkeletonResource& skeleton);
-    void TestAnimatorSystemUpdate(graphics::DebugDrawList& draw, const animation::types::SkeletonResource& skeleton, animation::types::Pose& pose);
+    void TestAnimatorSystemUpdate(graphics::debug::DebugDrawList& draw, const animation::types::SkeletonResource& skeleton, animation::types::Pose& pose);
 
     struct SkeletonDebugDrawSystem
     {
-        static void UpdateOne(::ddknd::graphics::DebugDrawList& debugDraw,
+        static void UpdateOne(graphics::debug::DebugDrawList& debugDraw,
                               const ::ddknd::component::SkinnedModelComponent& modelComp,
                               const ::ddknd::component::PoseComponent& poseComp,
                               const ::ddknd::component::TransformComponent& transformComp,
@@ -21,9 +21,9 @@ namespace ddknd::animation::debug
                               const ::ddknd::math::Vec4f& color);
     };
 
-    void DrawSkeleton(::ddknd::graphics::DebugDrawList& debugDraw, 
-                      const ::ddknd::animation::types::SkeletonResource& skeleton, 
-                      const ::ddknd::animation::types::Pose& pose,
-                      const ::ddknd::math::Mat4f& modelMatrix, 
-                      const ::ddknd::math::Vec4f& color);
+    void DrawSkeleton(graphics::debug::DebugDrawList& debugDraw, 
+                      const ddknd::animation::types::SkeletonResource& skeleton, 
+                      const ddknd::animation::types::Pose& pose,
+                      const ddknd::math::Mat4f& modelMatrix, 
+                      const ddknd::math::Vec4f& color);
 } // namespace ddknd::animation::debug

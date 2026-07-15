@@ -1,6 +1,6 @@
 #include <ddknd/input/input.h>
 
-
+#include <iostream>
 
 int failures = 0;
 

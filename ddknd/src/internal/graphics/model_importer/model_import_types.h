@@ -14,25 +14,9 @@
 // importer/loader intermediate products
 namespace ddknd::graphics::internal::types
 {
-    
-    // for loading
-    struct Vertex
-    {
-        using Vec2f = ::ddknd::math::Vec2f;     // 8byte
-        using Vec3f = ::ddknd::math::Vec3f;     // 12byte
-        using Vec4f = ::ddknd::math::Vec4f;     // 16byte
-        using uVec4 = ::ddknd::math::uVec4;     // 16byte
 
-        Vec3f pos;
-        Vec3f normal;
-        Vec2f texCoords;
-        Vec4f tangent;// (x,y,z,w): xyz + w(sign)
-
-        uVec4 joints;
-        Vec4f weights;
-    };    
-    
     enum class ChannelType : std::uint8_t { Unknown, T, R, S};
+
 
     struct ImportChannel
     {
@@ -82,7 +66,7 @@ namespace ddknd::graphics::internal::types
 
     struct ImportPrimitive
     {
-        std::vector<Vertex> vertices;
+        std::vector<ddknd::graphics::types::Vertex> vertices;
         std::vector<std::uint32_t> indices;
 
         int material = -1;// -1: Default invalid value

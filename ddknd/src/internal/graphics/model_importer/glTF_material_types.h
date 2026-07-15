@@ -6,7 +6,8 @@
 #include <vector>
 
 
-#include "ddknd/graphics/gfx_type.h"
+#include "ddknd/graphics/type/gfx_resource_types.h"
+#include "ddknd/graphics/type/gpu_types.h"
 #include "ddknd/math/math.h"
 
 
@@ -14,11 +15,17 @@ namespace ddknd::graphics::internal::types
 {
     using ImportIndex = std::uint32_t;
 
+    enum class MimeType
+    {
+        jpeg,
+        png
+    };
+
     struct ImportImage
     {
         std::string name;
         std::string uri;
-        std::optional<::ddknd::graphics::types::MimeType> mimeType;
+        std::optional<MimeType> mimeType;
 
         std::vector<std::uint8_t> encodedBytes; // PNG/JPEG's encoded bytes
     };

@@ -1,5 +1,4 @@
-#include "ddknd/graphics/gfx_type.h"
-#include "ddknd/graphics/renderer.h"
+#include "ddknd/graphics/renderer_backend.h"
 
 #include <cstddef>
 #include <memory>
@@ -26,7 +25,7 @@ namespace
         const char* stage_name = stage == GL_VERTEX_SHADER     ? "VERTEX"
                                  : stage == GL_FRAGMENT_SHADER ? "FRAGMENT"
                                                                : "OTHER";
-        spdlog::info("{} shader source size: {}", stage_name, src.size());
+        spdlog::debug("{} shader source size: {}", stage_name, src.size());
 
         GLuint sh = glCreateShader(stage);
         const char* p = src.data();
@@ -211,7 +210,7 @@ namespace ddknd::graphics
 
         // internal
         using ImportPrimitive = ::ddknd::graphics::internal::types::ImportPrimitive;
-        using Vertex = ::ddknd::graphics::internal::types::Vertex;
+        using Vertex = ::ddknd::graphics::types::Vertex;
 
         using PrimitiveTag = ::ddknd::graphics::tag::PrimitiveTag;
         using PrimitiveKey = ::ddknd::graphics::types::PrimitiveKey;
@@ -283,12 +282,12 @@ namespace ddknd::graphics
             }
 
             // To debug a memory leak
-            // spdlog::info("[OpenGLRendererBackend] destructor begin");
-            // spdlog::info("[OpenGLRendererBackend] programs={}", programs_.size());
-            // spdlog::info("[OpenGLRendererBackend] prims={}", prims_.size());
-            // spdlog::info("[OpenGLRendererBackend] textures={}", textures_.size());
+            // spdlog::debug("[OpenGLRendererBackend] destructor begin");
+            // spdlog::debug("[OpenGLRendererBackend] programs={}", programs_.size());
+            // spdlog::debug("[OpenGLRendererBackend] prims={}", prims_.size());
+            // spdlog::debug("[OpenGLRendererBackend] textures={}", textures_.size());
             // existing delete code...
-            // spdlog::info("[OpenGLRendererBackend] destructor end");
+            // spdlog::debug("[OpenGLRendererBackend] destructor end");
         }
 
         types::GPUID<tag::ShaderProgramGPUTag> CreateShaderProgram(std::string_view vs_source,
@@ -328,7 +327,7 @@ namespace ddknd::graphics
 
         void DestroyShaderProgram(types::GPUID<tag::ShaderProgramGPUTag> id) override
         {
-            if (!id.Is_valid())
+            if (!id.IsValid())
                 return;
 
             const auto idx = static_cast<std::size_t>(id.Value());
@@ -344,7 +343,7 @@ namespace ddknd::graphics
 
         void UseShaderProgram(types::GPUID<tag::ShaderProgramGPUTag> id) override
         {
-            if (!id.Is_valid())
+            if (!id.IsValid())
             {
                 spdlog::error("UseShaderProgram: invalid shader id");
                 return;
@@ -392,7 +391,7 @@ namespace ddknd::graphics
 
         void DestroyMesh(types::GPUID<tag::PrimitiveTag> id) override
         {
-            if (!id.Is_valid())
+            if (!id.IsValid())
             {
                 spdlog::error("OpenGLBackend::DestroyMesh:");
                 return;
@@ -410,7 +409,7 @@ namespace ddknd::graphics
 
         void BindPrimitive(GPUID<PrimitiveTag> id) override
         {
-            if (!id.Is_valid())
+            if (!id.IsValid())
             {
                 spdlog::error("BindPrimitive: invalid primitive id");
                 return;
@@ -434,13 +433,13 @@ namespace ddknd::graphics
             glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
         }
 
-        GPUID<PrimitiveTag> CreateOrGetPrimitive(const ImportPrimitive& import, const PrimitiveKey& key) override
+        GPUID<PrimitiveTag> CreateOrGetPrimitive(const ddknd::graphics::types::PrimitiveCreateData& import, const PrimitiveKey& key) override
         {
             if (const auto it = primitiveCache_.find(key); it != primitiveCache_.end())
                 return it->second;
 
             const auto id = buildPrimitiveGPUResource(import);
-            if (!id.Is_valid())
+            if (!id.IsValid())
                 return GPUID<PrimitiveTag>::Invalid();
 
             primitiveCache_.emplace(key, id);
@@ -529,7 +528,7 @@ namespace ddknd::graphics
 
         void DestroyTexture(GPUID<tag::TextureGPUTag> id) override
         {
-            if (!id.Is_valid())
+            if (!id.IsValid())
                 return;
 
             const auto idx = static_cast<std::size_t>(id.Value());
@@ -544,7 +543,7 @@ namespace ddknd::graphics
         }
         void BindTexture2D(GPUID<tag::TextureGPUTag> id, std::uint32_t slot) override
         {
-            if (!id.Is_valid())
+            if (!id.IsValid())
             {
                 return;
             }
@@ -561,7 +560,7 @@ namespace ddknd::graphics
 
         void SetUniformInt(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const int v) override
         {
-            if (!shader.Is_valid())
+            if (!shader.IsValid())
             {
                 spdlog::error("Invalid id");
                 return;
@@ -590,7 +589,7 @@ namespace ddknd::graphics
 
         void SetUniformBool(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const int v) override
         {
-            if (!shader.Is_valid())
+            if (!shader.IsValid())
             {
                 spdlog::error("SetUniformBool: invalid shader id");
                 return;
@@ -691,7 +690,7 @@ namespace ddknd::graphics
 
         void SetUniformVec3(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Vec3f& v) override
         {
-            if (!shader.Is_valid())
+            if (!shader.IsValid())
             {
                 spdlog::error("SetUniformVec3: invalid shader id");
                 return;
@@ -720,7 +719,7 @@ namespace ddknd::graphics
 
         void SetUniformVec4(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, const math::Vec4f& v) override
         {
-            if (!shader.Is_valid())
+            if (!shader.IsValid())
             {
                 spdlog::error("SetUniformVec4: invalid shader id");
                 return;
@@ -823,7 +822,7 @@ namespace ddknd::graphics
         void UpdateScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag> id, std::span<const types::ScreenQuadVertex> vertices,
                                    std::span<const std::uint32_t> indices) override
         {
-            if (!id.Is_valid())
+            if (!id.IsValid())
             {
                 return;
             }
@@ -856,7 +855,7 @@ namespace ddknd::graphics
                                  GPUID<tag::TextureGPUTag> texture, std::uint32_t indexCount, int screenWidth,
                                  int screenHeight) override
         {
-            if (!batchId.Is_valid() || !shader.Is_valid() || !texture.Is_valid())
+            if (!batchId.IsValid() || !shader.IsValid() || !texture.IsValid())
             {
                 return;
             }
@@ -903,7 +902,7 @@ namespace ddknd::graphics
 
         void DestroyScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag> id) override
         {
-            if (!id.Is_valid())
+            if (!id.IsValid())
                 return;
 
             const auto idx = static_cast<std::size_t>(id.Value());
@@ -960,7 +959,7 @@ namespace ddknd::graphics
         }
         void UpdateLineBatch(GPUID<tag::LineBatchTag> id, std::span<const types::LineVertex> vertices) override
         {
-            if (!id.Is_valid())
+            if (!id.IsValid())
                 return;
 
             const auto idx = static_cast<std::size_t>(id.Value());
@@ -986,7 +985,7 @@ namespace ddknd::graphics
         void DrawLineBatch(GPUID<tag::LineBatchTag> id, GPUID<tag::ShaderProgramGPUTag> shader,
                            std::uint32_t vertexCount) override
         {
-            if (!id.Is_valid() || !shader.Is_valid())
+            if (!id.IsValid() || !shader.IsValid())
             {
                 spdlog::error("DrawLineBatch: invalid id or shader");
                 return;
@@ -1026,7 +1025,7 @@ namespace ddknd::graphics
         }
         void DestroyLineBatch(GPUID<tag::LineBatchTag> id) override
         {
-            if (!id.Is_valid())
+            if (!id.IsValid())
                 return;
 
             const auto idx = static_cast<std::size_t>(id.Value());
@@ -1053,7 +1052,7 @@ namespace ddknd::graphics
 
         GLuint try_get_program_handle(types::GPUID<tag::ShaderProgramGPUTag> id) const noexcept
         {
-            if (!id.Is_valid())
+            if (!id.IsValid())
                 return 0;
 
             const auto idx = static_cast<std::size_t>(id.Value());
@@ -1062,7 +1061,7 @@ namespace ddknd::graphics
             return programs_[idx];
         }
 
-        GPUID<PrimitiveTag> buildPrimitiveGPUResource(const ImportPrimitive& import);
+        GPUID<PrimitiveTag> buildPrimitiveGPUResource(const ddknd::graphics::types::PrimitiveCreateData& import);
 
         struct GLPrimitive
         {
@@ -1102,7 +1101,7 @@ namespace ddknd::graphics
 
     // builder
     ::ddknd::graphics::types::GPUID<::ddknd::graphics::tag::PrimitiveTag> OpenGLRendererBackend::
-        buildPrimitiveGPUResource(const ImportPrimitive& import)
+        buildPrimitiveGPUResource(const ddknd::graphics::types::PrimitiveCreateData& import)
     {
         if (import.vertices.empty() || import.indices.empty())
             return GPUID<::ddknd::graphics::tag::PrimitiveTag>::Invalid();

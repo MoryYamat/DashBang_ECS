@@ -1,10 +1,14 @@
 #include "ddknd/graphics/animation.h"
 
-#include "ddknd/graphics/gfx_type.h"
+#include "ddknd/graphics/type/animation_types.h"
 #include "ddknd/math/math.h"
 
+#include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <cstddef>
+#include <cstdint>
+#include <vector>
 
 namespace
 {
@@ -13,7 +17,9 @@ namespace
                            const ddknd::animation::types::SkeletonResource& skeleton)
     {
         if (computed[boneIndex] == 1)
+        {
             return;
+        }
 
         const int parent = skeleton.bones[boneIndex].parent;
         if (parent < 0)
@@ -33,29 +39,39 @@ namespace
     int FindKeyFrame(const std::vector<float>& times, float t)
     {
         if (times.size() <= 1)
+        {
             return 0;
+        }
 
         auto it = std::lower_bound(times.begin(), times.end(), t);
 
         if (it == times.begin())
+        {
             return 0;
+        }
 
         if (it == times.end())
+        {
             return static_cast<int>(times.size()) - 2;
+        }
 
         return static_cast<int>(it - times.begin()) - 1;
     }
 
-    // interpolation coefficient
     float ComputeAlpha(const std::vector<float>& times, int index, float t)
     {
         if (times.size() <= 1)
+        {
             return 0.f;
+        }
+
         const float t0 = times[index];
         const float t1 = times[index + 1];
         const float dt = t1 - t0;
         if (dt <= 0.0f)
+        {
             return 0.0f;
+        }
 
         return (t - t0) / dt;
     }
@@ -80,9 +96,10 @@ namespace
             cosTheta = -cosTheta;
         }
 
-        constexpr float epsilon = 1e-5f;
+        // Clamp floating-point error before passing the value to acos().
+        cosTheta = std::clamp(cosTheta, 0.0f, 1.0f);
 
-        if (cosTheta > 1.0f - epsilon)
+        if (cosTheta > 1.0f - ddknd::math::kEpsilon<float>)
         {
             Quatf out{a.w * (1.0f - t) + b.w * t, a.x * (1.0f - t) + b.x * t, a.y * (1.0f - t) + b.y * t,
                       a.z * (1.0f - t) + b.z * t};
@@ -95,22 +112,25 @@ namespace
         const float sinTheta = std::sin(theta);
 
         const float w0 = std::sin((1.0f - t) * theta) / sinTheta;
-
         const float w1 = std::sin(t * theta) / sinTheta;
 
         Quatf out{a.w * w0 + b.w * w1, a.x * w0 + b.x * w1, a.y * w0 + b.y * w1, a.z * w0 + b.z * w1};
 
         out.Normalize();
         return out;
-    };
+    }
 
     Vec3f SampleVec3(const std::vector<float>& times, const std::vector<Vec3f>& values, float time)
     {
         if (times.empty() || values.empty())
+        {
             return Vec3f::Zero();
+        }
 
         if (times.size() == 1 || values.size() == 1)
+        {
             return values.front();
+        }
 
         const int i = FindKeyFrame(times, time);
         const float alpha = ComputeAlpha(times, i, time);
@@ -121,10 +141,14 @@ namespace
     Quatf SampleQuat(const std::vector<float>& times, const std::vector<Quatf>& values, float time)
     {
         if (times.empty() || values.empty())
+        {
             return Quatf::Identity();
+        }
 
         if (times.size() == 1 || values.size() == 1)
+        {
             return values.front();
+        }
 
         const int i = FindKeyFrame(times, time);
         const float alpha = ComputeAlpha(times, i, time);
@@ -137,6 +161,7 @@ namespace
     {
         auto local = trs.ToMatrix();
 
+        // Apply the skeleton-root node transform that is not stored as a bone.
         if (skeleton.bones[boneIndex].parent < 0)
         {
             return skeleton.skeletonRootTransform * local;
@@ -160,16 +185,7 @@ namespace ddknd::animation
         {
             pose.localTRS[i] = skeleton.bones[i].bindLocalTRS;
 
-            const auto local = pose.localTRS[i].ToMatrix();
-
-            if (skeleton.bones[i].parent < 0)
-            {
-                pose.localMatrices[i] = MakeLocalMatrixForBone(skeleton, i, pose.localTRS[i]);
-            }
-            else
-            {
-                pose.localMatrices[i] = local;
-            }
+            pose.localMatrices[i] = MakeLocalMatrixForBone(skeleton, i, pose.localTRS[i]);
         }
 
         UpdateGlobalPose(pose, skeleton);
@@ -179,7 +195,9 @@ namespace ddknd::animation
                                               float deltaTime)
     {
         if (clip.duration <= 0.0f)
+        {
             return;
+        }
 
         state.time += deltaTime * state.speed;
 
@@ -188,15 +206,21 @@ namespace ddknd::animation
             state.time = std::fmod(state.time, clip.duration);
 
             if (state.time < 0.0f)
+            {
                 state.time += clip.duration;
+            }
         }
         else
         {
             if (state.time < 0.0f)
+            {
                 state.time = 0.0f;
+            }
 
             if (state.time > clip.duration)
+            {
                 state.time = clip.duration;
+            }
         }
     }
 
@@ -217,7 +241,7 @@ namespace ddknd::animation
         pose.globalMatrices.resize(boneCount);
         pose.skinMatrices.resize(boneCount);
 
-        // @ TODO: optimization
+        // TODO: Reuse the computed-state buffer instead of allocating it every update.
         std::vector<std::uint8_t> computed(boneCount, 0);
 
         for (std::size_t i = 0; i < boneCount; ++i)
@@ -227,7 +251,7 @@ namespace ddknd::animation
 
         for (std::size_t i = 0; i < boneCount; ++i)
         {
-            // The initial pose's Model space → the current pose's Model space are being combined.
+            // Transform vertices from bind-pose model space to current model space.
             pose.skinMatrices[i] = pose.globalMatrices[i] * skeleton.bones[i].inverseBindMatrix;
         }
     }
@@ -248,11 +272,13 @@ namespace ddknd::animation
             pose.localTRS[i] = skeleton.bones[i].bindLocalTRS;
         }
 
-        // 2. Apply the animation channel.
+        // 2. Apply the animation channels.
         for (const auto& ch : clip.channels)
         {
             if (ch.bone < 0 || ch.bone >= static_cast<int>(boneCount))
+            {
                 continue;
+            }
 
             auto& trs = pose.localTRS[ch.bone];
 
@@ -269,26 +295,16 @@ namespace ddknd::animation
             case types::ChannelTarget::Scale:
                 trs.scale = SampleVec3(ch.times, ch.vec3Values, time);
                 break;
+            case types::ChannelTarget::Unknown:
+                assert(false && "Unknown animation channel target.");
+                break;
             }
         }
 
-        // 3. TRS -> Matrix
+        // 3. Convert local TRS values to matrices.
         for (std::size_t i = 0; i < boneCount; ++i)
         {
-            math::Mat4f local = pose.localTRS[i].ToMatrix();
-
-            // @TODO:
-            // Consider a cleaner way to handle the transform of a root/armature node that exists
-            // in the glTF node hierarchy but is not included in the skeleton's bone array.
-            // 根本原因: glTF node hierarchy と runtime bone hierarchy が 1:1 ではないこと
-            if (skeleton.bones[i].parent < 0)
-            {
-                pose.localMatrices[i] = MakeLocalMatrixForBone(skeleton, i, pose.localTRS[i]);
-            }
-            else
-            {
-                pose.localMatrices[i] = local;
-            }
+            pose.localMatrices[i] = MakeLocalMatrixForBone(skeleton, i, pose.localTRS[i]);
         }
         UpdateGlobalPose(pose, skeleton);
     }

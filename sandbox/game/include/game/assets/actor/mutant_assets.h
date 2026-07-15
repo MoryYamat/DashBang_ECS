@@ -26,7 +26,7 @@ namespace app::assets::actor
         [[nodiscard]]
         bool IsValid() const noexcept
         {
-            return model.Is_valid() && skinnedShader.Is_valid() && idle.Is_valid();
+            return model.IsValid() && skinnedShader.IsValid() && idle.IsValid();
         }
     };
 

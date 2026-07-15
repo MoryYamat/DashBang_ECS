@@ -118,7 +118,6 @@ namespace ddknd::input
       public:
         explicit GlfwInputBackend(GLFWwindow* window, CallbackState& callbacks) : window_(window)
         {
-            //
             callbacks.keyUser = this;
             callbacks.key = [](void* user, int key, int scancode, int action, int mods)
             {

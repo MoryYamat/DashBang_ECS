@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ddknd/core/StrongID.h"
+#include <ddknd/core/StrongID.h>
 
 namespace ddknd::asset
 {

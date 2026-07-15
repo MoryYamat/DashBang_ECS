@@ -28,7 +28,9 @@ namespace ddknd::graphics::internal
         if(!raw || width <= 0 || height <= 0)
         {
             if(raw)
+            {
                 stbi_image_free(raw);
+            }
             return std::nullopt;
         }
 

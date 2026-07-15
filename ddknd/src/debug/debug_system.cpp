@@ -1,5 +1,9 @@
 #include <ddknd/debug/debug_system.h>
 
+#include "ddknd/graphics/renderer.h"
+#include "ddknd/graphics/debug_draw.h"
+
+
 #include <ddknd/ecs/ecs.h>
 #include <ddknd/system/system.h>
 
@@ -80,7 +84,7 @@ namespace ddknd::debug
 
         if (textShader && ctx.debugDraw->TextIndexCount() > 0)
         {
-            renderer.Submit(::ddknd::graphics::DebugTextDrawCommand{.batch = ctx.debugDraw->TextBatch(),
+            renderer.Submit(ddknd::graphics::DebugTextDrawCommand{.batch = ctx.debugDraw->TextBatch(),
                                                                     .shader = textShader->program,
                                                                     .texture = ctx.debugDraw->FontAtlas(),
                                                                     .indexCount = ctx.debugDraw->TextIndexCount()});
@@ -88,7 +92,7 @@ namespace ddknd::debug
 
         if (lineShader && ctx.debugDraw->LineVertexCount() > 0)
         {
-            renderer.Submit(::ddknd::graphics::DebugLineDrawCommand{.batch = ctx.debugDraw->LineBatch(),
+            renderer.Submit(ddknd::graphics::DebugLineDrawCommand{.batch = ctx.debugDraw->LineBatch(),
                                                                     .shader = lineShader->program,
                                                                     .vertexCount = ctx.debugDraw->LineVertexCount()});
         }
@@ -142,7 +146,7 @@ namespace ddknd::debug
 
         const auto& style = ctx.config->axisStyle;
 
-        ctx.debugDraw->Axis(style.origin, graphics::DebugAxisColors{style.axisX, style.axisY, style.axisZ},
+        ctx.debugDraw->Axis(style.origin, graphics::debug::DebugAxisColors{style.axisX, style.axisY, style.axisZ},
                             style.length);
     }
 

@@ -307,7 +307,7 @@ namespace ddknd::io
                 const bool exists = std::filesystem::exists(rootPath, ec);
                 if (!exists || ec)
                 {
-                    spdlog::warn("[CreateVfsResolver] invalid absolute mount root: scheme={}, root={}, error={}",
+                    spdlog::debug("[CreateVfsResolver] invalid absolute mount root: scheme={}, root={}, error={}",
                                  m.scheme, m.mountRoot.string(), ec.message());
 
                     continue;
@@ -317,7 +317,7 @@ namespace ddknd::io
                 const bool isDirectory = std::filesystem::is_directory(rootPath, ec);
                 if (ec || !isDirectory)
                 {
-                    spdlog::warn(
+                    spdlog::debug(
                         "[CreateVfsResolver] absolute mount root is not a directory: scheme={}, root={}, error={}",
                         m.scheme, m.mountRoot.string(), ec.message());
 
@@ -328,7 +328,7 @@ namespace ddknd::io
                 resolvedRoot = std::filesystem::weakly_canonical(rootPath, ec);
                 if (ec)
                 {
-                    spdlog::warn("[CreateVfsResolver] failed to canonicalize mount root: scheme={}, root={}, error={}",
+                    spdlog::debug("[CreateVfsResolver] failed to canonicalize mount root: scheme={}, root={}, error={}",
                                  m.scheme, m.mountRoot.string(), ec.message());
                     continue;
                 }
@@ -340,12 +340,12 @@ namespace ddknd::io
 
             if (!resolvedRoot)
             {
-                spdlog::warn("[CreateVfsResolver] mount root not found: scheme={}, root={}", m.scheme, m.mountRoot.string());
+                spdlog::debug("[CreateVfsResolver] mount root not found: scheme={}, root={}", m.scheme, m.mountRoot.string());
                 continue;
             }
 
             table.Mount(std::string(m.scheme), *resolvedRoot);
-            spdlog::info("[CreateVfsResolver] mounted scheme={} -> {}", m.scheme, resolvedRoot->string());
+            spdlog::debug("[CreateVfsResolver] mounted scheme={} -> {}", m.scheme, resolvedRoot->string());
         }
 
         return std::make_unique<VfsResolver>(std::move(table));

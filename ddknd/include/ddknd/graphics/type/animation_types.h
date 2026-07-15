@@ -4,7 +4,9 @@
 #include <ddknd/asset/asset_tag.h>
 #include <ddknd/math/math.h>
 
-// =============================runtime=============================
+#include <string>
+#include <vector>
+
 namespace ddknd::animation::types
 {
     template <typename Tag>
@@ -18,10 +20,10 @@ namespace ddknd::animation::types
         std::vector<TRS> localTRS;
         std::vector<Mat4f> localMatrices;
         std::vector<Mat4f> globalMatrices;
-        std::vector<Mat4f> skinMatrices; // lbs?
+        std::vector<Mat4f> skinMatrices;
     };
 
-    struct AnimationState // AssetID<AnimClip> clips
+    struct AnimationState
     {
         AssetID<::ddknd::asset::tag::AnimationClip> clip;
         float time = 0.0f;
@@ -36,7 +38,7 @@ namespace ddknd::animation::types
 
         int parent = -1;
         Mat4f inverseBindMatrix = Mat4f::Identity();
-        Mat4f parentCorrection = Mat4f::Identity(); //
+        Mat4f parentCorrection = Mat4f::Identity();
         Mat4f bindLocalMatrix = Mat4f::Identity();
         TRS bindLocalTRS{};
     };
@@ -51,6 +53,7 @@ namespace ddknd::animation::types
 
     enum class ChannelTarget
     {
+        Unknown,
         Translation,
         Rotation,
         Scale,
@@ -67,7 +70,7 @@ namespace ddknd::animation::types
         using Quatf = ::ddknd::math::Quatf;
 
         int bone = -1;
-        ChannelTarget target;
+        ChannelTarget target = ChannelTarget::Unknown;
 
         std::vector<float> times;
         std::vector<Vec3f> vec3Values;

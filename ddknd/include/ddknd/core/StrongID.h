@@ -18,25 +18,22 @@ namespace ddknd::core
         static_assert(std::is_integral_v<rep_type>, "StrongID<..., Rep>: Rep must be an integral type.");
         static_assert(std::is_unsigned_v<rep_type>, "StrongID<..., Rep>: Rep must be an unsigned integral type.");
 
-        // return invalid value
         static constexpr StrongID Invalid() noexcept
         {
-            return StrongID{invalid_value()};
+            return StrongID{InvalidValue()};
         }
 
-        constexpr StrongID() noexcept : value_(invalid_value()) {}
+        constexpr StrongID() noexcept : value_(InvalidValue()) {}
         explicit constexpr StrongID(rep_type v) noexcept : value_(v) {}
 
-        // return raw value
         constexpr rep_type Value() const noexcept
         {
             return value_;
         }
 
-        // Check if the value is invalid
-        constexpr bool Is_valid() const noexcept
+        constexpr bool IsValid() const noexcept
         {
-            return value_ != invalid_value();
+            return value_ != InvalidValue();
         }
 
         friend constexpr bool operator==(StrongID a, StrongID b) noexcept
@@ -53,7 +50,7 @@ namespace ddknd::core
         }
 
       private:
-        static constexpr rep_type invalid_value()
+        static constexpr rep_type InvalidValue() noexcept
         {
             return std::numeric_limits<rep_type>::max();
         }
@@ -61,7 +58,7 @@ namespace ddknd::core
         rep_type value_;
     };
 
-    // uint64_t: 32bit: gen / 32bit: id
+    // Packs the generation into the upper 32 bits and the index into the lower 32 bits.
     template <typename Tag>
     class HandleID
     {
@@ -74,14 +71,13 @@ namespace ddknd::core
 
         constexpr HandleID(std::uint32_t gen, std::uint32_t index) noexcept : id_(strong_type(pack(gen, index))) {}
 
-        // API
         constexpr rep_type Value() const noexcept
         {
             return id_.Value();
         }
-        constexpr bool Is_valid() const noexcept
+        constexpr bool IsValid() const noexcept
         {
-            return id_.Is_valid();
+            return id_.IsValid();
         }
 
         constexpr std::uint32_t Index() const noexcept
@@ -116,7 +112,7 @@ namespace ddknd::core
         strong_type id_;
     };
 
-    // specialized std::hash function
+    // Hashes an ID by its underlying representation.
     template <typename ID>
     struct StrongIDHasher
     {

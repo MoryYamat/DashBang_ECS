@@ -158,7 +158,9 @@ namespace ddknd::math
             {
                 os << v[i];
                 if (i + 1 < N)
+                {
                     os << ", ";
+                }
             }
 
             os << "]";

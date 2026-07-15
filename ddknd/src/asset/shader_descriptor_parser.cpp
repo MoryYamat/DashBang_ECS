@@ -144,7 +144,7 @@ namespace ddknd::asset::parser
         auto it = doc.values.find(static_cast<std::string>(key));
         if (it == doc.values.end())
         {
-            spdlog::warn("shader descriptor error[find_values]: The value for key: {} does not exist. \n", key);
+            spdlog::debug("shader descriptor error[find_values]: The value for key: {} does not exist. \n", key);
             return nullptr;
         }
         return &it->second;
