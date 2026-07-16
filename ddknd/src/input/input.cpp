@@ -5,20 +5,17 @@
 
 namespace ddknd::input
 {
+    // TODO Add an explicit refresh operation if mappings become mutable at runtime.
+    ActionInputSystem::ActionInputSystem(const Mapping& mappings) : mappings_(mappings)
+    {
+        const auto actionCount = mappings_.GetActionCount();
+        actions_.resize(actionCount);
+        action_values_.resize(actionCount);
+    }
+
+
     void ActionInputSystem::Update(const DeviceInput& input)
     {
-        const auto action_count = mappings_.GetActionCount();
-
-        if (actions_.size() != action_count)
-        {
-            actions_.resize(action_count);
-        }
-
-        if (action_values_.size() != action_count)
-        {
-            action_values_.resize(action_count);
-        }
-
         std::fill(action_values_.begin(), action_values_.end(), 0.0f);
 
         auto setActionValue = [&](id_type actionID, float value)
@@ -69,6 +66,16 @@ namespace ddknd::input
         for (std::size_t i = 0; i < actions_.size(); ++i)
         {
             actions_[i].Update(action_values_[i]);
+        }
+    }
+
+    void ActionInputSystem::Reset()
+    {
+        std::fill(action_values_.begin(), action_values_.end(), 0.0f);
+
+        for(auto& action : actions_)
+        {
+            action.Reset();
         }
     }
 

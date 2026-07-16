@@ -7,6 +7,7 @@
 
 #include <ddknd/asset/asset_id.h>
 #include <ddknd/asset/asset_tag.h>
+#include <ddknd/input/input_fwd.h>
 #include <ddknd/math/math.h>
 
 namespace ddknd::debug
@@ -113,6 +114,8 @@ namespace ddknd::debug
         //float fps = 0.0f;
         FramePerformanceInfo framePerformance{};
     };
+
+    void UpdateDebugConfigFromInput(const ddknd::input::DeviceInput& input, DebugConfig& config);
 
     class DebugSystemRunner
     {

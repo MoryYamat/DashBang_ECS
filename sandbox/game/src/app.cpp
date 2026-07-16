@@ -91,7 +91,6 @@ namespace app
 
         // user definition input
         inputMapping_ = std::make_unique<::ddknd::input::InputMapping>();
-        inputSys_ = std::make_unique<::ddknd::input::ActionInputSystem>(*inputMapping_.get());
 
         //@TODO: make factory class
         using Key = ::ddknd::input::Key;
@@ -106,6 +105,8 @@ namespace app
         inputMapping_->RegisterMouseAxisMap(MouseAxis::DeltaY, Action::CameraLookY);
         inputMapping_->RegisterMouseAxisMap(MouseAxis::WheelY, Action::CameraZoom);
         inputMapping_->RegisterMouseButtonMap(MouseButton::LEFT_CLICK,Action::Attack);
+        
+        inputSys_ = std::make_unique<::ddknd::input::ActionInputSystem>(*inputMapping_.get());
         
         // Debug Draw
         debugDraw_ = std::make_unique<ddknd::graphics::debug::DebugDrawList>(*rendererBackend_);
@@ -243,12 +244,23 @@ namespace app
 
             // ************* Input *************
             deviceInput_->Update();
-            inputSys_->Update(*deviceInput_.get());
+
+            ddknd::debug::UpdateDebugConfigFromInput(*deviceInput_, debugConfig);
             
-            
-            // ************* CAMERA *************
-            deug_cam.Update(deltaSeconds);
-            ddknd::system::DebugCameraSystem::UpdateDebugCamera(debug_camera_transform, *debugCam_);
+            const bool useDebugCamera = debugConfig.camera.overrideMode == ddknd::debug::CameraOverrideMode::DebugCamera;
+            if(useDebugCamera)
+            {
+                inputSys_->Reset();
+
+                // ************* DEBUG CAMERA *************
+                deug_cam.Update(deltaSeconds);
+                ddknd::system::DebugCameraSystem::UpdateDebugCamera(debug_camera_transform, *debugCam_);
+            }
+            else
+            {
+                inputSys_->Update(*deviceInput_.get());
+            }
+
 
             // ************* FRAME CONTEXT *************
             ::ddknd::system::FrameContext frameCtx{.deltaTime = deltaSeconds,

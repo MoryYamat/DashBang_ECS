@@ -1,8 +1,7 @@
 #include <ddknd/debug/debug_system.h>
 
-#include "ddknd/graphics/renderer.h"
 #include "ddknd/graphics/debug_draw.h"
-
+#include "ddknd/graphics/renderer.h"
 
 #include <ddknd/ecs/ecs.h>
 #include <ddknd/system/system.h>
@@ -15,8 +14,45 @@
 
 #include <ddknd/event/hit_event.h>
 
+#include <ddknd/input/input.h>
+
 namespace ddknd::debug
 {
+    void UpdateDebugConfigFromInput(const ddknd::input::DeviceInput& input, DebugConfig& config)
+    {
+        using namespace ddknd::input;
+        if (input.IsKeyPressed(Key::F1))
+        {
+            config.drawFrameTimeInfo = !config.drawFrameTimeInfo;
+        }
+        if (input.IsKeyPressed(Key::F2))
+        {
+            const bool enabled = !(config.drawHitboxes && config.drawHurtboxes);
+
+            config.drawHitboxes = enabled;
+            config.drawHurtboxes = enabled;
+        }
+        if (input.IsKeyPressed(Key::F3))
+        {
+            config.drawSkeletons = !config.drawSkeletons;
+        }
+        if(input.IsKeyPressed(Key::F4))
+        {
+            config.drawHitEvents = !config.drawHitEvents;
+        }
+        if (input.IsKeyPressed(Key::F5))
+        {
+            switch (config.camera.overrideMode)
+            {
+            case CameraOverrideMode::None:
+                config.camera.overrideMode = CameraOverrideMode::DebugCamera;
+                break;
+            case CameraOverrideMode::DebugCamera:
+                config.camera.overrideMode = CameraOverrideMode::None;
+                break;
+            }
+        }
+    }
 
     void DebugSystemRunner::BeginFrame(const DebugContext& ctx)
     {
@@ -85,16 +121,16 @@ namespace ddknd::debug
         if (textShader && ctx.debugDraw->TextIndexCount() > 0)
         {
             renderer.Submit(ddknd::graphics::DebugTextDrawCommand{.batch = ctx.debugDraw->TextBatch(),
-                                                                    .shader = textShader->program,
-                                                                    .texture = ctx.debugDraw->FontAtlas(),
-                                                                    .indexCount = ctx.debugDraw->TextIndexCount()});
+                                                                  .shader = textShader->program,
+                                                                  .texture = ctx.debugDraw->FontAtlas(),
+                                                                  .indexCount = ctx.debugDraw->TextIndexCount()});
         }
 
         if (lineShader && ctx.debugDraw->LineVertexCount() > 0)
         {
             renderer.Submit(ddknd::graphics::DebugLineDrawCommand{.batch = ctx.debugDraw->LineBatch(),
-                                                                    .shader = lineShader->program,
-                                                                    .vertexCount = ctx.debugDraw->LineVertexCount()});
+                                                                  .shader = lineShader->program,
+                                                                  .vertexCount = ctx.debugDraw->LineVertexCount()});
         }
     }
 
@@ -109,8 +145,9 @@ namespace ddknd::debug
 
         for (auto [model, pose, transform] : view)
         {
-            ::ddknd::animation::debug::SkeletonDebugDrawSystem::UpdateOne(
-                *ctx.debugDraw, model, pose, transform, *ctx.frame->graphicsAssetStore, ctx.config->skeletonStyle.color);
+            ::ddknd::animation::debug::SkeletonDebugDrawSystem::UpdateOne(*ctx.debugDraw, model, pose, transform,
+                                                                          *ctx.frame->graphicsAssetStore,
+                                                                          ctx.config->skeletonStyle.color);
         }
     }
 
@@ -128,15 +165,11 @@ namespace ddknd::debug
 
         ctx.debugDraw->Text(x, firstLineY, std::format("FPS: {:.1f}", perf.fps), color);
 
-        ctx.debugDraw->Text(x, firstLineY + lineHeight, std::format("Current: {:.2f} ms", perf.currentMs),
-                            color);
+        ctx.debugDraw->Text(x, firstLineY + lineHeight, std::format("Current: {:.2f} ms", perf.currentMs), color);
 
-        ctx.debugDraw->Text(x, firstLineY + lineHeight * 2.0f, std::format("P90: {:.2f} ms", perf.p90Ms),
-                            color);
+        ctx.debugDraw->Text(x, firstLineY + lineHeight * 2.0f, std::format("P90: {:.2f} ms", perf.p90Ms), color);
 
-        ctx.debugDraw->Text(x, firstLineY + lineHeight * 3.0f, std::format("P99: {:.2f} ms", perf.p99Ms),
-                            color);
-
+        ctx.debugDraw->Text(x, firstLineY + lineHeight * 3.0f, std::format("P99: {:.2f} ms", perf.p99Ms), color);
     }
 
     void DebugSystemRunner::RunAxisDebug(const DebugContext& ctx)

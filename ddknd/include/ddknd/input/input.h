@@ -220,27 +220,55 @@ namespace ddknd::input
 
         bool IsKeyDown(Key k) const
         {
-            return curr_[ToIndex(k)];
+            return keyCurr_[ToIndex(k)];
+        }
+
+        bool IsKeyPressed(Key k) const
+        {
+            const std::size_t index = ToIndex(k);
+            return !keyPrev_[index] && keyCurr_[index];
+        }
+
+        bool IsKeyReleased(Key k) const
+        {
+            const std::size_t index = ToIndex(k);
+            return keyPrev_[index] && !keyCurr_[index];
         }
 
         bool IsMouseButtonDown(MouseButton button) const
         {
-            return mouse_curr_[ToIndex(button)];
+            return mouseCurr_[ToIndex(button)];
+        }
+
+        bool IsMouseButtonPressed(MouseButton button) const
+        {
+            const std::size_t index = ToIndex(button);
+            return !mousePrev_[index] && mouseCurr_[index];
+        }
+
+
+        bool IsMouseButtonReleased(MouseButton button) const
+        {
+            const std::size_t index = ToIndex(button);
+            return mousePrev_[index] && !mouseCurr_[index];
         }
 
         void Update()
         {
+            keyPrev_ = keyCurr_;
+            mousePrev_ = mouseCurr_;
+
             // Poll the backend once per game frame before caching device state.
             backend_.Update();
 
             for (std::size_t i = 0; i < KeyCount(); i++)
             {
-                curr_[i] = backend_.IsDown(static_cast<Key>(i));
+                keyCurr_[i] = backend_.IsDown(static_cast<Key>(i));
             }
 
             for(std::size_t i = 0; i < MouseButtonCount(); i++)
             {
-                mouse_curr_[i] = backend_.IsMouseButtonDown(static_cast<MouseButton>(i));
+                mouseCurr_[i] = backend_.IsMouseButtonDown(static_cast<MouseButton>(i));
             }
 
             mouse_ = backend_.Mouse();
@@ -265,8 +293,11 @@ namespace ddknd::input
         IInputBackend& backend_;
         MouseState mouse_{};
 
-        std::bitset<static_cast<std::size_t>(Key::COUNT)> curr_;
-        std::bitset<static_cast<std::size_t>(MouseButton::COUNT)> mouse_curr_;
+        std::bitset<static_cast<std::size_t>(Key::COUNT)> keyCurr_{};
+        std::bitset<static_cast<std::size_t>(Key::COUNT)> keyPrev_{};
+
+        std::bitset<static_cast<std::size_t>(MouseButton::COUNT)> mouseCurr_{};
+        std::bitset<static_cast<std::size_t>(MouseButton::COUNT)> mousePrev_{};
 
         constexpr std::size_t ToIndex(Key k) const
         {
@@ -295,6 +326,11 @@ namespace ddknd::input
 
             pressed = !wasDown && down;
             released = wasDown && !down;
+        }
+
+        void Reset()
+        {
+            *this = {};
         }
     };
 
@@ -508,26 +544,11 @@ namespace ddknd::input
         static constexpr id_type InvalidID = Mapping::InvalidID;
         static constexpr key_type InvalidKey = Mapping::InvalidKey;
 
-      private:
-        template <ActionToIndexable Action>
-        std::size_t ActionToIndex(Action action) const
-        {
-            auto id = mappings_.GetActionID(action);
-            assert(id != InvalidID);
-            return static_cast<std::size_t>(id);
-        }
-
-        template <ActionToIndexable Action>
-        bool IsValidAction(const Action action) const
-        {
-            auto idx = mappings_.GetActionID(action);
-            return idx != InvalidID && static_cast<std::size_t>(idx) < actions_.size();
-        }
-
       public:
-        ActionInputSystem(Mapping& mapping) : mappings_(mapping) {}
+        explicit ActionInputSystem(const Mapping& mappings);
 
         void Update(const DeviceInput& input);
+        void Reset();
 
         template <ActionToIndexable Action>
         bool IsDown(Action action) const
@@ -567,7 +588,23 @@ namespace ddknd::input
         }
 
       private:
-        Mapping& mappings_;
+        template <ActionToIndexable Action>
+        std::size_t ActionToIndex(Action action) const
+        {
+            auto id = mappings_.GetActionID(action);
+            assert(id != InvalidID);
+            return static_cast<std::size_t>(id);
+        }
+
+        template <ActionToIndexable Action>
+        bool IsValidAction(const Action action) const
+        {
+            auto idx = mappings_.GetActionID(action);
+            return idx != InvalidID && static_cast<std::size_t>(idx) < actions_.size();
+        }
+
+      private:
+        const Mapping& mappings_;
         std::vector<ActionState> actions_;
         std::vector<float> action_values_;
     };

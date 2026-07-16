@@ -12,6 +12,15 @@ Readme.md languages
 - GPU skinning animation
 - Visualization of hitboxes and debug information
 
+### Debug Controls
+| key | Function |
+| --- | --- |
+| F1 | Toggle frame-time information |
+| F2 | Toggle hitbox and hurtbox visualization |
+| F3 | Toggle skeleton visualization |
+| F4 | Toggle hit-event information |
+| F5 | Toggle debug camera mode |
+
 ## Build
 This project can be configured and built using CMake Presets.
 
