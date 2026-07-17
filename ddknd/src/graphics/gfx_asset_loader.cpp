@@ -319,11 +319,6 @@ namespace
 
             b.parent = FindNearestParentBoneIndex(import, skin, node.parent, parentCorrection);
 
-            // Runtime skeletons currently assume a single root bone.
-            if (b.parent < 0)
-            {
-                out.skeletonRootTransform = parentCorrection;
-            }
             b.parentCorrection = parentCorrection;
 
             if (i < skin.inverseBindMatrices.size())

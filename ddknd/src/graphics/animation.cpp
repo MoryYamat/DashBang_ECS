@@ -159,15 +159,9 @@ namespace
     ddknd::math::Mat4f MakeLocalMatrixForBone(const ddknd::animation::types::SkeletonResource& skeleton,
                                               std::size_t boneIndex, const ddknd::math::TRS& trs)
     {
-        auto local = trs.ToMatrix();
+        const auto local = trs.ToMatrix();
 
-        // Apply the skeleton-root node transform that is not stored as a bone.
-        if (skeleton.bones[boneIndex].parent < 0)
-        {
-            return skeleton.skeletonRootTransform * local;
-        }
-
-        return local;
+        return skeleton.bones[boneIndex].parentCorrection * local;
     }
 } // namespace
 
