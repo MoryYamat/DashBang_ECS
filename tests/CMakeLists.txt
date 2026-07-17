@@ -19,3 +19,5 @@ add_ddknd_test(ddknd_storage_tests ecs.storage ecs/component_storage_test.cpp)
 add_ddknd_test(ddknd_world_tests ecs.world ecs/world_test.cpp)
 
 add_ddknd_test(ddknd_input_tests input.mapping input/input_test.cpp)
+
+add_ddknd_test(ddknd_animation_pose_tests animation.pose graphics/pose_test.cpp)
