@@ -1,6 +1,5 @@
 #include "ddknd/graphics/gfx_asset_loader.h"
 
-#include <algorithm>
 #include <cassert>
 #include <optional>
 #include <span>
@@ -13,6 +12,7 @@
 
 #include "ddknd/graphics/renderer_backend.h"
 #include "internal/asset/shader_descriptor_parser.h"
+#include "internal/graphics/model_loader/skeleton_builder.h"
 #include "internal/graphics/model_importer/model_import_types.h"
 #include "internal/graphics/model_importer/stb_image_decoder.h"
 #include "internal/io/io.h"
@@ -30,7 +30,6 @@ namespace
     // internal
     using ImportModelData = ddknd::graphics::internal::types::ModelImportData;
 
-    using ImportSkin = ddknd::graphics::internal::types::ImportSkin;
     using ImportChannelType = ddknd::graphics::internal::types::ChannelType;
 
     using ModelRenderResource = ddknd::graphics::types::ModelRenderResource;
@@ -238,102 +237,6 @@ namespace
         return out;
     }
 
-    // Skeleton conversion
-    int FindBoneIndexFromNode(const ImportSkin& skin, int nodeIndex)
-    {
-        for (std::size_t i = 0; i < skin.jointNodes.size(); ++i)
-        {
-            if (skin.jointNodes[i] == nodeIndex)
-                return static_cast<int>(i);
-        }
-
-        return -1;
-    }
-
-    int FindNearestParentBoneIndex(const ImportModelData& import, const ImportSkin& skin, int parentNode,
-                                   ddknd::math::Mat4f& parentCorrection)
-    {
-        parentCorrection = ddknd::math::Mat4f::Identity();
-
-        std::vector<int> nonJointParents;
-
-        int n = parentNode;
-
-        while (n >= 0)
-        {
-            const int boneIndex = FindBoneIndexFromNode(skin, n);
-
-            if (boneIndex >= 0)
-            {
-                std::reverse(nonJointParents.begin(), nonJointParents.end());
-
-                for (int nodeIndex : nonJointParents)
-                {
-                    parentCorrection = parentCorrection * import.nodes[nodeIndex].localMatrix;
-                }
-
-                return boneIndex;
-            }
-
-            nonJointParents.push_back(n);
-            n = import.nodes[n].parent;
-        }
-
-        std::reverse(nonJointParents.begin(), nonJointParents.end());
-
-        for (int nodeIndex : nonJointParents)
-        {
-            parentCorrection = parentCorrection * import.nodes[nodeIndex].localMatrix;
-        }
-
-        return -1;
-    }
-
-    /**
-     * Build the runtime skeleton in glTF skin.jointNodes order.
-     *
-     * Transforms from intervening non-joint nodes are accumulated into
-     * Bone::parentCorrection.
-     */
-    SkeletonResource BuildModelSkeletonResource(const ImportModelData& import, int skinIndex,
-                                                std::unordered_map<int, int>& nodeToBone)
-    {
-        const auto& skin = import.skins[skinIndex];
-        SkeletonResource out;
-        out.bones.resize(skin.jointNodes.size());
-
-        for (std::size_t i = 0; i < skin.jointNodes.size(); ++i)
-        {
-            const int nodeIndex = skin.jointNodes[i];
-            nodeToBone[nodeIndex] = static_cast<int>(i);
-        }
-
-        for (std::size_t i = 0; i < skin.jointNodes.size(); ++i)
-        {
-            const int nodeIndex = skin.jointNodes[i];
-            const auto& node = import.nodes[nodeIndex];
-
-            Bone b{};
-
-            ddknd::math::Mat4f parentCorrection = ddknd::math::Mat4f::Identity();
-
-            b.parent = FindNearestParentBoneIndex(import, skin, node.parent, parentCorrection);
-
-            b.parentCorrection = parentCorrection;
-
-            if (i < skin.inverseBindMatrices.size())
-                b.inverseBindMatrix = skin.inverseBindMatrices[i];
-            else
-                b.inverseBindMatrix = ddknd::math::Mat4f::Identity();
-
-            b.bindLocalTRS = node.localTRS;
-            b.bindLocalMatrix = node.localMatrix;
-
-            out.bones[i] = b;
-        }
-
-        return out;
-    }
 
     // Model conversion
     // Converts one imported glTF scene into runtime model resources.
@@ -442,10 +345,13 @@ namespace
 
         for (int n : nodeInScene)
         {
-            const auto& skin = nodes[n].skin;
+            const auto skin = nodes[n].skin;
             if (skin >= 0)
             {
-                out.model.skeleton = BuildModelSkeletonResource(import, skin, out.nodeToBone);
+                //out.model.skeleton = BuildModelSkeletonResource(import, skin, out.nodeToBone);
+                auto skeletonResult = ddknd::graphics::internal::BuildModelSkeletonResource(import,skin);
+                out.model.skeleton = std::move(skeletonResult.skeleton);
+                out.nodeToBone = std::move(skeletonResult.nodeToBone);
                 break;
             }
         }

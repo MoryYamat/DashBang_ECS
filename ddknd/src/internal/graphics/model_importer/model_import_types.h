@@ -94,7 +94,7 @@ namespace ddknd::graphics::internal::types
     {
         int defaultScene = -1;
 
-        // @TODO: Refactor the vertex information to better retain the structure of glTF.
+        // TODO: Refactor the vertex information to better retain the structure of glTF.
         std::vector<ImportScene> scenes;
         std::vector<ImportNode> nodes;
         std::vector<ImportMesh> meshes;

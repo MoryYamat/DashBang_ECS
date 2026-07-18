@@ -79,6 +79,7 @@ namespace
         TEST_CHECK(NearlyEqual(pose.localMatrices[1],expectedChildLocal));
         TEST_CHECK(NearlyEqual(pose.globalMatrices[1], expectedChildGlobal));
     }
+
 } // namespace
 
 int main()
