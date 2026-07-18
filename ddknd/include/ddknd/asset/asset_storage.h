@@ -12,7 +12,6 @@ namespace ddknd::asset
     *
     * Maps typed asset keys to AssetIDs and tracks their load state.
     * through AssetManager before accessing a resource.
-    *
     */
     template <typename T, typename Tag>
     class AssetStorage
@@ -44,6 +43,13 @@ namespace ddknd::asset
         void Set(ID id, T value)
         {
             const auto idx = id.Index();
+            
+            /**
+            * Resources are stored at their AssetID index.
+            * Resizing may default-construct unused intermediate entries.
+            * Callers must confirm asset validity and load state through AssetManager
+            * before accessing the stored resource.
+            */
             if (idx >= data_.size())
             {
                 data_.resize(idx + 1);
