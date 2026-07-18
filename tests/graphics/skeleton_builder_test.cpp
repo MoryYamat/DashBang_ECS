@@ -8,8 +8,6 @@
 
 #include "support/test_check.h"
 
-#include <iostream>
-
 namespace
 {
     using Vec3f = ddknd::math::Vec3f;
