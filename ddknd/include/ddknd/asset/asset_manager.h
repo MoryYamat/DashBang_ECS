@@ -249,7 +249,7 @@ namespace ddknd::asset
     class AssetStorage
     {
       public:
-        using ID = ::ddknd::core::HandleID<Tag>;
+        using ID = AssetID<Tag>;
 
         T* TryGet(ID id)
         {
