@@ -2,6 +2,7 @@
 
 #include <ddknd/asset/asset_fwd.h>
 #include <ddknd/asset/asset_manager.h>
+#include <ddknd/asset/asset_storage.h>
 #include <ddknd/asset/asset_tag.h>
 #include <ddknd/graphics/graphics_fwd.h>
 #include <ddknd/graphics/type/gfx_resource_types.h>
