@@ -41,6 +41,27 @@
             }
         },
         {
+            "name": "x64-debug-fsm",
+            "displayName": "x64 Debug FSM",
+            "inherits": "windows-base",
+            "architecture":{
+                "value": "x64",
+                "strategy": "external"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "BUILD_TESTING": "OFF"
+            }
+        },
+        {
+            "name": "x64-release-fsm",
+            "displayName": "x64 Release FSM",
+            "inherits": "x64-debug-fsm",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
             "name": "x64-debug-ddknd-tests",
             "displayName": "x64 Debug DDKND Tests",
             "inherits": "x64-debug-game",
@@ -62,6 +83,20 @@
             "configurePreset": "x64-release-game",
             "targets":[
                 "game"
+            ]
+        },
+        {
+            "name": "x64-debug-fsm",
+            "configurePreset": "x64-debug-fsm",
+            "targets": [
+                "sandbox_fsm"
+            ]
+        },
+        {
+            "name": "x64-release-fsm",
+            "configurePreset": "x64-release-fsm",
+            "targets": [
+                "sandbox_fsm"
             ]
         },
         {

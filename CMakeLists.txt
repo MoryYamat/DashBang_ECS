@@ -30,6 +30,8 @@ add_subdirectory("ddknd")# engine runtime
 
 add_subdirectory("sandbox/game")# game
 
+add_subdirectory("sandbox/fsm")# fsm
+
 include(CTest)
 
 if(BUILD_TESTING)
