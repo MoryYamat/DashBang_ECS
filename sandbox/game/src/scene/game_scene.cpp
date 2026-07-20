@@ -7,12 +7,14 @@
 
 #include "game/assets/actor/paladin_assets.h"
 #include "game/assets/actor/mutant_assets.h"
+#include "game/assets/item/antique_camera_assets.h"
 
 #include "game/camera/game_camera.h"
 #include "game/player/player.h"
 #include "game/player/player_controller.h"
 
 #include "game/actor/character/npc.h"
+#include "game/actor/item/item.h"
 
 #include <cassert>
 #include <iostream>
@@ -23,6 +25,7 @@ namespace app::scene
     {
         auto paladinAssets = ::app::assets::actor::RegisterPaladinAssets(assetMgr);
         auto mutantAssets = app::assets::actor::RegisterMutantAssets(assetMgr);
+        auto antiqueCameraAssets = app::assets::item::RegisterAntiqueCameraAssets(assetMgr);
 
         auto player = ::app::player::CreatePaladinPlayer(
             world, paladinAssets, ::app::player::PlayerSpawnDesc{.position = {0.0f, 0.0f, 0.0f}, .moveSpeed = 2.0f});
@@ -59,10 +62,13 @@ namespace app::scene
         // }
         // **********************************************************
         
+        std::vector<ddknd::ecs::Entity> items;
+        auto antiqueCamera = app::actor::CreateAntiqueCameraItem(world,antiqueCameraAssets, app::actor::ItemSpawnDesc{.position = {0.0f, 0.0f, 0.0f}, .scale = { 0.1f, 0.1f, 0.1f}});
+        items.push_back(antiqueCamera);
 
-        GameSceneAssets assets{.paladin = paladinAssets, .mutant = mutantAssets};
+        GameSceneAssets assets{.paladin = paladinAssets, .mutant = mutantAssets, .antiqueCamera = antiqueCameraAssets};
         
-        GameSceneEntities entities{.player = player, .mainCamera = mainCamera, .npcs = npcs};
+        GameSceneEntities entities{.player = player, .mainCamera = mainCamera, .npcs = npcs, .items = items};
 
         return GameScene{.assets = assets, .entities = entities};
     }
@@ -87,6 +93,12 @@ namespace app::scene
             std::cerr << "Failed to load shader.\n";
             return false;
         }
+        if(!ctx.graphicsLoader->LoadShader(*ctx.assetManager, *ctx.graphicsStore, assets.antiqueCamera.shader))
+        {
+            std::cerr << "Failed to load shader.\n";
+            return false;
+        }
+
         if(!ctx.graphicsLoader->LoadModel(*ctx.assetManager, *ctx.graphicsStore, *ctx.animationStore,
                                             assets.paladin.model))
         {
@@ -98,6 +110,14 @@ namespace app::scene
                                             assets.mutant.model))
         {
             std::cerr << "Failed to load Mutant Model\n";
+            return false;
+        }
+
+        // add model load instruction 
+        if(!ctx.graphicsLoader->LoadModel(*ctx.assetManager, *ctx.graphicsStore, *ctx.animationStore,
+                                            assets.antiqueCamera.model))
+        {
+            std::cerr << "Failed to load AnatiqueCamera Model\n";
             return false;
         }
 

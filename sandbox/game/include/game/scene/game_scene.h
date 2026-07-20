@@ -8,6 +8,7 @@
 
 #include "game/assets/actor/mutant_assets.h"
 #include "game/assets/actor/paladin_assets.h"
+#include "game/assets/item/antique_camera_assets.h"
 
 
 #include <vector>
@@ -22,6 +23,7 @@ namespace app::scene
         ::ddknd::ecs::Entity mainCamera;
 
         std::vector<ddknd::ecs::Entity> npcs;
+        std::vector<ddknd::ecs::Entity> items;
     };
 
     // Set the AssetIDs of the Actors used for the Entity.
@@ -29,6 +31,7 @@ namespace app::scene
     {
         app::assets::actor::PaladinAssetIDs paladin;
         app::assets::actor::MutantAssetIDs mutant;
+        app::assets::item::AntiqueCameraAssetsIDs antiqueCamera;
 
         [[nodiscard]]
         bool IsValid() const noexcept
@@ -42,7 +45,12 @@ namespace app::scene
             {
                 std::cerr << "[GameSceneAssets::IsValid] An InvalidID exists in the Mutant Asset ID.\n";
             }
-            return paladin.IsValid() && mutant.IsValid();
+
+            if(!antiqueCamera.IsValid())
+            {
+                std::cerr << "[GameSceneAssets::IsValid] An InvalidID exists in the AntiqueCamera Asset ID.\n";
+            }
+            return paladin.IsValid() && mutant.IsValid() && antiqueCamera.IsValid();
         }
     };
 

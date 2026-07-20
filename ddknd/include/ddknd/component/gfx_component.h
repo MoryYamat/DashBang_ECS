@@ -66,6 +66,11 @@ namespace ddknd::component
         math::Mat4f viewProj;
     };
 
+    struct ModelComponent
+    {
+        asset::AssetID<asset::tag::Model> model;
+    };
+
     struct SkinnedModelComponent
     {
         asset::AssetID<asset::tag::Model> model;

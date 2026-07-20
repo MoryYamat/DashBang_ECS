@@ -50,6 +50,7 @@ namespace ddknd::system
         // rendering
         RunAnimationPlayback(world, ctx);
         RunAnimationPoseSampling(world, ctx);
+        RunMeshRenderSubmit(world, ctx);
         RunSkinnedRenderSubmit(world, ctx);
     }
         
@@ -174,6 +175,25 @@ namespace ddknd::system
             ddknd::system::AnimationPoseSamplingSystem::UpdateOne(pose,playback, *model->skeleton, *clip);
         }
 
+    }
+
+    void EngineSystemRunner::RunMeshRenderSubmit(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
+    {
+        assert(ctx.graphicsAssetStore);
+        assert(ctx.renderer);
+
+        using namespace ecs;
+
+        auto view = world.GetRegistry().view(
+            query()
+                .select<component::ModelComponent>()
+                .require<component::MaterialComponent, component::TransformComponent>());
+
+        for (auto [model, material, transform] : view)
+        {
+            MeshRenderSubmitSystem::UpdateOne(*ctx.renderer, model, material, transform,
+                                                 *ctx.graphicsAssetStore);
+        }
     }
 
     void EngineSystemRunner::RunSkinnedRenderSubmit(::ddknd::ecs::World& world,

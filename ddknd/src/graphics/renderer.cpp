@@ -87,6 +87,38 @@ namespace ddknd::graphics
             backend_.DrawIndexed(cmd.indexCount);
         }
         
+        for(const auto& cmd : meshCmds_)
+        {
+            const auto& mat = cmd.material;
+            backend_.UseShaderProgram(cmd.shader);
+
+            backend_.SetUniform(cmd.shader, "uModel", cmd.modelMatrix);
+            backend_.SetUniform(cmd.shader, "uView", frameCamera_.view);
+            backend_.SetUniform(cmd.shader, "uProj", frameCamera_.proj);
+
+            // Material parameters
+            const bool hasBaseColorTexture = mat.baseColorTexture.texture.IsValid();
+
+            backend_.SetUniformVec4(cmd.shader, "uBaseColorFactor", mat.baseColorFactor);
+            backend_.SetUniformBool(cmd.shader, "uHasBaseColorTexture", hasBaseColorTexture);
+            
+            if(hasBaseColorTexture)
+            {
+                backend_.BindTexture2D(mat.baseColorTexture.texture, graphics::internal::binding::BaseColorTexture);
+                backend_.SetUniformInt(cmd.shader, "uBaseColorTexture", graphics::internal::binding::BaseColorTexture);
+            }
+
+            // Main directional light
+            const auto& light = lighting_.mainLight;
+            backend_.SetUniformVec3(cmd.shader, "uLightDirWorld", light.directionWolrd);
+            backend_.SetUniformVec3(cmd.shader, "uLightColor", light.color * light.intensity);
+            backend_.SetUniformFloat(cmd.shader, "uAmbientStrength", lighting_.ambientStrength);
+
+
+            backend_.BindPrimitive(cmd.mesh);
+            backend_.DrawIndexed(cmd.indexCount);
+        }
+
         for (const auto& cmd : skinnedCmds_)
         {
             const auto& mat = cmd.material;
@@ -139,6 +171,7 @@ namespace ddknd::graphics
         }
 
         cmds_.clear();
+        meshCmds_.clear();
         skinnedCmds_.clear();
         debugTextCmds_.clear();
         debugLineCmds_.clear();
@@ -155,6 +188,10 @@ namespace ddknd::graphics
     void RendererSystem::Submit(const DebugLineDrawCommand& cmd)
     {
         debugLineCmds_.push_back(cmd);
+    }
+    void RendererSystem::Submit(const MeshRenderCommand& cmd)
+    {
+        meshCmds_.push_back(cmd);
     }
     void RendererSystem::Submit(const SkinnedDrawCommand& cmd)
     {

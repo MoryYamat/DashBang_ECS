@@ -6,9 +6,8 @@
 #include <ddknd/math/math.h>
 
 #include <cstdint>
-#include <vector>
 #include <span>
-
+#include <vector>
 
 // renderer system
 namespace ddknd::graphics
@@ -67,6 +66,23 @@ namespace ddknd::graphics
         ::ddknd::math::Mat4f view;
         ::ddknd::math::Mat4f proj;
         bool valid = false;
+    };
+
+    struct MeshRenderCommand
+    {
+      private:
+        template <typename Tag>
+        using GPUID = ::ddknd::graphics::types::GPUID<Tag>;
+
+      public:
+        GPUID<tag::PrimitiveTag> mesh;
+        GPUID<tag::ShaderProgramGPUTag> shader;
+
+        math::Mat4f modelMatrix;
+
+        std::uint32_t indexCount = 0;
+
+        MaterialDrawData material;
     };
 
     struct SkinnedDrawCommand
@@ -132,6 +148,7 @@ namespace ddknd::graphics
         void Submit(const DrawCommand& cmd);
         void Submit(const DebugTextDrawCommand& cmd);
         void Submit(const DebugLineDrawCommand& cmd);
+        void Submit(const MeshRenderCommand& cmd);
         void Submit(const SkinnedDrawCommand& cmd);
 
         void SetFrameCamera(const RenderCamera& camera);
@@ -141,6 +158,7 @@ namespace ddknd::graphics
         std::vector<DrawCommand> cmds_;
         std::vector<DebugTextDrawCommand> debugTextCmds_;
         std::vector<DebugLineDrawCommand> debugLineCmds_;
+        std::vector<MeshRenderCommand> meshCmds_;
         std::vector<SkinnedDrawCommand> skinnedCmds_;
         FrameBeginDesc frameBegin_;
         FrameCameraState frameCamera_;
@@ -148,7 +166,5 @@ namespace ddknd::graphics
         // simple light
         graphics::types::RenderLighting lighting_{};
     };
-
-    
 
 } // namespace ddknd::graphics

@@ -51,6 +51,7 @@ namespace ddknd::system
 
 
         // rendering
+        void RunMeshRenderSubmit(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
         void RunSkinnedRenderSubmit(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
         void RunMainCameraExport(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
 

@@ -63,6 +63,7 @@ Assets/**/*.wav
 !Assets/**/musicholder-sword-sound-260274.wav
 
 !Assets/**/mutant_idle.glb
+!Assets/**/AntiqueCamera.glb
 
 
 # ========================
