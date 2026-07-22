@@ -4,5 +4,5 @@
 
 namespace fsm::user
 {
-    void UserFSMDeifinition(ddknd::fsm::FSMDefinitionRegistry& registry);
+    
 }

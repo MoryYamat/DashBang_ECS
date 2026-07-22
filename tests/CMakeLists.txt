@@ -26,3 +26,5 @@ add_ddknd_test(ddknd_input_tests input.mapping input/input_test.cpp)
 
 add_ddknd_test(ddknd_animation_pose_tests animation.pose graphics/pose_test.cpp)
 add_ddknd_test(ddknd_skeleton_builder_tests skeleton.builder graphics/skeleton_builder_test.cpp)
+
+add_ddknd_test(ddknd_fsm_symbol_table_tests fsm.AxisBuilder fsm/axis_builder_test.cpp)

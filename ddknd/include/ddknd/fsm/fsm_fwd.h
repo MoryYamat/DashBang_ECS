@@ -2,5 +2,5 @@
 
 namespace ddknd::fsm
 {
-    struct FSMDefinitionRegistry;
+    
 }

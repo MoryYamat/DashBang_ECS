@@ -1,0 +1,106 @@
+#pragma once
+
+#include <ddknd/fsm/fsm_definition.h>
+#include <ddknd/fsm/fsm_id.h>
+
+#include <string>
+#include <string_view>
+#include <unordered_map>
+
+namespace ddknd::fsm
+{
+    struct FSMBuildData
+    {
+        std::string name;
+    };
+
+    struct StateBuildData
+    {
+        std::string name;
+    };
+
+    struct ConditionBuildData
+    {
+        std::string name;
+    };
+
+    struct ProfileBuildData
+    {
+        std::string name;
+    };
+
+    struct TransitionBuildData
+    {
+        std::string name;
+        StateID from;
+        StateID to;
+    };
+
+    struct TransitionConditionBuildData
+    {
+        TransitionID transition;
+        ProfileID profile;
+        ConditionDefinition condition;
+    };
+
+    class FSMBuilder;
+
+    /**
+     * front-end for building axis definition.
+     */
+    class AxisBuilder
+    {
+      public:
+        AxisBuilder() = default;
+        AxisBuilder(const AxisBuilder&) = delete;
+        AxisBuilder& operator=(const AxisBuilder&) = delete;
+        AxisBuilder(AxisBuilder&&) = delete;
+        AxisBuilder&& operator=(AxisBuilder&&) = delete;
+
+        FSMID DeclareFSM(std::string_view fsmName);
+        StateID DeclareState(std::string_view stateName);
+        ConditionID DeclareCondition(std::string_view conditionName);
+        ProfileID DeclareProfile(std::string_view profileName);
+
+        FSMBuilder GetFSMBuilder(FSMID id);
+
+        bool IsValidFSMID(FSMID id);
+        bool IsValidStateID(StateID id);
+        bool IsValidConditionID(ConditionID id);
+        bool IsValidProfileID(ProfileID id);
+
+      private:
+        std::string axisName_;
+
+        // Axis Local IDs
+        std::unordered_map<std::string, FSMID> fsmNameToId_;
+        std::unordered_map<std::string, StateID> stateNameToId_;
+        std::unordered_map<std::string, ConditionID> conditionNameToId_;
+        std::unordered_map<std::string, ProfileID> profileNameToId_;
+
+        std::vector<FSMBuildData> fsms_;
+        std::vector<StateBuildData> states_;
+        std::vector<ConditionBuildData> conditions_;
+        std::vector<ProfileBuildData> profiles_;
+    };
+
+    class FSMBuilder
+    {
+      public:
+        FSMBuilder(AxisBuilder* axis, FSMID id) : owner_(axis), fsm_(id) {}
+
+        TransitionID DeclareTransition(std::string_view name, StateID from, StateID to);
+        void DefineTransitionCondition(TransitionID transitionId, ProfileID profileId,
+                                       ConditionDefinition conditionDefinition,
+                                       std::uint8_t priority);
+
+      private:
+        AxisBuilder* owner_ = nullptr;
+        FSMID fsm_;
+
+        std::unordered_map<std::string, TransitionID> transitionNameToId_;
+
+        std::vector<TransitionBuildData> transitions_;
+        std::vector<TransitionConditionBuildData> transitionConditions_;
+    };
+} // namespace ddknd::fsm

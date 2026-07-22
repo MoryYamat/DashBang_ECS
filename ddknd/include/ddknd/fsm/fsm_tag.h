@@ -1,22 +1,13 @@
 #pragma once
 
-#include <ddknd/core/StrongID.h>
-
-namespace ddknd::fsm
+namespace ddknd::fsm::tag
 {
-    template<typename Tag>
-    using ID = ddknd::core::StrongID<Tag>;
 
     struct AxisTag{};
     struct FSMTag{};
     struct StateTag{};
     struct ConditionTag{};
     struct ProfileTag{};
+    struct TransitionTag{};
 
-
-    using AxisID = ID<AxisTag>;
-    using FSMID = ID<FSMTag>;
-    using StateID = ID<StateTag>;
-    using ConditionID = ID<ConditionTag>;
-    using ProfileID = ID<ProfileTag>;
 }
