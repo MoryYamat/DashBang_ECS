@@ -1,9 +1,8 @@
 #pragma once 
 
-#include <ddknd/core/StrongID.h>
+#include <ddknd/fsm/fsm_id.h>
 
 #include <cstdint>
-#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -15,7 +14,6 @@ namespace ddknd::fsm
     class AxisRegistry
     {
         public:
-            
         private:
             
     };

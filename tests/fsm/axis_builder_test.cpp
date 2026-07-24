@@ -179,7 +179,7 @@ void TestFSMDefinition()
     TEST_CHECK(testTransition.IsValid());
     testFSMBuilder.DefineTransitionCondition(testTransition,
                                              testProfile,
-                                             ConditionDefinition{
+                                             ConditionDeclaration{
                                                 .op = Operator::AlwaysTrue
                                              }, 1);
 

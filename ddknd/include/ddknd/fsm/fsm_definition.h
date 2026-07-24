@@ -4,7 +4,9 @@
 
 #include <cstdint>
 #include <optional>
+#include <string>
 #include <variant>
+#include <vector>
 
 /**
  * FSM Engine Frontend
@@ -33,7 +35,7 @@ namespace ddknd::fsm
     *
     * TODO Replace this simple representation with an AST(Abstract Syntax Tree) when more expressive conditions are required.
     */
-    struct ConditionDefinition
+    struct ConditionDeclaration
     {
         Operator op = Operator::None;
 
@@ -41,16 +43,49 @@ namespace ddknd::fsm
         std::optional<ConditionValueType> rightValue;
     };
 
-    /**
-     * (Transition, Profile)->Condtion
-     */
+    struct StateDefinition
+    {
+        std::string debugName;
+    };
+
+    struct ConditionDefinition
+    {
+        std::string debugName;
+    };
+
+    struct ProfileDefinition
+    {
+        std::string debugName;
+    };
+
+    struct TransitionDefinition
+    {
+        std::string debugName;
+        StateID from;
+        StateID to;
+    };
+
     struct TransitionConditionDefinition
     {
         TransitionID transition;
         ProfileID profile;
+        ConditionDeclaration condition;
+        std::uint8_t priority;
+    };
 
-        ConditionDefinition condition;
-        std::uint8_t priority = 0;
+    struct FSMDefinition
+    {
+        std::string debugName;
+        std::vector<TransitionDefinition> transitions;
+        std::vector<TransitionConditionDefinition> transitionConditions;
+    };
+
+    struct AxisDefinition
+    {
+        std::vector<FSMDefinition> fsms;
+        std::vector<StateDefinition> states;
+        std::vector<ConditionDefinition> conditions;
+        std::vector<ProfileDefinition> profiles;
     };
 
 } // namespace ddknd::fsm
