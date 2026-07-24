@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cassert>
 #include <string>
+#include <variant>
 
 namespace ddknd::fsm
 {
@@ -38,17 +39,17 @@ namespace ddknd::fsm
         return it->second;
     }
 
-    ConditionID AxisBuilder::DeclareCondition(std::string_view stateName)
+    ParameterID AxisBuilder::DeclaraParameter(std::string_view parameterName)
     {
         assert(!built_);
-        auto name = std::string{stateName};
-        const auto it = conditionNameToId_.find(name);
-        if (it == conditionNameToId_.end())
+        auto name = std::string{parameterName};
+        const auto it = parameterNameToId_.find(name);
+        if (it == parameterNameToId_.end())
         {
-            const auto size = conditions_.size();
-            ConditionID id = ConditionID{static_cast<std::uint32_t>(size)};
-            conditions_.push_back(ConditionBuildData{.name = name});
-            conditionNameToId_[name] = id;
+            const auto size = parameters_.size();
+            ParameterID id = ParameterID{static_cast<std::uint32_t>(size)};
+            parameters_.push_back(ParameterBuildData{.name = name});
+            parameterNameToId_[name] = id;
             return id;
         }
         return it->second;
@@ -105,6 +106,21 @@ namespace ddknd::fsm
         return true;
     }
 
+    bool AxisBuilder::IsValidParameterID(ParameterID id) const
+    {
+        if (!id.IsValid())
+        {
+            return false;
+        }
+
+        if (static_cast<std::size_t>(id.Value()) > parameters_.size())
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     bool AxisBuilder::IsValidStateID(StateID id) const
     {
         if (!id.IsValid())
@@ -113,21 +129,6 @@ namespace ddknd::fsm
         }
 
         if (static_cast<std::size_t>(id.Value()) > states_.size())
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    bool AxisBuilder::IsValidConditionID(ConditionID id) const
-    {
-        if (!id.IsValid())
-        {
-            return false;
-        }
-
-        if (static_cast<std::size_t>(id.Value()) > conditions_.size())
         {
             return false;
         }
@@ -163,10 +164,10 @@ namespace ddknd::fsm
             result.states.emplace_back(std::move(state.name));
         }
 
-        result.conditions.reserve(conditions_.size());
-        for (auto& condition : conditions_)
+        result.parameters.reserve(parameters_.size());
+        for (auto& parameter : parameters_)
         {
-            result.conditions.emplace_back(std::move(condition.name));
+            result.parameters.emplace_back(std::move(parameter.name));
         }
 
         result.profiles.reserve(profiles_.size());
@@ -176,7 +177,7 @@ namespace ddknd::fsm
         }
 
         result.fsms.reserve(fsms_.size());
-        for(auto& fsm : fsms_)
+        for (auto& fsm : fsms_)
         {
             result.fsms.push_back(buildFSM(std::move(fsm)));
         }
@@ -207,16 +208,55 @@ namespace ddknd::fsm
 
     TransitionDefinition AxisBuilder::buildTransition(TransitionBuildData&& source)
     {
-        return TransitionDefinition{
-            .debugName = std::move(source.name), .from = source.from, .to = source.to};
+        return TransitionDefinition{.debugName = std::move(source.name), .from = source.from, .to = source.to};
+    }
+
+    ConditionDefinition AxisBuilder::buildCondition(ConditionDeclaration&& source)
+    {
+        return std::visit(
+            [](auto&& condition) -> ConditionDefinition
+            {
+                using T = std::decay_t<decltype(condition)>;
+
+                if constexpr (std::is_same_v<T, AlwaysTrueConditionDeclaration>)
+                {
+                    return AlwaysTrueConditionDefinition{};
+                }
+                else
+                {
+                    return ComparisonConditionDefinition{.op = condition.op,
+                                                         .left = buildOperand(std::move(condition.left)),
+                                                         .right = buildOperand(std::move(condition.right))};
+                }
+            },
+            std::move(source));
+    }
+
+    OperandDefinition AxisBuilder::buildOperand(OperandDeclaration&& source)
+    {
+        return std::visit(
+            [](auto&& operand) -> OperandDefinition
+            {
+                using T = std::decay_t<decltype(operand)>;
+
+                if constexpr (std::is_same_v<T, ConstantOperandDeclaration>)
+                {
+                    return ConstantOperandDefinition{.value = std::move(operand.value)};
+                }
+                else
+                {
+                    return ParameterOperandDefinition{.parameter = operand.parameter};
+                }
+            },
+            std::move(source));
     }
 
     TransitionConditionDefinition AxisBuilder::buildTransitionCondition(TransitionConditionBuildData&& source)
     {
         return TransitionConditionDefinition{.transition = source.transition,
-                                           .profile = source.profile,
-                                           .condition = std::move(source.condition),
-                                           .priority = source.priority};
+                                             .profile = source.profile,
+                                             .condition = std::move(buildCondition(std::move(source.condition))),
+                                             .priority = source.priority};
     }
 
     TransitionID FSMBuilder::DeclareTransition(std::string_view name, StateID from, StateID to)
@@ -271,10 +311,11 @@ namespace ddknd::fsm
 
         assert(duplicated == fsmData.transitionConditions.end());
 
-        fsmData.transitionConditions.push_back(TransitionConditionBuildData{.transition = transitionId,
-                                                                            .profile = profileId,
-                                                                            .condition = std::move(conditionDeclaration),
-                                                                            .priority = priority});
+        fsmData.transitionConditions.push_back(
+            TransitionConditionBuildData{.transition = transitionId,
+                                         .profile = profileId,
+                                         .condition = std::move(conditionDeclaration),
+                                         .priority = priority});
     }
 
 } // namespace ddknd::fsm

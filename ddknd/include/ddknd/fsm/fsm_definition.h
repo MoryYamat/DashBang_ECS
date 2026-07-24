@@ -16,7 +16,6 @@ namespace ddknd::fsm
     enum class Operator : std::uint8_t
     {
         None,
-        AlwaysTrue,
         Less,
         LessEqual,
         Greater,
@@ -25,30 +24,47 @@ namespace ddknd::fsm
         NotEqual
     };
 
+
+
     using ConditionValueType = std::variant<int, float, std::uint32_t, bool>;
 
+    struct ConstantOperandDeclaration
+    {
+        ConditionValueType value;
+    };
+
+    struct ParameterOperandDeclaration
+    {
+        ParameterID parameter;
+    };
+
+    using OperandDeclaration = std::variant<ConstantOperandDeclaration, ParameterOperandDeclaration>;
+
+    struct AlwaysTrueConditionDeclaration{};
+
     /**
-    * If an operand is nullopt, its value is supplied by an external variable.
-    *
-    * Both operands may be std::nullopt, in which case both values are supplied externally.
-    * Operator::AlwaysTrue does not require either operand.
+    * A condition operand is either:
+    * - a constant value embedded in the declaration, or
+    * - a runtime parameter identified by ParameterID.
     *
     * TODO Replace this simple representation with an AST(Abstract Syntax Tree) when more expressive conditions are required.
     */
-    struct ConditionDeclaration
+    struct ComparisonConditionDeclaration
     {
         Operator op = Operator::None;
 
-        std::optional<ConditionValueType> leftValue;
-        std::optional<ConditionValueType> rightValue;
+        OperandDeclaration left;
+        OperandDeclaration right;
     };
+
+    using ConditionDeclaration = std::variant<AlwaysTrueConditionDeclaration, ComparisonConditionDeclaration>;
 
     struct StateDefinition
     {
         std::string debugName;
     };
 
-    struct ConditionDefinition
+    struct ParameterDefinition
     {
         std::string debugName;
     };
@@ -65,11 +81,34 @@ namespace ddknd::fsm
         StateID to;
     };
 
+    struct ConstantOperandDefinition
+    {
+        ConditionValueType value;
+    };
+
+    struct ParameterOperandDefinition
+    {
+        ParameterID parameter;
+    };
+
+    using OperandDefinition = std::variant<ConstantOperandDefinition, ParameterOperandDefinition>;
+
+    struct AlwaysTrueConditionDefinition{};
+
+    struct ComparisonConditionDefinition
+    {
+        Operator op = Operator::None;
+        OperandDefinition left;
+        OperandDefinition right;
+    };
+
+    using ConditionDefinition = std::variant<AlwaysTrueConditionDefinition, ComparisonConditionDefinition>;
+
     struct TransitionConditionDefinition
     {
         TransitionID transition;
         ProfileID profile;
-        ConditionDeclaration condition;
+        ConditionDefinition condition;
         std::uint8_t priority;
     };
 
@@ -84,7 +123,7 @@ namespace ddknd::fsm
     {
         std::vector<FSMDefinition> fsms;
         std::vector<StateDefinition> states;
-        std::vector<ConditionDefinition> conditions;
+        std::vector<ParameterDefinition> parameters;
         std::vector<ProfileDefinition> profiles;
     };
 

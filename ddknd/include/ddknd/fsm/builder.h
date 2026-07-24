@@ -14,7 +14,7 @@ namespace ddknd::fsm
         std::string name;
     };
 
-    struct ConditionBuildData
+    struct ParameterBuildData
     {
         std::string name;
     };
@@ -64,7 +64,7 @@ namespace ddknd::fsm
 
         FSMID DeclareFSM(std::string_view fsmName);
         StateID DeclareState(std::string_view stateName);
-        ConditionID DeclareCondition(std::string_view conditionName);
+        ParameterID DeclaraParameter(std::string_view parameterName);
         ProfileID DeclareProfile(std::string_view profileName);
 
         FSMBuilder GetFSMBuilder(FSMID id);
@@ -72,8 +72,8 @@ namespace ddknd::fsm
         const FSMBuildData& GetFSMBuildData(FSMID id) const;
 
         bool IsValidFSMID(FSMID id) const;
+        bool IsValidParameterID(ParameterID id) const;
         bool IsValidStateID(StateID id) const;
-        bool IsValidConditionID(ConditionID id) const;
         bool IsValidProfileID(ProfileID id) const;
 
         AxisDefinition Build() &&;
@@ -81,6 +81,8 @@ namespace ddknd::fsm
       private:
         static FSMDefinition buildFSM(FSMBuildData&& source);
         static TransitionDefinition buildTransition(TransitionBuildData&& source);
+        static ConditionDefinition buildCondition(ConditionDeclaration&& source);
+        static OperandDefinition buildOperand(OperandDeclaration&& source);
         static TransitionConditionDefinition buildTransitionCondition(TransitionConditionBuildData&& source);
 
       private:
@@ -89,12 +91,12 @@ namespace ddknd::fsm
         // Axis Local IDs
         std::unordered_map<std::string, FSMID> fsmNameToId_;
         std::unordered_map<std::string, StateID> stateNameToId_;
-        std::unordered_map<std::string, ConditionID> conditionNameToId_;
+        std::unordered_map<std::string, ParameterID> parameterNameToId_;
         std::unordered_map<std::string, ProfileID> profileNameToId_;
 
         std::vector<FSMBuildData> fsms_;
         std::vector<StateBuildData> states_;
-        std::vector<ConditionBuildData> conditions_;
+        std::vector<ParameterBuildData> parameters_;
         std::vector<ProfileBuildData> profiles_;
 
         bool built_ = false;

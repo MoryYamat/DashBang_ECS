@@ -6,7 +6,7 @@ namespace ddknd::fsm::tag
     struct AxisTag{};
     struct FSMTag{};
     struct StateTag{};
-    struct ConditionTag{};
+    struct ParameterTag{};
     struct ProfileTag{};
     struct TransitionTag{};
 

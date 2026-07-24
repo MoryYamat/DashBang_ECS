@@ -11,7 +11,7 @@ namespace ddknd::fsm
     using AxisID = ID<tag::AxisTag>;
     using FSMID = ID<tag::FSMTag>;
     using StateID = ID<tag::StateTag>;
-    using ConditionID = ID<tag::ConditionTag>;
+    using ParameterID = ID<tag::ParameterTag>;
     using TransitionID = ID<tag::TransitionTag>;
     using ProfileID = ID<tag::ProfileTag>;
 }

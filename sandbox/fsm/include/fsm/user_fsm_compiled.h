@@ -24,7 +24,6 @@ namespace fsm::uesr
         ddknd::fsm::TransitionID secondTransition;
         ddknd::fsm::TransitionID thirdTransition;
 
-        ddknd::fsm::ConditionID normalTimer;
-        ddknd::fsm::ConditionID AlwayTrue;
+        ddknd::fsm::ParameterID testParameter;
     };
 }

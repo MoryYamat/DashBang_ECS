@@ -13,49 +13,49 @@ void TestDeclareAxis()
 
     const FSMID testFSM = axisBuilder.DeclareFSM("tests");
     const StateID testState = axisBuilder.DeclareState("testFirst");
-    const ConditionID testCondition = axisBuilder.DeclareCondition("testConditionFirst");
+    const ParameterID testParameter = axisBuilder.DeclaraParameter("testParameter");
     const ProfileID testProfile = axisBuilder.DeclareProfile("testProfileFirst");
 
     TEST_CHECK(testFSM.IsValid());
     TEST_CHECK(testState.IsValid());
-    TEST_CHECK(testCondition.IsValid());
+    TEST_CHECK(testParameter.IsValid());
     TEST_CHECK(testProfile.IsValid());
 
     TEST_CHECK(axisBuilder.IsValidFSMID(testFSM));
     TEST_CHECK(axisBuilder.IsValidStateID(testState));
-    TEST_CHECK(axisBuilder.IsValidConditionID(testCondition));
+    TEST_CHECK(axisBuilder.IsValidParameterID(testParameter));
     TEST_CHECK(axisBuilder.IsValidProfileID(testProfile));
 
 
     const FSMID nonDeclaredFSM{};
     const StateID nonDeclaredState{};
-    const ConditionID nonDeclaredCondition{};
+    const ParameterID nonDeclaredParameter{};
     const ProfileID nonDeclaredProfile{};
 
     TEST_CHECK(!nonDeclaredFSM.IsValid());
     TEST_CHECK(!nonDeclaredState.IsValid());
-    TEST_CHECK(!nonDeclaredCondition.IsValid());
+    TEST_CHECK(!nonDeclaredParameter.IsValid());
     TEST_CHECK(!nonDeclaredProfile.IsValid());
 
     TEST_CHECK(!axisBuilder.IsValidFSMID(nonDeclaredFSM));
     TEST_CHECK(!axisBuilder.IsValidStateID(nonDeclaredState));
-    TEST_CHECK(!axisBuilder.IsValidConditionID(nonDeclaredCondition));
+    TEST_CHECK(!axisBuilder.IsValidParameterID(nonDeclaredParameter));
     TEST_CHECK(!axisBuilder.IsValidProfileID(nonDeclaredProfile));
 
 
     const FSMID outOfRangeFSM{100};
     const StateID outOfRangeState{100};
-    const ConditionID outOfRangeCondition{100};
+    const ParameterID outOfRangeParameter{100};
     const ProfileID outOfRangeProfile{100};
 
     TEST_CHECK(outOfRangeFSM.IsValid());
     TEST_CHECK(outOfRangeState.IsValid());
-    TEST_CHECK(outOfRangeCondition.IsValid());
+    TEST_CHECK(outOfRangeParameter.IsValid());
     TEST_CHECK(outOfRangeProfile.IsValid());
 
     TEST_CHECK(!axisBuilder.IsValidFSMID(outOfRangeFSM));
     TEST_CHECK(!axisBuilder.IsValidStateID(outOfRangeState));
-    TEST_CHECK(!axisBuilder.IsValidConditionID(outOfRangeCondition));
+    TEST_CHECK(!axisBuilder.IsValidParameterID(outOfRangeParameter));
     TEST_CHECK(!axisBuilder.IsValidProfileID(outOfRangeProfile));
 }
 
@@ -71,8 +71,8 @@ void TestDeclareSameSymbols()
     const StateID firstState = axisBuilder.DeclareState("idle");
     const StateID secondState = axisBuilder.DeclareState("idle");
 
-    const ConditionID firstCondition = axisBuilder.DeclareCondition("input");
-    const ConditionID secondCondition = axisBuilder.DeclareCondition("input");
+    const ParameterID firstParameter = axisBuilder.DeclaraParameter("testParameter");
+    const ParameterID secondParameter = axisBuilder.DeclaraParameter("testParameter");
 
     const ProfileID firstProfile = axisBuilder.DeclareProfile("basic");
     const ProfileID secondProfile = axisBuilder.DeclareProfile("basic");
@@ -82,12 +82,12 @@ void TestDeclareSameSymbols()
     */
     TEST_CHECK(firstFSM == secondFSM);
     TEST_CHECK(firstState == secondState);
-    TEST_CHECK(firstCondition == secondCondition);
+    TEST_CHECK(firstParameter == secondParameter);
     TEST_CHECK(firstProfile == secondProfile);
 
     TEST_CHECK(axisBuilder.IsValidFSMID(firstFSM));
     TEST_CHECK(axisBuilder.IsValidStateID(firstState));
-    TEST_CHECK(axisBuilder.IsValidConditionID(firstCondition));
+    TEST_CHECK(axisBuilder.IsValidParameterID(firstParameter));
     TEST_CHECK(axisBuilder.IsValidProfileID(firstProfile));
 
     
@@ -118,8 +118,8 @@ void TestDeclareDifferentSymbols()
     const StateID firstState = axisBuilder.DeclareState("firstState");
     const StateID secondState = axisBuilder.DeclareState("secondState");
 
-    const ConditionID firstCondition = axisBuilder.DeclareCondition("firstCondition");
-    const ConditionID secondCondition = axisBuilder.DeclareCondition("secondCondition");
+    const ParameterID firstParameter = axisBuilder.DeclaraParameter("firstParameter");
+    const ParameterID secondParameter = axisBuilder.DeclaraParameter("secondParameter");
 
     const ProfileID firstProfile = axisBuilder.DeclareProfile("firstProfile");
     const ProfileID secondProfile = axisBuilder.DeclareProfile("secondProfile");
@@ -129,15 +129,16 @@ void TestDeclareDifferentSymbols()
     */
     TEST_CHECK(firstFSM != secondFSM);
     TEST_CHECK(firstState != secondState);
-    TEST_CHECK(firstCondition != secondCondition);
+    TEST_CHECK(firstParameter != secondParameter);
     TEST_CHECK(firstProfile != secondProfile);
 
     TEST_CHECK(axisBuilder.IsValidFSMID(firstFSM));
     TEST_CHECK(axisBuilder.IsValidFSMID(firstFSM));
     TEST_CHECK(axisBuilder.IsValidStateID(firstState));
     TEST_CHECK(axisBuilder.IsValidStateID(secondState));
-    TEST_CHECK(axisBuilder.IsValidConditionID(firstCondition));
-    TEST_CHECK(axisBuilder.IsValidConditionID(secondCondition));
+    TEST_CHECK(axisBuilder.IsValidParameterID(firstParameter));
+    TEST_CHECK(axisBuilder.IsValidParameterID(secondParameter));
+    TEST_CHECK(axisBuilder.IsValidStateID(secondState));
     TEST_CHECK(axisBuilder.IsValidProfileID(firstProfile));
     TEST_CHECK(axisBuilder.IsValidProfileID(secondProfile));
 
@@ -168,7 +169,6 @@ void TestFSMDefinition()
     const FSMID testFSM = axisBuilder.DeclareFSM("tests");
     const StateID testStateFirst = axisBuilder.DeclareState("testFirst");
     const StateID testStateSecond = axisBuilder.DeclareState("testSecond");
-    const ConditionID testCondition = axisBuilder.DeclareCondition("testConditionFirst");
     const ProfileID testProfile = axisBuilder.DeclareProfile("testProfileFirst");
 
     auto testFSMBuilder = axisBuilder.GetFSMBuilder(testFSM);
@@ -179,9 +179,8 @@ void TestFSMDefinition()
     TEST_CHECK(testTransition.IsValid());
     testFSMBuilder.DefineTransitionCondition(testTransition,
                                              testProfile,
-                                             ConditionDeclaration{
-                                                .op = Operator::AlwaysTrue
-                                             }, 1);
+                                             AlwaysTrueConditionDeclaration{}
+                                             , 1);
 
 }
 
