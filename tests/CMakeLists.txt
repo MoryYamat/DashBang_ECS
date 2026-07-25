@@ -28,3 +28,4 @@ add_ddknd_test(ddknd_animation_pose_tests animation.pose graphics/pose_test.cpp)
 add_ddknd_test(ddknd_skeleton_builder_tests skeleton.builder graphics/skeleton_builder_test.cpp)
 
 add_ddknd_test(ddknd_fsm_symbol_table_tests fsm.AxisBuilder fsm/axis_builder_test.cpp)
+add_ddknd_test(ddknd_fsm_compiler_tests fsm.AxisCompiler fsm/axis_compiler_test.cpp)

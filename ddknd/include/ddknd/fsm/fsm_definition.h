@@ -3,7 +3,6 @@
 #include <ddknd/fsm/fsm_id.h>
 
 #include <cstdint>
-#include <optional>
 #include <string>
 #include <variant>
 #include <vector>

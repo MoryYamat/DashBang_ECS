@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cassert>
 #include <string>
+#include <type_traits>
 #include <variant>
 
 namespace ddknd::fsm
@@ -216,7 +217,7 @@ namespace ddknd::fsm
         return std::visit(
             [](auto&& condition) -> ConditionDefinition
             {
-                using T = std::decay_t<decltype(condition)>;
+                using T = std::remove_cvref_t<decltype(condition)>;
 
                 if constexpr (std::is_same_v<T, AlwaysTrueConditionDeclaration>)
                 {
@@ -237,7 +238,7 @@ namespace ddknd::fsm
         return std::visit(
             [](auto&& operand) -> OperandDefinition
             {
-                using T = std::decay_t<decltype(operand)>;
+                using T = std::remove_cvref_t<decltype(operand)>;
 
                 if constexpr (std::is_same_v<T, ConstantOperandDeclaration>)
                 {

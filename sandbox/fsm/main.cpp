@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <ddknd/fsm/builder.h>
+#include <ddknd/fsm/compiler.h>
 
 #include <cassert>
 
@@ -34,6 +35,16 @@ int main()
         1);
 
     auto buildResult = std::move(axisBuilder).Build();
+
+    auto compiledResult = ddknd::fsm::AxisCompiler::Compile(buildResult);
+
+    if(!compiledResult.Succeeded())
+    {
+        for(const auto& m : compiledResult.diagnostics)
+        {
+            std::cerr << m.message << "\n";
+        }
+    }
 
     return 0;
 }
