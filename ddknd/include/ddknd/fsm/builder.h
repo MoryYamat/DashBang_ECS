@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ddknd/fsm/fsm_definition.h>
+#include <ddknd/fsm/axis_definition.h>
 #include <ddknd/fsm/fsm_id.h>
 
 #include <string>
