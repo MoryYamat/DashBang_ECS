@@ -23,7 +23,13 @@ namespace ddknd::fsm
         NotEqual
     };
 
-
+    enum class ValueType : std::uint8_t
+    {
+        Int,
+        Float,
+        UInt32,
+        Bool
+    };
 
     using ConditionValueType = std::variant<int, float, std::uint32_t, bool>;
 
@@ -65,6 +71,7 @@ namespace ddknd::fsm
 
     struct ParameterDefinition
     {
+        ValueType type = ValueType::Float;
         std::string debugName;
     };
 

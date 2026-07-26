@@ -13,9 +13,11 @@ int main()
 
     auto testFSM = axisBuilder.DeclareFSM("tests");
     auto testFirstState = axisBuilder.DeclareState("testFirst");
-    auto testSecondState = axisBuilder.DeclareState("testFirst");
-    auto testParameter = axisBuilder.DeclaraParameter("testParameter");
+    auto testSecondState = axisBuilder.DeclareState("testSecond");
+    auto testThirdState = axisBuilder.DeclareState("testThird");
+    auto testParameter = axisBuilder.DeclareParameter(ddknd::fsm::ValueType::Float, "testParameter");
     auto testProfile = axisBuilder.DeclareProfile("testProfileFirst");
+    auto testProfileSecond = axisBuilder.DeclareProfile("testProfileSecond");
 
     assert(axisBuilder.IsValidFSMID(testFSM));
     assert(axisBuilder.IsValidStateID(testFirstState));
@@ -26,21 +28,52 @@ int main()
     auto testFSMBuilder = axisBuilder.GetFSMBuilder(testFSM);
 
     auto testTransition = testFSMBuilder.DeclareTransition("TestTransition", testFirstState, testSecondState);
+    auto testTransitionSecond =
+        testFSMBuilder.DeclareTransition("TestTransitionSecond", testSecondState, testThirdState);
+    auto testTransitionThird = testFSMBuilder.DeclareTransition("TestTransitionThird", testSecondState, testFirstState);
+
+    // Transition = 0
     testFSMBuilder.DefineTransitionCondition(
-        testTransition,
-        testProfile,
-        ddknd::fsm::ComparisonConditionDeclaration{.op = ddknd::fsm::Operator::LessEqual,
-                                         .left = ddknd::fsm::ConstantOperandDeclaration{.value = 1.0f},
-                                         .right =ddknd::fsm::ParameterOperandDeclaration{.parameter = testParameter}},
+        testTransition, testProfile,
+        ddknd::fsm::ComparisonConditionDeclaration{
+            .op = ddknd::fsm::Operator::LessEqual,
+            .left = ddknd::fsm::ConstantOperandDeclaration{.value = 1.0f},
+            .right = ddknd::fsm::ParameterOperandDeclaration{.parameter = testParameter}},
+        1);
+
+    // Transition = 1, Profile = 0, priority = 1
+    testFSMBuilder.DefineTransitionCondition(
+        testTransitionSecond, testProfile,
+        ddknd::fsm::ComparisonConditionDeclaration{
+            .op = ddknd::fsm::Operator::LessEqual,
+            .left = ddknd::fsm::ConstantOperandDeclaration{.value = 1.0f},
+            .right = ddknd::fsm::ParameterOperandDeclaration{.parameter = testParameter}},
+        1);
+
+    // Transition = 1, Profile = 1, priority = 1
+    testFSMBuilder.DefineTransitionCondition(
+        testTransitionSecond, testProfileSecond,
+        ddknd::fsm::ComparisonConditionDeclaration{
+            .op = ddknd::fsm::Operator::LessEqual,
+            .left = ddknd::fsm::ConstantOperandDeclaration{.value = 1.0f},
+            .right = ddknd::fsm::ParameterOperandDeclaration{.parameter = testParameter}},
+        1);
+
+    testFSMBuilder.DefineTransitionCondition(
+        testTransitionThird, testProfile,
+        ddknd::fsm::ComparisonConditionDeclaration{
+            .op = ddknd::fsm::Operator::LessEqual,
+            .left = ddknd::fsm::ConstantOperandDeclaration{.value = 1.0f},
+            .right = ddknd::fsm::ParameterOperandDeclaration{.parameter = testParameter}},
         1);
 
     auto buildResult = std::move(axisBuilder).Build();
 
     auto compiledResult = ddknd::fsm::AxisCompiler::Compile(buildResult);
 
-    if(!compiledResult.Succeeded())
+    if (!compiledResult.Succeeded())
     {
-        for(const auto& m : compiledResult.diagnostics)
+        for (const auto& m : compiledResult.diagnostics)
         {
             std::cerr << m.message << "\n";
         }

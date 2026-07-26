@@ -13,7 +13,7 @@ void TestDeclareAxis()
 
     const FSMID testFSM = axisBuilder.DeclareFSM("tests");
     const StateID testState = axisBuilder.DeclareState("testFirst");
-    const ParameterID testParameter = axisBuilder.DeclaraParameter("testParameter");
+    const ParameterID testParameter = axisBuilder.DeclareParameter(ValueType::Float, "testParameter");
     const ProfileID testProfile = axisBuilder.DeclareProfile("testProfileFirst");
 
     TEST_CHECK(testFSM.IsValid());
@@ -71,8 +71,10 @@ void TestDeclareSameSymbols()
     const StateID firstState = axisBuilder.DeclareState("idle");
     const StateID secondState = axisBuilder.DeclareState("idle");
 
-    const ParameterID firstParameter = axisBuilder.DeclaraParameter("testParameter");
-    const ParameterID secondParameter = axisBuilder.DeclaraParameter("testParameter");
+    const ParameterID firstParameter = axisBuilder.DeclareParameter(ValueType::Float, "testParameter");
+    const ParameterID secondParameter = axisBuilder.DeclareParameter(ValueType::Float, "testParameter");
+    const ParameterID thirdParameter = axisBuilder.DeclareParameter(ValueType::Bool, "testParameter");
+
 
     const ProfileID firstProfile = axisBuilder.DeclareProfile("basic");
     const ProfileID secondProfile = axisBuilder.DeclareProfile("basic");
@@ -83,6 +85,14 @@ void TestDeclareSameSymbols()
     TEST_CHECK(firstFSM == secondFSM);
     TEST_CHECK(firstState == secondState);
     TEST_CHECK(firstParameter == secondParameter);
+    
+    /**
+    * The ParameterID is unique to the name.
+    * It is registered with the type specified initially, 
+    * and subsequent type declarations for the same name are ignored.
+    */
+    TEST_CHECK(thirdParameter == firstParameter);
+    TEST_CHECK(thirdParameter == secondParameter);
     TEST_CHECK(firstProfile == secondProfile);
 
     TEST_CHECK(axisBuilder.IsValidFSMID(firstFSM));
@@ -90,7 +100,6 @@ void TestDeclareSameSymbols()
     TEST_CHECK(axisBuilder.IsValidParameterID(firstParameter));
     TEST_CHECK(axisBuilder.IsValidProfileID(firstProfile));
 
-    
     const FSMID fsmId = axisBuilder.DeclareFSM("tests");
     const StateID first = axisBuilder.DeclareState("first");
     const StateID second = axisBuilder.DeclareState("second");
@@ -118,8 +127,8 @@ void TestDeclareDifferentSymbols()
     const StateID firstState = axisBuilder.DeclareState("firstState");
     const StateID secondState = axisBuilder.DeclareState("secondState");
 
-    const ParameterID firstParameter = axisBuilder.DeclaraParameter("firstParameter");
-    const ParameterID secondParameter = axisBuilder.DeclaraParameter("secondParameter");
+    const ParameterID firstParameter = axisBuilder.DeclareParameter(ValueType::Float, "firstParameter");
+    const ParameterID secondParameter = axisBuilder.DeclareParameter(ValueType::Float, "secondParameter");
 
     const ProfileID firstProfile = axisBuilder.DeclareProfile("firstProfile");
     const ProfileID secondProfile = axisBuilder.DeclareProfile("secondProfile");

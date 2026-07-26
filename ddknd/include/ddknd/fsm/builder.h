@@ -16,6 +16,7 @@ namespace ddknd::fsm
 
     struct ParameterBuildData
     {
+        ValueType type = ValueType::Float;
         std::string name;
     };
 
@@ -64,7 +65,7 @@ namespace ddknd::fsm
 
         FSMID DeclareFSM(std::string_view fsmName);
         StateID DeclareState(std::string_view stateName);
-        ParameterID DeclaraParameter(std::string_view parameterName);
+        ParameterID DeclareParameter(ValueType type, std::string_view parameterName);
         ProfileID DeclareProfile(std::string_view profileName);
 
         FSMBuilder GetFSMBuilder(FSMID id);

@@ -14,7 +14,7 @@ void CompilationSucceseeded()
     const FSMID testFSM = builder.DeclareFSM("tests");
     const StateID testStateFirst = builder.DeclareState("testFirst");
     const StateID testStateSecond = builder.DeclareState("testSecond");
-    const ParameterID testParameter = builder.DeclaraParameter("testParameter");
+    const ParameterID testParameter = builder.DeclareParameter(ValueType::Float, "testParameter");
     const ProfileID testProfile = builder.DeclareProfile("testProfileFirst");
 
     TEST_CHECK(builder.IsValidFSMID(testFSM));
@@ -45,6 +45,11 @@ void CompilationSucceseeded()
 int main()
 {
     CompilationSucceseeded();
+
+    /**
+    * TODO:
+    * - Decide specification: self-loop, same transition but different condition, 
+    */
 
     return ddknd::tests::failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }

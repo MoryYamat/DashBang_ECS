@@ -40,7 +40,7 @@ namespace ddknd::fsm
         return it->second;
     }
 
-    ParameterID AxisBuilder::DeclaraParameter(std::string_view parameterName)
+    ParameterID AxisBuilder::DeclareParameter(ValueType type, std::string_view parameterName)
     {
         assert(!built_);
         auto name = std::string{parameterName};
@@ -49,7 +49,7 @@ namespace ddknd::fsm
         {
             const auto size = parameters_.size();
             ParameterID id = ParameterID{static_cast<std::uint32_t>(size)};
-            parameters_.push_back(ParameterBuildData{.name = name});
+            parameters_.push_back(ParameterBuildData{.type = type, .name = name});
             parameterNameToId_[name] = id;
             return id;
         }
@@ -99,7 +99,7 @@ namespace ddknd::fsm
             return false;
         }
 
-        if (static_cast<std::size_t>(id.Value()) > fsms_.size())
+        if (static_cast<std::size_t>(id.Value()) >= fsms_.size())
         {
             return false;
         }
@@ -114,7 +114,7 @@ namespace ddknd::fsm
             return false;
         }
 
-        if (static_cast<std::size_t>(id.Value()) > parameters_.size())
+        if (static_cast<std::size_t>(id.Value()) >= parameters_.size())
         {
             return false;
         }
@@ -129,7 +129,7 @@ namespace ddknd::fsm
             return false;
         }
 
-        if (static_cast<std::size_t>(id.Value()) > states_.size())
+        if (static_cast<std::size_t>(id.Value()) >= states_.size())
         {
             return false;
         }
@@ -144,7 +144,7 @@ namespace ddknd::fsm
             return false;
         }
 
-        if (static_cast<std::size_t>(id.Value()) > profiles_.size())
+        if (static_cast<std::size_t>(id.Value()) >= profiles_.size())
         {
             return false;
         }
@@ -168,7 +168,8 @@ namespace ddknd::fsm
         result.parameters.reserve(parameters_.size());
         for (auto& parameter : parameters_)
         {
-            result.parameters.emplace_back(std::move(parameter.name));
+            result.parameters.emplace_back(
+                ParameterDefinition{.type = parameter.type, .debugName = std::move(parameter.name)});
         }
 
         result.profiles.reserve(profiles_.size());
