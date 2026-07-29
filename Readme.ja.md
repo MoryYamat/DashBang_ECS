@@ -1,11 +1,26 @@
 # DDKND: ECS-based Game Engine Runtime Prototype
 
-Readme.md の 言語  
+Language:  
 | [English](Readme.md) | [日本語](Readme.ja.md) |
 
 ## デモ
 
 [デモ動画(Youtube)](https://youtu.be/XLh3T2ZbSMs)
+
+DDKNDは、ECSを中心に構成したC++20製のゲームエンジン・ランタイム試作です。
+ゲームエンジンのランタイム設計、データ指向の処理構成、GPUアニメーション、およびデバッグ機能の実装を目的として個人開発しました。
+
+主な実装範囲：
+
+- ECSのEntity、Storage、View、Query
+- ゲームロジックのSystem Pipeline
+- glTFアセットのインポートおよび管理
+- GPUスキニングアニメーション
+- Hitbox／Hurtboxとデバッグ描画
+- CMakeによるビルド構成と自動テスト
+
+設計上の判断、旧実装からの改善、現在の制限事項についても文書化しています。  
+[リーディングガイド](/docs/guides/reading_guide.md)
 
 ### Features
 - 100体／1000体のキャラクター描画
