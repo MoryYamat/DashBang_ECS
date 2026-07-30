@@ -20,19 +20,6 @@ namespace ddknd::fsm
         AlwaysTrue,
     };
 
-    /**
-    * if ParameterID, then add that to the ParameterSet.
-    */
-    struct CompiledParameterOperand
-    {
-        int parameter;
-    };
-
-    struct CompiledConstantOperand
-    {
-        int value;
-    };
-
     enum class CompiledValueType : std::uint8_t
     {
         Int,
@@ -110,12 +97,14 @@ namespace ddknd::fsm
     struct CompiledAxis
     {
         std::vector<CompiledFSM> fsms;
+        std::uint32_t parameterCount = 0;
     };
 
     struct CompiledDiagnostic
     {
         std::string message;
     };
+
 
     struct AxisCompileResult
     {

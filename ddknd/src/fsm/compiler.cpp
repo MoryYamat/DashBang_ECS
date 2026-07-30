@@ -31,6 +31,8 @@ namespace ddknd::fsm
             axisResult.fsms.emplace_back(internal::compileFSM(definition, fsm));
         }
 
+        axisResult.parameterCount = static_cast<std::uint32_t>(definition.parameters.size());
+
         result.axis = std::move(axisResult);
 
         return result;

@@ -3,6 +3,8 @@
 #include <ddknd/fsm/builder.h>
 #include <ddknd/fsm/compiler.h>
 
+#include <ddknd/fsm/axis_registry.h>
+
 #include <cassert>
 
 int main()
@@ -78,6 +80,16 @@ int main()
             std::cerr << m.message << "\n";
         }
     }
+
+    ddknd::fsm::AxisRegistry registry{};
+
+    ddknd::fsm::AxisID testAxis{0};
+    registry.Set(testAxis, std::move(*compiledResult.axis));
+    assert(registry.IsValidAxisID(testAxis));
+    auto& GotAxis = registry.Get(testAxis);
+    
+    ddknd::fsm::AxisID testAxisSecond{100};
+    assert(!registry.IsValidAxisID(testAxisSecond));
 
     return 0;
 }

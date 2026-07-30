@@ -1,20 +1,24 @@
-#pragma once 
+#pragma once
 
+#include <ddknd/fsm/compile_result.h>
 #include <ddknd/fsm/fsm_id.h>
 
-#include <cstdint>
-#include <unordered_map>
 #include <vector>
 
 namespace ddknd::fsm
 {
     /**
-    * Hold all builded data for AxisDefinitions.
-    */
+     * Hold all compiled axis data.
+     */
     class AxisRegistry
     {
-        public:
-        private:
-            
+      public:
+        void Set(const AxisID id, CompiledAxis&& axis);
+
+        bool IsValidAxisID(AxisID id) const;
+        const CompiledAxis& Get(AxisID id) const;
+
+      private:
+        std::vector<CompiledAxis> axes_;
     };
-}
+} // namespace ddknd::fsm
