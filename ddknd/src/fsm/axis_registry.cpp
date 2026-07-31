@@ -14,12 +14,7 @@ namespace ddknd::fsm
         }
 
         const auto index = static_cast<std::size_t>(id.Value());
-        
-        /**
-        * TODO: 
-        * Changing data in the middle forces \(O(N)\) reallocations as items move.
-        * You can use BST.
-        */
+
         if(index >= axes_.size())
         {
             axes_.resize(index+1);

@@ -3,6 +3,7 @@
 #include <ddknd/fsm/fsm_id.h>
 
 #include <cstdint>
+#include <iostream>
 #include <optional>
 #include <string>
 #include <vector>
@@ -103,6 +104,11 @@ namespace ddknd::fsm
     struct CompiledDiagnostic
     {
         std::string message;
+
+        void PrintMessage() const
+        {
+            std::cerr << message << "\n";
+        }
     };
 
 
@@ -111,6 +117,11 @@ namespace ddknd::fsm
         std::optional<CompiledAxis> axis;
         std::vector<CompiledDiagnostic> diagnostics;
 
+        /**
+        * Whether this single Axis was fully compiled.
+        * This is all-or-nothing: if validation fails at any point, `axis` is
+        * never populated, so there is no partial/intermediate success state.
+        */
         bool Succeeded() const
         {
             return axis.has_value();

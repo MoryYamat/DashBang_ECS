@@ -3,6 +3,8 @@
 #include <ddknd/fsm/builder.h>
 #include <ddknd/fsm/compiler.h>
 
+#include <ddknd/fsm/axis_build_result.h>
+#include <ddknd/fsm/axis_builder_registry.h>
 #include <ddknd/fsm/axis_registry.h>
 
 #include <cassert>
@@ -11,7 +13,9 @@ int main()
 {
     std::cout << "hello fsm\n";
 
-    ddknd::fsm::AxisBuilder axisBuilder{};
+    ddknd::fsm::AxisBuilderRegistry builderRegistry{};
+
+    auto& axisBuilder = builderRegistry.GetOrCreateAxis("testAxis");
 
     auto testFSM = axisBuilder.DeclareFSM("tests");
     auto testFirstState = axisBuilder.DeclareState("testFirst");
@@ -69,27 +73,34 @@ int main()
             .right = ddknd::fsm::ParameterOperandDeclaration{.parameter = testParameter}},
         1);
 
-    auto buildResult = std::move(axisBuilder).Build();
+    // auto buildResult = std::move(axisBuilder).Build();
 
-    auto compiledResult = ddknd::fsm::AxisCompiler::Compile(buildResult);
+    // auto compiledResult = ddknd::fsm::AxisCompiler::Compile(buildResult);
 
-    if (!compiledResult.Succeeded())
+    // if (!compiledResult.Succeeded())
+    // {
+    //     for (const auto& m : compiledResult.diagnostics)
+    //     {
+    //         std::cerr << m.message << "\n";
+    //     }
+    // }
+
+    // ddknd::fsm::AxisRegistry registry{};
+
+    // ddknd::fsm::AxisID testAxis{0};
+    // registry.Set(testAxis, std::move(*compiledResult.axis));
+    // assert(registry.IsValidAxisID(testAxis));
+    // auto& GotAxis = registry.Get(testAxis);
+    // ddknd::fsm::AxisID testAxisSecond{100};
+    // assert(!registry.IsValidAxisID(testAxisSecond));
+
+    auto axisBuildResult = builderRegistry.BuildAllAxis();
+    const auto axisCompiledResult = axisBuildResult.CompileAllAxis();
+
+    if(!axisCompiledResult.Succeeded())
     {
-        for (const auto& m : compiledResult.diagnostics)
-        {
-            std::cerr << m.message << "\n";
-        }
+        axisCompiledResult.PrintDiagnostics();
     }
-
-    ddknd::fsm::AxisRegistry registry{};
-
-    ddknd::fsm::AxisID testAxis{0};
-    registry.Set(testAxis, std::move(*compiledResult.axis));
-    assert(registry.IsValidAxisID(testAxis));
-    auto& GotAxis = registry.Get(testAxis);
-    
-    ddknd::fsm::AxisID testAxisSecond{100};
-    assert(!registry.IsValidAxisID(testAxisSecond));
 
     return 0;
 }

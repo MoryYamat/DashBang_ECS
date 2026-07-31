@@ -156,6 +156,8 @@ int main()
     /**
      * TODO:
      * - Decide specification: self-loop, same transition but different condition,
+     * - Add Validation implementationsand tests:
+     *      - Operator and Operand consistency (Operator::Less left true need to be errored.)
      */
 
     return ddknd::tests::failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE;

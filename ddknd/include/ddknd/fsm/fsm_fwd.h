@@ -2,5 +2,5 @@
 
 namespace ddknd::fsm
 {
-    
+    class AxisBuilder;
 }
