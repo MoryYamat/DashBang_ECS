@@ -32,6 +32,7 @@ class State:
 
 class Parameter:
     def __init__(self, name, type_):
+        self.owner = self.fsm
         self.name = name
         self.type = type_
 
@@ -124,13 +125,3 @@ class FVec2:
 
 class FVec3:
     pass
-
-# state
-# parameter
-# transition
-# when
-# effect
-# initial(state)
-
-
-# python internal model
