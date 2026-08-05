@@ -4,7 +4,7 @@
 
 namespace ddknd::fsm
 {
-    AxisBuilder& AxisBuilderRegistry::GetOrCreateAxis(std::string_view axisName)
+    AxisBuildHandle AxisBuilderRegistry::GetOrCreateAxis(std::string_view axisName)
     {
         const auto name = std::string{axisName};
         const auto it = nameToId_.find(name);
@@ -16,14 +16,14 @@ namespace ddknd::fsm
             nameToId_[name] = id;
             auto axisBuilder = std::make_unique<AxisBuilder>();
             axisBuilders_.push_back(std::move(axisBuilder));
-            return *axisBuilders_[static_cast<std::size_t>(id.Value())];
+            return AxisBuildHandle{id, *axisBuilders_[static_cast<std::size_t>(id.Value())]};
         }
 
         const AxisID id = it->second;
-        return *axisBuilders_[static_cast<std::size_t>(id.Value())];
+        return AxisBuildHandle{id, *axisBuilders_[static_cast<std::size_t>(id.Value())]};
     }
 
-    
+
     AxisBuildResult AxisBuilderRegistry::BuildAllAxis()
     {
         std::vector<AxisDefinition> definitions;

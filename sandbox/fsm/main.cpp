@@ -6,6 +6,9 @@
 #include <ddknd/fsm/axis_build_result.h>
 #include <ddknd/fsm/axis_builder_registry.h>
 #include <ddknd/fsm/axis_registry.h>
+#include <ddknd/fsm/parameter_set.h>
+
+#include <ddknd/fsm/evaluate_transition.h>
 
 #include <cassert>
 
@@ -15,7 +18,9 @@ int main()
 
     ddknd::fsm::AxisBuilderRegistry builderRegistry{};
 
-    auto& axisBuilder = builderRegistry.GetOrCreateAxis("testAxis");
+    auto axis = builderRegistry.GetOrCreateAxis("testAxis");
+
+    auto& axisBuilder = axis.builder;
 
     auto testFSM = axisBuilder.DeclareFSM("tests");
     auto testFirstState = axisBuilder.DeclareState("testFirst");
@@ -101,6 +106,16 @@ int main()
     {
         axisCompiledResult.PrintDiagnostics();
     }
+
+    ddknd::fsm::ParameterSet parameters(1);
+    parameters.SetParameter(testParameter, ddknd::fsm::RawValue{.f = 50.f});
+    
+    const auto& gotAxis = axisCompiledResult.registry.Get(axis.id);
+    const auto& gotFSM = gotAxis.GetFSM(testFSM);
+
+    
+    auto transitionResult = ddknd::fsm::EvaluateFSM(gotFSM, testFirstState, testProfile, parameters);
+    std::cout <<"Transition Result: From=" << testFirstState.Value() << ", To= " << transitionResult.newState.Value() << "\n";
 
     return 0;
 }

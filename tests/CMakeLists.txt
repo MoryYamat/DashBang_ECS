@@ -30,3 +30,4 @@ add_ddknd_test(ddknd_skeleton_builder_tests skeleton.builder graphics/skeleton_b
 add_ddknd_test(ddknd_fsm_symbol_table_tests fsm.AxisBuilder fsm/axis_builder_test.cpp)
 add_ddknd_test(ddknd_fsm_compiler_tests fsm.AxisCompiler fsm/axis_compiler_test.cpp)
 add_ddknd_test(ddknd_fsm_registry_tests fsm.AxisRegistry fsm/axis_registry_test.cpp)
+add_ddknd_test(ddknd_fsm_integration_tests fsm.Integration fsm/integration_test.cpp)

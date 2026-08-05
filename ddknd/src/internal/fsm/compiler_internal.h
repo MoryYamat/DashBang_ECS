@@ -18,11 +18,12 @@ namespace ddknd::fsm::internal
 
     void sortFSMDefinition(FSMDefinition& fsm);
     void compileTransitionCondition(CompiledTransitionCondition& out, const TransitionConditionDefinition& definition);
-    CompiledCondition makeCompiledCondition(const ConditionDefinition& definition);
+    CompiledCondition makeCompiledCondition(const AxisDefinition& axis, const ConditionDefinition& definition);
 
     ValueType GetValueType(const ConditionValueType& definition);
     CompiledOperator resolveOperator(const ComparisonConditionDefinition& definition);
     CompiledValueType resolveCompiledValueType(const ConditionValueType& definition);
     RawValue makeRawValueFromConditionValueType(const ConditionValueType& definition);
     CompiledOperand makeCompiledOperand(const OperandDefinition& definition);
+    CompiledValueType ToCompiledValueType(ValueType type);
 } // namespace ddknd::fsm::internal

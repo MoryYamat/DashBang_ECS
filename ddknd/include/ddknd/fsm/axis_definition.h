@@ -7,6 +7,8 @@
 #include <variant>
 #include <vector>
 
+#include <ddknd/math/math.h>
+
 /**
  * FSM Engine Frontend
  */
@@ -28,10 +30,14 @@ namespace ddknd::fsm
         Int,
         Float,
         UInt32,
-        Bool
+        Bool,
+        UVec2,
+        UVec3,
+        FVec2,
+        FVec3
     };
 
-    using ConditionValueType = std::variant<int, float, std::uint32_t, bool>;
+    using ConditionValueType = std::variant<int, float, std::uint32_t, bool, ddknd::math::uVec2, ddknd::math::uVec3, ddknd::math::Vec2f, ddknd::math::Vec3f>;
 
     struct ConstantOperandDeclaration
     {

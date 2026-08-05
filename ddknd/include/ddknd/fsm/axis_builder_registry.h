@@ -12,13 +12,20 @@
 
 namespace ddknd::fsm
 {
+    struct AxisBuildHandle
+    {
+      AxisID id;
+      AxisBuilder& builder;
+    };
+
     class AxisBuilderRegistry
     {
       public:
-        AxisBuilder& GetOrCreateAxis(std::string_view axisName);
+        AxisBuildHandle GetOrCreateAxis(std::string_view axisName);
 
         // index = AxisID.Value()
         AxisBuildResult BuildAllAxis();
+
       private:
         std::vector<std::unique_ptr<AxisBuilder>> axisBuilders_;
         std::unordered_map<std::string, AxisID> nameToId_;

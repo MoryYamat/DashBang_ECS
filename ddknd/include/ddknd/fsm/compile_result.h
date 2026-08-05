@@ -8,9 +8,11 @@
 #include <string>
 #include <vector>
 
+#include <ddknd/math/math.h>
+
 namespace ddknd::fsm
 {
-    enum class CompiledOperator: std::uint8_t
+    enum class CompiledOperator : std::uint8_t
     {
         Greater,
         GreaterEqual,
@@ -26,7 +28,11 @@ namespace ddknd::fsm
         Int,
         Float,
         UInt32,
-        Bool
+        Bool,
+        UVec2,
+        UVec3,
+        FVec2,
+        FVec3
     };
 
     union RawValue
@@ -35,6 +41,10 @@ namespace ddknd::fsm
         float f;
         std::uint32_t u;
         bool b;
+        ddknd::math::uVec2 uVec2;
+        ddknd::math::uVec3 uVec3;
+        ddknd::math::Vec2f fVec2;
+        ddknd::math::Vec3f fVec3;
     };
 
     struct CompiledValue
@@ -46,13 +56,14 @@ namespace ddknd::fsm
     struct CompiledOperand
     {
         bool isConstant = false;
-        ParameterID parameter{};    // Valid when isConstant is false.
-        CompiledValue constant{};   // Valid when isConstant is true.
+        ParameterID parameter{};  // Valid when isConstant is false.
+        CompiledValue constant{}; // Valid when isConstant is true.
     };
 
     struct CompiledCondition
     {
         CompiledOperator op = CompiledOperator::Greater;
+        CompiledValueType operandType = CompiledValueType::Float;// Shared between the left and right sides.
         CompiledOperand left;
         CompiledOperand right;
     };
@@ -81,7 +92,7 @@ namespace ddknd::fsm
         std::uint32_t ProfileCount = 0;
 
         /**
-         * `transition[].to` is supplementary information. 
+         * `transition[].to` is supplementary information.
          * It's correct to read it from the `transitionConditions`.
          */
         std::vector<CompiledTransition> transitions;
@@ -99,6 +110,8 @@ namespace ddknd::fsm
     {
         std::vector<CompiledFSM> fsms;
         std::uint32_t parameterCount = 0;
+
+        const CompiledFSM& GetFSM(FSMID id) const;
     };
 
     struct CompiledDiagnostic
@@ -111,17 +124,16 @@ namespace ddknd::fsm
         }
     };
 
-
     struct AxisCompileResult
     {
         std::optional<CompiledAxis> axis;
         std::vector<CompiledDiagnostic> diagnostics;
 
         /**
-        * Whether this single Axis was fully compiled.
-        * This is all-or-nothing: if validation fails at any point, `axis` is
-        * never populated, so there is no partial/intermediate success state.
-        */
+         * Whether this single Axis was fully compiled.
+         * This is all-or-nothing: if validation fails at any point, `axis` is
+         * never populated, so there is no partial/intermediate success state.
+         */
         bool Succeeded() const
         {
             return axis.has_value();

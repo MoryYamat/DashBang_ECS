@@ -10,6 +10,8 @@
 #include <variant>
 #include <vector>
 
+#include <ddknd/math/math.h>
+
 namespace ddknd::fsm::internal
 {
 
@@ -272,7 +274,7 @@ namespace ddknd::fsm::internal
 
             result.transitionConditions[index].to = fsm.transitions[transitionValue].to;
             result.transitionConditions[index].priority = fsm.transitionConditions[i].priority;
-            result.transitionConditions[index].condition = makeCompiledCondition(fsm.transitionConditions[i].condition);
+            result.transitionConditions[index].condition = makeCompiledCondition(axis, fsm.transitionConditions[i].condition);
         }
 
         return result;
@@ -306,10 +308,10 @@ namespace ddknd::fsm::internal
         // }
     }
 
-    CompiledCondition makeCompiledCondition(const ConditionDefinition& definition)
+    CompiledCondition makeCompiledCondition(const AxisDefinition& axis, const ConditionDefinition& definition)
     {
         return std::visit(
-            [](const auto& x) -> CompiledCondition
+            [&](const auto& x) -> CompiledCondition
             {
                 using T = std::remove_cvref_t<decltype(x)>;
                 if constexpr (std::is_same_v<T, AlwaysTrueConditionDefinition>)
@@ -318,7 +320,10 @@ namespace ddknd::fsm::internal
                 }
                 else if constexpr (std::is_same_v<T, ComparisonConditionDefinition>)
                 {
+                    const ValueType valueType = resolveOperandType(axis, x.left);
+
                     return CompiledCondition{.op = internal::resolveOperator(x),
+                                             .operandType = internal::ToCompiledValueType(valueType),
                                              .left = internal::makeCompiledOperand(x.left),
                                              .right = internal::makeCompiledOperand(x.right)};
                 }
@@ -355,6 +360,22 @@ namespace ddknd::fsm::internal
                 else if constexpr (std::is_same_v<T, bool>)
                 {
                     return ValueType::Bool;
+                }
+                else if constexpr (std::is_same_v<T, ddknd::math::uVec2>)
+                {
+                    return ValueType::UVec2;
+                }
+                else if constexpr (std::is_same_v<T, ddknd::math::uVec3>)
+                {
+                    return ValueType::UVec3;
+                }
+                else if constexpr(std::is_same_v<T, ddknd::math::Vec2f>)
+                {
+                    return ValueType::FVec2;
+                }
+                else if constexpr (std::is_same_v<T, ddknd::math::Vec3f>)
+                {
+                    return ValueType::FVec3;
                 }
                 else
                 {
@@ -426,6 +447,22 @@ namespace ddknd::fsm::internal
                 {
                     return CompiledValueType::Bool;
                 }
+                else if constexpr (std::is_same_v<T, ddknd::math::uVec2>)
+                {
+                    return CompiledValueType::UVec2;
+                }
+                else if constexpr (std::is_same_v<T, ddknd::math::uVec3>)
+                {
+                    return CompiledValueType::UVec3;
+                }
+                else if constexpr(std::is_same_v<T, ddknd::math::Vec2f>)
+                {
+                    return CompiledValueType::FVec2;
+                }
+                else if constexpr (std::is_same_v<T, ddknd::math::Vec3f>)
+                {
+                    return CompiledValueType::FVec3;
+                }
                 else
                 {
                     /**
@@ -459,6 +496,22 @@ namespace ddknd::fsm::internal
                 else if constexpr (std::is_same_v<T, bool>)
                 {
                     return RawValue{.b = x};
+                }
+                else if constexpr (std::is_same_v<T, ddknd::math::uVec2>)
+                {
+                    return RawValue{.uVec2 = x};
+                }
+                else if constexpr (std::is_same_v<T, ddknd::math::uVec3>)
+                {
+                    return RawValue{.uVec3 = x};
+                }
+                else if constexpr (std::is_same_v<T, ddknd::math::Vec2f>)
+                {
+                    return RawValue{.fVec2 = x};
+                }
+                else if constexpr (std::is_same_v<T, ddknd::math::Vec3f>)
+                {
+                    return RawValue{.fVec3 = x};
                 }
                 else
                 {
@@ -503,5 +556,31 @@ namespace ddknd::fsm::internal
                 }
             },
             definition);
+    }
+
+    CompiledValueType ToCompiledValueType(ValueType type)
+    {
+        switch (type)
+        {
+        case ValueType::Int:
+            return CompiledValueType::Int;
+        case ValueType::Float:
+            return CompiledValueType::Float;
+        case ValueType::UInt32:
+            return CompiledValueType::UInt32;
+        case ValueType::Bool:
+            return CompiledValueType::Bool;
+        case ValueType::UVec2:
+            return CompiledValueType::UVec2;
+        case ValueType::UVec3:
+            return CompiledValueType::UVec3;
+        case ValueType::FVec2:
+            return CompiledValueType::FVec2;
+        case ValueType::FVec3:
+            return CompiledValueType::FVec3;
+        
+        }
+        assert(false && "Unhandled ValueType enum - validation should have caught this.");
+        return CompiledValueType::Float;
     }
 } // namespace ddknd::fsm::internal
