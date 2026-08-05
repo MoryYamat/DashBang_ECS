@@ -67,6 +67,11 @@ Assets/**/*.wav
 
 
 # ========================
+# Python
+# ========================
+.venv
+
+# ========================
 # Others
 # ========================
 settings.json
@@ -74,3 +79,4 @@ lesson/
 docs/drafts/
 compile_commands.json
 .clang-format
+

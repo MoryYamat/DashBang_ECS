@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ddknd-fsm"
+version = "0.1.0"
+description = "FSM Frontend and C++ code generator for DDKND"
+authors = [
+    {name = "YM"}
+]
+requires-python = ">=3.12"
+dependencies = [
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["ddknd_fsm"]
