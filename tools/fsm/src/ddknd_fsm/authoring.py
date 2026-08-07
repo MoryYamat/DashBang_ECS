@@ -4,19 +4,20 @@ from typing import Any
 @dataclass
 class FSMDef:
     name: str
-    states: list["StateDef"] = field(defalut_factory = list)
+    states: list["StateDef"] = field(default_factory = list)
     parameters: list["ParameterDef"] = field(default_factory = list)
     transitions: list["TransitionDef"] = field(default_factory = list)
 
 @dataclass
 class StateDef:
     name: str
-
+    owner: FSMDef = field(repr=False, compare=False)
+    initial: bool = False
 
 @dataclass
 class ParameterDef:
-    owner: FSMDef
     name: str
+    owner: FSMDef = field(repr=False, compare=False)
     type_: type
 
 @dataclass
@@ -27,7 +28,7 @@ class TransitionDef:
     priority: int = 100
     effect_name: str | None = None
 
-@dataclass
+# parent class
 class ExpressionDef:
     pass
 
@@ -40,7 +41,7 @@ class LiteralExpression(ExpressionDef):
     value: Any
     type_: type
 
-@dataclass
+@dataclass(frozen=True)
 class BinaryExpression(ExpressionDef):
     operator: str
     left: ExpressionDef

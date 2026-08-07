@@ -1,27 +1,65 @@
-from  ddknd_fsm import dsl
+from  ddknd_fsm.dsl import FSM
+from ddknd_fsm.authoring import *
 
-
-movement = dsl.FSM("MovementFSM")
+movement = FSM("MovementFSM")
 
 idle = movement.state("Idle", True)
 run = movement.state("Run")
 
-# To represent a floating-point parameter in the DSL, use a Python float object as a type-specifying symbol.
+# print(idle)
+# print(run)
+
+# parameter
 speed = movement.parameter("Speed", float)
-grounded = movement.parameter("Grounded", bool)
 count = movement.parameter("Count", int)
 
-toRun = idle.to(run).when((speed > 0.01) & (speed <= 100)).priority(20).effect("StartedMoving")
-toIdle = run.to(idle).when(speed <= 0.01).effect("StoppedMoving").priority(100)
+# print(speed)
+# print(count)
 
-expr = (speed > 0.01) & (speed <= 100)
-expr2 = (speed > 0.01) & (speed <= 100) | (speed == 50)
+# Expression (Condition)
 
-print(expr)
-print(expr2)
-print(toRun)
+eq = speed == 100
+ge = 0.01 <= speed
+ne = speed != count
 
-print(toRun.effect_name)
-print(toIdle.effect_name)
+compose = (eq) & (ge)
 
-print(toIdle.priority)
+# print(eq)
+# print(ge)
+# print(ne)
+# print(compose)
+
+
+# print(ne._definition.left.__class__)
+# print(ne._definition.right.__class__)
+
+
+# transition
+toRun = idle.to(run).when(eq).priority(20).effect("StartRunning")
+# print(toRun)
+
+
+
+fsm = FSM("Test")
+speed = fsm.parameter("Speed", float)
+
+left = speed > 0.0
+right = speed <= 100
+
+expression = left & right
+
+expected_expression_left = BinaryExpression(operator='>', left=ParameterExpression(parameter=ParameterDef("Speed", fsm, float)), right=LiteralExpression(0.0, float))
+expected_expression_right = BinaryExpression(operator='<=', left=ParameterExpression(parameter=ParameterDef("Speed", fsm, float)), right=LiteralExpression(100, int))
+
+print(expected_expression_left)
+print(expected_expression_right)
+
+
+print(expression.left)
+print(expression.right)
+
+
+
+# assert expression.operator == "and"
+# assert expression.left == expected_expression_left
+# assert expression.right == expected_expression_right

@@ -1,118 +1,223 @@
+from .authoring import FSMDef, StateDef, ParameterDef, TransitionDef, ExpressionDef, ParameterExpression, LiteralExpression, BinaryExpression
+
 class FSM:
-    def __init__(self, name):
-        self.name = name
-        self.states = []
-        self.parameters = []
-        self.transitions = []
+    def __init__(self, name: str):
+        self._definition = FSMDef(name=name)
 
-    def state(self, name, initial = False):
-        _state = State(self, name, initial)
-        self.states.append(_state)
-        return _state
+    @property
+    def definition(self)->FSMDef:
+        return self._definition
 
-    def parameter(self, name, type_):
-        _parameter = Parameter(name, type_)
-        self.parameters.append(_parameter)
-        return _parameter
+    @property
+    def name(self)->str:
+        return self._definition.name
+
+    def state(self, name: str, initial: bool = False) -> "State":
+        definition = StateDef(name=name, owner=self._definition, initial=initial)
+
+        self._definition.states.append(definition)
+        return State(definition)
+
+    def parameter(self, name: str, type_: type) -> "Parameter":
+        definition = ParameterDef(name=name, owner=self, type_= type_)
+        self._definition.parameters.append(definition)
+        return Parameter(definition)
+
+    @property
+    def parameters(self)->list:
+        return self._definition.parameters
+
+    @property
+    def states(self)->list:
+        return self._definition.states
+
+    @property
+    def transitions(self)->list:
+        return self._definition.transitions
 
 class State:
-    def __init__(self, fsm, name, initial = False):
-        self.fsm = fsm
-        self.name = name
-        self.initial = initial
+    def __init__(self, definition: StateDef):
+        self._definition = definition
 
-    def to(self, other_state):
-        _transition = Transition(self, other_state)
-        self.fsm.transitions.append(_transition)
-        return _transition
+    @property
+    def name(self)->str:
+        return self._definition.name
+
+    @property
+    def fsm(self):
+        return self._definition.owner
+
+    def to(self, other_state) -> "Transition":
+        definition = TransitionDef(
+            source=self._definition,
+            destination=other_state._definition
+        )
+        self._definition.owner.transitions.append(definition)
+        return Transition(definition)
 
     def __repr__(self):
-        return f"State({self.name!r})"
+            return ("FSM: \""f"{self._definition.owner.name}\", State(name: \""f"{self._definition.name}\", initial: "f"{self._definition.initial})")
 
 
 class Parameter:
-    def __init__(self, name, type_):
-        self.owner = self.fsm
-        self.name = name
-        self.type = type_
+    def __init__(self, definition: ParameterDef):
+        self._definition = definition
+
+    @property
+    def definition(self)->ParameterDef:
+        return self._definition
+
+    @property
+    def name(self) -> str:
+        return self._definition.name
+
+    @property
+    def type(self) -> type:
+        return self._definition.type_
+
+    def _to_Expression(self, value = None):
+        if value is None and isinstance(self._definition, ParameterDef):
+            return ParameterExpression(self._definition)
+        if isinstance(value, (int, bool, float, UVec2, UVec3, FVec2, FVec3)):
+            return LiteralExpression(value, type(value))
+        elif isinstance(value, Parameter):
+            return ParameterExpression(value._definition)
 
     def __eq__(self, other):
-        return Expression("==", self, other)
+        _binary_expression = BinaryExpression("==", self._to_Expression(), self._to_Expression(other))
+        return Expression(_binary_expression)
 
     def __ne__(self, other):
-            return Expression("!=", self, other)
-    
+        _binary_expression = BinaryExpression("!=", self._to_Expression(), self._to_Expression(other))
+        return Expression(_binary_expression)
+
     def __gt__(self, other):
-        return Expression(">", self, other)
+        _binary_expression = BinaryExpression(">", self._to_Expression(), self._to_Expression(other))
+        return Expression(_binary_expression)
 
     def __ge__(self, other):
-            return Expression(">=", self, other)
-    
+        _binary_expression = BinaryExpression(">=", self._to_Expression(), self._to_Expression(other))
+        return Expression(_binary_expression)
+
     def __lt__(self, other):
-        return Expression("<", self, other)
+        _binary_expression = BinaryExpression("<", self._to_Expression(), self._to_Expression(other))
+        return Expression(_binary_expression)
 
     def __le__(self, other):
-            return Expression("<=", self, other)
-
-    def __repr__(self):
-        return f"Parameter({self.name}, {self.type.__name__})"
-
-
-class Expression:
-    def __init__(self, operator, left = None, right = None):
-        self.operator = operator
-        self.left = left
-        self.right = right
-
-    def __and__(self, other):
-        return Expression("and", self, other)
-
-    def __or__(self, other):
-        return Expression("or", self, other)
+        _binary_expression = BinaryExpression("<=", self._to_Expression(), self._to_Expression(other))
+        return Expression(_binary_expression)
 
     def __bool__(self):
         raise TypeError("DSL式では 'and'/'or' ではなく '&'/'|' を使用してください")
 
     def __repr__(self):
-        return (f"Expression({self.operator!r}, {self.left!r}, {self.right!r})")
+        return ("FSM: \""f"{self._definition.owner.name}\", parameter(name: \""f"{self._definition.name}\", type: "f"{self._definition.type_.__name__})")
+
+
+class Expression:
+    def __init__(self, other : ExpressionDef):
+        self._definition = other
+        # if isinstance(other, ParameterExpression):
+        #     self._definition.parameter = other.parameter
+        # elif isinstance(other, LiteralExpression):
+        #     self._definition.value = other.value
+        #     self._definition.type_ = other.type_
+        # elif isinstance(other, BinaryExpression):
+        #     self._definition.operator = other.operator
+        #     self._definition.left = other.left
+        #     self._definition.right = other.right
+        # else:
+        #     raise TypeError("")
+
+    def _to_Expression(self, value):
+        if isinstance(value, Parameter):
+            return ParameterExpression(value)
+        elif isinstance(value, Expression):
+            return BinaryExpression(value._definition.operator, value._definition.left, value._definition.right)
+        elif isinstance(value, (int, bool, float, UVec2, UVec3, FVec2, FVec3)):
+            return LiteralExpression(value, value.type)
+        else:
+            raise TypeError("条件式の項の型が不正です。")
+
+
+    def __and__(self, other):
+        _right = self._to_Expression(other)
+        composed = BinaryExpression("and", self._definition, _right)
+        return Expression(composed)
+
+    def __or__(self, other):
+        _right = self._to_Expression(other)
+        composed = BinaryExpression("or", self._definition, _right)
+        return Expression(composed)
+
+    def __bool__(self):
+        raise TypeError("DSL式では 'and'/'or' ではなく '&'/'|' を使用してください")
+
+    def __repr__(self):
+        return ("Expression(operator: \""f"{self._definition.operator}\",\n"
+                "   left("f"{self._definition.left}),\n"
+                "   right("f"{self._definition.right}))")
+
+    @property
+    def operator(self):
+        return self._definition.operator if isinstance(self._definition, BinaryExpression) else None
+    @property
+    def left(self):
+        return self._definition.left if isinstance(self._definition, BinaryExpression) else None
+    @property
+    def right(self):
+            return self._definition.right if isinstance(self._definition, BinaryExpression) else None
 
 
 class Transition:
-    def __init__(self, source, destination):
-        self.source = source
-        self.destination = destination
-        self.condition = None
-        self.effect_name = None
-        self.priority_ = 100
+    def __init__(self, definition : TransitionDef):
+        self._definition = definition
 
-    def when(self, expression):
-        if not isinstance(expression, Expression):
+    def when(self, condition : Expression):
+        if not isinstance(condition, Expression):
             raise TypeError("when()にはDSL式を指定してください")
 
-        self.condition = expression
+        self._definition.condition = condition
         return self
 
-    def priority(self,value):
+    def priority(self, value : int):
         if isinstance(value, bool) or not isinstance(value, int):
             raise TypeError("priorityには整数を指定してください")
-
+            
         if value < 0:
             raise ValueError("priorityには0以上の整数を指定してください")
-        
-        self.priority_ = value
+
+        self._definition.priority = value
         return self
 
-    def effect(self, name):
-        self.effect_name = name
-        return self
+    def effect(self, effect_name: str):
+        if isinstance(effect_name, str):
+            self._definition.effect_name = effect_name
+            return self
+        else:
+            raise TypeError("'effect'は文字列で指定してください")
 
     def __repr__(self):
-        return ("Transition("f"{self.source.name!r} -> {self.destination.name!r}, "
-                f"condition={self.condition}, "
-                f"priority={self.priority_}, "
-                f"effect={self.effect_name})")
+        return ("Transition("f"{self._definition.source}" " -> " f"{self._definition.destination}, "
+                "priority="f"{self._definition.priority}, "
+                "effect="f"{self._definition.effect_name}, " 
+                "condition="f"{self._definition.condition})")
 
+    @property
+    def source(self):
+        return self._definition.source
 
+    @property
+    def destination(self):
+        return self._definition.destination
+
+    @property
+    def condition(self):
+        return self._definition.condition
+
+    @property
+    def effect_name(self):
+        return self._definition.effect_name
 
 class UVec2:
     pass

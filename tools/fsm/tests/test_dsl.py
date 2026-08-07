@@ -2,15 +2,19 @@ import pytest
 
 from ddknd_fsm.dsl import Expression, FSM, Parameter, State, Transition
 
+from ddknd_fsm.authoring import FSMDef, StateDef, ParameterDef, TransitionDef, ExpressionDef, ParameterExpression, LiteralExpression, BinaryExpression
+
 def test_fsm_creates_parameter():
-    fsm = FSM("TESTFSM")
+    fsm = FSM("TestFSM")
 
     speed = fsm.parameter("Speed", float)
+
+    expectedSpeedDef = ParameterDef("Speed", fsm, float)
 
     assert(isinstance(speed, Parameter))
     assert speed.name == "Speed"
     assert speed.type == float
-    assert fsm.parameters == [speed]
+    assert fsm.parameters == [expectedSpeedDef]
 
 
 @pytest.mark.parametrize(
@@ -26,31 +30,37 @@ def test_fsm_creates_parameter():
 )
 
 def test_parameter_comparison_creates_expression(method_name, operator):
-    speed = Parameter("Speed",float)
+    fsm = FSM("Test")
+    speed = fsm.parameter("Speed",float)
 
     comparison_method = getattr(speed, method_name)
     expression = comparison_method(10)
 
     assert isinstance(expression, Expression)
-    assert expression.operator == operator
-    assert expression.left is speed
-    assert expression.right == 10
+    assert expression._definition.operator == operator
+    assert expression._definition.left.parameter is fsm._definition.parameters[0]
+    assert expression._definition.right == LiteralExpression(10, int)
 
 
 def test_and_expression():
-    speed = Parameter("Speed", float)
+    fsm = FSM("Test")
+    speed = fsm.parameter("Speed", float)
 
     left = speed > 0.0
     right = speed <= 100
 
     expression = left & right
 
+    expected_expression_left = BinaryExpression(operator='>', left=ParameterExpression(parameter=ParameterDef("Speed", fsm, float)), right=LiteralExpression(0.0, float))
+    expected_expression_right = BinaryExpression(operator='<=', left=ParameterExpression(parameter=ParameterDef("Speed", fsm, float)), right=LiteralExpression(100, int))
+
     assert expression.operator == "and"
-    assert expression.left == left
-    assert expression.right == right
+    assert expression.left == expected_expression_left
+    assert expression.right == expected_expression_right
 
 def test_or_expression():
-    speed = Parameter("Speed", float)
+    fsm = FSM("Test")
+    speed = fsm.parameter("Speed", float)
 
     left = speed > 0.0
     right = speed <= 100
@@ -58,13 +68,14 @@ def test_or_expression():
     expression = left | right
 
     assert expression.operator == "or"
-    assert expression.left == left
-    assert expression.right == right
+    assert expression.left == left._definition
+    assert expression.right == right._definition
 
 def test_nested_boolean_expression():
-    speed = Parameter("Speed", float)
-    grounded = Parameter("Grounded", bool)
-    count = Parameter("Count", int)
+    fsm = FSM("Test")
+    speed = fsm.parameter("Speed", float)
+    grounded = fsm.parameter("Grounded", bool)
+    count = fsm.parameter("Count", int)
 
     speed_expression = (speed > 0.0)
     grouded_expression = (grounded == True)
@@ -81,25 +92,27 @@ def test_nested_boolean_expression():
     assert left_expression.left.operator == ">"
     assert left_expression.right.operator == "=="
 
-    assert left_expression.left.left is speed
-    assert left_expression.left.right == 0.0
+    assert left_expression.left.left.parameter is fsm.parameters[0]
+    assert left_expression.left.right == LiteralExpression(0.0, float)
 
-    assert left_expression.right.left is grounded
-    assert left_expression.right.right is True
+    assert left_expression.right.left.parameter is fsm.parameters[1]
+    assert left_expression.right.right == LiteralExpression(True, bool)
 
     assert right_expression.operator == "=="
-    assert right_expression.left is count
-    assert right_expression.right == 0
+    assert right_expression.left.parameter is fsm.parameters[2]
+    assert right_expression.right == LiteralExpression(0, int)
 
 
 def test_python_and_is_rejected():
-    speed = Parameter("Speed", float)
+    fsm = FSM("Test")
+    speed = fsm.parameter("Speed", float)
 
     with pytest.raises(TypeError):
         (speed > 0.0) and (speed <= 100)
 
 def test_python_or_is_rejected():
-    speed = Parameter("Speed", float)
+    fsm = FSM("Test")
+    speed = fsm.parameter("Speed", float)
 
     with pytest.raises(TypeError):
         (speed > 0.0) or (speed <= 100)
@@ -109,12 +122,12 @@ def test_fsm_creates_state():
     fsm = FSM("Test")
 
     testState = fsm.state("TestState", True)
-
+    testStateDef = StateDef("TestState", fsm, True)
     assert isinstance(testState, State)
-    assert testState.fsm is fsm
+    assert testState.fsm is fsm._definition
     assert testState.name == "TestState"
-    assert testState.initial is True
-    assert fsm.states == [testState]
+    assert testState._definition.initial is True
+    assert fsm.states == [testStateDef]
 
 def test_state_to_creates_transition():
     fsm = FSM("Test")
@@ -125,9 +138,9 @@ def test_state_to_creates_transition():
     transition = firstState.to(secondState)
 
     assert isinstance(transition, Transition)
-    assert transition.source is firstState
-    assert transition.destination is secondState
-    assert transition in fsm.transitions
+    assert transition.source is firstState._definition
+    assert transition.destination is secondState._definition
+    assert transition._definition in fsm.transitions
 
 def test_when_sets_transition_condition():
     fsm = FSM("TestFSM")
@@ -189,11 +202,11 @@ def test_transition_method_chain():
         .effect("StartedMoving")
     )
 
-    assert transition.source is idle
-    assert transition.destination is run
+    assert transition.source is idle._definition
+    assert transition.destination is run._definition
     assert transition.condition.operator == "and"
     assert transition.effect_name == "StartedMoving"
-    assert movement.transitions == [transition]
+    assert movement.transitions == [transition._definition]
 
 
 @pytest.mark.parametrize(
