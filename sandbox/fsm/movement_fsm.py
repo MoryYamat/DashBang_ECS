@@ -1,6 +1,8 @@
 from  ddknd_fsm.dsl import FSM
 from ddknd_fsm.authoring import *
 
+from ddknd_fsm.validation import *
+
 movement = FSM("MovementFSM")
 
 idle = movement.state("Idle", True)
@@ -15,6 +17,7 @@ run = movement.state("Run")
 # parameter
 speed = movement.parameter("Speed", float)
 count = movement.parameter("Count", int)
+
 
 # speed.dump()
 
@@ -37,9 +40,57 @@ compose = (eq) & (ge)
 # print(ne._definition.left.__class__)
 # print(ne._definition.right.__class__)
 
+skill = FSM("SkillFSM")
+
+none = skill.state("None")
+
+
+hell = skill.parameter("Hell", float)
+
+movement.parameters.append(hell)
+
 # transition
 toRun = idle.to(run).when(eq).priority(20).effect("StartRunning")
-toIdle = run.to(idle).when(eq)
+# toIdle = run.to(none).when(eq)
+toIdle_nonsense = run.to(skill).when(ge)
+toIdle_invalid = run.to(none).when(compose)
 # print(toRun)
 
 toRun.dump()
+
+
+idle_dup = movement.state("Idle")
+speed_dup = movement.parameter("Speed", float)
+
+invalid_cond = hell <= 10
+
+zip = movement.state("zip")
+
+toZip = idle.to(zip).when(invalid_cond).priority(20).effect("hello_zip")
+
+print(speed_dup._definition.type_)
+print(float)
+
+result = validate_fsm(movement._definition)
+
+print(result.ok)
+
+result.diagnostics()
+
+print("nominal")
+
+nominal = FSM("Nominal")
+
+nom_a = nominal.state("A", True)
+nom_b = nominal.state("B")
+
+nom_param = nominal.parameter("nomParam", float)
+
+nom_cond = nom_param <= 10.0
+
+nom_a.to(nom_b).when(nom_cond).priority(120).effect("nommmm")
+nom_b.to(nom_a).when(nom_cond).priority(120).effect("nommmm")
+
+result = validate_fsm(nominal._definition)
+
+result.diagnostics()

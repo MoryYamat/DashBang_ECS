@@ -1,4 +1,4 @@
-from .authoring import FSMDef, StateDef, ParameterDef, TransitionDef, ExpressionDef, ParameterExpression, LiteralExpression, BinaryExpression
+from .authoring import *
 
 class FSM:
     def __init__(self, name: str):
@@ -57,10 +57,14 @@ class State:
         return self._definition.owner
 
     def to(self, other_state) -> "Transition":
+        # if not isinstance(other_state, (State, StateDef)):
+        #     raise TypeError("Transitions must be defined by other State or StateDef variable.")
+
         definition = TransitionDef(
             source=self._definition,
             destination=other_state._definition
         )
+
         self._definition.owner.transitions.append(definition)
         return Transition(definition)
 
@@ -185,7 +189,7 @@ class Transition:
     def priority(self, value : int):
         if isinstance(value, bool) or not isinstance(value, int):
             raise TypeError("priorityには整数を指定してください")
-            
+
         if value < 0:
             raise ValueError("priorityには0以上の整数を指定してください")
 
@@ -198,6 +202,10 @@ class Transition:
             return self
         else:
             raise TypeError("'effect'は文字列で指定してください")
+
+    # def on_enter(self, effect_name: str):
+    # def on_update(self, effect_name: str):
+    # def on_exit(self, effect_name: str):
 
     def __repr__(self):
         return ("Transition("f"{self._definition.source}" " -> " f"{self._definition.destination}, "
@@ -223,15 +231,3 @@ class Transition:
     @property
     def effect_name(self):
         return self._definition.effect_name
-
-class UVec2:
-    pass
-
-class UVec3:
-    pass
-
-class FVec2:
-    pass
-
-class FVec3:
-    pass

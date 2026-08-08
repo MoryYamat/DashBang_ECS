@@ -98,3 +98,16 @@ class BinaryExpression(ExpressionDef):
         print(prefix_double + "Operator: " + self.operator)
         self.left.dump("left: ", indent + 1)
         self.right.dump("right: ",indent + 1)
+
+
+class UVec2:
+    pass
+
+class UVec3:
+    pass
+
+class FVec2:
+    pass
+
+class FVec3:
+    pass
