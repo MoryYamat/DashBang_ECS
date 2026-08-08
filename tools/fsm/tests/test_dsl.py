@@ -9,12 +9,10 @@ def test_fsm_creates_parameter():
 
     speed = fsm.parameter("Speed", float)
 
-    expectedSpeedDef = ParameterDef("Speed", fsm, float)
-
     assert(isinstance(speed, Parameter))
     assert speed.name == "Speed"
     assert speed.type == float
-    assert fsm.parameters == [expectedSpeedDef]
+    assert fsm.parameters == [speed._definition]
 
 
 @pytest.mark.parametrize(
@@ -154,7 +152,7 @@ def test_when_sets_transition_condition():
     result = transition.when(condition)
 
     assert result is transition
-    assert transition.condition is condition
+    assert transition.condition is condition._definition
 
 @pytest.mark.parametrize(
     "invalid_condition",

@@ -19,7 +19,7 @@ class FSM:
         return State(definition)
 
     def parameter(self, name: str, type_: type) -> "Parameter":
-        definition = ParameterDef(name=name, owner=self, type_= type_)
+        definition = ParameterDef(name=name, owner=self._definition, type_= type_)
         self._definition.parameters.append(definition)
         return Parameter(definition)
 
@@ -34,6 +34,15 @@ class FSM:
     @property
     def transitions(self)->list:
         return self._definition.transitions
+
+    def dump_states(self):
+        self._definition.dump_states()
+
+    def dump_parameters(self):
+        self._definition.dump_parameters()
+
+    def dump_transitions(self):
+        self._definition.dump_transitions()
 
 class State:
     def __init__(self, definition: StateDef):
@@ -58,6 +67,8 @@ class State:
     def __repr__(self):
             return ("FSM: \""f"{self._definition.owner.name}\", State(name: \""f"{self._definition.name}\", initial: "f"{self._definition.initial})")
 
+    def dump(self):
+        self._definition.dump()
 
 class Parameter:
     def __init__(self, definition: ParameterDef):
@@ -113,29 +124,20 @@ class Parameter:
     def __repr__(self):
         return ("FSM: \""f"{self._definition.owner.name}\", parameter(name: \""f"{self._definition.name}\", type: "f"{self._definition.type_.__name__})")
 
+    def dump(self):
+        self._definition.dump()
 
 class Expression:
     def __init__(self, other : ExpressionDef):
         self._definition = other
-        # if isinstance(other, ParameterExpression):
-        #     self._definition.parameter = other.parameter
-        # elif isinstance(other, LiteralExpression):
-        #     self._definition.value = other.value
-        #     self._definition.type_ = other.type_
-        # elif isinstance(other, BinaryExpression):
-        #     self._definition.operator = other.operator
-        #     self._definition.left = other.left
-        #     self._definition.right = other.right
-        # else:
-        #     raise TypeError("")
 
     def _to_Expression(self, value):
         if isinstance(value, Parameter):
-            return ParameterExpression(value)
+            return ParameterExpression(value._definition)
         elif isinstance(value, Expression):
-            return BinaryExpression(value._definition.operator, value._definition.left, value._definition.right)
+            return value._definition
         elif isinstance(value, (int, bool, float, UVec2, UVec3, FVec2, FVec3)):
-            return LiteralExpression(value, value.type)
+            return LiteralExpression(value, type(value))
         else:
             raise TypeError("条件式の項の型が不正です。")
 
@@ -177,7 +179,7 @@ class Transition:
         if not isinstance(condition, Expression):
             raise TypeError("when()にはDSL式を指定してください")
 
-        self._definition.condition = condition
+        self._definition.condition = condition._definition
         return self
 
     def priority(self, value : int):
@@ -202,6 +204,9 @@ class Transition:
                 "priority="f"{self._definition.priority}, "
                 "effect="f"{self._definition.effect_name}, " 
                 "condition="f"{self._definition.condition})")
+
+    def dump(self):
+        self._definition.dump()
 
     @property
     def source(self):
