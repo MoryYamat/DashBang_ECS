@@ -55,10 +55,12 @@ class TransitionDef:
 
     def dump(self, indent: int = 0):
         prefix = " " * indent
+        prefix_more = " " * (indent + 1)
         print(prefix + "TransitionDef: ")
         self.source.dump("(src)", indent+1)
         self.destination.dump("(dst)", indent+1)
         self.condition.dump(indent+1)
+        print(prefix_more + "effect_name: " + self.effect_name)
 
 # parent class
 class ExpressionDef:

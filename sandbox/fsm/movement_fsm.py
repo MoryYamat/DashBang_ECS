@@ -42,9 +42,4 @@ toRun = idle.to(run).when(eq).priority(20).effect("StartRunning")
 toIdle = run.to(idle).when(eq)
 # print(toRun)
 
-# toRun.dump()
-
-
-movement.dump_states()
-movement.dump_parameters()
-movement.dump_transitions()
+toRun.dump()
