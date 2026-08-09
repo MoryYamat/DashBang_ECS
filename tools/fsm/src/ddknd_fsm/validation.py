@@ -12,6 +12,7 @@ import textwrap
 # verification of semantic constraints
 
 # verification of Transition constraints
+# - parameter: defined in same fsm insntance
 
 @dataclass
 class ValidationError:
@@ -76,26 +77,29 @@ def validate_fsm(fsm: FSMDef)->ValidationResult:
 def validate_state_structure(ctx: ValidationContext):
     validate_state_type(ctx)
 
+def validate_state_referential(ctx: ValidationContext):
+    validate_state_reference(ctx)
+
 def validate_states_semantic(ctx : ValidationContext):
-    validate_unique_names(ctx)
+    validate_state_unique_names(ctx)
     validate_initial_state(ctx)
 
 
 def validate_state_type(ctx : ValidationContext):
     for state in ctx.fsm.states:
         if not isinstance(state, StateDef):
-            ctx.errors.append(ValidationError("Invalid state Type","state type must be StateDef.", repr(state)))
+            ctx.errors.append(ValidationError("Invalid state Type","State type must be StateDef.", type(state)))
             continue
         ctx.valid_states.append(state)
 
-def validate_state_referential(ctx: ValidationContext):
+def validate_state_reference(ctx: ValidationContext):
     for state in ctx.valid_states:
         if state.owner is not ctx.fsm:
             ctx.errors.append(ValidationError("Invalid fsm reference", "StateDef must have reference to the same FSM Definition.", repr(state)))
 
-def validate_unique_names(ctx : ValidationContext):
+def validate_state_unique_names(ctx : ValidationContext):
     visited = []
-    for state in ctx.fsm.states:
+    for state in ctx.valid_states:
         if state.name in visited:
             ctx.errors.append(ValidationError("State name duplication error", "There is a duplicate state name.", repr(state.name)))
         visited.append(state.name)
@@ -169,7 +173,7 @@ def validate_transition_states(ctx : ValidationContext):
     for transition in ctx.valid_transitions:
 
         if transition.source not in ctx.fsm.states:
-            ctx.errors.append(ValidationError("Transition state reference error", "This state is not exists in this fsm instance.", repr(transition.source)))
+            ctx.errors.append(ValidationError("Transition state reference error", "This state does not exist in this fsm instance.", repr(transition.source)))
 
         if transition.destination not in ctx.valid_states:
             ctx.errors.append(ValidationError("Transition state reference error", "This state does not exist in this fsm instance.", repr(transition.destination)))
@@ -193,7 +197,7 @@ def validate_transition_parameters(ctx: ValidationContext):
 
         for item in res:
             if isinstance(item, ParameterExpression) and item.parameter not in ctx.valid_parameters:
-                ctx.errors.append(ValidationError("ExpressionParameter reference error", "This is parameter does not exist in this fsm instance.", repr(item.parameter)))
+                ctx.errors.append(ValidationError("ExpressionParameter reference error", "This is parameter does not exist in this fsm instance.", repr(item)))
 
 
 def validate_transition_priority(ctx: ValidationContext):
