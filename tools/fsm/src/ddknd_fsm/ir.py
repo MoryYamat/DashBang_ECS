@@ -73,3 +73,5 @@ class FSMIR:
     transitions: tuple[IRTransition, ...]
     conditions: tuple[IRExpression, ...]
     effects: tuple[IREffect, ...]
+
+    # def dump():

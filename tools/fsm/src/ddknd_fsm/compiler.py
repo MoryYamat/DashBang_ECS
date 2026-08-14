@@ -20,25 +20,25 @@ def compile_fsm(definition: FSMDef):
     compiled_conditions = compile_conditions(definition.transitions, compiled_parameters)
     compiled_transitions = compile_transitions(definition.transitions, compiled_states, compiled_parameters, compiled_conditions, compiled_effects)
 
-    print("compiled_states:")
-    for s in compiled_states:
-        print(s)
+    # print("compiled_states:")
+    # for s in compiled_states:
+    #     print(s)
 
-    print("compiled_parameters:")
-    for p in compiled_parameters:
-        print(p)
+    # print("compiled_parameters:")
+    # for p in compiled_parameters:
+    #     print(p)
 
-    print("compiled_effects:")
-    for p in compiled_effects:
-        print(p)
+    # print("compiled_effects:")
+    # for p in compiled_effects:
+    #     print(p)
 
-    print("compiled_conditions")
-    for p in compiled_conditions:
-        print(p)
+    # print("compiled_conditions")
+    # for p in compiled_conditions:
+    #     print(p)
 
-    print("compiled_transitions:")
-    for p in compiled_transitions:
-        print(p)
+    # print("compiled_transitions:")
+    # for p in compiled_transitions:
+    #     print(p)
 
 
     compile_result = FSMIR(name=definition.name,
