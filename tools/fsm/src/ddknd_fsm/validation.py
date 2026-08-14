@@ -94,6 +94,7 @@ def validate_state_type(ctx : ValidationContext):
 
 def validate_state_reference(ctx: ValidationContext):
     for state in ctx.valid_states:
+
         if state.owner is not ctx.fsm:
             ctx.errors.append(ValidationError("Invalid fsm reference", "StateDef must have reference to the same FSM Definition.", repr(state)))
 

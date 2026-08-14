@@ -1,7 +1,7 @@
 from  ddknd_fsm.dsl import FSM
 from ddknd_fsm.authoring import *
 
-from ddknd_fsm.validation import *
+from ddknd_fsm.compiler import *
 
 movement = FSM("MovementFSM")
 
@@ -56,7 +56,7 @@ toIdle_nonsense = run.to(skill).when(ge)
 toIdle_invalid = run.to(none).when(compose)
 # print(toRun)
 
-toRun.dump()
+# toRun.dump()
 
 
 idle_dup = movement.state("Idle")
@@ -68,14 +68,13 @@ zip = movement.state("zip")
 
 toZip = idle.to(zip).when(invalid_cond).priority(20).effect("hello_zip")
 
-print(speed_dup._definition.type_)
-print(float)
+# print(speed_dup._definition.type_)
+# print(float)
 
-result = validate_fsm(movement._definition)
+# result = validate_fsm(movement._definition)
 
-print(result.ok)
-
-result.diagnostics()
+# print(result.ok)
+# result.diagnostics()
 
 print("nominal")
 
@@ -83,14 +82,18 @@ nominal = FSM("Nominal")
 
 nom_a = nominal.state("A", True)
 nom_b = nominal.state("B")
+nom_c = nominal.state("C")
 
 nom_param = nominal.parameter("nomParam", float)
 
-nom_cond = nom_param <= 10.0
+nom_condA = nom_param <= 10.0
+nom_condB = 20 == nom_param
 
-nom_a.to(nom_b).when(nom_cond).priority(120).effect("nommmm")
-nom_b.to(nom_a).when(nom_cond).priority(120).effect("nommmm")
+nom_a.to(nom_b).when(nom_condA).priority(120).effect("normto")
+nom_b.to(nom_a).when(nom_condB).priority(200).effect("tonorm")
+nom_b.to(nom_c).when((nom_condB) & (nom_condA)).priority(10).effect("compose")
+# result = compile_fsm(movement)
+# print(nom_a._definition.owner.name)
+# print(nom_b._definition.owner.name)
 
-result = validate_fsm(nominal._definition)
-
-result.diagnostics()
+result_nom = compile_fsm(nominal._definition)

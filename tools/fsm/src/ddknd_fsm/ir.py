@@ -71,4 +71,5 @@ class FSMIR:
     states: tuple[IRState, ...]
     parameters: tuple[IRParameter, ...]
     transitions: tuple[IRTransition, ...]
+    conditions: tuple[IRExpression, ...]
     effects: tuple[IREffect, ...]
