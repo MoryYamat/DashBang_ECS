@@ -1,7 +1,7 @@
 from  ddknd_fsm.dsl import FSM
 from ddknd_fsm.authoring import *
-
 from ddknd_fsm.compiler import *
+from ddknd_fsm.cpp_generator import *
 
 movement = FSM("MovementFSM")
 
@@ -84,10 +84,12 @@ nom_a = nominal.state("A", True)
 nom_b = nominal.state("B")
 nom_c = nominal.state("C")
 
-nom_param = nominal.parameter("nomParam", float)
+nom_paramA = nominal.parameter("nomParamA", float)
+nom_paramB = nominal.parameter("nomParamB", int)
 
-nom_condA = nom_param <= 10.0
-nom_condB = 20 == nom_param
+
+nom_condA = nom_paramA <= 10.0
+nom_condB = 20 == nom_paramB
 
 nom_a.to(nom_b).when(nom_condA).priority(120).effect("normto")
 nom_b.to(nom_a).when(nom_condB).priority(200).effect("tonorm")
@@ -97,3 +99,9 @@ nom_b.to(nom_c).when((nom_condB) & (nom_condA)).priority(10).effect("compose")
 # print(nom_b._definition.owner.name)
 
 result_nom = compile_fsm(nominal._definition)
+
+generator = CppGenerator()
+
+code = generator.generate(result_nom)
+
+print(code)
