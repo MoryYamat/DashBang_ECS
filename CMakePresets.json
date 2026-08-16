@@ -41,6 +41,14 @@
             }
         },
         {
+            "name": "x64-debug-fsm-sandbox",
+            "displayName": "x64 Debug Sandbox FSM",
+            "inherits": "windows-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
             "name": "x64-debug-ddknd-tests",
             "displayName": "x64 Debug DDKND Tests",
             "inherits": "x64-debug-game",
@@ -69,6 +77,13 @@
             "configurePreset": "x64-debug-ddknd-tests",
             "targets": [
                 "ddknd_tests"
+            ]
+        },
+        {
+            "name": "x64-debug-fsm-sandbox",
+            "configurePreset": "x64-debug-fsm-sandbox",
+            "targets" : [
+                "fsm_test"
             ]
         }
     ],

@@ -2,6 +2,7 @@ from  ddknd_fsm.dsl import FSM
 from ddknd_fsm.authoring import *
 from ddknd_fsm.compiler import *
 from ddknd_fsm.cpp_generator import *
+from pathlib import Path
 
 movement = FSM("MovementFSM")
 
@@ -76,7 +77,7 @@ toZip = idle.to(zip).when(invalid_cond).priority(20).effect("hello_zip")
 # print(result.ok)
 # result.diagnostics()
 
-print("nominal")
+# print("nominal")
 
 nominal = FSM("Nominal")
 
@@ -86,14 +87,16 @@ nom_c = nominal.state("C")
 
 nom_paramA = nominal.parameter("nomParamA", float)
 nom_paramB = nominal.parameter("nomParamB", int)
+nom_paramC = nominal.parameter("nomParamC", int)
 
 
 nom_condA = nom_paramA <= 10.0
 nom_condB = 20 == nom_paramB
+nom_condC = (nom_condB) & (nom_paramC >= 20)
 
 nom_a.to(nom_b).when(nom_condA).priority(120).effect("normto")
 nom_b.to(nom_a).when(nom_condB).priority(200).effect("tonorm")
-nom_b.to(nom_c).when((nom_condB) & (nom_condA)).priority(10).effect("compose")
+nom_b.to(nom_c).when(nom_condC).priority(10).effect("compose")
 # result = compile_fsm(movement)
 # print(nom_a._definition.owner.name)
 # print(nom_b._definition.owner.name)
@@ -105,3 +108,11 @@ generator = CppGenerator()
 code = generator.generate(result_nom)
 
 print(code)
+
+base_path = Path("sandbox/fsm")
+
+generated_dir = base_path / "generated"
+generated_dir.mkdir(parents=True, exist_ok=True)
+
+header_path = generated_dir / "nominal_generated.h"
+header_path.write_text(code, encoding="utf-8")
