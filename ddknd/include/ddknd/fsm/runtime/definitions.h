@@ -38,4 +38,35 @@ namespace ddknd::fsm
         std::span<const ConditionDefinition<Parameters>> conditions;
         std::span<const TransitionDefinition> transitions;
     };
+
+    template<typename Parameters>
+    struct FSMTraits;
+
+    template<typename Instance, typename Parameters>
+    void Evaluate(Instance& instance, const Parameters& parameters)
+    {
+        using Traits = FSMTraits<Parameters>;
+        using State = typename Traits::State;
+
+        const auto& definition = FSMTraits<Parameters>::Definition();
+
+
+        for(const auto& transition : definition.transitions)
+        {
+            if (static_cast<StateIndex>(instance.current) != transition.source)
+            {
+                continue;
+            }
+
+            const auto& condition = definition.conditions[transition.condition];
+
+            if(condition.evaluate(parameters))
+            {
+                instance.previous = instance.current;
+                instance.current = static_cast<State>(transition.destination);
+                ++instance.revision;
+                break;
+            }
+        }
+    }
 }

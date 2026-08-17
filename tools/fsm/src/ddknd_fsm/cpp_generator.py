@@ -30,7 +30,10 @@ class CppGenerator:
         lines.append("")
         lines.extend(self._generate_transitions(ir))
 
+        lines.append("")
         lines.extend(self._generate_definition(ir))
+        lines.append("")
+        lines.extend(self._generate_traits(ir))
 
         return "\n".join(lines)
 
@@ -128,7 +131,7 @@ class CppGenerator:
         for i, t in enumerate(ir.transitions):
             lines.append("  ddknd::fsm::TransitionDefinition{")
             lines.append(f"     .source = static_cast<std::uint32_t>({ir.name}State::{ir.states[t.source_index].name}),")
-            lines.append(f"     .destination = static_cast<std::uint32_t>({ir.name}State::{ir.states[t.source_index].name}),")
+            lines.append(f"     .destination = static_cast<std::uint32_t>({ir.name}State::{ir.states[t.destination_index].name}),")
             lines.append(f"     .condition = static_cast<std::uint32_t>({t.condition_index}),")
             lines.append(f"     .priority = static_cast<std::uint16_t>({t.priority}),")
             lines.append(f"     .effect = static_cast<std::uint16_t>({t.effect_index}),")
@@ -147,6 +150,22 @@ class CppGenerator:
         lines.append(f"     .initialState = static_cast<std::uint32_t>({ir.name}State::{ir.states[ir.initial_state_index].name}),")
         lines.append(f"     .conditions = {ir.name}Conditions,")
         lines.append(f"     .transitions = {ir.name}Transitions")
+        lines.append("};")
+
+        return lines
+
+    def _generate_traits(self, ir : FSMIR) -> list[str]:
+        lines = []
+
+        lines.append("template<>")
+        lines.append(f"struct ddknd::fsm::FSMTraits<{ir.name}Parameters>")
+        lines.append("{")
+        lines.append(f"      using State = {ir.name}State;")
+        lines.append(f"      using Instance = {ir.name}Instance;")
+        lines.append(f"      static constexpr auto& Definition()")
+        lines.append("      {")
+        lines.append(f"          return {ir.name}Def;")
+        lines.append("      }")
         lines.append("};")
 
         return lines

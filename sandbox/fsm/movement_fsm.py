@@ -95,6 +95,7 @@ nom_condB = 20 == nom_paramB
 nom_condC = (nom_condB) & (nom_paramC >= 20)
 
 nom_a.to(nom_b).when(nom_condA).priority(120).effect("normto")
+nom_a.to(nom_c).when(nom_condB).priority(0).effect("toppo")
 nom_b.to(nom_a).when(nom_condB).priority(200).effect("tonorm")
 nom_b.to(nom_c).when(nom_condC).priority(10).effect("compose")
 # result = compile_fsm(movement)

@@ -1,4 +1,4 @@
-// #include <ddknd/fsm/runtime/definitions.h>
+#include <ddknd/fsm/runtime/definitions.h>
 
 #include "generated/nominal_generated.h"
 
@@ -62,16 +62,29 @@ int main()
 
     // most simple method to reconstructing condition expression.
 
+    std::cout << "State=" << static_cast<std::uint32_t>(stateInst.current) << "\n";
+
+    nom_parameters.nomParamA = 5.0f;
+
+    ddknd::fsm::Evaluate(stateInst, nom_parameters);
+
+    std::cout << "State=" << static_cast<std::uint32_t>(stateInst.current) << "\n";
+
+
+    nom_parameters.nomParamB = 20;
+
+    ddknd::fsm::Evaluate(stateInst, nom_parameters);
+
+    std::cout << "State=" << static_cast<std::uint32_t>(stateInst.current) << "\n";
+
     return 0;
 }
-
 // #pragma once
 
 // #include <ddknd/fsm/runtime/definitions.h>
-
+// #include <array>
 // #include <cstdint>
 // #include <cassert>
-// #include <exception>
 
 // enum class NominalState : std::uint8_t
 // {
@@ -100,37 +113,67 @@ int main()
 
 // static bool NominalCondition0(const NominalParameters& parameters)
 // {
-//       return parameters.nomParamA > 0.5f;
+//      return parameters.nomParamA <= 10.0;
 // }
-
 // static bool NominalCondition1(const NominalParameters& parameters)
 // {
-//       return parameters.nomParamB == 10;
+//      return parameters.nomParamB == 20;
+// }
+// static bool NominalCondition2(const NominalParameters& parameters)
+// {
+//      return parameters.nomParamB == 20 && parameters.nomParamC >= 20;
 // }
 
-// inline constexpr ddknd::fsm::ConditionDefinition<NominalParameters>
-// NominalConditions[] = 
+// using NominalConditionDefinition = ddknd::fsm::ConditionDefinition<NominalParameters>;
+// inline constexpr std::array<NominalConditionDefinition, 3>
+// NominalConditions = 
 // {
-//       {&NominalCondition0},
-//       {&NominalCondition1}
+//      NominalConditionDefinition{&NominalCondition0},
+//      NominalConditionDefinition{&NominalCondition1},
+//      NominalConditionDefinition{&NominalCondition2},
 // };
 
-// inline constexpr ddknd::fsm::TransitionDefinition
-// NominalTransitions[] = 
+// inline constexpr std::array<ddknd::fsm::TransitionDefinition, 3>
+// NominalTransitions = 
 // {
-//       {
-//             .source = static_cast<std::uint32_t>(NominalState::A),
-//             .destination = static_cast<std::uint32_t>(NominalState::B),
-//             .condition = 0,
-//             .priority = 120,
-//             .effect = 0
-//       },
+//   ddknd::fsm::TransitionDefinition{
+//      .source = static_cast<std::uint32_t>(NominalState::A),
+//      .destination = static_cast<std::uint32_t>(NominalState::B),
+//      .condition = static_cast<std::uint32_t>(0),
+//      .priority = static_cast<std::uint16_t>(120),
+//      .effect = static_cast<std::uint16_t>(0),
+//   },
+//   ddknd::fsm::TransitionDefinition{
+//      .source = static_cast<std::uint32_t>(NominalState::B),
+//      .destination = static_cast<std::uint32_t>(NominalState::A),
+//      .condition = static_cast<std::uint32_t>(1),
+//      .priority = static_cast<std::uint16_t>(200),
+//      .effect = static_cast<std::uint16_t>(1),
+//   },
+//   ddknd::fsm::TransitionDefinition{
+//      .source = static_cast<std::uint32_t>(NominalState::B),
+//      .destination = static_cast<std::uint32_t>(NominalState::C),
+//      .condition = static_cast<std::uint32_t>(2),
+//      .priority = static_cast<std::uint16_t>(10),
+//      .effect = static_cast<std::uint16_t>(2),
+//   },
+// };
+// using NominalDefinition = ddknd::fsm::FSMDefinition<NominalParameters>;
+// NominalDefinition NominalDef
+// {
+//      .initialState = static_cast<std::uint32_t>(NominalState::A),
+//      .conditions = NominalConditions,
+//      .transitions = NominalTransitions
 // };
 
-// inline constexpr ddknd::fsm::FSMDefinition<NominalParameters>
-// NominalDefinition
+// template<>
+// struct ddknd::fsm::FSMTraits<NominalParameters>
 // {
-//       .initialState = static_cast<std::uint32_t>(NominalState::A),
-//       .conditions = NominalConditions,
-//       .transitions = NominalTransitions
+//      using State = NominalState;
+//      using Instance = NominalInstance;
+
+//      static constexpr auto& Definition()
+//      {
+//           return NominalDef;
+//      }
 // };

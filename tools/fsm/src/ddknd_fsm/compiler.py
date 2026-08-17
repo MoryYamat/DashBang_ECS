@@ -13,6 +13,7 @@ def compile_fsm(definition: FSMDef):
     if not validation_result.ok:
         for e in validation_result.errors:
             print(e)
+        raise ValueError("FSM validation failed.")
 
     initial_state, compiled_states = compile_states(definition.states)
     compiled_parameters = compile_parameters(definition.parameters)
@@ -172,5 +173,9 @@ def compile_transitions(transitions: list[TransitionDef], states : list[IRState]
             raise ValueError("Failed to resolve the effect index.")
 
         result.append(IRTransition(source_index=source_index, destination_index=destination_index, condition_index=condition_index, priority=t.priority, effect_index=effect_index))
+
+    result.sort(
+        key=lambda t: (t.source_index, -t.priority)
+    )
 
     return result
