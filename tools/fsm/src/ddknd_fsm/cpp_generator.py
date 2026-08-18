@@ -1,8 +1,22 @@
 from ddknd_fsm.ir import *
+from pathlib import Path
 
 class CppGenerator:
-    def generate(self, ir: FSMIR) -> str:
-        lines: list[str] = []
+    def generate(self, ir : FSMIR, output_dir : Path, file_name : str | None = None) -> Path:
+        code = self._render(ir)
+
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        if file_name is None:
+            file_name = f"{ir.name}_generated.h"
+
+        output_path = output_dir / file_name
+        output_path.write_text(code, encoding="utf-8")
+
+        return output_path
+
+    def _render(self, ir : FSMIR) -> str:
+        lines : list[str] = []
 
         lines.append("#pragma once")
         lines.append("")
@@ -12,163 +26,217 @@ class CppGenerator:
         lines.append("#include <cassert>")
         lines.append("")
 
-        lines.extend(self._generate_state_enum(ir))
-        lines.extend("")
-        lines.extend(self._generate_parameter_index(ir))
-        lines.extend("")
-        lines.extend(self._generate_parameters(ir))
-        lines.extend("")
-        lines.extend(self._generate_FSM_Instance(ir))
-        lines.extend("")
+        namespace_body = []
 
-        lines.append("")
-        lines.extend(self._generate_condition_functions(ir))
+        namespace_body.extend(generate_state_enum(ir))
+        namespace_body.append("")
+        namespace_body.extend(generate_parameter_index(ir))
+        namespace_body.append("")
+        namespace_body.extend(generate_parameters(ir))
+        namespace_body.append("")
+        namespace_body.extend(generate_FSM_Instance(ir))
+        namespace_body.append("")
+        namespace_body.append("")
+        namespace_body.extend(generate_condition_functions(ir))
+        namespace_body.append("")
+        namespace_body.extend(generate_condition_definition(ir))
+        namespace_body.append("")
+        namespace_body.extend(generate_transitions(ir))
+        namespace_body.append("")
+        namespace_body.extend(generate_definition(ir))
 
-        lines.append("")
-        lines.extend(self._generate_condition_definition(ir))
 
+        lines.append(f"namespace fsm::{ir.name}")
+        lines.append("{")
+        lines.extend(indent(namespace_body))
+        lines.append("}")
+        
         lines.append("")
-        lines.extend(self._generate_transitions(ir))
+        lines.extend(generate_traits(ir))
 
-        lines.append("")
-        lines.extend(self._generate_definition(ir))
-        lines.append("")
-        lines.extend(self._generate_traits(ir))
 
         return "\n".join(lines)
 
-    def _generate_state_enum(self, ir: FSMIR) -> list[str]:
-        lines = []
+def generate_state_enum(ir: FSMIR) -> list[str]:
+    lines = []
 
-        lines.append(
-            f"enum class {ir.name}State : std::uint8_t"
-        )
+    lines.append(
+        f"enum class {ir.name}State : std::uint8_t"
+    )
+    lines.append("{")
+
+    body = []
+
+    for state in ir.states:
+        body.append(f"{state.name},")
+
+    lines.extend(indent(body))
+
+    lines.append("};")
+
+    return lines
+
+def generate_parameter_index(ir : FSMIR) -> list[str]:
+    lines = []
+
+    lines.append(
+        f"enum class {ir.name}ParameterIndex : std::uint16_t"
+    )
+    lines.append("{")
+
+    body = []
+
+    for i, p in enumerate(ir.parameters):
+        body.append(f"{p.name} = {i},")
+
+    lines.extend(indent(body))
+    lines.append("};")
+
+    return lines
+
+def generate_parameters(ir: FSMIR) -> list[str]:
+    lines = []
+
+    lines.append(
+        f"struct {ir.name}Parameters"
+    )
+    lines.append("{")
+
+    body = []
+
+    for parameter in ir.parameters:
+        body.append(f"{value_type_enum_to_str(parameter.value_type)} {parameter.name}{{}};")
+
+    lines.extend(indent(body))
+
+    lines.append("};")
+
+    return lines
+
+def generate_FSM_Instance(ir: FSMIR) -> list[str]:
+    lines = []
+
+    lines.append(
+        f"struct {ir.name}Instance"
+    )
+    lines.append("{")
+
+    body = [
+        f"{ir.name}State current = {ir.name}State::{ir.states[ir.initial_state_index].name};",
+        f"{ir.name}State previous = {ir.name}State::{ir.states[ir.initial_state_index].name};",
+        "std::uint32_t revision = 0;",
+    ]
+
+    lines.extend(indent(body))
+
+    lines.append("};")
+
+    return lines
+
+def generate_condition_functions(ir :FSMIR) -> list[str]:
+    lines = []
+
+
+    for i, c in enumerate(ir.conditions):
+        lines.append(f"static bool {ir.name}Condition{i}(const {ir.name}Parameters& parameters)")
         lines.append("{")
+        lines.append(f"     return {generate_condition_expression_from_ir(c, ir)};")
+        lines.append("}")
 
-        for state in ir.states:
-            lines.append(f"     {state.name},")
+    return lines
 
-        lines.append("};")
+def generate_condition_definition(ir) -> list[str]:
+    lines = []
 
-        return lines
+    lines.append(f"using {ir.name}ConditionDefinition = ddknd::fsm::ConditionDefinition<{ir.name}Parameters>;")
+    lines.append(f"inline constexpr std::array<{ir.name}ConditionDefinition, {len(ir.conditions)}>")
+    lines.append(f"{ir.name}Conditions = ")
+    lines.append("{")
 
-    def _generate_parameter_index(self, ir : FSMIR) -> list[str]:
-        lines = []
+    body = []
 
-        lines.append(
-            f"enum class {ir.name}ParameterIndex : std::uint16_t"
-        )
-        lines.append("{")
+    for i, c in enumerate(ir.conditions):
+        body.append(f"{ir.name}ConditionDefinition{{&{ir.name}Condition{i}}},")
 
-        for i, p in enumerate(ir.parameters):
-            lines.append(f"     {p.name} = {i},")
-        lines.append("};")
+    lines.extend(indent(body))
+    lines.append("};")
 
-        return lines
+    return lines
 
-    def _generate_parameters(self, ir: FSMIR) -> list[str]:
-        lines = []
+def generate_transitions(ir : FSMIR) -> list[str]:
+    lines = []
 
-        lines.append(
-            f"struct {ir.name}Parameters"
-        )
-        lines.append("{")
+    lines.append(f"inline constexpr std::array<ddknd::fsm::TransitionDefinition, {len(ir.transitions)}>")
+    lines.append(f"{ir.name}Transitions = ")
+    lines.append("{")
 
-        for parameter in ir.parameters:
-            lines.append(f"      {value_type_enum_to_str(parameter.value_type)} {parameter.name}{{}};")
+    body = []
 
-        lines.append("};")
+    for t in ir.transitions:
+        transition = [
+            "ddknd::fsm::TransitionDefinition{",
+            f".source = static_cast<std::uint32_t>("
+            f"{ir.name}State::{ir.states[t.source_index].name}),",
+            f".destination = static_cast<std::uint32_t>("
+            f"{ir.name}State::{ir.states[t.destination_index].name}),",
+            f".condition = static_cast<std::uint32_t>({t.condition_index}),",
+            f".priority = static_cast<std::uint16_t>({t.priority}),",
+            f".effect = static_cast<std::uint16_t>({t.effect_index}),",
+            "},",
+        ]
 
-        return lines
+        body.append(transition[0])
+        body.extend(indent(transition[1:-1]))
+        body.append(transition[-1])
 
-    def _generate_FSM_Instance(self, ir: FSMIR) -> list[str]:
-        lines = []
+    lines.extend(indent(body))
+    lines.append("};")
 
-        lines.append(
-            f"struct {ir.name}Instance"
-        )
-        lines.append("{")
+    return lines
 
-        lines.append(f"      {ir.name}State current = {ir.name}State::{ir.states[ir.initial_state_index].name};")
-        lines.append(f"      {ir.name}State previous = {ir.name}State::{ir.states[ir.initial_state_index].name};")
-        lines.append("      std::uint32_t revision = 0;")
-        lines.append("};")
+def generate_definition(ir :FSMIR) -> list[str]:
+    lines = []
 
-        return lines
+    lines.append(f"using {ir.name}Definition = ddknd::fsm::FSMDefinition<{ir.name}Parameters>;")
+    lines.append(f"inline constexpr {ir.name}Definition {ir.name}Def")
+    lines.append("{")
 
-    def _generate_condition_functions(self, ir :FSMIR) -> list[str]:
-        lines = []
+    body = [
+        f".initialState = static_cast<std::uint32_t>({ir.name}State::{ir.states[ir.initial_state_index].name}),",
+        f".conditions = {ir.name}Conditions,",
+        f".transitions = {ir.name}Transitions",
+    ]
 
+    lines.extend(indent(body))
+    lines.append("};")
 
-        for i, c in enumerate(ir.conditions):
-            lines.append(f"static bool {ir.name}Condition{i}(const {ir.name}Parameters& parameters)")
-            lines.append("{")
-            lines.append(f"     return {generate_condition_expression_from_ir(c, ir)};")
-            lines.append("}")
+    return lines
 
-        return lines
+def generate_traits(ir : FSMIR) -> list[str]:
+    body = []
+    body.append("template<>")
+    body.append(f"struct ddknd::fsm::FSMTraits<::fsm::{ir.name}::{ir.name}Parameters>")
+    body.append("{")
 
-    def _generate_condition_definition(self, ir) -> list[str]:
-        lines = []
+    struct_body = [
+        f"using State = ::fsm::{ir.name}::{ir.name}State;",
+        f"using Instance = ::fsm::{ir.name}::{ir.name}Instance;",
+        "",
+        f"static constexpr auto& Definition()",
+        "{",
+        f"      return ::fsm::{ir.name}::{ir.name}Def;",
+        "};",
+    ]
 
-        lines.append(f"using {ir.name}ConditionDefinition = ddknd::fsm::ConditionDefinition<{ir.name}Parameters>;")
-        lines.append(f"inline constexpr std::array<{ir.name}ConditionDefinition, {len(ir.conditions)}>")
-        lines.append(f"{ir.name}Conditions = ")
-        lines.append("{")
-        for i, c in enumerate(ir.conditions):
-            lines.append(f"     {ir.name}ConditionDefinition{{&{ir.name}Condition{i}}},")
-        lines.append("};")
+    body.extend(indent(struct_body))
+    body.append("};")
 
-        return lines
-
-    def _generate_transitions(self, ir : FSMIR) -> list[str]:
-        lines = []
-
-        lines.append(f"inline constexpr std::array<ddknd::fsm::TransitionDefinition, {len(ir.transitions)}>")
-        lines.append(f"{ir.name}Transitions = ")
-        lines.append("{")
-
-        for i, t in enumerate(ir.transitions):
-            lines.append("  ddknd::fsm::TransitionDefinition{")
-            lines.append(f"     .source = static_cast<std::uint32_t>({ir.name}State::{ir.states[t.source_index].name}),")
-            lines.append(f"     .destination = static_cast<std::uint32_t>({ir.name}State::{ir.states[t.destination_index].name}),")
-            lines.append(f"     .condition = static_cast<std::uint32_t>({t.condition_index}),")
-            lines.append(f"     .priority = static_cast<std::uint16_t>({t.priority}),")
-            lines.append(f"     .effect = static_cast<std::uint16_t>({t.effect_index}),")
-            lines.append("  },")
-
-        lines.append("};")
-
-        return lines
-
-    def _generate_definition(self, ir :FSMIR) -> list[str]:
-        lines = []
-
-        lines.append(f"using {ir.name}Definition = ddknd::fsm::FSMDefinition<{ir.name}Parameters>;")
-        lines.append(f"{ir.name}Definition {ir.name}Def")
-        lines.append("{")
-        lines.append(f"     .initialState = static_cast<std::uint32_t>({ir.name}State::{ir.states[ir.initial_state_index].name}),")
-        lines.append(f"     .conditions = {ir.name}Conditions,")
-        lines.append(f"     .transitions = {ir.name}Transitions")
-        lines.append("};")
-
-        return lines
-
-    def _generate_traits(self, ir : FSMIR) -> list[str]:
-        lines = []
-
-        lines.append("template<>")
-        lines.append(f"struct ddknd::fsm::FSMTraits<{ir.name}Parameters>")
-        lines.append("{")
-        lines.append(f"      using State = {ir.name}State;")
-        lines.append(f"      using Instance = {ir.name}Instance;")
-        lines.append(f"      static constexpr auto& Definition()")
-        lines.append("      {")
-        lines.append(f"          return {ir.name}Def;")
-        lines.append("      }")
-        lines.append("};")
-
-        return lines
+    return [
+        "namespace ddknd::fsm",
+        "{",
+        *indent(body),
+        "}"
+    ]
 
 def value_type_enum_to_str(type: ValueType):
     match type:
@@ -190,7 +258,7 @@ def value_type_enum_to_str(type: ValueType):
             raise ValueType("Invalid enum.")
 
 
-def generate_condition_expression_from_ir(condition : IRBinaryExpression, ir : FSMIR) ->list[str]:
+def generate_condition_expression_from_ir(condition : IRBinaryExpression, ir : FSMIR) ->str:
     if isinstance(condition, IRBinaryExpression):
         return (
             f"{generate_condition_expression_from_ir(condition.left, ir)} {resolve_operator_from_ir(condition.operator)} {generate_condition_expression_from_ir(condition.right, ir)}"
@@ -201,7 +269,7 @@ def generate_condition_expression_from_ir(condition : IRBinaryExpression, ir : F
         return (f"{condition.value}")
 
 
-def resolve_operator_from_ir(operator : BinaryOp) -> list[str]:
+def resolve_operator_from_ir(operator : BinaryOp) -> str:
     match operator:
         case BinaryOp.EQ:
             return "=="
@@ -221,3 +289,9 @@ def resolve_operator_from_ir(operator : BinaryOp) -> list[str]:
             return "||"
         case _:
             raise TypeError("Invalid Operator enum.")
+
+
+INDENT = "    "
+def indent(lines: list[str], level: int = 1) -> list[str]:
+    prefix = INDENT * level
+    return [prefix + line if line else "" for line in lines]

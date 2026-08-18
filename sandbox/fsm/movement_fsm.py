@@ -106,14 +106,21 @@ result_nom = compile_fsm(nominal._definition)
 
 generator = CppGenerator()
 
-code = generator.generate(result_nom)
+# code = generator.cvtCode(result_nom)
 
-print(code)
+# print(code)
+
+
+
 
 base_path = Path("sandbox/fsm")
 
-generated_dir = base_path / "generated"
-generated_dir.mkdir(parents=True, exist_ok=True)
+generated_path = generator.generate(result_nom, base_path / "generated")
 
-header_path = generated_dir / "nominal_generated.h"
-header_path.write_text(code, encoding="utf-8")
+print(generated_path)
+
+# generated_dir = base_path / "generated"
+# generated_dir.mkdir(parents=True, exist_ok=True)
+
+# header_path = generated_dir / "nominal_generated.h"
+# header_path.write_text(code, encoding="utf-8")
