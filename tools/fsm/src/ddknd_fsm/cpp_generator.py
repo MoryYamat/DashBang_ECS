@@ -10,7 +10,7 @@ class CppGenerator:
         if file_name is None:
             file_name = f"{ir.name}_generated.h"
 
-        output_path = output_dir / file_name
+        output_path = output_dir / (file_name + ".h")
         output_path.write_text(code, encoding="utf-8")
 
         return output_path

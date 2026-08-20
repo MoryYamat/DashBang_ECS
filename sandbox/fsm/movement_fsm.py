@@ -1,7 +1,6 @@
 from  ddknd_fsm.dsl import FSM
-from ddknd_fsm.authoring import *
-from ddknd_fsm.compiler import *
-from ddknd_fsm.cpp_generator import *
+from ddknd_fsm.compiler import compile_fsm
+from ddknd_fsm.cpp_generator import CppGenerator
 from pathlib import Path
 
 movement = FSM("MovementFSM")
@@ -9,118 +8,16 @@ movement = FSM("MovementFSM")
 idle = movement.state("Idle", True)
 run = movement.state("Run")
 
-# idle.dump()
-# run.dump()
+movement_intent = movement.parameter("MovementIntent", float)
 
-# print(idle)
-# print(run)
+idle.to(run).when(movement_intent > (0.001)).priority(100).effect("move")
+run.to(idle).when(movement_intent == 0.0).priority(100).effect("stop")
 
-# parameter
-speed = movement.parameter("Speed", float)
-count = movement.parameter("Count", int)
-
-
-# speed.dump()
-
-# print(speed)
-# print(count)
-
-# Expression (Condition)
-
-eq = speed == 100
-ge = 0.01 <= speed
-ne = speed != count
-
-compose = (eq) & (ge)
-
-# print(eq)
-# print(ge)
-# print(ne)
-# print(compose)
-
-# print(ne._definition.left.__class__)
-# print(ne._definition.right.__class__)
-
-skill = FSM("SkillFSM")
-
-none = skill.state("None")
-
-
-hell = skill.parameter("Hell", float)
-
-movement.parameters.append(hell)
-
-# transition
-toRun = idle.to(run).when(eq).priority(20).effect("StartRunning")
-# toIdle = run.to(none).when(eq)
-toIdle_nonsense = run.to(skill).when(ge)
-toIdle_invalid = run.to(none).when(compose)
-# print(toRun)
-
-# toRun.dump()
-
-
-idle_dup = movement.state("Idle")
-speed_dup = movement.parameter("Speed", float)
-
-invalid_cond = hell <= 10
-
-zip = movement.state("zip")
-
-toZip = idle.to(zip).when(invalid_cond).priority(20).effect("hello_zip")
-
-# print(speed_dup._definition.type_)
-# print(float)
-
-# result = validate_fsm(movement._definition)
-
-# print(result.ok)
-# result.diagnostics()
-
-# print("nominal")
-
-nominal = FSM("Nominal")
-
-nom_a = nominal.state("A", True)
-nom_b = nominal.state("B")
-nom_c = nominal.state("C")
-
-nom_paramA = nominal.parameter("nomParamA", float)
-nom_paramB = nominal.parameter("nomParamB", int)
-nom_paramC = nominal.parameter("nomParamC", int)
-
-
-nom_condA = nom_paramA <= 10.0
-nom_condB = 20 == nom_paramB
-nom_condC = (nom_condB) & (nom_paramC >= 20)
-
-nom_a.to(nom_b).when(nom_condA).priority(120).effect("normto")
-nom_a.to(nom_c).when(nom_condB).priority(0).effect("toppo")
-nom_b.to(nom_a).when(nom_condB).priority(200).effect("tonorm")
-nom_b.to(nom_c).when(nom_condC).priority(10).effect("compose")
-# result = compile_fsm(movement)
-# print(nom_a._definition.owner.name)
-# print(nom_b._definition.owner.name)
-
-result_nom = compile_fsm(nominal._definition)
+result_movement = compile_fsm(movement._definition)
 
 generator = CppGenerator()
 
-# code = generator.cvtCode(result_nom)
-
-# print(code)
-
-
-
-
 base_path = Path("sandbox/fsm")
+movement_generated_path = generator.generate(result_movement, base_path / "generated", "movement_generated")
 
-generated_path = generator.generate(result_nom, base_path / "generated")
-
-print(generated_path)
-
-# generated_dir = base_path / "generated"
-# generated_dir.mkdir(parents=True, exist_ok=True)
-
-# header_path = generated_dir / "nominal_generated.h"
-# header_path.write_text(code, encoding="utf-8")
+print(movement_generated_path)
