@@ -22,6 +22,8 @@
 #include "game/system/resolve/game_movement_intent_resolve_system.h"
 #include "game/system/state/game_character_state_system.h"
 
+#include "game/player/fsm/generated/movement_generated.h"
+
 namespace app::system
 {
 
@@ -112,9 +114,20 @@ namespace app::system
 
         auto& reg = world.GetRegistry();
 
+        // auto view = reg.view(query()
+        //                          .select<::ddknd::component::AnimationPlaybackComponent>()
+        //                          .require<component::PlayerLocomotionStateComponent, component::AttackStateComponent,
+        //                                   component::CharacterAnimationClipsComponent>());
+
+        // for (auto [e, playback, moveState, attackState, clips] : view.withEntity())
+        // {
+        //     PlayerAnimationSystem::UpdateOne(playback, moveState, attackState, clips);
+        // }
+
+        
         auto view = reg.view(query()
                                  .select<::ddknd::component::AnimationPlaybackComponent>()
-                                 .require<component::PlayerLocomotionStateComponent, component::AttackStateComponent,
+                                 .require<fsm::MovementFSM::MovementFSMStateComponent, component::AttackStateComponent,
                                           component::CharacterAnimationClipsComponent>());
 
         for (auto [e, playback, moveState, attackState, clips] : view.withEntity())
@@ -219,8 +232,18 @@ namespace app::system
 
         auto& reg = world.GetRegistry();
 
+        // auto view = reg.view(query()
+        //                          .select<app::component::PlayerLocomotionStateComponent>()
+        //                          .require<app::component::MovementIntentComponent>());
+
+        // for (auto [state, moveIntent] : view)
+        // {
+        //     PlayerLocomotionStateSystem::UpdateOne(state, moveIntent);
+        // }
+
+        
         auto view = reg.view(query()
-                                 .select<app::component::PlayerLocomotionStateComponent>()
+                                 .select<fsm::MovementFSM::MovementFSMStateComponent>()
                                  .require<app::component::MovementIntentComponent>());
 
         for (auto [state, moveIntent] : view)

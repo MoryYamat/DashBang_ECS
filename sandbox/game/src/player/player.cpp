@@ -13,6 +13,8 @@
 
 #include "game/component/state_component.h"
 
+#include "game/player/fsm/generated/movement_generated.h"
+
 namespace app::player
 {
     ::ddknd::ecs::Entity CreatePaladinPlayer(::ddknd::ecs::World& world,
@@ -45,7 +47,8 @@ namespace app::player
         reg.AddComponent<app::component::AttackDefComponent>(e, app::component::AttackDefComponent{.hitbox = attackDef});
         reg.AddComponent<app::component::CharacterControlModifierComponent>(e);
 
-        reg.AddComponent<app::component::PlayerLocomotionStateComponent>(e);
+        // reg.AddComponent<app::component::PlayerLocomotionStateComponent>(e);
+        reg.AddComponent<fsm::MovementFSM::MovementFSMStateComponent>(e);
 
         reg.AddComponent<ddknd::component::HurtboxComponent>(e);
         //@TODO: move actor-specific hurtbox settings to ActorDef / data asset.

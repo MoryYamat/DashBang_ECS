@@ -5,6 +5,9 @@
 #include "game/component/animation_component.h"
 #include "game/component/state_component.h"
 
+
+#include "game/player/fsm/generated/movement_generated.h"
+
 namespace app::system
 {
     // Decide which clip to play
@@ -17,13 +20,13 @@ namespace app::system
         using AttackState = app::component::AttackState;
         auto nextClip = clips.idle;
         bool loop = true;
-        float speed = 0.8f;                                         // @TODO fix hardcoding
+        float speed = 0.8f; // @TODO fix hardcoding
 
         if (attackState.current != AttackState::None)
         {
             nextClip = clips.attack;
             loop = false;
-            speed = 1.2f;                                           // @TODO fix hardcoding
+            speed = 1.2f; // @TODO fix hardcoding
             // std::cerr << "clip =" << nextClip.Value() << "\n";
         }
         else
@@ -56,6 +59,48 @@ namespace app::system
                 break;
             case MoveState::Run_Left_Back_Diagonal:
                 nextClip = clips.runLeftBackDiagonal;
+                break;
+            }
+        }
+
+        if (playback.state.clip == nextClip)
+        {
+            return;
+        }
+        playback.state.clip = nextClip;
+        playback.state.time = 0.0f;
+        playback.state.speed = speed;
+        playback.state.loop = loop;
+    }
+
+    void PlayerAnimationSystem::UpdateOne(::ddknd::component::AnimationPlaybackComponent& playback,
+                          const fsm::MovementFSM::MovementFSMStateComponent& playerState,
+                          const component::AttackStateComponent& attackState,
+                          const component::CharacterAnimationClipsComponent& clips)
+    {
+
+        using MoveState = fsm::MovementFSM::MovementFSMState;
+        using AttackState = app::component::AttackState;
+        auto nextClip = clips.idle;
+        bool loop = true;
+        float speed = 0.8f; // @TODO fix hardcoding
+
+        if (attackState.current != AttackState::None)
+        {
+            nextClip = clips.attack;
+            loop = false;
+            speed = 1.2f; // @TODO fix hardcoding
+            // std::cerr << "clip =" << nextClip.Value() << "\n";
+        }
+        else
+        {
+            switch (playerState.instance.current)
+            {
+            case MoveState::Idle:
+                nextClip = clips.idle;
+                break;
+            case MoveState::Run:
+                nextClip = clips.runForward;
                 break;
             }
         }
