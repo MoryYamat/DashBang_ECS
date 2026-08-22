@@ -1,39 +1,15 @@
 #pragma once
 
 #include <ddknd/fsm/runtime/definitions.h>
+#include "movement_types.h"
 #include <array>
 #include <cstdint>
-#include <cassert>
 
 namespace fsm::MovementFSM
 {
-    enum class MovementFSMState : std::uint8_t
-    {
-        Idle,
-        Run,
-    };
-
-    enum class MovementFSMParameterIndex : std::uint16_t
-    {
-        MovementIntent = 0,
-    };
-
-    struct MovementFSMParameters
-    {
-        float MovementIntent{};
-    };
-
-    struct MovementFSMInstance
-    {
-        MovementFSMState current = MovementFSMState::Idle;
-        MovementFSMState previous = MovementFSMState::Idle;
-        std::uint32_t revision = 0;
-    };
-
-
     static bool MovementFSMCondition0(const MovementFSMParameters& parameters)
     {
-         return parameters.MovementIntent > 0.001;
+         return parameters.MovementIntent > 1e-05;
     }
     static bool MovementFSMCondition1(const MovementFSMParameters& parameters)
     {

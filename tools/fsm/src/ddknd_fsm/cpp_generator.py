@@ -2,28 +2,34 @@ from ddknd_fsm.ir import *
 from pathlib import Path
 
 class CppGenerator:
-    def generate(self, ir : FSMIR, output_dir : Path, file_name : str | None = None) -> Path:
-        code = self._render(ir)
-
+    def generate(self, ir : FSMIR, output_dir : Path, file_name : str | None = None) -> list[Path]:
+        
         output_dir.mkdir(parents=True, exist_ok=True)
 
         if file_name is None:
             file_name = f"{ir.name}_generated.h"
 
-        output_path = output_dir / (file_name + ".h")
-        output_path.write_text(code, encoding="utf-8")
+        types_file_name = file_name + "_types.h"
+        defs_file_name = file_name + "_definition.h"
 
-        return output_path
 
-    def _render(self, ir : FSMIR) -> str:
+        types_output_path = output_dir / types_file_name
+        definition_output_path = output_dir / defs_file_name
+
+        types_code = self._render_types(ir)
+        types_output_path.write_text(types_code, encoding="utf-8")
+
+        defs_code = self._render_defs(ir, types_file_name)
+        definition_output_path.write_text(defs_code, encoding='utf-8')
+
+        return (types_output_path, definition_output_path)
+
+    def _render_types(self, ir : FSMIR)->str:
         lines : list[str] = []
-
+        
         lines.append("#pragma once")
         lines.append("")
-        lines.append("#include <ddknd/fsm/runtime/definitions.h>")
-        lines.append("#include <array>")
         lines.append("#include <cstdint>")
-        lines.append("#include <cassert>")
         lines.append("")
 
         namespace_body = []
@@ -36,7 +42,28 @@ class CppGenerator:
         namespace_body.append("")
         namespace_body.extend(generate_FSM_Instance(ir))
         namespace_body.append("")
+        namespace_body.extend(generate_FSM_Component(ir))
         namespace_body.append("")
+
+        lines.append(f"namespace fsm::{ir.name}")
+        lines.append("{")
+        lines.extend(indent(namespace_body))
+        lines.append("}")
+
+        return "\n".join(lines)
+    def _render_defs(self, ir : FSMIR, types_file_name : str) -> str:
+        lines : list[str] = []
+
+        lines.append("#pragma once")
+        lines.append("")
+        lines.append("#include <ddknd/fsm/runtime/definitions.h>")
+        lines.append(f"#include \"{types_file_name}\"")
+        lines.append("#include <array>")
+        lines.append("#include <cstdint>")
+        lines.append("")
+
+        namespace_body = []
+
         namespace_body.extend(generate_condition_functions(ir))
         namespace_body.append("")
         namespace_body.extend(generate_condition_definition(ir))
@@ -125,6 +152,24 @@ def generate_FSM_Instance(ir: FSMIR) -> list[str]:
         f"{ir.name}State current = {ir.name}State::{ir.states[ir.initial_state_index].name};",
         f"{ir.name}State previous = {ir.name}State::{ir.states[ir.initial_state_index].name};",
         "std::uint32_t revision = 0;",
+    ]
+
+    lines.extend(indent(body))
+
+    lines.append("};")
+
+    return lines
+
+def generate_FSM_Component(ir : FSMIR) -> list[str]:
+    lines = []
+
+    lines.append(
+        f"struct {ir.name}StateComponent"
+    )
+    lines.append("{")
+
+    body = [
+        f"{ir.name}Instance instance{{}};"
     ]
 
     lines.extend(indent(body))
