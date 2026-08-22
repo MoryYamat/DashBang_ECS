@@ -49,6 +49,7 @@ namespace
     {
         SkeletonResource skeleton;
         skeleton.bones.resize(2);
+        skeleton.evaluationOrder = {0, 1};
 
         // Root joint
         skeleton.bones[0].parent = -1;

@@ -232,6 +232,7 @@ namespace ddknd::animation
     {
         const std::size_t boneCount = skeleton.bones.size();
 
+        assert(skeleton.evaluationOrder.size() == boneCount && "SkeletonResource requires a valid evaluationOrder.");
         pose.globalMatrices.resize(boneCount);
         pose.skinMatrices.resize(boneCount);
 
