@@ -100,7 +100,8 @@ gpu: NVIDIA RTX 2070 Super
 - date: 2026/07/08
 - Release Build
 - 1,000 Animated Characters
-```
+
+```cpp
 void AnimatorSystem::UpdateGlobalPose(skeleton, pose)
 {
     // ...
@@ -110,7 +111,7 @@ void AnimatorSystem::UpdateGlobalPose(skeleton, pose)
     // 5.56 %
     for (std::size_t i = 0; i < boneCount; ++i)
     {
-    ComputeBoneGlobal(skeleton, pose, i, computed);
+        ComputeBoneGlobal(skeleton, pose, i, computed);
     }
 
     for (std::size_t i = 0; i < boneCount; ++i)
@@ -121,13 +122,57 @@ void AnimatorSystem::UpdateGlobalPose(skeleton, pose)
 }
 ```
 
-`std::vector<bool> computed(boneCount, false);` が大きな割合を持っていることを確認できた．  
-これは、`SkeletonResource::bones` が `jointIndex > parentJointIndex` となっていないので、  
-Runtime 計算時に、チェックしながら計算しているため、必要なものである．
+初回計測時は `computed` バッファ周辺が大きな割合を占めていた.  
 
-`std::vector<std::uint8_t>` と代替しても変化がなかったので、  
-ここでは、 `jointIndex > parentJointIndex` を保証することで、  
-このチェックを廃止することを目指す．
+
+### リファクタリング 後
+`SkeletonResource::bones` の配列順は、glTF の `Skins.joints`順を維持しており、hierarchyの評価順を保証しない。  
+このため、リファクタリング前は、`computed`バッファを用いて parent の階層関係を再帰的に解決していた。  
+そこで、以下のように、ロード時に bone hierarchy から parent-first の `evaluationOrder`を事前計算し、  
+Runtime ではその順序に従って線形走査する方式へ変更した。
+
+```cpp
+struct SkeletonResource
+{
+    std::vector<Bone> bones;
+    std::vector<std::uint32_t> evaluationOrder;
+};
+```
+
+同条件の1000体描画のプロファイリング結果は以下のようになった
+
+```cpp
+void AnimatorSystem::UpdateGlobalPose(types::Pose& pose, const types::SkeletonResource& skeleton)
+{
+    ...
+
+    for(const std::uint32_t boneIndex : skeleton.evaluationOrder)
+    {
+        const auto& bone = skeleton.bones[boneIndex];
+
+        if(bone.parent < 0)
+        {
+            pose.globalMatrices[boneIndex] = pose.localMatrices[boneIndex];
+        }
+        else
+        {
+            // 4.06 %
+            pose.globalMatrices[boneIndex] = pose.globalMatrices[bone.parent] * pose.localMatrices[boneIndex];
+        }
+
+        // 4.83 %
+        pose.skinMatrices[boneIndex] = pose.globalMatrices[boneIndex] * bone.inverseBindMatrix;
+    }
+}
+```
+
+ロード時に用意した `evaluationOrder` からboneIndexを解決することで、  
+**毎フレームの `std::vector<bool> computed` の 生成・初期化と、`ComputeBoneGlobal`の再帰的な親子関係の解決を廃止した。
+
+その結果、Visual Studio Profiler上で、`UpdateGlobalPose` の合計CPU time 比率は 12.71% から 9.22% へと低下し、相対的に **約27.5%** 削減された。
+
+改善後は主なコストが行列演算へ集約されており、毎フレームの一時バッファ生成と再帰的な依存解決はホットパスから除去できた。
+
 
 ## 単体テスト
 

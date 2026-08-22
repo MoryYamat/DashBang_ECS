@@ -12,29 +12,29 @@
 
 namespace
 {
-    void ComputeBoneGlobal(ddknd::animation::types::Pose& pose, std::size_t boneIndex,
-                           std::vector<std::uint8_t>& computed,
-                           const ddknd::animation::types::SkeletonResource& skeleton)
-    {
-        if (computed[boneIndex] == 1)
-        {
-            return;
-        }
+    // void ComputeBoneGlobal(ddknd::animation::types::Pose& pose, std::size_t boneIndex,
+    //                        std::vector<std::uint8_t>& computed,
+    //                        const ddknd::animation::types::SkeletonResource& skeleton)
+    // {
+    //     if (computed[boneIndex] == 1)
+    //     {
+    //         return;
+    //     }
 
-        const int parent = skeleton.bones[boneIndex].parent;
-        if (parent < 0)
-        {
-            pose.globalMatrices[boneIndex] = pose.localMatrices[boneIndex];
-        }
-        else
-        {
-            ComputeBoneGlobal(pose, static_cast<std::size_t>(parent), computed, skeleton);
+    //     const int parent = skeleton.bones[boneIndex].parent;
+    //     if (parent < 0)
+    //     {
+    //         pose.globalMatrices[boneIndex] = pose.localMatrices[boneIndex];
+    //     }
+    //     else
+    //     {
+    //         ComputeBoneGlobal(pose, static_cast<std::size_t>(parent), computed, skeleton);
 
-            pose.globalMatrices[boneIndex] = pose.globalMatrices[parent] * pose.localMatrices[boneIndex];
-        }
+    //         pose.globalMatrices[boneIndex] = pose.globalMatrices[parent] * pose.localMatrices[boneIndex];
+    //     }
 
-        computed[boneIndex] = 1;
-    }
+    //     computed[boneIndex] = 1;
+    // }
 
     int FindKeyFrame(const std::vector<float>& times, float t)
     {
@@ -236,17 +236,34 @@ namespace ddknd::animation
         pose.skinMatrices.resize(boneCount);
 
         // TODO: Reuse the computed-state buffer instead of allocating it every update.
-        std::vector<std::uint8_t> computed(boneCount, 0);
+        // std::vector<std::uint8_t> computed(boneCount, 0);
 
-        for (std::size_t i = 0; i < boneCount; ++i)
-        {
-            ComputeBoneGlobal(pose, i, computed, skeleton);
-        }
+        // for (std::size_t i = 0; i < boneCount; ++i)
+        // {
+        //     ComputeBoneGlobal(pose, i, computed, skeleton);
+        // }
+        // assert (false &&" for debugging");
 
-        for (std::size_t i = 0; i < boneCount; ++i)
+        // for (std::size_t i = 0; i < boneCount; ++i)
+        // {
+        //     // Transform vertices from bind-pose model space to current model space.
+        //     pose.skinMatrices[i] = pose.globalMatrices[i] * skeleton.bones[i].inverseBindMatrix;
+        // }
+
+        for(const std::uint32_t boneIndex : skeleton.evaluationOrder)
         {
-            // Transform vertices from bind-pose model space to current model space.
-            pose.skinMatrices[i] = pose.globalMatrices[i] * skeleton.bones[i].inverseBindMatrix;
+            const auto& bone = skeleton.bones[boneIndex];
+
+            if(bone.parent < 0)
+            {
+                pose.globalMatrices[boneIndex] = pose.localMatrices[boneIndex];
+            }
+            else
+            {
+                pose.globalMatrices[boneIndex] = pose.globalMatrices[bone.parent] * pose.localMatrices[boneIndex];
+            }
+
+            pose.skinMatrices[boneIndex] = pose.globalMatrices[boneIndex] * bone.inverseBindMatrix;
         }
     }
 

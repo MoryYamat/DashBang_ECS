@@ -612,7 +612,26 @@ namespace ddknd::graphics
             assets.SetState(id, ::ddknd::asset::AssetState::Failed);
             return false;
         }
-
+        
+        /**
+        * test for joint order
+        */
+        // static int num_skeletons = 0;
+        // if(buildResult->model.skeleton.has_value())
+        // {
+        //     // spdlog::info("here");
+        //     spdlog::info("skeleton number={}",++num_skeletons);
+        //     int i = 0;
+        //     for(const auto& b : buildResult->model.skeleton->bones)
+        //     {
+        //         spdlog::info("index={}, parent={}", i, b.parent);
+        //         if( i > 0)
+        //         {
+        //             assert(i > b.parent && "order is the matter");
+        //         }
+        //         i++;
+        //     }
+        // }
         // The animations within the GLB are treated as sub-assets and given asset IDs
         if (!imported->animations.empty() && !buildResult->nodeToBone.empty())
         {

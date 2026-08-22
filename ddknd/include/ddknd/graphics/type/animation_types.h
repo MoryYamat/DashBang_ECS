@@ -45,8 +45,8 @@ namespace ddknd::animation::types
 
     struct SkeletonResource
     {
-        using Mat4f = ::ddknd::math::Mat4f;
         std::vector<Bone> bones;
+        std::vector<std::uint32_t> evaluationOrder;
     };
 
     enum class ChannelTarget
