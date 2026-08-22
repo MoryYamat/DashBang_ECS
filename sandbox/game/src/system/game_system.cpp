@@ -22,7 +22,7 @@
 #include "game/system/resolve/game_movement_intent_resolve_system.h"
 #include "game/system/state/game_character_state_system.h"
 
-#include "game/player/fsm/generated/movement_generated.h"
+#include "game/player/fsm/generated/movement_types.h"
 
 namespace app::system
 {

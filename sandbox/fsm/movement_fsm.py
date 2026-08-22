@@ -18,6 +18,7 @@ result_movement = compile_fsm(movement._definition)
 generator = CppGenerator()
 
 base_path = Path("sandbox/game/include/game/player/fsm/")
-movement_generated_path = generator.generate(result_movement, base_path / "generated", "movement_generated")
+# base_path = Path("sandbox/fsm/")
+movement_generated_path = generator.generate(result_movement, base_path / "generated", "movement")
 
 print(movement_generated_path)

@@ -1,5 +1,5 @@
 #include <ddknd/fsm/runtime/definitions.h>
-#include "generated/movement_generated.h"
+#include "generated/movement_definition.h"
 
 #include "ddknd/math/math.h"
 

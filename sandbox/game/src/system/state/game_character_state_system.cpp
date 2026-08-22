@@ -4,7 +4,8 @@
 #include "game/component/character_stats_component.h"
 #include "game/component/state_component.h"
 
-#include "game/player/fsm/generated/movement_generated.h"
+#include "game/player/fsm/generated/movement_types.h"
+#include "game/player/fsm/generated/movement_definition.h"
 
 #include <ddknd/math/math.h>
 
