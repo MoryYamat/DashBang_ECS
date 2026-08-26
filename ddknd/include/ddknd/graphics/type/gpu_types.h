@@ -90,6 +90,12 @@ namespace ddknd::graphics::types
         math::Vec4f color;
     };
 
+    struct ScreenQuadVertexWithoutUV
+    {
+        math::Vec2f pos; // Screen-space position in pixels.
+        math::Vec4f color;
+    };
+
     struct LineVertex
     {
         math::Vec3f pos;

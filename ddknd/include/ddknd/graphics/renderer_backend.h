@@ -43,12 +43,17 @@ namespace ddknd::graphics
         virtual void BindTexture2D(GPUID<tag::TextureGPUTag> id, std::uint32_t slot) = 0;
 
         virtual GPUID<tag::ScreenQuadBatchTag> CreateScreenQuadBatch() = 0;
+        virtual GPUID<tag::ScreenQuadBatchTag> CreateScreenQuadBatchWithoutTexture() = 0;
         virtual void DestroyScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag>) = 0;
         virtual void UpdateScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag>, std::span<const types::ScreenQuadVertex>,
                                            std::span<const std::uint32_t>) = 0;
         virtual void DrawScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag> batchId, GPUID<tag::ShaderProgramGPUTag> shader,
                                          GPUID<tag::TextureGPUTag> texture, std::uint32_t indexCount, int screenWidth,
                                          int screenHeight) = 0;
+
+        virtual void DrawScreenQuadBatchWithoutTexture(GPUID<tag::ScreenQuadBatchTag> batchId, GPUID<tag::ShaderProgramGPUTag> shader,
+                                         std::uint32_t indexCount, int screenWidth, int screenHeight) = 0;
+
 
         virtual GPUID<tag::LineBatchTag> CreateLineBatch() = 0;
         virtual void UpdateLineBatch(GPUID<tag::LineBatchTag> id, std::span<const types::LineVertex> vertices) = 0;

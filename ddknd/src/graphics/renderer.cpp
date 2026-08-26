@@ -154,6 +154,13 @@ namespace ddknd::graphics
         
         BeginOverlayPass();
 
+        // ui
+        for(const auto cmd : uiCmds_)
+        {
+            backend_.DrawScreenQuadBatchWithoutTexture(cmd.batch, cmd.shader, cmd.indexCount, frameBegin_.w,
+                                         frameBegin_.h);
+        }
+
         for (const auto& cmd : debugTextCmds_)
         {
             backend_.DrawScreenQuadBatch(cmd.batch, cmd.shader, cmd.texture, cmd.indexCount, frameBegin_.w,
@@ -173,8 +180,10 @@ namespace ddknd::graphics
         cmds_.clear();
         meshCmds_.clear();
         skinnedCmds_.clear();
+        uiCmds_.clear();
         debugTextCmds_.clear();
         debugLineCmds_.clear();
+        
     }
 
     void RendererSystem::Submit(const DrawCommand& cmd)
@@ -196,6 +205,10 @@ namespace ddknd::graphics
     void RendererSystem::Submit(const SkinnedDrawCommand& cmd)
     {
         skinnedCmds_.push_back(cmd);
+    }
+    void RendererSystem::Submit(const UIDrawCommand& cmd)
+    {
+        uiCmds_.push_back(cmd);
     }
 
     void RendererSystem::SetFrameCamera(const ::ddknd::graphics::RenderCamera& camera) 

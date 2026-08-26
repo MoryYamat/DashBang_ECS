@@ -55,5 +55,6 @@ namespace app::system
         void RunCameraDesiredPose(::ddknd::ecs::World& world, GameFrameContext& ctx);
         void RunCameraApply(::ddknd::ecs::World& world, GameFrameContext& ctx);
         void RunCameraIntentResolve(::ddknd::ecs::World& world, GameFrameContext& ctx);
+
     };
 } // namespace app::system

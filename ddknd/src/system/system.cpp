@@ -19,6 +19,7 @@
 #include <ddknd/system/transform_system.h>
 
 #include <ddknd/system/hitbox_system.h>
+#include <ddknd/system/ui_system.h>
 
 // Argument Order Policy
 // System::UpdateOne(
@@ -52,6 +53,7 @@ namespace ddknd::system
         RunAnimationPoseSampling(world, ctx);
         RunMeshRenderSubmit(world, ctx);
         RunSkinnedRenderSubmit(world, ctx);
+        RunHitTest(world, ctx);
     }
         
     void EngineSystemRunner::Update(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
@@ -255,5 +257,16 @@ namespace ddknd::system
     {
         (void)ctx;
         ddknd::system::HitboxCollisionSystem::Update(world, ctx);
+    }
+
+    
+    void EngineSystemRunner::RunHitTest(ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
+    {
+        if(!ctx.deviceInput || !ctx.uiContext)
+        {
+            return;
+        }
+
+        ddknd::system::HitTest(*ctx.uiContext, *ctx.deviceInput);
     }
 } // namespace ddknd::system9

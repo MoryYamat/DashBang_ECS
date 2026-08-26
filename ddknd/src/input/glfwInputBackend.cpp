@@ -170,7 +170,8 @@ namespace ddknd::input
 
 
 #if defined(_WIN32)
-            glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            // glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 #else
             // In a WSL environment, using this setting results in the expected behavior.
             glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_NORMAL); 

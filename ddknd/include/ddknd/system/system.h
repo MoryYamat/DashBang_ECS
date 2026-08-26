@@ -5,6 +5,7 @@
 #include <ddknd/graphics/graphics_fwd.h>
 #include <ddknd/event/event_fwd.h>
 
+#include <ddknd/ui/ui_context.h>
 
 namespace ddknd::system
 {
@@ -14,6 +15,7 @@ namespace ddknd::system
         float deltaTime;
 
         ::ddknd::input::ActionInputSystem* actionInput = nullptr;
+        ddknd::input::DeviceInput* deviceInput = nullptr;
 
         // camera
         float aspect;
@@ -25,6 +27,10 @@ namespace ddknd::system
         // renderer
         ::ddknd::graphics::RendererSystem* renderer = nullptr;
         ::ddknd::graphics::RenderCamera* renderCamera = nullptr;
+
+
+        // ui
+        ddknd::ui::UIContext* uiContext = nullptr;
 
         // temporary per-frame event bufers
         // @TODO: replace with generic EvenetManager / EvenetQueue / ResourceStorage
@@ -58,7 +64,9 @@ namespace ddknd::system
         // entity lifetime
         void RunLifetimeSystem(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
 
-        
+  
         void RunHitboxCollisionSystem(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
+
+        void RunHitTest(ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
     };
 } // namespace ddknd::system

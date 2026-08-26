@@ -10,6 +10,8 @@
 #include <ddknd/event/event_fwd.h>
 #include <ddknd/component/component_fwd.h>
 
+#include <ddknd/ui/ui_context.h>
+
 #include "game/system/game_system_fwd.h"
 #include "game/scene/game_scene_fwd.h"
 
@@ -72,5 +74,7 @@ namespace app
             // Systems
             std::unique_ptr<::ddknd::system::EngineSystemRunner> engineSystemRunner_;
             std::unique_ptr<::app::system::GameSystemRunner> gameSystemRunner_;
+
+            std::unique_ptr<ddknd::ui::UIContext> uiContext_;
     };
 }// namespace app

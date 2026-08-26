@@ -105,6 +105,15 @@ namespace ddknd::graphics
         MaterialDrawData material;
     };
 
+    // UI TEST
+    struct UIDrawCommand
+    {
+        types::GPUID<tag::ScreenQuadBatchTag> batch;
+        types::GPUID<tag::ShaderProgramGPUTag> shader;
+
+        std::uint32_t indexCount = 0;
+    };
+
     struct DebugTextDrawCommand
     {
         types::GPUID<tag::ScreenQuadBatchTag> batch;
@@ -150,6 +159,7 @@ namespace ddknd::graphics
         void Submit(const DebugLineDrawCommand& cmd);
         void Submit(const MeshRenderCommand& cmd);
         void Submit(const SkinnedDrawCommand& cmd);
+        void Submit(const UIDrawCommand& cmd);
 
         void SetFrameCamera(const RenderCamera& camera);
 
@@ -160,6 +170,7 @@ namespace ddknd::graphics
         std::vector<DebugLineDrawCommand> debugLineCmds_;
         std::vector<MeshRenderCommand> meshCmds_;
         std::vector<SkinnedDrawCommand> skinnedCmds_;
+        std::vector<UIDrawCommand> uiCmds_;
         FrameBeginDesc frameBegin_;
         FrameCameraState frameCamera_;
 

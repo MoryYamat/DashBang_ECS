@@ -433,7 +433,8 @@ namespace ddknd::graphics
             glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
         }
 
-        GPUID<PrimitiveTag> CreateOrGetPrimitive(const ddknd::graphics::types::PrimitiveCreateData& import, const PrimitiveKey& key) override
+        GPUID<PrimitiveTag> CreateOrGetPrimitive(const ddknd::graphics::types::PrimitiveCreateData& import,
+                                                 const PrimitiveKey& key) override
         {
             if (const auto it = primitiveCache_.find(key); it != primitiveCache_.end())
                 return it->second;
@@ -488,7 +489,7 @@ namespace ddknd::graphics
             glGenTextures(1, &tex);
 
             GLenum err = glGetError();
-            if(err != GL_NO_ERROR)
+            if (err != GL_NO_ERROR)
             {
                 std::cerr << "[CreateTexture2D]: OpenGL Error during texture generation: " << err << std::endl;
             }
@@ -501,7 +502,7 @@ namespace ddknd::graphics
 
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-            // 
+            //
             glTexImage2D(GL_TEXTURE_2D, 0, glfmt.internalFormat, static_cast<GLsizei>(desc.width),
                          static_cast<GLsizei>(desc.height), 0, glfmt.uploadFormat, glfmt.uploadType,
                          desc.pixels.data());
@@ -618,7 +619,7 @@ namespace ddknd::graphics
 
         void SetUniformFloat(GPUID<tag::ShaderProgramGPUTag> shader, const char* name, float v) override
         {
-                        if (name == nullptr)
+            if (name == nullptr)
             {
                 spdlog::error("SetUniform(Mat4): uniform name is null");
                 return;
@@ -819,6 +820,43 @@ namespace ddknd::graphics
             return id;
         }
 
+        GPUID<tag::ScreenQuadBatchTag> CreateScreenQuadBatchWithoutTexture() override
+        {
+            GLScreenQuadBatch batch{};
+
+            glGenVertexArrays(1, &batch.vao);
+            glGenBuffers(1, &batch.vbo);
+            glGenBuffers(1, &batch.ebo);
+
+            glBindVertexArray(batch.vao);
+            glBindBuffer(GL_ARRAY_BUFFER, batch.vbo);
+
+            constexpr GLsizei stride = sizeof(types::ScreenQuadVertex);
+
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride,
+                                  reinterpret_cast<void*>(offsetof(types::ScreenQuadVertex, pos)));
+
+            // glEnableVertexAttribArray(1);
+            // glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride,
+            //                       reinterpret_cast<void*>(offsetof(types::ScreenQuadVertex, uv)));
+
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, stride,
+                                  reinterpret_cast<void*>(offsetof(types::ScreenQuadVertex, color)));
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batch.ebo);
+
+            glBindVertexArray(0);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+            const auto id = GPUID<tag::ScreenQuadBatchTag>(static_cast<std::uint32_t>(screenQuadBatches_.size()));
+
+            screenQuadBatches_.push_back(batch);
+
+            return id;
+        }
+
         void UpdateScreenQuadBatch(GPUID<tag::ScreenQuadBatchTag> id, std::span<const types::ScreenQuadVertex> vertices,
                                    std::span<const std::uint32_t> indices) override
         {
@@ -888,6 +926,53 @@ namespace ddknd::graphics
 
             BindTexture2D(texture, 0);
 
+            glBindVertexArray(batch.vao);
+
+            glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, nullptr);
+
+            glBindVertexArray(0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            // TODO: Move GL renderer States to RenderPass / PipelineState
+            glDisable(GL_BLEND);
+            glEnable(GL_DEPTH_TEST);
+        }
+
+        void DrawScreenQuadBatchWithoutTexture(GPUID<tag::ScreenQuadBatchTag> batchId,
+                                               GPUID<tag::ShaderProgramGPUTag> shader, std::uint32_t indexCount,
+                                               int screenWidth, int screenHeight) override
+        {
+            if (!batchId.IsValid() || !shader.IsValid())
+            {
+                return;
+            }
+
+            const auto batchIdx = static_cast<std::size_t>(batchId.Value());
+            if (batchIdx >= screenQuadBatches_.size())
+            {
+                return;
+            }
+            const GLuint prog = try_get_program_handle(shader);
+            if (prog == 0)
+            {
+                spdlog::error("DrawScreenQuadBatch: invalid shader");
+                return;
+            }
+            const auto& batch = screenQuadBatches_[batchIdx];
+
+            glDisable(GL_DEPTH_TEST);
+
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+            glUseProgram(prog);
+
+            glUniform2f(glGetUniformLocation(prog, "uScreenSize"), static_cast<float>(screenWidth),
+                        static_cast<float>(screenHeight));
+
+            // glUniform1i(glGetUniformLocation(prog, "uTexture"), 0);
+
+            // BindTexture2D(texture, 0);
             glBindVertexArray(batch.vao);
 
             glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, nullptr);

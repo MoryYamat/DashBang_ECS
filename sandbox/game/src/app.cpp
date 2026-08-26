@@ -48,6 +48,8 @@
 #include "game/system/game_system.h"
 
 
+#include "game/ui/register.h"
+
 // temporaly
 namespace
 {
@@ -140,6 +142,9 @@ namespace app
         // system
         engineSystemRunner_ = std::make_unique<::ddknd::system::EngineSystemRunner>();
 
+        // ui
+        uiContext_ = std::make_unique<ddknd::ui::UIContext>(*rendererBackend_);
+
         return true;
     }
 
@@ -186,6 +191,13 @@ namespace app
         assert(font_res);
         assert(debug_line_shader_res);
 
+        // ui
+        auto ui_shader_id = assetMgr_->GetOrCreate<ShaderTag>("res://shaders/programs/ui.shader");
+        auto loaded_ui_shader = graphicsAssetLoader_->LoadShader(*assetMgr_, *graphicsAssetStore_, ui_shader_id);
+        const auto ui_shader_res = graphicsAssetStore_->TryGet(ui_shader_id);
+        assert(ui_shader_res);
+        uiContext_->RegisterShader(ui_shader_id);
+
         // DEBUG CAMERA
         using DebugCameraCtrl = ::ddknd::debug::DebugCameraController;
         ddknd::component::TransformComponent debug_camera_transform{};
@@ -218,6 +230,9 @@ namespace app
 
         //  frame camera
         ::ddknd::graphics::RenderCamera frameCamera{};
+
+        // init ui
+        app::ui::RegisterUIs(*uiContext_.get());
 
         // game loop
         while (isRunning_ && !window_->ShouldClose())
@@ -265,11 +280,13 @@ namespace app
             // ************* FRAME CONTEXT *************
             ::ddknd::system::FrameContext frameCtx{.deltaTime = deltaSeconds,
                                                    .actionInput = inputSys_.get(),
+                                                   .deviceInput = deviceInput_.get(),
                                                    .aspect = window_->aspectRatio(),
                                                    .graphicsAssetStore = graphicsAssetStore_.get(),
                                                    .animationAssetStore = animationAssetStore_.get(),
                                                    .renderer = renderSys_.get(),
                                                    .renderCamera = &frameCamera,
+                                                   .uiContext = uiContext_.get(),
                                                    .hitboxHitEvents = hitboxHitEvents_.get()};
 
             ::app::system::GameFrameContext gameCtx{.frame = &frameCtx, .input = inputSys_.get(), .paused = false};
@@ -287,7 +304,10 @@ namespace app
             gameSystemRunner_->UpdatePostEngine(*world_, gameCtx);
             engineSystemRunner_->UpdateRenderPrepare(*world_, frameCtx);
             
-            
+            // **** UI ****
+            uiContext_->BeginFrame(frameCtx);
+            uiContext_->EndFrame(frameCtx);
+
             // ************* DEBUG DRAW *************
             debugSystemRunner.BeginFrame(debugCtx);
             debugSystemRunner.Update(*world_, debugCtx);
