@@ -68,5 +68,7 @@ namespace ddknd::system
         void RunHitboxCollisionSystem(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
 
         void RunHitTest(ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
+        void RunUIEvent(ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
+        void RunUIReset(ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx);
     };
 } // namespace ddknd::system

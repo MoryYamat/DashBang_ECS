@@ -14,6 +14,6 @@ namespace app::ui
         testButton.shape.width = 200;
         testButton.shape.height = 200;
 
-        ui.RegisterShpae(testButton.shape);
+        ui.RegisterRectButton(testButton);
     }
 }

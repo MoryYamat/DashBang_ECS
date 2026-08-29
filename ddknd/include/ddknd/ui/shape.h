@@ -18,5 +18,6 @@ namespace ddknd::ui
         UIShape shape;
 
         bool pressed = false;
+        bool hovered = false;
     };
 }

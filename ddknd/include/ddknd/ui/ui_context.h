@@ -22,26 +22,33 @@ namespace ddknd::ui
             ~UIContext();
 
             void RegisterShpae(UIShape shape);
+            void RegisterRectButton(UIRectButton button);
             void RegisterShader(::ddknd::asset::AssetID<::ddknd::asset::tag::Shader> shader);
             
             void BeginFrame(ddknd::system::FrameContext& frame);
             void EndFrame(ddknd::system::FrameContext& frame);
 
+            void ResetUIEvenet();
+
             std::vector<UIShape>& GetShapes();
             const std::vector<UIShape>& GetShapes() const;
+
+            std::vector<UIRectButton>& GetUIRectButtons();
+            const std::vector<UIRectButton>& GetUIRectButtons() const;
 
             graphics::types::GPUID<graphics::tag::ScreenQuadBatchTag> Batch() const;
             std::uint32_t IndexCount() const;
 
         private:
-            void BuildUIVertices();
+            void BuildUIButtonVertices();
             void FlushUI();
             std::uint32_t  UIIndicesCount();
-
         private:
 
             std::vector<UIShape> shapes_{};
 
+            std::vector<UIRectButton> buttons_{};
+            
             graphics::IRendererBackend& backend_;
             ::ddknd::asset::AssetID<::ddknd::asset::tag::Shader> shader_;
             graphics::types::GPUID<graphics::tag::ScreenQuadBatchTag> batch_;

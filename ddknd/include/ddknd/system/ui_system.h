@@ -7,4 +7,8 @@
 namespace ddknd::system
 {
     void HitTest(ui::UIContext& uiContext, input::DeviceInput& deviceInput);
+
+    void UpdateUIEvent(const ui::UIContext& uiContext);
+
+    void ResetUIContext(ui::UIContext& uiContext);
 }

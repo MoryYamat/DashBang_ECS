@@ -35,6 +35,8 @@ namespace ddknd::system
 {
     void EngineSystemRunner::UpdateSimulation(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
     {
+        RunUIReset(world, ctx);
+
         RunKinematic(world,ctx);
         RunTransform(world,ctx);
         
@@ -54,6 +56,7 @@ namespace ddknd::system
         RunMeshRenderSubmit(world, ctx);
         RunSkinnedRenderSubmit(world, ctx);
         RunHitTest(world, ctx);
+        RunUIEvent(world, ctx);
     }
         
     void EngineSystemRunner::Update(::ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
@@ -259,7 +262,6 @@ namespace ddknd::system
         ddknd::system::HitboxCollisionSystem::Update(world, ctx);
     }
 
-    
     void EngineSystemRunner::RunHitTest(ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
     {
         if(!ctx.deviceInput || !ctx.uiContext)
@@ -268,5 +270,23 @@ namespace ddknd::system
         }
 
         ddknd::system::HitTest(*ctx.uiContext, *ctx.deviceInput);
+    }
+
+    void EngineSystemRunner::RunUIEvent(ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
+    {
+        if(!ctx.uiContext){
+            return;
+        }
+
+        ddknd::system::UpdateUIEvent(*ctx.uiContext);
+    }
+
+    void EngineSystemRunner::RunUIReset(ddknd::ecs::World& world, const ::ddknd::system::FrameContext& ctx)
+    {
+        if(!ctx.uiContext){
+            return;
+        }
+
+        ddknd::system::ResetUIContext(*ctx.uiContext);
     }
 } // namespace ddknd::system9

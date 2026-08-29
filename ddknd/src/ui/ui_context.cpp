@@ -25,6 +25,11 @@ namespace ddknd::ui
     {
         shapes_.push_back(shape);
     }
+    void UIContext::RegisterRectButton(UIRectButton button)
+    {
+        buttons_.push_back(button);
+    }
+
     void UIContext::RegisterShader(::ddknd::asset::AssetID<::ddknd::asset::tag::Shader> shader)
     {
         shader_ = shader;
@@ -35,26 +40,36 @@ namespace ddknd::ui
         return shapes_;
     }
 
-    void UIContext::BuildUIVertices()
+    std::vector<UIRectButton>& UIContext::GetUIRectButtons()
+    {
+        return buttons_;
+    }
+
+    const std::vector<UIRectButton>& UIContext::GetUIRectButtons() const
+    {
+        return buttons_;
+    }
+
+    void UIContext::BuildUIButtonVertices()
     {
         vertices_.clear();
         indices_.clear();
 
-        for(auto& shape : shapes_)
+        for(auto& button : buttons_)
         {
 
-            const float x0 = shape.position.x();
-            const float y0 = shape.position.y();
-            const float x1 = x0 + shape.width;
-            const float y1 = y0 + shape.height;
+            const float x0 = button.shape.position.x();
+            const float y0 = button.shape.position.y();
+            const float x1 = x0 + button.shape.width;
+            const float y1 = y0 + button.shape.height;
 
             const auto base = static_cast<std::uint32_t>(vertices_.size());
 
 
-            vertices_.push_back({{x0, y0}, {0.f, 0.f}, shape.color});
-            vertices_.push_back({{x1, y0}, {1.0f, 0.0f}, shape.color});
-            vertices_.push_back({{x1, y1}, {1.0f, 1.0f}, shape.color});
-            vertices_.push_back({{x0, y1}, {0.0f, 1.0f}, shape.color});
+            vertices_.push_back({{x0, y0}, {0.f, 0.f}, button.shape.color});
+            vertices_.push_back({{x1, y0}, {1.0f, 0.0f}, button.shape.color});
+            vertices_.push_back({{x1, y1}, {1.0f, 1.0f}, button.shape.color});
+            vertices_.push_back({{x0, y1}, {0.0f, 1.0f}, button.shape.color});
 
             indices_.push_back(base + 0);
             indices_.push_back(base + 1);
@@ -73,7 +88,7 @@ namespace ddknd::ui
     }
 
     void UIContext::FlushUI(){
-        BuildUIVertices();
+        BuildUIButtonVertices();
         backend_.UpdateScreenQuadBatch(batch_, vertices_, indices_);
         // std::cerr << "ui flushed\n";
     }
@@ -92,6 +107,12 @@ namespace ddknd::ui
         }
         const auto* uiShader = frame.graphicsAssetStore->TryGet(shader_);
         frame.renderer->Submit(ddknd::graphics::UIDrawCommand{.batch = batch_, .shader = uiShader->program, .indexCount = UIIndicesCount()});
+    }
+
+    void UIContext::ResetUIEvenet(){
+        for(auto& button : buttons_){
+            button.pressed = false;
+        }
     }
 
     graphics::types::GPUID<graphics::tag::ScreenQuadBatchTag> UIContext::Batch() const
